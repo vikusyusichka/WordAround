@@ -4,7 +4,9 @@ import SwiftUI
 struct WordAroundApp: App {
     var body: some Scene {
         WindowGroup {
-            OnboardingView()
+            NavigationStack {
+                OnboardingView()
+            }
         }
     }
 }

@@ -51,7 +51,6 @@ struct OnboardingView: View {
     }
 }
 
-// MARK: - Layout
 private extension OnboardingView {
     var backgroundLayer: some View {
         ZStack {
@@ -168,9 +167,7 @@ private extension OnboardingView {
     }
 
     var startButton: some View {
-        Button(action: {
-            print("Let's Start tapped")
-        }) {
+        NavigationLink(destination: AuthView()) {
             HStack(spacing: 16) {
                 Text("Let’s Start")
                     .font(.system(size: 24, weight: .bold, design: .rounded))
@@ -202,7 +199,6 @@ private extension OnboardingView {
     }
 }
 
-// MARK: - Orbiting Greetings
 struct GreetingItem: Identifiable {
     let id = UUID()
     let text: String
@@ -233,13 +229,11 @@ struct OrbitingGreeting: View {
     }
 }
 
-// MARK: - Flat 2D Blue Globe
 struct FlatBlueGlobe: View {
     let rotation: Double
 
     var body: some View {
         ZStack {
-            // Світла база без синього фону
             Circle()
                 .fill(
                     RadialGradient(
@@ -259,7 +253,6 @@ struct FlatBlueGlobe: View {
                 )
                 .shadow(color: Color.black.opacity(0.06), radius: 14, x: 0, y: 8)
 
-            // Легкий блік
             Circle()
                 .fill(
                     LinearGradient(
@@ -275,7 +268,6 @@ struct FlatBlueGlobe: View {
                 .offset(x: -8, y: -20)
                 .blur(radius: 2)
 
-            // СИНІЙ глобус, без синьої кулі позаду
             Image(systemName: "globe.europe.africa.fill")
                 .resizable()
                 .scaledToFit()
@@ -294,7 +286,7 @@ struct FlatBlueGlobe: View {
         }
     }
 }
-// MARK: - Blob Shape
+
 struct BlobShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
