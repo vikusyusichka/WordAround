@@ -11,6 +11,8 @@
 		E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CA82F98010F00387BDC /* WordAroundApp.swift */; };
 		E30A1CB32F9801B600387BDC /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CB22F9801AE00387BDC /* .gitignore */; };
 		E30A1CBC2F98023B00387BDC /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CBB2F98023900387BDC /* HomeView.swift */; };
+		E30A1CBF2F98079600387BDC /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CBE2F98079300387BDC /* OnboardingViewModel.swift */; };
+		E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CC02F98079800387BDC /* OnboardingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +21,8 @@
 		E30A1CA82F98010F00387BDC /* WordAroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordAroundApp.swift; sourceTree = "<group>"; };
 		E30A1CB22F9801AE00387BDC /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		E30A1CBB2F98023900387BDC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		E30A1CBE2F98079300387BDC /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
+		E30A1CC02F98079800387BDC /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +130,7 @@
 		E30A1CB92F9801E800387BDC /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1CBD2F98078A00387BDC /* Onboarding */,
 				E30A1CBA2F98023200387BDC /* Home */,
 			);
 			path = Screens;
@@ -137,6 +142,15 @@
 				E30A1CBB2F98023900387BDC /* HomeView.swift */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		E30A1CBD2F98078A00387BDC /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1CC02F98079800387BDC /* OnboardingView.swift */,
+				E30A1CBE2F98079300387BDC /* OnboardingViewModel.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -213,6 +227,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E30A1CBC2F98023B00387BDC /* HomeView.swift in Sources */,
+				E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */,
+				E30A1CBF2F98079600387BDC /* OnboardingViewModel.swift in Sources */,
 				E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
