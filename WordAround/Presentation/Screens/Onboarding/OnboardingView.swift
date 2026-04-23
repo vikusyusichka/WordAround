@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     @State private var globeRotation: Double = 0
     @State private var wordsRotation: Double = 0
-    @State private var sparkleScale: CGFloat = 1
 
     private let greetings: [GreetingItem] = [
         .init(text: "Hello", color: Color(red: 0.25, green: 0.56, blue: 0.97), angle: -18),
@@ -19,18 +19,17 @@ struct OnboardingView: View {
 
             VStack(spacing: 0) {
                 Spacer()
-                    .frame(height: 125)
+                    .frame(height: 105)
 
                 heroSection
-                    .padding(.top, 20)
 
                 titleSection
-                    .padding(.top, 28)
+                    .padding(.top, 24)
 
                 startButton
-                    .padding(.top, 28)
+                    .padding(.top, 24)
 
-                Spacer()
+                Spacer(minLength: 40)
             }
             .padding(.horizontal, 24)
         }
@@ -42,10 +41,6 @@ struct OnboardingView: View {
 
             withAnimation(.linear(duration: 18).repeatForever(autoreverses: false)) {
                 wordsRotation = 360
-            }
-
-            withAnimation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true)) {
-                sparkleScale = 1.18
             }
         }
     }
@@ -128,18 +123,6 @@ private extension OnboardingView {
 
             FlatBlueGlobe(rotation: globeRotation)
                 .frame(width: 150, height: 150)
-
-            Image(systemName: "sparkles")
-                .font(.system(size: 24, weight: .medium))
-                .foregroundColor(Color(red: 0.27, green: 0.57, blue: 0.98))
-                .scaleEffect(sparkleScale)
-                .offset(x: 118, y: -42)
-
-            Image(systemName: "sparkles")
-                .font(.system(size: 22, weight: .medium))
-                .foregroundColor(Color(red: 0.98, green: 0.77, blue: 0.31))
-                .scaleEffect(2 - sparkleScale)
-                .offset(x: 112, y: 30)
         }
     }
 
@@ -167,7 +150,9 @@ private extension OnboardingView {
     }
 
     var startButton: some View {
-        NavigationLink(destination: AuthView()) {
+        Button {
+            hasSeenOnboarding = true
+        } label: {
             HStack(spacing: 16) {
                 Text("Let’s Start")
                     .font(.system(size: 24, weight: .bold, design: .rounded))
@@ -199,14 +184,14 @@ private extension OnboardingView {
     }
 }
 
-struct GreetingItem: Identifiable {
+private struct GreetingItem: Identifiable {
     let id = UUID()
     let text: String
     let color: Color
     let angle: Double
 }
 
-struct OrbitingGreeting: View {
+private struct OrbitingGreeting: View {
     let item: GreetingItem
 
     var body: some View {
@@ -229,7 +214,7 @@ struct OrbitingGreeting: View {
     }
 }
 
-struct FlatBlueGlobe: View {
+private struct FlatBlueGlobe: View {
     let rotation: Double
 
     var body: some View {
@@ -284,55 +269,6 @@ struct FlatBlueGlobe: View {
                 )
                 .rotationEffect(.degrees(rotation))
         }
-    }
-}
-
-struct BlobShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let w = rect.width
-        let h = rect.height
-
-        path.move(to: CGPoint(x: 0.12 * w, y: 0.24 * h))
-
-        path.addCurve(
-            to: CGPoint(x: 0.70 * w, y: 0.08 * h),
-            control1: CGPoint(x: 0.20 * w, y: 0.02 * h),
-            control2: CGPoint(x: 0.53 * w, y: -0.02 * h)
-        )
-
-        path.addCurve(
-            to: CGPoint(x: 0.96 * w, y: 0.42 * h),
-            control1: CGPoint(x: 0.92 * w, y: 0.12 * h),
-            control2: CGPoint(x: 1.05 * w, y: 0.24 * h)
-        )
-
-        path.addCurve(
-            to: CGPoint(x: 0.84 * w, y: 0.88 * h),
-            control1: CGPoint(x: 0.90 * w, y: 0.70 * h),
-            control2: CGPoint(x: 1.00 * w, y: 0.92 * h)
-        )
-
-        path.addCurve(
-            to: CGPoint(x: 0.28 * w, y: 0.96 * h),
-            control1: CGPoint(x: 0.62 * w, y: 0.92 * h),
-            control2: CGPoint(x: 0.40 * w, y: 1.06 * h)
-        )
-
-        path.addCurve(
-            to: CGPoint(x: 0.04 * w, y: 0.56 * h),
-            control1: CGPoint(x: 0.04 * w, y: 0.82 * h),
-            control2: CGPoint(x: -0.04 * w, y: 0.68 * h)
-        )
-
-        path.addCurve(
-            to: CGPoint(x: 0.12 * w, y: 0.24 * h),
-            control1: CGPoint(x: 0.10 * w, y: 0.44 * h),
-            control2: CGPoint(x: -0.02 * w, y: 0.28 * h)
-        )
-
-        path.closeSubpath()
-        return path
     }
 }
 
