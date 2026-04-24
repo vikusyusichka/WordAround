@@ -17,6 +17,7 @@ enum Layout {
     static let compactCardInnerPadding: CGFloat = 14
 
     static let sidebarWidthPhone: CGFloat = 86
+    static let sidebarWidthCompact: CGFloat = 74
     static let sidebarWidthPad: CGFloat = 108
 
     static let contentMaxWidthPad: CGFloat = 760
