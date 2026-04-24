@@ -1,6 +1,15 @@
 import SwiftUI
 
 enum Layout {
+    static var isPadLike: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad ||
+        UIScreen.main.bounds.width >= 700
+    }
+
+    static var isCompactPhone: Bool {
+        !isPadLike && UIScreen.main.bounds.width < 390
+    }
+
     static let screenHorizontalPaddingPhone: CGFloat = 16
     static let screenHorizontalPaddingPad: CGFloat = 28
 

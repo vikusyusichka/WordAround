@@ -35,6 +35,10 @@
 		E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D222F9AC21700387BDC /* StatCardView.swift */; };
 		E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D242F9AC22800387BDC /* SetItemView.swift */; };
 		E30A1D4F2F9BB9D000387BDC /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D4E2F9BB9C700387BDC /* AppColors.swift */; };
+		E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */; };
+		E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */; };
+		E30A1D552F9BBD3D00387BDC /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D542F9BBD3700387BDC /* HomeViewModel.swift */; };
+		E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D562F9BBF8500387BDC /* VerifyEmailViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +68,10 @@
 		E30A1D222F9AC21700387BDC /* StatCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCardView.swift; sourceTree = "<group>"; };
 		E30A1D242F9AC22800387BDC /* SetItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetItemView.swift; sourceTree = "<group>"; };
 		E30A1D4E2F9BB9C700387BDC /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
+		E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StatCardItem.swift; path = WordAround/Core/StatCardItem.swift; sourceTree = SOURCE_ROOT; };
+		E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FlashCardSet.swift; path = WordAround/Core/FlashCardSet.swift; sourceTree = SOURCE_ROOT; };
+		E30A1D542F9BBD3700387BDC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		E30A1D562F9BBF8500387BDC /* VerifyEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +115,7 @@
 				E30A1CAD2F98011100387BDC /* App */,
 				E30A1CB02F98018300387BDC /* Resources */,
 				E30A1CB92F9801E800387BDC /* Features */,
+				E30A1CDD2F995BF100387BDC /* Info.plist */,
 			);
 			path = WordAround;
 			sourceTree = "<group>";
@@ -125,7 +134,6 @@
 			isa = PBXGroup;
 			children = (
 				E30A1CD62F9953CF00387BDC /* GoogleService-Info.plist */,
-				E30A1CDD2F995BF100387BDC /* Info.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -133,6 +141,8 @@
 		E30A1CB42F9801C400387BDC /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */,
+				E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -197,7 +207,6 @@
 			children = (
 				E30A1D0A2F9A5FE700387BDC /* BottomNavigationBarView.swift */,
 				E30A1D082F9A5FCD00387BDC /* CategorySidebarView.swift */,
-				E30A1D062F9A5FB300387BDC /* HomeHeaderView.swift */,
 				E30A1D242F9AC22800387BDC /* SetItemView.swift */,
 				E30A1D222F9AC21700387BDC /* StatCardView.swift */,
 				E30A1D202F9AC20500387BDC /* ProgressCardView.swift */,
@@ -243,6 +252,7 @@
 		E30A1D482F9BAF0100387BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1D562F9BBF8500387BDC /* VerifyEmailViewModel.swift */,
 				E30A1CCF2F99445700387BDC /* AuthViewModel.swift */,
 			);
 			path = ViewModels;
@@ -252,6 +262,7 @@
 			isa = PBXGroup;
 			children = (
 				E30A1CBB2F98023900387BDC /* HomeView.swift */,
+				E30A1D062F9A5FB300387BDC /* HomeHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -259,6 +270,7 @@
 		E30A1D4A2F9BAF5500387BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1D542F9BBD3700387BDC /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -373,14 +385,17 @@
 			files = (
 				E30A1CE12F9A358000387BDC /* VerifyEmailView.swift in Sources */,
 				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,
+				E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */,
 				E30A1CBC2F98023B00387BDC /* HomeView.swift in Sources */,
 				E30A1CC32F9819B100387BDC /* AuthView.swift in Sources */,
 				E30A1D0F2F9A618800387BDC /* HomeTab.swift in Sources */,
 				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
 				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
+				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
 				E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */,
+				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
 				E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */,
 				E30A1D072F9A5FC000387BDC /* HomeHeaderView.swift in Sources */,
 				E30A1CDF2F9A2D3900387BDC /* SessionStore.swift in Sources */,
@@ -388,6 +403,7 @@
 				E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */,
 				E30A1CD32F99448B00387BDC /* AuthService.swift in Sources */,
 				E30A1D1D2F9AC1D500387BDC /* BaseCardView.swift in Sources */,
+				E30A1D552F9BBD3D00387BDC /* HomeViewModel.swift in Sources */,
 				E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */,
 				E30A1D4F2F9BB9D000387BDC /* AppColors.swift in Sources */,
 				E30A1D0D2F9A616F00387BDC /* HomeCategory.swift in Sources */,

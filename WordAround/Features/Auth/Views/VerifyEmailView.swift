@@ -374,59 +374,6 @@ private extension VerifyEmailView {
     }
 }
 
-@MainActor
-final class VerifyEmailViewModel: ObservableObject {
-    @Published var isLoading = false
-    @Published var errorMessage: String?
-    @Published var infoMessage: String?
-
-    func resendVerificationEmail() async {
-        clearMessages()
-        isLoading = true
-        defer { isLoading = false }
-
-        guard let user = Auth.auth().currentUser else {
-            errorMessage = "No active account found"
-            return
-        }
-
-        do {
-            try await user.sendEmailVerification()
-            infoMessage = "Verification email sent again"
-        } catch {
-            errorMessage = (error as NSError).localizedDescription
-        }
-    }
-
-    func checkVerificationStatus(sessionStore: SessionStore) async {
-        clearMessages()
-        isLoading = true
-        defer { isLoading = false }
-
-        do {
-            guard let user = Auth.auth().currentUser else {
-                errorMessage = "No active account found"
-                return
-            }
-
-            try await user.reload()
-
-            if user.isEmailVerified {
-                await sessionStore.refreshAuthState()
-            } else {
-                errorMessage = "Email is not verified yet"
-            }
-        } catch {
-            errorMessage = (error as NSError).localizedDescription
-        }
-    }
-
-    private func clearMessages() {
-        errorMessage = nil
-        infoMessage = nil
-    }
-}
-
 #Preview {
     VerifyEmailView()
         .environmentObject(SessionStore())

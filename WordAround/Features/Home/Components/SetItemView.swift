@@ -5,24 +5,21 @@ struct SetItemView: View {
     let subtitle: String
     let iconSystemName: String
     let accentColor: Color
+    let titleColor: Color
     let backgroundColor: Color
     let trailingText: String?
     let showsArrow: Bool
     let blobColor: Color
 
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
-
-    private var isCompactPhone: Bool {
-        !isPadLike && UIScreen.main.bounds.width < 390
-    }
+    private var isPadLike: Bool { Layout.isPadLike }
+    private var isCompactPhone: Bool { Layout.isCompactPhone }
 
     init(
         title: String,
         subtitle: String,
         iconSystemName: String,
         accentColor: Color,
+        titleColor: Color,
         backgroundColor: Color,
         trailingText: String? = nil,
         showsArrow: Bool = true,
@@ -32,6 +29,7 @@ struct SetItemView: View {
         self.subtitle = subtitle
         self.iconSystemName = iconSystemName
         self.accentColor = accentColor
+        self.titleColor = titleColor
         self.backgroundColor = backgroundColor
         self.trailingText = trailingText
         self.showsArrow = showsArrow
@@ -39,64 +37,50 @@ struct SetItemView: View {
     }
 
     var body: some View {
-        let cornerRadius: CGFloat = isPadLike ? 24 : 18
-
         ZStack {
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            RoundedRectangle(cornerRadius: isPadLike ? 30 : 22, style: .continuous)
                 .fill(backgroundColor)
 
-            decorativeBlob
+            HStack {
+                Spacer()
+
+                SetCardBlobShape()
+                    .fill(blobColor.opacity(0.85))
+                    .frame(width: isPadLike ? 130 : 92, height: isPadLike ? 86 : 62)
+                    .offset(x: isPadLike ? 28 : 22, y: isPadLike ? 18 : 14)
+            }
 
             content
         }
-        .frame(height: isPadLike ? 92 : 78)
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        .frame(height: isPadLike ? 104 : (isCompactPhone ? 78 : 86))
+        .clipShape(RoundedRectangle(cornerRadius: isPadLike ? 30 : 22, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            RoundedRectangle(cornerRadius: isPadLike ? 30 : 22, style: .continuous)
                 .stroke(Color.white.opacity(0.95), lineWidth: 1)
         )
-        .shadow(color: Color.black.opacity(0.045), radius: 10, x: 0, y: 5)
-    }
-
-    private var decorativeBlob: some View {
-        HStack {
-            Spacer()
-
-            SetCardBlobShape()
-                .fill(blobColor.opacity(0.78))
-                .frame(
-                    width: isPadLike ? 170 : 110,
-                    height: isPadLike ? 70 : 35
-                )
-                .padding(.trailing, isPadLike ? 0 : 0)
-                .padding(.top, isPadLike ? -40 : -15)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        .shadow(color: Color.black.opacity(0.04), radius: 10, x: 0, y: 6)
     }
 
     private var content: some View {
         HStack(spacing: isPadLike ? 16 : 12) {
             ZStack {
                 Circle()
-                    .fill(accentColor)
-                    .frame(
-                        width: isPadLike ? 52 : 40,
-                        height: isPadLike ? 52 : 40
-                    )
+                    .fill(accentColor.opacity(0.95))
+                    .frame(width: isPadLike ? 62 : 46, height: isPadLike ? 62 : 46)
 
                 Image(systemName: iconSystemName)
-                    .font(.system(size: isPadLike ? 21 : 16, weight: .semibold))
+                    .font(.system(size: isPadLike ? 24 : 18, weight: .bold))
                     .foregroundColor(.white)
             }
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: isPadLike ? 7 : 5) {
                 Text(title)
-                    .font(.system(size: isPadLike ? 20 : (isCompactPhone ? 15 : 16), weight: .bold, design: .rounded))
+                    .font(.system(size: isPadLike ? 24 : 18, weight: .bold, design: .rounded))
                     .foregroundColor(titleColor)
                     .lineLimit(1)
 
                 Text(subtitle)
-                    .font(.system(size: isPadLike ? 15 : 12, weight: .medium, design: .rounded))
+                    .font(.system(size: isPadLike ? 16 : 13, weight: .medium, design: .rounded))
                     .foregroundColor(accentColor)
                     .lineLimit(1)
             }
@@ -120,14 +104,6 @@ struct SetItemView: View {
         }
         .padding(.horizontal, isPadLike ? 18 : 14)
         .padding(.vertical, isPadLike ? 18 : 14)
-    }
-
-    private var titleColor: Color {
-        if title == "Relatives" {
-            return Color(red: 0.67, green: 0.39, blue: 0.02)
-        } else {
-            return Color(red: 0.07, green: 0.55, blue: 0.28)
-        }
     }
 }
 
@@ -175,35 +151,5 @@ struct SetCardBlobShape: Shape {
 
         path.closeSubpath()
         return path
-    }
-}
-
-#Preview {
-    ZStack {
-        Color(red: 0.965, green: 0.965, blue: 0.985)
-            .ignoresSafeArea()
-
-        VStack(spacing: 12) {
-            SetItemView(
-                title: "Relatives",
-                subtitle: "18 words",
-                iconSystemName: "person.3.fill",
-                accentColor: Color(red: 0.97, green: 0.64, blue: 0.06),
-                backgroundColor: Color(red: 0.97, green: 0.94, blue: 0.89),
-                trailingText: "Review",
-                blobColor: Color(red: 0.96, green: 0.86, blue: 0.62)
-            )
-
-            SetItemView(
-                title: "Travel",
-                subtitle: "24 words",
-                iconSystemName: "suitcase.fill",
-                accentColor: Color(red: 0.16, green: 0.73, blue: 0.40),
-                backgroundColor: Color(red: 0.93, green: 0.98, blue: 0.95),
-                trailingText: "Review",
-                blobColor: Color(red: 0.80, green: 0.93, blue: 0.84)
-            )
-        }
-        .padding()
     }
 }
