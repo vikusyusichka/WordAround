@@ -6,6 +6,8 @@ struct HomeView: View {
 
     @State private var selectedCategory: HomeCategory? = nil
     @State private var selectedTab: HomeTab? = nil
+    
+    @State private var isCreateMenuPresented = false
 
     private var isPadLike: Bool {
         Layout.isPadLike
@@ -59,19 +61,142 @@ struct HomeView: View {
 
                 Spacer(minLength: bottomSafeSpacing)
             }
+            if isCreateMenuPresented {
+                createMenuOverlay
+                    .transition(.opacity)
+                    .zIndex(1)
+            }
 
             BottomNavigationBar(
                 selectedTab: $selectedTab,
-                selectedCategory: $selectedCategory
+                selectedCategory: $selectedCategory,
+                isCreateMenuPresented: $isCreateMenuPresented
             )
             .padding(.horizontal, isPadLike ? 28 : 14)
             .padding(.bottom, bottomBarBottomPadding)
+            .zIndex(2)
         }
         .ignoresSafeArea(edges: .bottom)
     }
 }
 
 private extension HomeView {
+    var createMenuOverlay: some View {
+        ZStack {
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    withAnimation(.spring(response: 0.36, dampingFraction: 0.82)) {
+                        isCreateMenuPresented = false
+                    }
+                }
+
+            VStack {
+                Spacer()
+
+                ZStack {
+                    createMenuItem(
+                        icon: "folder.fill",
+                        title: "Folder",
+                        xOffset: isPadLike ? -210 : -150,
+                        yOffset: isPadLike ? -92 : -74,
+                        delay: 0.04
+                    )
+
+                    createMenuItem(
+                        icon: "square.stack.3d.up.fill",
+                        title: "Set",
+                        xOffset: isPadLike ? -120 : -86,
+                        yOffset: isPadLike ? -182 : -144,
+                        delay: 0.10
+                    )
+
+                    createMenuItem(
+                        icon: "doc.text.fill",
+                        title: "Text",
+                        xOffset: 0,
+                        yOffset: isPadLike ? -220 : -174,
+                        delay: 0.16
+                    )
+
+                    createMenuItem(
+                        icon: "waveform",
+                        title: "Audio",
+                        xOffset: isPadLike ? 120 : 86,
+                        yOffset: isPadLike ? -182 : -144,
+                        delay: 0.22
+                    )
+
+                    createMenuItem(
+                        icon: "pencil.and.scribble",
+                        title: "Essay",
+                        xOffset: isPadLike ? 210 : 150,
+                        yOffset: isPadLike ? -92 : -74,
+                        delay: 0.28
+                    )
+                }
+                .frame(height: isPadLike ? 300 : 235)
+                .padding(.bottom, isPadLike ? 58 : 48)
+            }
+        }
+    }
+
+    func createMenuItem(
+        icon: String,
+        title: String,
+        xOffset: CGFloat,
+        yOffset: CGFloat,
+        delay: Double
+    ) -> some View {
+        Button {
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.86)) {
+                isCreateMenuPresented = false
+            }
+        } label: {
+            VStack(spacing: isPadLike ? 10 : 7) {
+                ZStack {
+                    Circle()
+                        .fill(Color.white.opacity(0.98))
+                        .frame(
+                            width: isPadLike ? 78 : 58,
+                            height: isPadLike ? 78 : 58
+                        )
+                        .shadow(
+                            color: Color.black.opacity(0.10),
+                            radius: isPadLike ? 16 : 12,
+                            x: 0,
+                            y: isPadLike ? 9 : 7
+                        )
+
+                    Image(systemName: icon)
+                        .font(.system(size: isPadLike ? 30 : 22, weight: .semibold))
+                        .foregroundColor(Color(red: 0.17, green: 0.36, blue: 0.98))
+                }
+
+                Text(title)
+                    .font(.system(size: isPadLike ? 16 : 13, weight: .semibold, design: .rounded))
+                    .foregroundColor(Color(red: 0.17, green: 0.36, blue: 0.98))
+            }
+            .scaleEffect(isCreateMenuPresented ? 1.0 : 0.2)
+            .opacity(isCreateMenuPresented ? 1.0 : 0.0)
+            .offset(
+                x: isCreateMenuPresented ? xOffset : 0,
+                y: isCreateMenuPresented ? yOffset : 0
+            )
+            .animation(
+                .interpolatingSpring(
+                    mass: 1.0,
+                    stiffness: 90,
+                    damping: 18,
+                    initialVelocity: 0
+                )
+                .delay(delay),
+                value: isCreateMenuPresented
+            )
+        }
+        .buttonStyle(.plain)
+    }
     var headerTitle: String {
         switch selectedTab ?? .home {
         case .home:

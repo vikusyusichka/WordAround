@@ -3,6 +3,8 @@ import SwiftUI
 struct BottomNavigationBar: View {
     @Binding var selectedTab: HomeTab?
     @Binding var selectedCategory: HomeCategory?
+    @Binding var isCreateMenuPresented: Bool
+
     @State private var pressedTab: HomeTab?
 
     private var isPadLike: Bool {
@@ -53,6 +55,7 @@ struct BottomNavigationBar: View {
         return Button {
             withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
                 selectedTab = tab
+                isCreateMenuPresented = false
 
                 if tab == .home {
                     selectedCategory = nil
@@ -115,8 +118,8 @@ struct BottomNavigationBar: View {
         let isPressed = pressedTab == tab
 
         return Button {
-            withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
-                selectedTab = tab
+            withAnimation(.spring(response: 0.38, dampingFraction: 0.78)) {
+                isCreateMenuPresented.toggle()
                 selectedCategory = nil
             }
         } label: {
@@ -124,8 +127,8 @@ struct BottomNavigationBar: View {
                 Circle()
                     .fill(Color(red: 0.17, green: 0.36, blue: 0.98))
                     .frame(
-                        width: isPadLike ? 72 : (isCompact ? 54 : 50),
-                        height: isPadLike ? 72 : (isCompact ? 54 : 50)
+                        width: isPadLike ? 72 : (isCompact ? 54 : 60),
+                        height: isPadLike ? 72 : (isCompact ? 54 : 60)
                     )
                     .shadow(
                         color: Color(red: 0.17, green: 0.36, blue: 0.98).opacity(0.24),
@@ -135,8 +138,10 @@ struct BottomNavigationBar: View {
                     )
 
                 Image(systemName: "plus")
-                    .font(.system(size: isPadLike ? 36 : (isCompact ? 26 : 27), weight: .regular))
+                    .font(.system(size: isPadLike ? 36 : (isCompact ? 26 : 30), weight: .regular))
                     .foregroundColor(.white)
+                    .rotationEffect(.degrees(isCreateMenuPresented ? 45 : 0))
+                    .animation(.spring(response: 0.35, dampingFraction: 0.75), value: isCreateMenuPresented)
             }
             .scaleEffect(isPressed ? 0.92 : 1.0)
             .frame(maxWidth: .infinity)
@@ -182,7 +187,8 @@ struct BottomNavigationBar: View {
 
             BottomNavigationBar(
                 selectedTab: .constant(.home),
-                selectedCategory: .constant(nil)
+                selectedCategory: .constant(nil),
+                isCreateMenuPresented: .constant(false)
             )
             .padding()
         }
