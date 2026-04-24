@@ -6,8 +6,8 @@ struct HomeView: View {
 
     @State private var selectedCategory: HomeCategory? = nil
     @State private var selectedTab: HomeTab? = nil
-    
     @State private var isCreateMenuPresented = false
+    @State private var isCreateSetPresented = false
 
     private var isPadLike: Bool {
         Layout.isPadLike
@@ -77,6 +77,9 @@ struct HomeView: View {
             .zIndex(2)
         }
         .ignoresSafeArea(edges: .bottom)
+        .fullScreenCover(isPresented: $isCreateSetPresented) {
+            CreateSetView()
+        }
     }
 }
 
@@ -110,7 +113,9 @@ private extension HomeView {
                         xOffset: isPadLike ? -120 : -86,
                         yOffset: isPadLike ? -182 : -144,
                         delay: 0.10
-                    )
+                    ) {
+                        isCreateSetPresented = true
+                    }
 
                     createMenuItem(
                         icon: "doc.text.fill",
@@ -147,11 +152,16 @@ private extension HomeView {
         title: String,
         xOffset: CGFloat,
         yOffset: CGFloat,
-        delay: Double
+        delay: Double,
+        action: @escaping () -> Void = {}
     ) -> some View {
         Button {
             withAnimation(.spring(response: 0.55, dampingFraction: 0.86)) {
                 isCreateMenuPresented = false
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+                action()
             }
         } label: {
             VStack(spacing: isPadLike ? 10 : 7) {
@@ -178,25 +188,28 @@ private extension HomeView {
                     .font(.system(size: isPadLike ? 16 : 13, weight: .semibold, design: .rounded))
                     .foregroundColor(Color(red: 0.17, green: 0.36, blue: 0.98))
             }
-            .scaleEffect(isCreateMenuPresented ? 1.0 : 0.2)
-            .opacity(isCreateMenuPresented ? 1.0 : 0.0)
-            .offset(
-                x: isCreateMenuPresented ? xOffset : 0,
-                y: isCreateMenuPresented ? yOffset : 0
-            )
-            .animation(
-                .interpolatingSpring(
-                    mass: 1.0,
-                    stiffness: 90,
-                    damping: 18,
-                    initialVelocity: 0
-                )
-                .delay(delay),
-                value: isCreateMenuPresented
-            )
+            .frame(width: isPadLike ? 100 : 78, height: isPadLike ? 112 : 86)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .scaleEffect(isCreateMenuPresented ? 1.0 : 0.2)
+        .opacity(isCreateMenuPresented ? 1.0 : 0.0)
+        .offset(
+            x: isCreateMenuPresented ? xOffset : 0,
+            y: isCreateMenuPresented ? yOffset : 0
+        )
+        .animation(
+            .interpolatingSpring(
+                mass: 1.0,
+                stiffness: 90,
+                damping: 18,
+                initialVelocity: 0
+            )
+            .delay(delay),
+            value: isCreateMenuPresented
+        )
     }
+    
     var headerTitle: String {
         switch selectedTab ?? .home {
         case .home:

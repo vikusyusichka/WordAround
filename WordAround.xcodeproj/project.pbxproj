@@ -39,6 +39,15 @@
 		E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */; };
 		E30A1D552F9BBD3D00387BDC /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D542F9BBD3700387BDC /* HomeViewModel.swift */; };
 		E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D562F9BBF8500387BDC /* VerifyEmailViewModel.swift */; };
+		E30A1D5B2F9BEB5400387BDC /* CreateSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D5A2F9BEB4900387BDC /* CreateSetView.swift */; };
+		E30A1D5D2F9BEB8200387BDC /* CreateSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D5C2F9BEB8200387BDC /* CreateSet.swift */; };
+		E30A1D602F9BF5C600387BDC /* CreateSetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D5F2F9BF5BC00387BDC /* CreateSetViewModel.swift */; };
+		E30A1D632F9BF79100387BDC /* CreateSetHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D622F9BF77D00387BDC /* CreateSetHeaderView.swift */; };
+		E30A1D652F9BF79F00387BDC /* CreateSetInfoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D642F9BF79D00387BDC /* CreateSetInfoSectionView.swift */; };
+		E30A1D672F9BF7AB00387BDC /* CreateSetCustomizationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D662F9BF7A900387BDC /* CreateSetCustomizationSectionView.swift */; };
+		E30A1D692F9BF7C500387BDC /* CreateSetPreviewCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D682F9BF7C300387BDC /* CreateSetPreviewCardView.swift */; };
+		E30A1D6B2F9BF7D200387BDC /* CreateSetCardsSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D6A2F9BF7D000387BDC /* CreateSetCardsSectionView.swift */; };
+		E30A1D6D2F9BF7E100387BDC /* CreateSetFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D6C2F9BF7DF00387BDC /* CreateSetFieldStyle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +81,15 @@
 		E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FlashCardSet.swift; path = WordAround/Core/FlashCardSet.swift; sourceTree = SOURCE_ROOT; };
 		E30A1D542F9BBD3700387BDC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		E30A1D562F9BBF8500387BDC /* VerifyEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailViewModel.swift; sourceTree = "<group>"; };
+		E30A1D5A2F9BEB4900387BDC /* CreateSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetView.swift; sourceTree = "<group>"; };
+		E30A1D5C2F9BEB8200387BDC /* CreateSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CreateSet.swift; path = WordAround/Core/CreateSet.swift; sourceTree = SOURCE_ROOT; };
+		E30A1D5F2F9BF5BC00387BDC /* CreateSetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetViewModel.swift; sourceTree = "<group>"; };
+		E30A1D622F9BF77D00387BDC /* CreateSetHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetHeaderView.swift; sourceTree = "<group>"; };
+		E30A1D642F9BF79D00387BDC /* CreateSetInfoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetInfoSectionView.swift; sourceTree = "<group>"; };
+		E30A1D662F9BF7A900387BDC /* CreateSetCustomizationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCustomizationSectionView.swift; sourceTree = "<group>"; };
+		E30A1D682F9BF7C300387BDC /* CreateSetPreviewCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetPreviewCardView.swift; sourceTree = "<group>"; };
+		E30A1D6A2F9BF7D000387BDC /* CreateSetCardsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCardsSectionView.swift; sourceTree = "<group>"; };
+		E30A1D6C2F9BF7DF00387BDC /* CreateSetFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetFieldStyle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +161,7 @@
 			children = (
 				E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */,
 				E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */,
+				E30A1D5C2F9BEB8200387BDC /* CreateSet.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -159,6 +178,7 @@
 		E30A1CB92F9801E800387BDC /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1D582F9BEB3700387BDC /* FlashCards */,
 				E30A1CBD2F98078A00387BDC /* Onboarding */,
 				E30A1CBA2F98023200387BDC /* Home */,
 				E30A1CCE2F99444400387BDC /* Auth */,
@@ -301,6 +321,45 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		E30A1D582F9BEB3700387BDC /* FlashCards */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D612F9BF73000387BDC /* Components */,
+				E30A1D5E2F9BF4E600387BDC /* ViewModels */,
+				E30A1D592F9BEB4200387BDC /* Views */,
+			);
+			path = FlashCards;
+			sourceTree = "<group>";
+		};
+		E30A1D592F9BEB4200387BDC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D5A2F9BEB4900387BDC /* CreateSetView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30A1D5E2F9BF4E600387BDC /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D5F2F9BF5BC00387BDC /* CreateSetViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E30A1D612F9BF73000387BDC /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D6C2F9BF7DF00387BDC /* CreateSetFieldStyle.swift */,
+				E30A1D6A2F9BF7D000387BDC /* CreateSetCardsSectionView.swift */,
+				E30A1D622F9BF77D00387BDC /* CreateSetHeaderView.swift */,
+				E30A1D682F9BF7C300387BDC /* CreateSetPreviewCardView.swift */,
+				E30A1D662F9BF7A900387BDC /* CreateSetCustomizationSectionView.swift */,
+				E30A1D642F9BF79D00387BDC /* CreateSetInfoSectionView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -384,22 +443,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				E30A1CE12F9A358000387BDC /* VerifyEmailView.swift in Sources */,
+				E30A1D5B2F9BEB5400387BDC /* CreateSetView.swift in Sources */,
 				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,
 				E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */,
 				E30A1CBC2F98023B00387BDC /* HomeView.swift in Sources */,
 				E30A1CC32F9819B100387BDC /* AuthView.swift in Sources */,
+				E30A1D6B2F9BF7D200387BDC /* CreateSetCardsSectionView.swift in Sources */,
 				E30A1D0F2F9A618800387BDC /* HomeTab.swift in Sources */,
+				E30A1D672F9BF7AB00387BDC /* CreateSetCustomizationSectionView.swift in Sources */,
+				E30A1D652F9BF79F00387BDC /* CreateSetInfoSectionView.swift in Sources */,
 				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
 				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
+				E30A1D632F9BF79100387BDC /* CreateSetHeaderView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
 				E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */,
+				E30A1D692F9BF7C500387BDC /* CreateSetPreviewCardView.swift in Sources */,
 				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
 				E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */,
+				E30A1D5D2F9BEB8200387BDC /* CreateSet.swift in Sources */,
+				E30A1D6D2F9BF7E100387BDC /* CreateSetFieldStyle.swift in Sources */,
 				E30A1D072F9A5FC000387BDC /* HomeHeaderView.swift in Sources */,
 				E30A1CDF2F9A2D3900387BDC /* SessionStore.swift in Sources */,
 				E30A1CCD2F99443200387BDC /* AppDelegate.swift in Sources */,
+				E30A1D602F9BF5C600387BDC /* CreateSetViewModel.swift in Sources */,
 				E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */,
 				E30A1CD32F99448B00387BDC /* AuthService.swift in Sources */,
 				E30A1D1D2F9AC1D500387BDC /* BaseCardView.swift in Sources */,

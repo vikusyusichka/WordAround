@@ -28,4 +28,28 @@ enum AppColors {
 
     static let greenAccent = Color(red: 0.16, green: 0.73, blue: 0.40)
     static let greenTitle = Color(red: 0.07, green: 0.55, blue: 0.28)
+    
+    static let createSetBackground = Color(red: 1.00, green: 0.98, blue: 0.99)
+
+    static let createSetRed = Color(red: 1.00, green: 0.34, blue: 0.35)
+    static let createSetDarkRed = Color(red: 0.55, green: 0.02, blue: 0.12)
+    static let createSetSoftRed = Color(red: 1.00, green: 0.91, blue: 0.92)
+
+    static let createSetTextMuted = Color(red: 0.48, green: 0.52, blue: 0.66)
+    static let createSetDarkText = Color(red: 0.13, green: 0.22, blue: 0.28)
+
+    static let createSetBorder = Color(red: 0.95, green: 0.88, blue: 0.90)
+    static let createSetSoftBorder = Color(red: 1.00, green: 0.88, blue: 0.92)
+    static let createSetBorderRed = Color(red: 1.00, green: 0.76, blue: 0.77)
+
+    static let createSetPreviewBackground = Color(red: 1.00, green: 0.95, blue: 0.96)
+    static let createSetImageBackground = Color(red: 1.00, green: 0.96, blue: 0.97)
+
+    static let createSetBlue = Color(red: 0.55, green: 0.63, blue: 0.96)
+    static let createSetYellow = Color(red: 1.00, green: 0.78, blue: 0.38)
+    static let createSetGreen = Color(red: 0.55, green: 0.82, blue: 0.61)
+    static let createSetPurple = Color(red: 0.73, green: 0.51, blue: 0.91)
+    static let createSetCyan = Color(red: 0.42, green: 0.79, blue: 0.85)
+
+    static let createSetShadow = Color.black.opacity(0.06)
 }
