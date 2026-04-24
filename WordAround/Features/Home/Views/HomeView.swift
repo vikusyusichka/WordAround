@@ -76,6 +76,8 @@ private extension HomeView {
         switch selectedTab ?? .home {
         case .home:
             return "Flashcards"
+        case .folders:
+            return "Folders"
         case .flashcards:
             return "Sets"
         case .create:
@@ -89,6 +91,8 @@ private extension HomeView {
         switch selectedTab ?? .home {
         case .home:
             return "Pick a set to practice"
+        case .folders:
+            return "Manage your folders"
         case .flashcards:
             return "Manage your flashcard sets"
         case .create:
@@ -148,6 +152,11 @@ private extension HomeView {
                     } else {
                         dashboardContent
                     }
+                case .folders:
+                    placeholderCard(
+                        title: "Folders",
+                        subtitle: "Тут буде список папок."
+                    )
 
                 case .flashcards:
                     placeholderCard(

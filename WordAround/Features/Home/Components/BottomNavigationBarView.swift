@@ -39,10 +39,18 @@ struct BottomNavigationBar: View {
 
     @ViewBuilder
     private func tabButton(for tab: HomeTab) -> some View {
+        if tab == .create {
+            createTabButton(for: tab)
+        } else {
+            regularTabButton(for: tab)
+        }
+    }
+
+    private func regularTabButton(for tab: HomeTab) -> some View {
         let isSelected = (selectedTab ?? .home) == tab
         let isPressed = pressedTab == tab
 
-        Button {
+        return Button {
             withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
                 selectedTab = tab
 
@@ -103,16 +111,63 @@ struct BottomNavigationBar: View {
         )
     }
 
+    private func createTabButton(for tab: HomeTab) -> some View {
+        let isPressed = pressedTab == tab
+
+        return Button {
+            withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
+                selectedTab = tab
+                selectedCategory = nil
+            }
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(Color(red: 0.17, green: 0.36, blue: 0.98))
+                    .frame(
+                        width: isPadLike ? 72 : (isCompact ? 54 : 50),
+                        height: isPadLike ? 72 : (isCompact ? 54 : 50)
+                    )
+                    .shadow(
+                        color: Color(red: 0.17, green: 0.36, blue: 0.98).opacity(0.24),
+                        radius: isPadLike ? 14 : 10,
+                        x: 0,
+                        y: isPadLike ? 8 : 6
+                    )
+
+                Image(systemName: "plus")
+                    .font(.system(size: isPadLike ? 36 : (isCompact ? 26 : 27), weight: .regular))
+                    .foregroundColor(.white)
+            }
+            .scaleEffect(isPressed ? 0.92 : 1.0)
+            .frame(maxWidth: .infinity)
+            .frame(height: isPadLike ? 82 : (isCompact ? 56 : 60))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onLongPressGesture(
+            minimumDuration: 0,
+            maximumDistance: 30,
+            pressing: { pressing in
+                withAnimation(.easeOut(duration: 0.14)) {
+                    pressedTab = pressing ? tab : nil
+                }
+            },
+            perform: {}
+        )
+    }
+
     private func iconName(for tab: HomeTab, isSelected: Bool) -> String {
         switch tab {
         case .home:
             return isSelected ? "house.fill" : "house"
+        case .folders:
+            return isSelected ? "folder.fill" : "folder"
         case .flashcards:
             return "square.stack.3d.up"
         case .create:
-            return "square.and.pencil"
+            return "plus"
         case .profile:
-            return "person"
+            return isSelected ? "person.fill" : "person"
         }
     }
 }
