@@ -1,16 +1,68 @@
 import SwiftUI
 
 struct CategorySidebarView: View {
-    @Binding var selectedCategory: HomeCategory
+    @Binding var selectedCategory: HomeCategory?
     @State private var pressedCategory: HomeCategory?
 
+    private var isCompact: Bool {
+        UIScreen.main.bounds.width < 400
+    }
+
+    private var isPadLike: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+    }
+
+    private var sidebarSpacing: CGFloat {
+        isPadLike ? 16 : 12
+    }
+
+    private var indicatorWidth: CGFloat {
+        isPadLike ? 4 : 3
+    }
+
+    private var selectedIndicatorHeight: CGFloat {
+        isPadLike ? 96 : 80
+    }
+
+    private var unselectedIndicatorHeight: CGFloat {
+        isPadLike ? 82 : 68
+    }
+
+    private var circleSize: CGFloat {
+        isPadLike ? 58 : 50
+    }
+
+    private var unselectedCircleSize: CGFloat {
+        isPadLike ? 54 : 46
+    }
+
+    private var iconSize: CGFloat {
+        isPadLike ? 21 : 18
+    }
+
+    private var textSize: CGFloat {
+        isPadLike ? 10.5 : 9
+    }
+
+    private var contentWidth: CGFloat {
+        isPadLike ? 78 : 60
+    }
+
+    private var contentHeight: CGFloat {
+        isPadLike ? 98 : 78
+    }
+
+    private var labelSpacing: CGFloat {
+        isPadLike ? 10 : 8
+    }
+
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: sidebarSpacing) {
             ForEach(HomeCategory.allCases) { category in
                 sidebarItem(for: category)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, isPadLike ? 6 : 2)
     }
 
     @ViewBuilder
@@ -18,7 +70,7 @@ struct CategorySidebarView: View {
         let isSelected = selectedCategory == category
         let isPressed = pressedCategory == category
 
-        HStack(spacing: 10) {
+        HStack(spacing: isPadLike ? 8 : 6) {
             ZStack {
                 Capsule()
                     .fill(
@@ -37,12 +89,15 @@ struct CategorySidebarView: View {
                             endPoint: .bottom
                         )
                     )
-                    .frame(width: isSelected ? 5 : 3, height: isSelected ? 110 : 92)
+                    .frame(
+                        width: isSelected ? indicatorWidth : max(2, indicatorWidth - 1),
+                        height: isSelected ? selectedIndicatorHeight : unselectedIndicatorHeight
+                    )
                     .shadow(
                         color: isSelected
-                        ? Color(red: 0.22, green: 0.42, blue: 0.96).opacity(0.22)
+                        ? Color(red: 0.22, green: 0.42, blue: 0.96).opacity(0.16)
                         : .clear,
-                        radius: 10,
+                        radius: isPadLike ? 8 : 6,
                         x: 0,
                         y: 0
                     )
@@ -50,13 +105,16 @@ struct CategorySidebarView: View {
                 if isSelected {
                     Capsule()
                         .fill(Color.white.opacity(0.55))
-                        .frame(width: 2, height: 30)
-                        .offset(y: -26)
+                        .frame(
+                            width: isPadLike ? 1.8 : 1.4,
+                            height: isPadLike ? 22 : 18
+                        )
+                        .offset(y: isPadLike ? -18 : -16)
                 }
             }
-            .frame(width: 8)
+            .frame(width: indicatorWidth)
 
-            VStack(spacing: 14) {
+            VStack(spacing: labelSpacing) {
                 ZStack {
                     Circle()
                         .fill(
@@ -74,47 +132,21 @@ struct CategorySidebarView: View {
                                 endPoint: .bottomTrailing
                             )
                         )
-                        .frame(width: isSelected ? 72 : 68, height: isSelected ? 72 : 68)
+                        .frame(
+                            width: isSelected ? circleSize : unselectedCircleSize,
+                            height: isSelected ? circleSize : unselectedCircleSize
+                        )
                         .shadow(
                             color: isSelected
-                            ? Color(red: 0.24, green: 0.44, blue: 0.98).opacity(0.16)
-                            : Color.black.opacity(0.025),
-                            radius: isSelected ? 16 : 8,
+                            ? Color(red: 0.24, green: 0.44, blue: 0.98).opacity(0.10)
+                            : Color.black.opacity(0.02),
+                            radius: isPadLike ? 9 : 6,
                             x: 0,
-                            y: isSelected ? 7 : 3
+                            y: isPadLike ? 4 : 3
                         )
-                        .overlay(
-                            Circle()
-                                .stroke(
-                                    isSelected
-                                    ? Color(red: 0.87, green: 0.92, blue: 1.0)
-                                    : Color.clear,
-                                    lineWidth: 1.4
-                                )
-                        )
-                        .scaleEffect(isPressed ? 0.96 : 1.0)
-                        .animation(.spring(response: 0.22, dampingFraction: 0.72), value: isPressed)
-                        .animation(.spring(response: 0.34, dampingFraction: 0.82), value: isSelected)
-
-                    Circle()
-                        .fill(
-                            RadialGradient(
-                                colors: [
-                                    isSelected
-                                    ? Color(red: 0.88, green: 0.93, blue: 1.0).opacity(0.85)
-                                    : .clear,
-                                    .clear
-                                ],
-                                center: .center,
-                                startRadius: 4,
-                                endRadius: 36
-                            )
-                        )
-                        .frame(width: 82, height: 82)
-                        .opacity(isSelected ? 1 : 0)
 
                     Image(systemName: category.icon)
-                        .font(.system(size: isSelected ? 30 : 28, weight: .medium))
+                        .font(.system(size: iconSize, weight: .medium))
                         .foregroundStyle(
                             isSelected
                             ? LinearGradient(
@@ -134,28 +166,28 @@ struct CategorySidebarView: View {
                                 endPoint: .bottomTrailing
                             )
                         )
-                        .scaleEffect(isPressed ? 0.90 : (isSelected ? 1.05 : 1.0))
+                        .scaleEffect(isPressed ? 0.88 : (isSelected ? 1.05 : 1.0))
                         .animation(.spring(response: 0.22, dampingFraction: 0.68), value: isPressed)
                         .animation(.spring(response: 0.32, dampingFraction: 0.80), value: isSelected)
                 }
 
                 Text(category.title)
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .font(.system(size: textSize, weight: .bold, design: .rounded))
                     .foregroundColor(
                         isSelected
                         ? Color(red: 0.20, green: 0.38, blue: 0.94)
                         : Color(red: 0.62, green: 0.65, blue: 0.73)
                     )
-                    .tracking(isSelected ? 0.35 : 0)
-                    .scaleEffect(isSelected ? 1.03 : 1.0)
-                    .animation(.spring(response: 0.34, dampingFraction: 0.82), value: isSelected)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
             }
-            .frame(width: 102, height: 126)
-            .offset(x: isSelected ? -1.5 : 0)
+            .frame(width: contentWidth, height: contentHeight)
             .scaleEffect(isPressed ? 0.975 : 1.0)
             .animation(.spring(response: 0.24, dampingFraction: 0.72), value: isPressed)
             .contentShape(Rectangle())
         }
+        .padding(.horizontal, isPadLike ? 6 : 4)
         .onTapGesture {
             withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
                 selectedCategory = category
@@ -175,7 +207,7 @@ struct CategorySidebarView: View {
 }
 
 #Preview {
-    CategorySidebarView(selectedCategory: .constant(.speaking))
+    CategorySidebarView(selectedCategory: .constant(nil))
         .padding()
         .background(Color(red: 0.965, green: 0.965, blue: 0.985))
 }

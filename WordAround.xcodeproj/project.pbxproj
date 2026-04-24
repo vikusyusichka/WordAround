@@ -29,6 +29,11 @@
 		E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D0A2F9A5FE700387BDC /* BottomNavigationBarView.swift */; };
 		E30A1D0D2F9A616F00387BDC /* HomeCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D0C2F9A616100387BDC /* HomeCategory.swift */; };
 		E30A1D0F2F9A618800387BDC /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D0E2F9A618400387BDC /* HomeTab.swift */; };
+		E30A1D1D2F9AC1D500387BDC /* BaseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D1C2F9AC1C800387BDC /* BaseCardView.swift */; };
+		E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D1E2F9AC1E500387BDC /* Layout.swift */; };
+		E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D202F9AC20500387BDC /* ProgressCardView.swift */; };
+		E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D222F9AC21700387BDC /* StatCardView.swift */; };
+		E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D242F9AC22800387BDC /* SetItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +57,11 @@
 		E30A1D0A2F9A5FE700387BDC /* BottomNavigationBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomNavigationBarView.swift; sourceTree = "<group>"; };
 		E30A1D0C2F9A616100387BDC /* HomeCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCategory.swift; sourceTree = "<group>"; };
 		E30A1D0E2F9A618400387BDC /* HomeTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTab.swift; sourceTree = "<group>"; };
+		E30A1D1C2F9AC1C800387BDC /* BaseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCardView.swift; sourceTree = "<group>"; };
+		E30A1D1E2F9AC1E500387BDC /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		E30A1D202F9AC20500387BDC /* ProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCardView.swift; sourceTree = "<group>"; };
+		E30A1D222F9AC21700387BDC /* StatCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCardView.swift; sourceTree = "<group>"; };
+		E30A1D242F9AC22800387BDC /* SetItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +174,8 @@
 		E30A1CB62F9801D400387BDC /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1D1E2F9AC1E500387BDC /* Layout.swift */,
+				E30A1D1C2F9AC1C800387BDC /* BaseCardView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -227,6 +239,9 @@
 				E30A1D0A2F9A5FE700387BDC /* BottomNavigationBarView.swift */,
 				E30A1D082F9A5FCD00387BDC /* CategorySidebarView.swift */,
 				E30A1D062F9A5FB300387BDC /* HomeHeaderView.swift */,
+				E30A1D242F9AC22800387BDC /* SetItemView.swift */,
+				E30A1D222F9AC21700387BDC /* StatCardView.swift */,
+				E30A1D202F9AC20500387BDC /* ProgressCardView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -314,9 +329,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				E30A1CE12F9A358000387BDC /* VerifyEmailView.swift in Sources */,
+				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,
 				E30A1CBC2F98023B00387BDC /* HomeView.swift in Sources */,
 				E30A1CC32F9819B100387BDC /* AuthView.swift in Sources */,
 				E30A1D0F2F9A618800387BDC /* HomeTab.swift in Sources */,
+				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
+				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
 				E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */,
@@ -326,6 +344,8 @@
 				E30A1CCD2F99443200387BDC /* AppDelegate.swift in Sources */,
 				E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */,
 				E30A1CD32F99448B00387BDC /* AuthService.swift in Sources */,
+				E30A1D1D2F9AC1D500387BDC /* BaseCardView.swift in Sources */,
+				E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */,
 				E30A1D0D2F9A616F00387BDC /* HomeCategory.swift in Sources */,
 				E30A1D092F9A5FDB00387BDC /* CategorySidebarView.swift in Sources */,
 			);

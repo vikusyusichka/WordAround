@@ -1,8 +1,17 @@
 import SwiftUI
 
 struct BottomNavigationBar: View {
-    @Binding var selectedTab: HomeTab
+    @Binding var selectedTab: HomeTab?
+    @Binding var selectedCategory: HomeCategory?
     @State private var pressedTab: HomeTab?
+
+    private var isPadLike: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+    }
+
+    private var isCompact: Bool {
+        !isPadLike && UIScreen.main.bounds.width < 390
+    }
 
     var body: some View {
         HStack(spacing: 0) {
@@ -10,109 +19,117 @@ struct BottomNavigationBar: View {
                 tabButton(for: tab)
             }
         }
-        .padding(.horizontal, 10)
-        .frame(height: 100)
+        .padding(.horizontal, isPadLike ? 16 : (isCompact ? 8 : 10))
+        .frame(height: isPadLike ? 110 : (isCompact ? 76 : 84))
         .background(
-            RoundedRectangle(cornerRadius: 34, style: .continuous)
-                .fill(Color.white.opacity(0.95))
-                .shadow(color: Color.black.opacity(0.06), radius: 18, x: 0, y: 8)
+            RoundedRectangle(cornerRadius: isPadLike ? 34 : 26, style: .continuous)
+                .fill(Color.white.opacity(0.96))
+                .shadow(
+                    color: Color.black.opacity(0.04),
+                    radius: isPadLike ? 18 : 12,
+                    x: 0,
+                    y: isPadLike ? 8 : 5
+                )
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 34, style: .continuous)
-                .stroke(Color.white.opacity(0.9), lineWidth: 1)
+            RoundedRectangle(cornerRadius: isPadLike ? 34 : 26, style: .continuous)
+                .stroke(Color.white.opacity(0.95), lineWidth: 1)
         )
     }
 
     @ViewBuilder
     private func tabButton(for tab: HomeTab) -> some View {
-        let isSelected = selectedTab == tab
+        let isSelected = (selectedTab ?? .home) == tab
         let isPressed = pressedTab == tab
 
         Button {
             withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
                 selectedTab = tab
+
+                if tab == .home {
+                    selectedCategory = nil
+                }
             }
         } label: {
-            VStack(spacing: 8) {
+            VStack(spacing: isPadLike ? 8 : 5) {
                 ZStack {
                     if isSelected {
                         Circle()
-                            .fill(
-                                LinearGradient(
-                                    colors: [
-                                        Color(red: 0.92, green: 0.94, blue: 1.0),
-                                        Color(red: 0.95, green: 0.97, blue: 1.0)
-                                    ],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
+                            .fill(Color(red: 0.92, green: 0.94, blue: 1.0))
+                            .frame(
+                                width: isPadLike ? 50 : (isCompact ? 36 : 40),
+                                height: isPadLike ? 50 : (isCompact ? 36 : 40)
                             )
-                            .frame(width: 46, height: 46)
-                            .shadow(
-                                color: Color(red: 0.20, green: 0.38, blue: 0.94).opacity(0.10),
-                                radius: 10,
-                                x: 0,
-                                y: 4
-                            )
-                            .transition(.scale.combined(with: .opacity))
                     }
 
-                    Image(systemName: tab.icon)
-                        .font(.system(size: 24, weight: .medium))
-                        .foregroundStyle(
+                    Image(systemName: iconName(for: tab, isSelected: isSelected))
+                        .font(.system(size: isPadLike ? 26 : (isCompact ? 18 : 20), weight: .medium))
+                        .foregroundColor(
                             isSelected
-                            ? LinearGradient(
-                                colors: [
-                                    Color(red: 0.20, green: 0.38, blue: 0.94),
-                                    Color(red: 0.30, green: 0.48, blue: 0.99)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                            : LinearGradient(
-                                colors: [
-                                    Color(red: 0.62, green: 0.65, blue: 0.73),
-                                    Color(red: 0.62, green: 0.65, blue: 0.73)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            ? Color(red: 0.17, green: 0.36, blue: 0.98)
+                            : Color(red: 0.58, green: 0.62, blue: 0.71)
                         )
-                        .scaleEffect(isPressed ? 0.88 : (isSelected ? 1.05 : 1.0))
-                        .animation(.spring(response: 0.22, dampingFraction: 0.68), value: isPressed)
-                        .animation(.spring(response: 0.32, dampingFraction: 0.82), value: isSelected)
+                        .scaleEffect(isPressed ? 0.92 : 1.0)
                 }
-                .frame(height: 46)
+                .frame(height: isPadLike ? 52 : (isCompact ? 36 : 40))
 
                 Circle()
                     .fill(
                         isSelected
-                        ? Color(red: 0.20, green: 0.38, blue: 0.94)
+                        ? Color(red: 0.17, green: 0.36, blue: 0.98)
                         : Color.clear
                     )
-                    .frame(width: isSelected ? 10 : 8, height: isSelected ? 10 : 8)
-                    .scaleEffect(isSelected ? 1.0 : 0.6)
+                    .frame(
+                        width: isPadLike ? 8 : 6,
+                        height: isPadLike ? 8 : 6
+                    )
+                    .scaleEffect(isSelected ? 1.0 : 0.5)
                     .animation(.spring(response: 0.34, dampingFraction: 0.8), value: isSelected)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 74)
-            .offset(y: isSelected ? -1 : 0)
-            .scaleEffect(isPressed ? 0.96 : 1.0)
-            .animation(.spring(response: 0.24, dampingFraction: 0.72), value: isPressed)
+            .frame(height: isPadLike ? 82 : (isCompact ? 56 : 60))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .sensoryFeedback(.selection, trigger: selectedTab)
-        .onLongPressGesture(minimumDuration: 0, maximumDistance: 30, pressing: { pressing in
-            withAnimation(.easeOut(duration: 0.14)) {
-                pressedTab = pressing ? tab : nil
-            }
-        }, perform: {})
+        .onLongPressGesture(
+            minimumDuration: 0,
+            maximumDistance: 30,
+            pressing: { pressing in
+                withAnimation(.easeOut(duration: 0.14)) {
+                    pressedTab = pressing ? tab : nil
+                }
+            },
+            perform: {}
+        )
+    }
+
+    private func iconName(for tab: HomeTab, isSelected: Bool) -> String {
+        switch tab {
+        case .home:
+            return isSelected ? "house.fill" : "house"
+        case .flashcards:
+            return "square.stack.3d.up"
+        case .create:
+            return "square.and.pencil"
+        case .profile:
+            return "person"
+        }
     }
 }
 
 #Preview {
-    BottomNavigationBar(selectedTab: .constant(.flashcards))
-        .padding()
-        .background(Color(red: 0.965, green: 0.965, blue: 0.985))
+    ZStack {
+        Color(red: 0.965, green: 0.965, blue: 0.985)
+            .ignoresSafeArea()
+
+        VStack {
+            Spacer()
+
+            BottomNavigationBar(
+                selectedTab: .constant(.home),
+                selectedCategory: .constant(nil)
+            )
+            .padding()
+        }
+    }
 }
