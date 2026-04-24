@@ -49,7 +49,7 @@
 		E30A1CD22F99448400387BDC /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		E30A1CD42F99451200387BDC /* BlobShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobShape.swift; sourceTree = "<group>"; };
 		E30A1CD62F9953CF00387BDC /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		E30A1CDD2F995BF100387BDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E30A1CDD2F995BF100387BDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E30A1CDE2F9A2D3200387BDC /* SessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStore.swift; sourceTree = "<group>"; };
 		E30A1CE02F9A357500387BDC /* VerifyEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailView.swift; sourceTree = "<group>"; };
 		E30A1D062F9A5FB300387BDC /* HomeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeaderView.swift; sourceTree = "<group>"; };
@@ -83,8 +83,9 @@
 			isa = PBXGroup;
 			children = (
 				E30A1CA92F98010F00387BDC /* WordAround */,
-				E30A1CC72F99438D00387BDC /* Frameworks */,
 				E30A1C992F98003000387BDC /* Products */,
+				E30A1CB22F9801AE00387BDC /* .gitignore */,
+				E30A1CA62F98010F00387BDC /* Assets.xcassets */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,13 +100,11 @@
 		E30A1CA92F98010F00387BDC /* WordAround */ = {
 			isa = PBXGroup;
 			children = (
-				E30A1CDD2F995BF100387BDC /* Info.plist */,
+				E30A1D4B2F9BB10D00387BDC /* Shared */,
+				E30A1D422F9BAB6700387BDC /* Core */,
 				E30A1CAD2F98011100387BDC /* App */,
-				E30A1CA62F98010F00387BDC /* Assets.xcassets */,
-				E30A1CAE2F98016900387BDC /* Presentation */,
-				E30A1CAF2F98017A00387BDC /* Domain */,
 				E30A1CB02F98018300387BDC /* Resources */,
-				E30A1CB12F98019E00387BDC /* SupportingFiles */,
+				E30A1CB92F9801E800387BDC /* Features */,
 			);
 			path = WordAround;
 			sourceTree = "<group>";
@@ -120,39 +119,13 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		E30A1CAE2F98016900387BDC /* Presentation */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1CB92F9801E800387BDC /* Screens */,
-				E30A1CB62F9801D400387BDC /* Components */,
-			);
-			path = Presentation;
-			sourceTree = "<group>";
-		};
-		E30A1CAF2F98017A00387BDC /* Domain */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1CD12F99447400387BDC /* Services */,
-				E30A1CB52F9801CA00387BDC /* Enums */,
-				E30A1CB42F9801C400387BDC /* Models */,
-			);
-			path = Domain;
-			sourceTree = "<group>";
-		};
 		E30A1CB02F98018300387BDC /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				E30A1CD62F9953CF00387BDC /* GoogleService-Info.plist */,
+				E30A1CDD2F995BF100387BDC /* Info.plist */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		E30A1CB12F98019E00387BDC /* SupportingFiles */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1CB22F9801AE00387BDC /* .gitignore */,
-			);
-			path = SupportingFiles;
 			sourceTree = "<group>";
 		};
 		E30A1CB42F9801C400387BDC /* Models */ = {
@@ -171,30 +144,22 @@
 			path = Enums;
 			sourceTree = "<group>";
 		};
-		E30A1CB62F9801D400387BDC /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1D1E2F9AC1E500387BDC /* Layout.swift */,
-				E30A1D1C2F9AC1C800387BDC /* BaseCardView.swift */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
-		E30A1CB92F9801E800387BDC /* Screens */ = {
+		E30A1CB92F9801E800387BDC /* Features */ = {
 			isa = PBXGroup;
 			children = (
 				E30A1CBD2F98078A00387BDC /* Onboarding */,
 				E30A1CBA2F98023200387BDC /* Home */,
 				E30A1CCE2F99444400387BDC /* Auth */,
 			);
-			path = Screens;
+			path = Features;
 			sourceTree = "<group>";
 		};
 		E30A1CBA2F98023200387BDC /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1D4A2F9BAF5500387BDC /* ViewModels */,
+				E30A1D492F9BAF4E00387BDC /* Views */,
 				E30A1CEC2F9A50DA00387BDC /* Components */,
-				E30A1CBB2F98023900387BDC /* HomeView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -202,25 +167,17 @@
 		E30A1CBD2F98078A00387BDC /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				E30A1CD42F99451200387BDC /* BlobShape.swift */,
-				E30A1CC02F98079800387BDC /* OnboardingView.swift */,
+				E30A1D462F9BAEE800387BDC /* Components */,
+				E30A1D432F9BAEB700387BDC /* Views */,
 			);
 			path = Onboarding;
-			sourceTree = "<group>";
-		};
-		E30A1CC72F99438D00387BDC /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		E30A1CCE2F99444400387BDC /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				E30A1CE02F9A357500387BDC /* VerifyEmailView.swift */,
-				E30A1CCF2F99445700387BDC /* AuthViewModel.swift */,
-				E30A1CC22F9819A000387BDC /* AuthView.swift */,
+				E30A1D482F9BAF0100387BDC /* ViewModels */,
+				E30A1D472F9BAEFA00387BDC /* Views */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -242,6 +199,89 @@
 				E30A1D242F9AC22800387BDC /* SetItemView.swift */,
 				E30A1D222F9AC21700387BDC /* StatCardView.swift */,
 				E30A1D202F9AC20500387BDC /* ProgressCardView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E30A1D422F9BAB6700387BDC /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1CD12F99447400387BDC /* Services */,
+				E30A1CB52F9801CA00387BDC /* Enums */,
+				E30A1CB42F9801C400387BDC /* Models */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		E30A1D432F9BAEB700387BDC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1CC02F98079800387BDC /* OnboardingView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30A1D462F9BAEE800387BDC /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1CD42F99451200387BDC /* BlobShape.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E30A1D472F9BAEFA00387BDC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1CE02F9A357500387BDC /* VerifyEmailView.swift */,
+				E30A1CC22F9819A000387BDC /* AuthView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30A1D482F9BAF0100387BDC /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1CCF2F99445700387BDC /* AuthViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E30A1D492F9BAF4E00387BDC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1CBB2F98023900387BDC /* HomeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30A1D4A2F9BAF5500387BDC /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E30A1D4B2F9BB10D00387BDC /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D4D2F9BB12E00387BDC /* Components */,
+				E30A1D4C2F9BB11E00387BDC /* Theme */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		E30A1D4C2F9BB11E00387BDC /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D1E2F9AC1E500387BDC /* Layout.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		E30A1D4D2F9BB12E00387BDC /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D1C2F9AC1C800387BDC /* BaseCardView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
