@@ -25,4 +25,12 @@ final class FlashcardSetService {
             try document.data(as: FlashcardSet.self)
         }
     }
+    func deleteSet(id: String, ownerUID: String) async throws {
+        try await db
+            .collection("users")
+            .document(ownerUID)
+            .collection("flashcardSets")
+            .document(id)
+            .delete()
+    }
 }

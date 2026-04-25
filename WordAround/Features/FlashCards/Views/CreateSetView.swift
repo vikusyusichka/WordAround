@@ -5,7 +5,7 @@ struct CreateSetView: View {
     @StateObject private var viewModel = CreateSetViewModel()
 
     private var isPadLike: Bool {
-        Layout.isPadLike
+        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
     }
 
     var body: some View {
@@ -42,7 +42,7 @@ struct CreateSetView: View {
                 .padding(.bottom, 28)
             }
         }
-        .onChange(of: viewModel.didCreateSet) { _, didCreate in
+        .onChange(of: viewModel.didCreateSet) { didCreate in
             if didCreate {
                 dismiss()
             }

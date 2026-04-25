@@ -8,7 +8,7 @@ struct HomeView: View {
     @State private var selectedTab: HomeTab? = nil
     @State private var isCreateMenuPresented = false
     @State private var isCreateSetPresented = false
-
+    @State private var selectedSetForDetails: FlashcardSet?
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -52,6 +52,9 @@ struct HomeView: View {
         .ignoresSafeArea(edges: .bottom)
         .fullScreenCover(isPresented: $isCreateSetPresented) {
             CreateSetView()
+        }
+        .fullScreenCover(item: $selectedSetForDetails) { set in
+            FlashcardSetDetailView(set: set)
         }
         .task {
             await viewModel.refresh()
@@ -349,20 +352,47 @@ private extension HomeView {
     }
 
     var setsList: some View {
-        VStack(spacing: Layout.homeSetsListSpacing) {
+        List {
             ForEach(viewModel.userSets) { set in
-                SetItemView(
-                    title: set.title,
-                    subtitle: set.subtitle,
-                    iconSystemName: set.iconSystemName,
-                    accentColor: set.accentColor,
-                    titleColor: set.titleColor,
-                    backgroundColor: set.backgroundColor,
-                    trailingText: "Review",
-                    blobColor: set.blobColor
+                Button {
+                    selectedSetForDetails = set.sourceSet
+                } label: {
+                    SetItemView(
+                        title: set.title,
+                        subtitle: set.subtitle,
+                        iconSystemName: set.iconSystemName,
+                        accentColor: set.accentColor,
+                        titleColor: set.titleColor,
+                        backgroundColor: set.backgroundColor,
+                        trailingText: "Review",
+                        blobColor: set.blobColor
+                    )
+                }
+                .buttonStyle(.plain)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .listRowInsets(
+                    EdgeInsets(
+                        top: 4,
+                        leading: 0,
+                        bottom: 4,
+                        trailing: 0
+                    )
                 )
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button(role: .destructive) {
+                        Task {
+                            await viewModel.deleteSet(set)
+                        }
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
             }
         }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .frame(height: CGFloat(viewModel.userSets.count) * 104)
     }
 
     var emptySetsCard: some View {
@@ -387,7 +417,7 @@ private extension HomeView {
     var todayGoalCard: some View {
         ProgressCardView(
             layout: .goal,
-            title: "Today's goal",
+            title: viewModel.todayGoal.title,
             currentValue: viewModel.todayGoal.currentValue,
             totalValue: viewModel.todayGoal.totalValue,
             unit: viewModel.todayGoal.unit,
@@ -406,25 +436,30 @@ private extension HomeView {
     }
 
     func learningProgressCard(from set: HomeSetPreviewItem) -> some View {
-        ProgressCardView(
-            layout: .action,
-            title: set.title,
-            currentValue: set.currentValue,
-            totalValue: set.totalValue,
-            unit: set.unit,
-            subtitle: set.subtitle,
-            progress: set.progress,
-            tint: set.accentColor,
-            backgroundColor: set.backgroundColor,
-            progressBackgroundColor: set.progressBackgroundColor,
-            titleColor: set.titleColor,
-            valueColor: set.valueColor,
-            subtitleColor: set.subtitleColor,
-            iconSystemName: set.iconSystemName,
-            iconBackground: set.iconBackground,
-            blobColor: set.blobColor,
-            actionSystemName: "arrow.right"
-        )
+        Button {
+            selectedSetForDetails = set.sourceSet
+        } label: {
+            ProgressCardView(
+                layout: .action,
+                title: set.title,
+                currentValue: set.currentValue,
+                totalValue: set.totalValue,
+                unit: set.unit,
+                subtitle: set.subtitle,
+                progress: set.progress,
+                tint: set.accentColor,
+                backgroundColor: set.backgroundColor,
+                progressBackgroundColor: set.progressBackgroundColor,
+                titleColor: set.titleColor,
+                valueColor: set.valueColor,
+                subtitleColor: set.subtitleColor,
+                iconSystemName: set.iconSystemName,
+                iconBackground: set.iconBackground,
+                blobColor: set.blobColor,
+                actionSystemName: "arrow.right"
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     func sectionTitle(_ title: String) -> some View {
@@ -445,6 +480,11 @@ private extension HomeView {
             Button {
                 if actionTitle == "Create" {
                     isCreateSetPresented = true
+                }
+
+                if actionTitle == "View all" {
+                    selectedTab = .flashcards
+                    selectedCategory = nil
                 }
             } label: {
                 Text(actionTitle)

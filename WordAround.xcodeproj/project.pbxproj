@@ -57,6 +57,18 @@
 		E30A1D7E2F9C236000387BDC /* CreateSetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D7D2F9C236000387BDC /* CreateSetTheme.swift */; };
 		E30A1D812F9C24C100387BDC /* HomeSetPreviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D802F9C24BF00387BDC /* HomeSetPreviewMapper.swift */; };
 		E30A1D832F9C2EF700387BDC /* LocalImageStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D822F9C2EE800387BDC /* LocalImageStorageService.swift */; };
+		E30A1D892F9CCA6200387BDC /* FleshcardSetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D882F9CCA4400387BDC /* FleshcardSetDetailView.swift */; };
+		E30A1D8B2F9CDB7300387BDC /* FlashcardSetDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D8A2F9CDB7100387BDC /* FlashcardSetDetailViewModel.swift */; };
+		E30A1D962F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D932F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift */; };
+		E30A1D972F9CE42500387BDC /* FlashcardSetDetailAddButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D8D2F9CE42500387BDC /* FlashcardSetDetailAddButton.swift */; };
+		E30A1D982F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D8F2F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift */; };
+		E30A1D992F9CE42500387BDC /* FlashcardSetDetailControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D912F9CE42500387BDC /* FlashcardSetDetailControlsView.swift */; };
+		E30A1D9A2F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D902F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift */; };
+		E30A1D9B2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D8E2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift */; };
+		E30A1D9C2F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D922F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift */; };
+		E30A1D9D2F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */; };
+		E30A1D9E2F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */; };
+		E30A1DA22F9D730E00387BDC /* SFSymbolPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DA12F9D730400387BDC /* SFSymbolPickerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +118,18 @@
 		E30A1D7D2F9C236000387BDC /* CreateSetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CreateSetTheme.swift; path = WordAround/Core/CreateSetTheme.swift; sourceTree = SOURCE_ROOT; };
 		E30A1D802F9C24BF00387BDC /* HomeSetPreviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSetPreviewMapper.swift; sourceTree = "<group>"; };
 		E30A1D822F9C2EE800387BDC /* LocalImageStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImageStorageService.swift; sourceTree = "<group>"; };
+		E30A1D882F9CCA4400387BDC /* FleshcardSetDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FleshcardSetDetailView.swift; sourceTree = "<group>"; };
+		E30A1D8A2F9CDB7100387BDC /* FlashcardSetDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailViewModel.swift; sourceTree = "<group>"; };
+		E30A1D8D2F9CE42500387BDC /* FlashcardSetDetailAddButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailAddButton.swift; sourceTree = "<group>"; };
+		E30A1D8E2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailBottomCover.swift; sourceTree = "<group>"; };
+		E30A1D8F2F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailCardFilter.swift; sourceTree = "<group>"; };
+		E30A1D902F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailCardRowView.swift; sourceTree = "<group>"; };
+		E30A1D912F9CE42500387BDC /* FlashcardSetDetailControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailControlsView.swift; sourceTree = "<group>"; };
+		E30A1D922F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailFilterTabsView.swift; sourceTree = "<group>"; };
+		E30A1D932F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailHeaderView.swift; sourceTree = "<group>"; };
+		E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailMainCardView.swift; sourceTree = "<group>"; };
+		E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailTopBarView.swift; sourceTree = "<group>"; };
+		E30A1DA12F9D730400387BDC /* SFSymbolPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolPickerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +211,7 @@
 		E30A1CB92F9801E800387BDC /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1D8C2F9CE41700387BDC /* Components */,
 				E30A1D582F9BEB3700387BDC /* FlashCards */,
 				E30A1CBD2F98078A00387BDC /* Onboarding */,
 				E30A1CBA2F98023200387BDC /* Home */,
@@ -250,7 +275,6 @@
 			isa = PBXGroup;
 			children = (
 				E30A1D852F9C9D6600387BDC /* Models */,
-				E30A1D842F9C9D3A00387BDC /* Model */,
 				E30A1CD12F99447400387BDC /* Services */,
 				E30A1CB52F9801CA00387BDC /* Enums */,
 			);
@@ -347,6 +371,7 @@
 		E30A1D592F9BEB4200387BDC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1D882F9CCA4400387BDC /* FleshcardSetDetailView.swift */,
 				E30A1D5A2F9BEB4900387BDC /* CreateSetView.swift */,
 			);
 			path = Views;
@@ -355,6 +380,7 @@
 		E30A1D5E2F9BF4E600387BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1D8A2F9CDB7100387BDC /* FlashcardSetDetailViewModel.swift */,
 				E30A1D5F2F9BF5BC00387BDC /* CreateSetViewModel.swift */,
 			);
 			path = ViewModels;
@@ -363,6 +389,7 @@
 		E30A1D612F9BF73000387BDC /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1DA12F9D730400387BDC /* SFSymbolPickerView.swift */,
 				E30A1D6C2F9BF7DF00387BDC /* CreateSetFieldStyle.swift */,
 				E30A1D6A2F9BF7D000387BDC /* CreateSetCardsSectionView.swift */,
 				E30A1D622F9BF77D00387BDC /* CreateSetHeaderView.swift */,
@@ -388,14 +415,6 @@
 			path = Mappers;
 			sourceTree = "<group>";
 		};
-		E30A1D842F9C9D3A00387BDC /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1D7B2F9C1D6900387BDC /* HomeSetPreviewItem.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		E30A1D852F9C9D6600387BDC /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -404,9 +423,26 @@
 				E30A1D5C2F9BEB8200387BDC /* CreateSet.swift */,
 				E30A1D6E2F9C0E9200387BDC /* SetIconType.swift */,
 				E30A1D702F9C0ED000387BDC /* FlashCard.swift */,
+				E30A1D7B2F9C1D6900387BDC /* HomeSetPreviewItem.swift */,
 				E30A1D7D2F9C236000387BDC /* CreateSetTheme.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		E30A1D8C2F9CE41700387BDC /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D8D2F9CE42500387BDC /* FlashcardSetDetailAddButton.swift */,
+				E30A1D8E2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift */,
+				E30A1D8F2F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift */,
+				E30A1D902F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift */,
+				E30A1D912F9CE42500387BDC /* FlashcardSetDetailControlsView.swift */,
+				E30A1D922F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift */,
+				E30A1D932F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift */,
+				E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */,
+				E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -504,15 +540,27 @@
 				E30A1D672F9BF7AB00387BDC /* CreateSetCustomizationSectionView.swift in Sources */,
 				E30A1D652F9BF79F00387BDC /* CreateSetInfoSectionView.swift in Sources */,
 				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
+				E30A1D892F9CCA6200387BDC /* FleshcardSetDetailView.swift in Sources */,
 				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
 				E30A1D632F9BF79100387BDC /* CreateSetHeaderView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
 				E30A1D832F9C2EF700387BDC /* LocalImageStorageService.swift in Sources */,
+				E30A1D8B2F9CDB7300387BDC /* FlashcardSetDetailViewModel.swift in Sources */,
 				E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */,
 				E30A1D692F9BF7C500387BDC /* CreateSetPreviewCardView.swift in Sources */,
 				E30A1D7E2F9C236000387BDC /* CreateSetTheme.swift in Sources */,
+				E30A1D962F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift in Sources */,
+				E30A1DA22F9D730E00387BDC /* SFSymbolPickerView.swift in Sources */,
+				E30A1D972F9CE42500387BDC /* FlashcardSetDetailAddButton.swift in Sources */,
+				E30A1D982F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift in Sources */,
+				E30A1D992F9CE42500387BDC /* FlashcardSetDetailControlsView.swift in Sources */,
+				E30A1D9A2F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift in Sources */,
+				E30A1D9B2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift in Sources */,
+				E30A1D9C2F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift in Sources */,
+				E30A1D9D2F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift in Sources */,
+				E30A1D9E2F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift in Sources */,
 				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
 				E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */,
 				E30A1D5D2F9BEB8200387BDC /* CreateSet.swift in Sources */,

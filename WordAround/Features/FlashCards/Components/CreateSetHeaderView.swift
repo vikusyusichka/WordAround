@@ -4,6 +4,8 @@ struct CreateSetHeaderView: View {
     @ObservedObject var viewModel: CreateSetViewModel
     let onBack: () -> Void
 
+    @State private var isSymbolPickerPresented = false
+
     var body: some View {
         VStack(spacing: Layout.createSetHeaderSpacing) {
             topBar
@@ -31,14 +33,8 @@ struct CreateSetHeaderView: View {
 
             Spacer()
 
-            Menu {
-                ForEach(viewModel.previewIcons, id: \.self) { icon in
-                    Button {
-                        viewModel.selectIcon(icon)
-                    } label: {
-                        Label(icon, systemImage: icon)
-                    }
-                }
+            Button {
+                isSymbolPickerPresented = true
             } label: {
                 HStack(spacing: 10) {
                     Text("Choose icon")
@@ -60,6 +56,10 @@ struct CreateSetHeaderView: View {
                 }
             }
             .buttonStyle(.plain)
+            .sheet(isPresented: $isSymbolPickerPresented) {
+                SFSymbolPickerView(selectedSymbol: $viewModel.draft.selectedIcon)
+                    .presentationDetents([.medium, .large])
+            }
         }
     }
 
@@ -139,10 +139,11 @@ struct CreateSetHeaderView: View {
     }
 }
 
-#Preview {
+#Preview("Create Set Header") {
     let vm: CreateSetViewModel = {
         let vm = CreateSetViewModel()
         vm.draft.title = "Spanish A1"
+        vm.draft.selectedIcon = "book.fill"
         vm.selectColor(.blue)
         return vm
     }()

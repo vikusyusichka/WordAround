@@ -76,3 +76,15 @@ extension Color {
         )
     }
 }
+
+extension AppColors {
+    static let flashcardDetailTitle = Color(red: 0.08, green: 0.20, blue: 0.72)
+    static let flashcardDetailText = Color(red: 0.42, green: 0.46, blue: 0.62)
+    static let flashcardDetailMutedText = Color(red: 0.52, green: 0.56, blue: 0.70)
+
+    static let flashcardDetailCardBackground = Color(red: 0.95, green: 0.96, blue: 1.00)
+    static let flashcardDetailSoftBlue = Color(red: 0.86, green: 0.89, blue: 1.00)
+    static let flashcardDetailDivider = Color(red: 0.88, green: 0.90, blue: 0.96)
+
+    static let flashcardDetailShadow = Color.black.opacity(0.055)
+}

@@ -131,4 +131,27 @@ extension CreateSetTheme {
             return .cyan
         }
     }
+
+    static func theme(forHex hex: String) -> CreateSetTheme {
+        let normalized = hex
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .uppercased()
+
+        switch normalized {
+        case SetColor.red.hex.uppercased():
+            return .red
+        case SetColor.blue.hex.uppercased():
+            return .blue
+        case SetColor.yellow.hex.uppercased():
+            return .yellow
+        case SetColor.green.hex.uppercased():
+            return .green
+        case SetColor.purple.hex.uppercased():
+            return .purple
+        case SetColor.cyan.hex.uppercased():
+            return .cyan
+        default:
+            return .red
+        }
+    }
 }

@@ -3,6 +3,8 @@ import SwiftUI
 struct CreateSetPreviewCardView: View {
     @ObservedObject var viewModel: CreateSetViewModel
 
+    @State private var isSymbolPickerPresented = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.createSetPreviewSectionSpacing) {
             sectionLabel("Preview")
@@ -40,14 +42,8 @@ struct CreateSetPreviewCardView: View {
     }
 
     private var iconView: some View {
-        Menu {
-            ForEach(viewModel.previewIcons, id: \.self) { icon in
-                Button {
-                    viewModel.selectIcon(icon)
-                } label: {
-                    Label(icon, systemImage: icon)
-                }
-            }
+        Button {
+            isSymbolPickerPresented = true
         } label: {
             ZStack {
                 Circle()
@@ -63,6 +59,10 @@ struct CreateSetPreviewCardView: View {
             }
         }
         .buttonStyle(.plain)
+        .sheet(isPresented: $isSymbolPickerPresented) {
+            SFSymbolPickerView(selectedSymbol: $viewModel.draft.selectedIcon)
+                .presentationDetents([.medium, .large])
+        }
     }
 
     private func sectionLabel(_ text: String) -> some View {
@@ -72,7 +72,7 @@ struct CreateSetPreviewCardView: View {
     }
 }
 
-#Preview {
+#Preview("Create Set Preview Card") {
     let vm: CreateSetViewModel = {
         let vm = CreateSetViewModel()
         vm.draft.title = "French B1"

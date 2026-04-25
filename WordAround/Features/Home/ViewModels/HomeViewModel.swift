@@ -5,6 +5,7 @@ import FirebaseAuth
 @MainActor
 final class HomeViewModel: ObservableObject {
     @Published var todayGoal: HomeSetPreviewItem = HomeSetPreviewItem(
+        sourceSet: nil,
         title: "Today's goal",
         subtitle: "6 words left",
         iconSystemName: "book.closed",
@@ -97,7 +98,7 @@ final class HomeViewModel: ObservableObject {
 
         do {
             let sets = try await setService.fetchSets(for: user.uid)
-            let previewItems = sets.map { HomeSetPreviewMapper.map($0) }
+            let previewItems = sets.map { makePreviewItem(from: $0) }
 
             userSets = previewItems
             continueLearningSet = previewItems.first
@@ -105,6 +106,63 @@ final class HomeViewModel: ObservableObject {
             isLoadingSets = false
         } catch {
             isLoadingSets = false
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func makePreviewItem(from set: FlashcardSet) -> HomeSetPreviewItem {
+        let theme = CreateSetTheme.theme(forHex: set.colorHex)
+
+        return HomeSetPreviewItem(
+            sourceSet: set,
+            title: set.title,
+            subtitle: set.description.isEmpty ? "\(set.cards.count) cards" : set.description,
+            iconSystemName: iconName(from: set.icon),
+            currentValue: 0,
+            totalValue: max(set.cards.count, 1),
+            unit: "cards",
+            progress: 0,
+            accentColor: theme.accent,
+            backgroundColor: theme.previewBackground,
+            progressBackgroundColor: theme.softAccent,
+            titleColor: theme.titleColor,
+            valueColor: theme.titleColor,
+            subtitleColor: theme.mutedTextColor,
+            iconBackground: theme.softAccent,
+            blobColor: theme.softAccent
+        )
+    }
+
+    private func iconName(from icon: SetIconType) -> String {
+        switch icon {
+        case .systemName(let name):
+            return name
+        default:
+            return "rectangle.stack.fill"
+        }
+    }
+    func deleteSet(_ set: HomeSetPreviewItem) async {
+        guard let user = Auth.auth().currentUser else {
+            errorMessage = "User is not signed in."
+            return
+        }
+
+        guard let sourceSet = set.sourceSet else {
+            errorMessage = "Set data is missing."
+            return
+        }
+
+        do {
+            try await setService.deleteSet(id: sourceSet.id, ownerUID: user.uid)
+
+            userSets.removeAll { item in
+                item.sourceSet?.id == sourceSet.id
+            }
+
+            if continueLearningSet?.sourceSet?.id == sourceSet.id {
+                continueLearningSet = userSets.first
+            }
+        } catch {
             errorMessage = error.localizedDescription
         }
     }

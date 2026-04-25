@@ -5,6 +5,7 @@ enum HomeSetPreviewMapper {
         let accentColor = Color(hex: set.colorHex) ?? AppColors.primaryBlue
 
         return HomeSetPreviewItem(
+            sourceSet: set,
             title: set.title,
             subtitle: "\(set.cards.count) words",
             iconSystemName: iconName(from: set.icon),

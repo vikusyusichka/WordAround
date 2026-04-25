@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeSetPreviewItem: Identifiable {
     let id = UUID()
+    let sourceSet: FlashcardSet?
 
     let title: String
     let subtitle: String

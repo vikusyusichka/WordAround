@@ -356,3 +356,102 @@ extension Layout {
     static func statLeadingPadding(isSmall: Bool) -> CGFloat { isSmall ? 11 : 14 }
     static func statBottomPadding(isSmall: Bool) -> CGFloat { isSmall ? 12 : 14 }
 }
+
+// MARK: - Flashcard Set Detail
+
+extension Layout {
+    static var flashcardDetailContentMaxWidth: CGFloat { isPadLike ? 760 : .infinity }
+    static var flashcardDetailMainSpacing: CGFloat { isPadLike ? 14 : 4 }
+    static var flashcardDetailHorizontalPadding: CGFloat { isPadLike ? 34 : 20 }
+
+    static var flashcardDetailTopBarPaddingTop: CGFloat { isPadLike ? 12 : 0 }
+    static var flashcardDetailTopButtonSize: CGFloat { isPadLike ? 58 : 42 }
+    static var flashcardDetailTopButtonIconSize: CGFloat { isPadLike ? 22 : 16 }
+
+    static var flashcardDetailHeaderTopPadding: CGFloat { 0 }
+    static var flashcardDetailHeaderSpacing: CGFloat { isPadLike ? 12 : 6 }
+    static var flashcardDetailHeaderCollapsedBottomPadding: CGFloat { isPadLike ? 6 : 0 }
+    static var flashcardDetailHeaderExpandedBottomPadding: CGFloat { isPadLike ? 16 : 12 }
+
+    static var flashcardDetailHeaderTitleSize: CGFloat { isPadLike ? 52 : (isCompactPhone ? 27 : 30) }
+    static var flashcardDetailHeaderDescriptionSize: CGFloat { isPadLike ? 20 : (isCompactPhone ? 13 : 14) }
+    static var flashcardDetailHeaderDescriptionLineSpacing: CGFloat { isPadLike ? 6 : 4 }
+    static var flashcardDetailHeaderDescriptionTrailingPadding: CGFloat { isPadLike ? 170 : 0 }
+    static var flashcardDetailDescriptionButtonSize: CGFloat { isPadLike ? 15 : 11 }
+
+    static var flashcardDetailAvatarSize: CGFloat { isPadLike ? 58 : 44 }
+    static var flashcardDetailAvatarTextSize: CGFloat { isPadLike ? 20 : 15 }
+    static var flashcardDetailHeaderBlobSize: CGSize { CGSize(width: isPadLike ? 220 : 150, height: isPadLike ? 230 : 164) }
+    static var flashcardDetailHeaderBlobOffset: CGSize { CGSize(width: isPadLike ? 100 : 72, height: isPadLike ? 72 : 52) }
+    static var flashcardDetailSparkleLargeSize: CGFloat { isPadLike ? 25 : 18 }
+    static var flashcardDetailSparkleSmallSize: CGFloat { isPadLike ? 22 : 16 }
+    static var flashcardDetailSparkleOneOffset: CGSize { CGSize(width: isPadLike ? -215 : -112, height: isPadLike ? 2 : -6) }
+    static var flashcardDetailSparkleTwoOffset: CGSize { CGSize(width: isPadLike ? -118 : -38, height: isPadLike ? 48 : 34) }
+
+    static var flashcardDetailCardHeight: CGFloat { isPadLike ? 360 : 220 }
+    static var flashcardDetailCardCornerRadius: CGFloat { isPadLike ? 36 : 28 }
+    static var flashcardDetailCardStrokeWidth: CGFloat { isPadLike ? 5 : 4 }
+    static var flashcardDetailWordSize: CGFloat { isPadLike ? 68 : (isCompactPhone ? 38 : 42) }
+    static var flashcardDetailSpeakerSize: CGFloat { isPadLike ? 26 : 19 }
+    static var flashcardDetailTranslationSize: CGFloat { isPadLike ? 30 : 21 }
+    static var flashcardDetailCardContentSpacing: CGFloat { isPadLike ? 14 : 9 }
+    static var flashcardDetailCounterTextSize: CGFloat { isPadLike ? 16 : 13 }
+    static var flashcardDetailCounterHorizontalPadding: CGFloat { isPadLike ? 16 : 13 }
+    static var flashcardDetailCounterVerticalPadding: CGFloat { isPadLike ? 7 : 5 }
+    static var flashcardDetailCardOverlayPadding: CGFloat { isPadLike ? 22 : 16 }
+    static var flashcardDetailExpandIconSize: CGFloat { isPadLike ? 20 : 16 }
+    static var flashcardDetailTopBlobSize: CGSize { CGSize(width: isPadLike ? 230 : 158, height: isPadLike ? 170 : 118) }
+    static var flashcardDetailTopBlobOffset: CGSize { CGSize(width: isPadLike ? 304 : 154, height: isPadLike ? -136 : -88) }
+    static var flashcardDetailBottomBlobSize: CGSize { CGSize(width: isPadLike ? 240 : 170, height: isPadLike ? 150 : 105) }
+    static var flashcardDetailBottomBlobOffset: CGSize { CGSize(width: isPadLike ? -294 : -154, height: isPadLike ? 124 : 82) }
+    static var flashcardDetailCardSparkleSize: CGFloat { isPadLike ? 24 : 17 }
+    static var flashcardDetailCardSparkleOffset: CGSize { CGSize(width: isPadLike ? 250 : 126, height: isPadLike ? 100 : 66) }
+
+    static var flashcardDetailControlsTopPadding: CGFloat { isPadLike ? 12 : 6 }
+    static var flashcardDetailControlsTextSize: CGFloat { isPadLike ? 18 : 13 }
+    static var flashcardDetailControlsMainIconSize: CGFloat { isPadLike ? 22 : 18 }
+    static var flashcardDetailControlsToggleScale: CGFloat { isPadLike ? 0.78 : 0.62 }
+    static var flashcardDetailControlsToggleWidth: CGFloat { isPadLike ? 50 : 36 }
+    static var flashcardDetailControlsInnerSpacing: CGFloat { isPadLike ? 10 : 6 }
+    static var flashcardDetailControlsDividerPadding: CGFloat { isPadLike ? 22 : 16 }
+    static var flashcardDetailControlsDividerHeight: CGFloat { isPadLike ? 32 : 24 }
+
+    static var flashcardDetailTabsHeight: CGFloat { isPadLike ? 74 : 58 }
+    static var flashcardDetailTabsCornerRadius: CGFloat { isPadLike ? 24 : 18 }
+    static var flashcardDetailTabTextSize: CGFloat { isPadLike ? 18 : (isCompactPhone ? 13 : 15) }
+    static var flashcardDetailTabBadgeTextSize: CGFloat { isPadLike ? 14 : 12 }
+    static var flashcardDetailTabHorizontalPadding: CGFloat { isPadLike ? 16 : 8 }
+    static var flashcardDetailTabBadgeSpacing: CGFloat { isPadLike ? 7 : 5 }
+    static var flashcardDetailTabBadgeHorizontalPadding: CGFloat { isPadLike ? 9 : 7 }
+    static var flashcardDetailTabBadgeVerticalPadding: CGFloat { isPadLike ? 3 : 2 }
+    static var flashcardDetailTabUnderlineHeight: CGFloat { 3 }
+    static var flashcardDetailTabUnderlineSpacing: CGFloat { isPadLike ? 8 : 6 }
+    static var flashcardDetailTabUnderlineHorizontalPadding: CGFloat { isPadLike ? 12 : 8 }
+    static var flashcardDetailTabDividerHeight: CGFloat { isPadLike ? 26 : 22 }
+
+    static var flashcardDetailListCornerRadius: CGFloat { isPadLike ? 26 : 22 }
+    static var flashcardDetailRowHorizontalPadding: CGFloat { isPadLike ? 26 : 6 }
+    static var flashcardDetailRowVerticalPadding: CGFloat { isPadLike ? 20 : 14 }
+    static var flashcardDetailRowSpacing: CGFloat { isPadLike ? 18 : 12 }
+    static var flashcardDetailRowIndexSize: CGFloat { isPadLike ? 18 : 15 }
+    static var flashcardDetailRowIndexWidth: CGFloat { isPadLike ? 26 : 20 }
+    static var flashcardDetailRowImageSize: CGFloat { isPadLike ? 92 : 64 }
+    static var flashcardDetailRowImageCornerRadius: CGFloat { isPadLike ? 18 : 14 }
+    static var flashcardDetailRowTextSpacing: CGFloat { isPadLike ? 7 : 5 }
+    static var flashcardDetailRowWordSize: CGFloat { isPadLike ? 23 : 17 }
+    static var flashcardDetailRowSpeakerSize: CGFloat { isPadLike ? 18 : 14 }
+    static var flashcardDetailRowTranslationSize: CGFloat { isPadLike ? 18 : 15 }
+    static var flashcardDetailRowExampleSize: CGFloat { isPadLike ? 16 : 13 }
+    static var flashcardDetailRowIconSize: CGFloat { isPadLike ? 24 : 19 }
+    static var flashcardDetailRowIconSpacing: CGFloat { isPadLike ? 24 : 18 }
+    static var flashcardDetailRowPlaceholderIconSize: CGFloat { isPadLike ? 34 : 26 }
+    static var flashcardDetailRowRightDividerLeadingPadding: CGFloat { isPadLike ? 8 : 2 }
+
+    static var flashcardDetailAddButtonHeight: CGFloat { isPadLike ? 68 : 56 }
+    static var flashcardDetailAddButtonCornerRadius: CGFloat { isPadLike ? 24 : 18 }
+    static var flashcardDetailAddButtonTextSize: CGFloat { isPadLike ? 20 : 16 }
+    static var flashcardDetailAddButtonIconSize: CGFloat { isPadLike ? 22 : 18 }
+    static var flashcardDetailBottomCoverHeight: CGFloat { isPadLike ? 170 : 138 }
+    static var flashcardDetailBottomPadding: CGFloat { isPadLike ? 180 : 152 }
+    static var homeBottomBarHeight: CGFloat { isPadLike ? 110 : 90 }
+}

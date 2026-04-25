@@ -3,7 +3,8 @@ import GoogleSignIn
 
 @main
 struct WordAroundApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     @StateObject private var sessionStore = SessionStore()
 
@@ -31,13 +32,10 @@ struct WordAroundApp: App {
             case .loading:
                 ProgressView()
                     .tint(.blue)
-
             case .loggedOut:
                 AuthView()
-
             case .emailVerificationRequired:
                 VerifyEmailView()
-
             case .authenticated:
                 HomeView()
             }
