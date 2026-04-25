@@ -4,12 +4,8 @@ struct CreateSetHeaderView: View {
     @ObservedObject var viewModel: CreateSetViewModel
     let onBack: () -> Void
 
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
-
     var body: some View {
-        VStack(spacing: isPadLike ? 20 : 16) {
+        VStack(spacing: Layout.createSetHeaderSpacing) {
             topBar
             headerContent
         }
@@ -21,12 +17,15 @@ struct CreateSetHeaderView: View {
                 onBack()
             } label: {
                 Image(systemName: "chevron.left")
-                    .font(.system(size: isPadLike ? 22 : 16, weight: .semibold))
-                    .foregroundStyle(AppColors.createSetTextMuted)
-                    .frame(width: isPadLike ? 56 : 42, height: isPadLike ? 56 : 42)
-                    .background(Color.white)
+                    .font(.system(size: Layout.createSetBackButtonIconSize, weight: .semibold))
+                    .foregroundStyle(viewModel.theme.mutedTextColor)
+                    .frame(
+                        width: Layout.createSetBackButtonSize,
+                        height: Layout.createSetBackButtonSize
+                    )
+                    .background(viewModel.theme.fieldBackground)
                     .clipShape(Circle())
-                    .shadow(color: AppColors.createSetShadow, radius: 12, x: 0, y: 7)
+                    .shadow(color: viewModel.theme.shadowColor, radius: 12, x: 0, y: 7)
             }
             .buttonStyle(.plain)
 
@@ -43,17 +42,20 @@ struct CreateSetHeaderView: View {
             } label: {
                 HStack(spacing: 10) {
                     Text("Choose icon")
-                        .font(.system(size: isPadLike ? 16 : 13, weight: .bold))
-                        .foregroundStyle(AppColors.createSetRed)
+                        .font(.system(size: Layout.createSetChooseIconTextSize, weight: .bold))
+                        .foregroundStyle(viewModel.theme.accent)
 
                     ZStack {
                         Circle()
-                            .fill(AppColors.createSetSoftRed)
-                            .frame(width: isPadLike ? 74 : 48, height: isPadLike ? 74 : 48)
+                            .fill(viewModel.theme.softAccent)
+                            .frame(
+                                width: Layout.createSetHeaderIconCircleSize,
+                                height: Layout.createSetHeaderIconCircleSize
+                            )
 
                         Image(systemName: viewModel.draft.selectedIcon)
-                            .font(.system(size: isPadLike ? 30 : 21, weight: .bold))
-                            .foregroundStyle(AppColors.createSetRed)
+                            .font(.system(size: Layout.createSetHeaderIconSize, weight: .bold))
+                            .foregroundStyle(viewModel.theme.accent)
                     }
                 }
             }
@@ -62,16 +64,20 @@ struct CreateSetHeaderView: View {
     }
 
     private var headerContent: some View {
-        HStack(alignment: .center, spacing: 10) {
-            VStack(alignment: .leading, spacing: isPadLike ? 8 : 4) {
+        HStack(alignment: .center, spacing: Layout.createSetHeaderContentSpacing) {
+            VStack(alignment: .leading, spacing: Layout.createSetHeaderTitleStackSpacing) {
                 Text("Create Set")
-                    .font(.system(size: isPadLike ? 38 : 26, weight: .bold, design: .rounded))
-                    .foregroundStyle(AppColors.createSetDarkRed)
+                    .font(.system(
+                        size: Layout.createSetHeaderTitleSize,
+                        weight: .bold,
+                        design: .rounded
+                    ))
+                    .foregroundStyle(viewModel.theme.titleColor)
                     .lineLimit(1)
 
                 Text("Add a new flashcard set")
-                    .font(.system(size: isPadLike ? 20 : 13, weight: .semibold))
-                    .foregroundStyle(AppColors.createSetTextMuted)
+                    .font(.system(size: Layout.createSetHeaderSubtitleSize, weight: .semibold))
+                    .foregroundStyle(viewModel.theme.mutedTextColor)
                     .lineLimit(1)
             }
 
@@ -82,43 +88,49 @@ struct CreateSetHeaderView: View {
     }
 
     private var privacyControl: some View {
-        HStack(spacing: isPadLike ? 8 : 4) {
-            if isPadLike {
+        HStack(spacing: Layout.createSetPrivacySpacing) {
+            if Layout.isPadLike {
                 Text("Privacy")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(AppColors.createSetTextMuted)
+                    .font(.system(size: Layout.createSetPrivacyLabelSize, weight: .semibold))
+                    .foregroundStyle(viewModel.theme.mutedTextColor)
             }
 
             ForEach(FlashcardSetPrivacy.allCases) { privacy in
                 Button {
                     viewModel.draft.privacy = privacy
                 } label: {
-                    HStack(spacing: isPadLike ? 7 : 4) {
+                    HStack(spacing: Layout.createSetPrivacyInnerSpacing) {
                         Image(systemName: privacy.iconName)
-                            .font(.system(size: isPadLike ? 14 : 10, weight: .bold))
+                            .font(.system(size: Layout.createSetPrivacyIconSize, weight: .bold))
 
                         Text(privacy.rawValue)
-                            .font(.system(size: isPadLike ? 14 : 10, weight: .bold))
+                            .font(.system(size: Layout.createSetPrivacyTextSize, weight: .bold))
                             .lineLimit(1)
                     }
                     .foregroundStyle(
                         viewModel.draft.privacy == privacy
-                        ? AppColors.createSetRed
-                        : AppColors.createSetTextMuted
+                        ? viewModel.theme.accent
+                        : viewModel.theme.mutedTextColor
                     )
-                    .padding(.horizontal, isPadLike ? 14 : 7)
-                    .frame(height: isPadLike ? 42 : 30)
+                    .padding(.horizontal, Layout.createSetPrivacyHorizontalPadding)
+                    .frame(height: Layout.createSetPrivacyButtonHeight)
                     .background(
-                        RoundedRectangle(cornerRadius: isPadLike ? 13 : 10, style: .continuous)
-                            .fill(
-                                viewModel.draft.privacy == privacy
-                                ? AppColors.createSetSoftRed
-                                : Color.white
-                            )
+                        RoundedRectangle(
+                            cornerRadius: Layout.createSetPrivacyCornerRadius,
+                            style: .continuous
+                        )
+                        .fill(
+                            viewModel.draft.privacy == privacy
+                            ? viewModel.theme.softAccent
+                            : viewModel.theme.fieldBackground
+                        )
                     )
                     .overlay(
-                        RoundedRectangle(cornerRadius: isPadLike ? 13 : 10, style: .continuous)
-                            .stroke(AppColors.createSetBorder, lineWidth: 1)
+                        RoundedRectangle(
+                            cornerRadius: Layout.createSetPrivacyCornerRadius,
+                            style: .continuous
+                        )
+                        .stroke(viewModel.theme.borderColor, lineWidth: 1)
                     )
                 }
                 .buttonStyle(.plain)
@@ -128,14 +140,17 @@ struct CreateSetHeaderView: View {
 }
 
 #Preview {
+    let vm: CreateSetViewModel = {
+        let vm = CreateSetViewModel()
+        vm.draft.title = "Spanish A1"
+        vm.selectColor(.blue)
+        return vm
+    }()
+
     CreateSetHeaderView(
-        viewModel: {
-            let vm = CreateSetViewModel()
-            vm.draft.title = "Spanish A1"
-            return vm
-        }(),
+        viewModel: vm,
         onBack: {}
     )
     .padding()
-    .background(AppColors.createSetBackground)
+    .background(vm.theme.screenBackground)
 }

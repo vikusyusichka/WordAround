@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 enum AppColors {
     static let appBackground = Color(red: 0.965, green: 0.965, blue: 0.985)
@@ -52,4 +53,26 @@ enum AppColors {
     static let createSetCyan = Color(red: 0.42, green: 0.79, blue: 0.85)
 
     static let createSetShadow = Color.black.opacity(0.06)
+}
+
+extension Color {
+    func toHex() -> String? {
+        let uiColor = UIColor(self)
+
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+
+        guard uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha) else {
+            return nil
+        }
+
+        return String(
+            format: "#%02X%02X%02X",
+            Int(red * 255),
+            Int(green * 255),
+            Int(blue * 255)
+        )
+    }
 }

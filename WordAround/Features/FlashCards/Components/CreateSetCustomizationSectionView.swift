@@ -3,106 +3,125 @@ import SwiftUI
 struct CreateSetCustomizationSectionView: View {
     @ObservedObject var viewModel: CreateSetViewModel
 
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: isPadLike ? 22 : 16) {
+        VStack(alignment: .leading, spacing: Layout.createSetCustomizationSectionSpacing) {
             folderPicker
             colorPicker
         }
-        .padding(isPadLike ? 22 : 14)
+        .padding(Layout.createSetSectionPadding)
         .background(sectionBackground)
     }
 
     private var folderPicker: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Layout.createSetSmallVerticalSpacing) {
             sectionLabel("Choose folder")
 
             HStack {
                 Image(systemName: "folder.fill")
-                    .foregroundStyle(AppColors.createSetTextMuted)
+                    .foregroundStyle(viewModel.theme.mutedTextColor)
 
                 Text(viewModel.draft.folderName ?? "No folder")
-                    .font(.system(size: isPadLike ? 16 : 14, weight: .semibold))
-                    .foregroundStyle(AppColors.createSetTextMuted)
+                    .font(.system(size: Layout.createSetFolderTextSize, weight: .semibold))
+                    .foregroundStyle(viewModel.theme.mutedTextColor)
 
                 Spacer()
 
                 Image(systemName: "chevron.down")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(AppColors.createSetTextMuted)
+                    .foregroundStyle(viewModel.theme.mutedTextColor)
             }
             .padding(.horizontal, 14)
-            .frame(height: isPadLike ? 50 : 46)
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .frame(height: Layout.createSetFolderHeight)
+            .background(viewModel.theme.fieldBackground)
+            .clipShape(
+                RoundedRectangle(
+                    cornerRadius: Layout.createSetFolderCornerRadius,
+                    style: .continuous
+                )
+            )
             .overlay(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .stroke(AppColors.createSetBorder, lineWidth: 1)
+                RoundedRectangle(
+                    cornerRadius: Layout.createSetFolderCornerRadius,
+                    style: .continuous
+                )
+                .stroke(viewModel.theme.borderColor, lineWidth: 1)
             )
         }
     }
 
     private var colorPicker: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Layout.createSetColorPickerSpacing) {
             sectionLabel("Choose color")
 
             HStack {
-                ForEach(viewModel.availableColors, id: \.self) { color in
+                ForEach(viewModel.availableColors) { setColor in
                     Button {
-                        viewModel.selectColor(color)
+                        viewModel.selectColor(setColor)
                     } label: {
                         Circle()
-                            .fill(color.opacity(0.75))
-                            .frame(width: isPadLike ? 36 : 28, height: isPadLike ? 36 : 28)
+                            .fill(setColor.color.opacity(0.75))
+                            .frame(
+                                width: Layout.createSetColorCircleSize,
+                                height: Layout.createSetColorCircleSize
+                            )
                             .overlay {
-                                if viewModel.draft.selectedColor == color {
+                                if viewModel.draft.selectedColor == setColor {
                                     Circle()
-                                        .stroke(Color.white, lineWidth: isPadLike ? 4 : 3)
+                                        .stroke(
+                                            Color.white,
+                                            lineWidth: Layout.createSetSelectedColorStrokeWidth
+                                        )
 
                                     Circle()
-                                        .stroke(AppColors.createSetRed, lineWidth: 2)
+                                        .stroke(setColor.color, lineWidth: 2)
                                         .frame(
-                                            width: isPadLike ? 44 : 34,
-                                            height: isPadLike ? 44 : 34
+                                            width: Layout.createSetSelectedColorOuterCircleSize,
+                                            height: Layout.createSetSelectedColorOuterCircleSize
                                         )
                                 }
                             }
                     }
                     .buttonStyle(.plain)
 
-                    if color != viewModel.availableColors.last {
+                    if setColor != viewModel.availableColors.last {
                         Spacer()
                     }
                 }
             }
-            .padding(.horizontal, isPadLike ? 20 : 8)
+            .padding(.horizontal, Layout.createSetColorPickerHorizontalPadding)
         }
     }
 
     private func sectionLabel(_ text: String) -> some View {
         Text(text)
-            .font(.system(size: isPadLike ? 16 : 13, weight: .bold))
-            .foregroundStyle(AppColors.createSetDarkRed)
+            .font(.system(size: Layout.createSetSectionLabelSize, weight: .bold))
+            .foregroundStyle(viewModel.theme.titleColor)
     }
 
     private var sectionBackground: some View {
-        RoundedRectangle(cornerRadius: isPadLike ? 26 : 22, style: .continuous)
-            .fill(Color.white.opacity(0.72))
-            .overlay(
-                RoundedRectangle(cornerRadius: isPadLike ? 26 : 22, style: .continuous)
-                    .stroke(AppColors.createSetSoftBorder, lineWidth: 1)
+        RoundedRectangle(
+            cornerRadius: Layout.createSetSectionCornerRadius,
+            style: .continuous
+        )
+        .fill(viewModel.theme.sectionBackground)
+        .overlay(
+            RoundedRectangle(
+                cornerRadius: Layout.createSetSectionCornerRadius,
+                style: .continuous
             )
+            .stroke(viewModel.theme.softBorderColor, lineWidth: 1)
+        )
     }
 }
 
 #Preview {
-    let vm = CreateSetViewModel()
-    vm.draft.selectedColor = AppColors.createSetBlue
+    let vm: CreateSetViewModel = {
+        let vm = CreateSetViewModel()
+        vm.selectColor(.blue)
+        return vm
+    }()
 
-    return CreateSetCustomizationSectionView(viewModel: vm)
+    CreateSetCustomizationSectionView(viewModel: vm)
         .padding()
-        .background(AppColors.createSetBackground)
+        .background(vm.theme.screenBackground)
 }

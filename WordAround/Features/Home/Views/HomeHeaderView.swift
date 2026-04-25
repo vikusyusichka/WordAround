@@ -8,11 +8,11 @@ struct HomeHeaderView: View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 6) {
                 Text(title)
-                    .font(.system(size: 29, weight: .bold, design: .rounded))
+                    .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
                 Text(subtitle)
-                    .font(.system(size: 15, weight: .medium, design: .rounded))
+                    .font(.system(size: Layout.homeHeaderSubtitleSize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.mutedText)
             }
 
@@ -22,12 +22,18 @@ struct HomeHeaderView: View {
                 ZStack {
                     Circle()
                         .fill(AppColors.cardWhite)
-                        .frame(width: 54, height: 54)
+                        .frame(
+                            width: Layout.homeHeaderAvatarCircleSize,
+                            height: Layout.homeHeaderAvatarCircleSize
+                        )
 
                     Image(systemName: "person.crop.circle.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 42, height: 42)
+                        .frame(
+                            width: Layout.homeHeaderAvatarIconSize,
+                            height: Layout.homeHeaderAvatarIconSize
+                        )
                         .foregroundStyle(
                             LinearGradient(
                                 colors: [
@@ -43,7 +49,10 @@ struct HomeHeaderView: View {
 
                 Circle()
                     .fill(Color(red: 1.0, green: 0.29, blue: 0.24))
-                    .frame(width: 12, height: 12)
+                    .frame(
+                        width: Layout.homeHeaderNotificationDotSize,
+                        height: Layout.homeHeaderNotificationDotSize
+                    )
                     .overlay(Circle().stroke(Color.white, lineWidth: 2))
                     .offset(x: 1, y: 1)
             }

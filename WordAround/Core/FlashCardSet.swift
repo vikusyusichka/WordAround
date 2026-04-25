@@ -1,23 +1,20 @@
-import SwiftUI
+import Foundation
 
-struct FlashcardSet: Identifiable {
-    let id = UUID()
+struct FlashcardSet: Identifiable, Codable {
+    var id: String
+    var ownerUID: String
+    var ownerEmail: String
 
-    let title: String
-    let subtitle: String
-    let iconSystemName: String
+    var title: String
+    var description: String
+    var privacy: String
 
-    let currentValue: Int
-    let totalValue: Int
-    let unit: String
-    let progress: Double
+    var folderName: String?
+    var colorHex: String
+    var icon: SetIconType
 
-    let accentColor: Color
-    let backgroundColor: Color
-    let progressBackgroundColor: Color
-    let titleColor: Color
-    let valueColor: Color
-    let subtitleColor: Color
-    let iconBackground: Color
-    let blobColor: Color
+    var cards: [Flashcard]
+
+    var createdAt: Date
+    var updatedAt: Date
 }

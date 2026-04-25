@@ -6,8 +6,8 @@ struct StatCardView: View {
     var body: some View {
         GeometryReader { proxy in
             let width = proxy.size.width
-            let isSmall = width < 120
-            let cornerRadius: CGFloat = 20
+            let isSmall = width < Layout.statCardSmallWidthThreshold
+            let cornerRadius: CGFloat = Layout.statCardCornerRadius
 
             ZStack(alignment: .bottomTrailing) {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
@@ -15,54 +15,54 @@ struct StatCardView: View {
 
                 StatBlobShape()
                     .fill(item.blobColor.opacity(0.78))
-                    .frame(width: isSmall ? 64 : 78, height: isSmall ? 54 : 66)
-                    .offset(x: isSmall ? 20 : 24, y: isSmall ? 13 : 16)
+                    .frame(width: Layout.statBlobSize(isSmall: isSmall).width, height: Layout.statBlobSize(isSmall: isSmall).height)
+                    .offset(x: Layout.statBlobOffset(isSmall: isSmall).width, y: Layout.statBlobOffset(isSmall: isSmall).height)
 
                 Image(systemName: "sparkle")
-                    .font(.system(size: isSmall ? 8 : 10, weight: .bold))
+                    .font(.system(size: Layout.statSparkleSize(index: 1, isSmall: isSmall), weight: .bold))
                     .foregroundColor(item.accentColor.opacity(0.42))
-                    .offset(x: isSmall ? -20 : -26, y: isSmall ? -80 : -86)
+                    .offset(x: Layout.statSparkleOffset(index: 1, isSmall: isSmall).width, y: Layout.statSparkleOffset(index: 1, isSmall: isSmall).height)
 
                 Image(systemName: "sparkle")
-                    .font(.system(size: isSmall ? 6 : 8, weight: .bold))
+                    .font(.system(size: Layout.statSparkleSize(index: 2, isSmall: isSmall), weight: .bold))
                     .foregroundColor(item.accentColor.opacity(0.28))
-                    .offset(x: isSmall ? -42 : -48, y: isSmall ? -48 : -54)
+                    .offset(x: Layout.statSparkleOffset(index: 2, isSmall: isSmall).width, y: Layout.statSparkleOffset(index: 2, isSmall: isSmall).height)
 
                 Image(systemName: "sparkle")
-                    .font(.system(size: isSmall ? 5 : 7, weight: .bold))
+                    .font(.system(size: Layout.statSparkleSize(index: 3, isSmall: isSmall), weight: .bold))
                     .foregroundColor(item.accentColor.opacity(0.34))
-                    .offset(x: isSmall ? -8 : -12, y: isSmall ? -36 : -40)
+                    .offset(x: Layout.statSparkleOffset(index: 3, isSmall: isSmall).width, y: Layout.statSparkleOffset(index: 3, isSmall: isSmall).height)
 
-                VStack(alignment: .leading, spacing: isSmall ? 5 : 7) {
+                VStack(alignment: .leading, spacing: Layout.statTextStackSpacing(isSmall: isSmall)) {
                     ZStack {
                         Circle()
                             .fill(item.accentColor.opacity(0.9))
-                            .frame(width: isSmall ? 34 : 40, height: isSmall ? 34 : 40)
+                            .frame(width: Layout.statIconCircleSize(isSmall: isSmall), height: Layout.statIconCircleSize(isSmall: isSmall))
 
                         Image(systemName: item.iconSystemName)
-                            .font(.system(size: isSmall ? 14 : 16, weight: .bold))
+                            .font(.system(size: Layout.statIconSize(isSmall: isSmall), weight: .bold))
                             .foregroundColor(.white)
                     }
 
                     Text(item.title)
-                        .font(.system(size: isSmall ? 10 : 12, weight: .semibold, design: .rounded))
+                        .font(.system(size: Layout.statTitleSize(isSmall: isSmall), weight: .semibold, design: .rounded))
                         .foregroundColor(item.titleColor)
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
 
                     Text(item.value)
-                        .font(.system(size: isSmall ? 22 : 26, weight: .bold, design: .rounded))
+                        .font(.system(size: Layout.statValueSize(isSmall: isSmall), weight: .bold, design: .rounded))
                         .foregroundColor(item.valueColor)
                         .lineLimit(1)
 
                     Text(item.subtitle)
-                        .font(.system(size: isSmall ? 10 : 11, weight: .semibold, design: .rounded))
+                        .font(.system(size: Layout.statSubtitleSize(isSmall: isSmall), weight: .semibold, design: .rounded))
                         .foregroundColor(item.subtitleColor)
                         .lineLimit(1)
                 }
-                .padding(.top, isSmall ? 10 : 12)
-                .padding(.leading, isSmall ? 11 : 14)
-                .padding(.bottom, isSmall ? 12 : 14)
+                .padding(.top, Layout.statTopPadding(isSmall: isSmall))
+                .padding(.leading, Layout.statLeadingPadding(isSmall: isSmall))
+                .padding(.bottom, Layout.statBottomPadding(isSmall: isSmall))
                 .padding(.trailing, 8)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
@@ -73,7 +73,7 @@ struct StatCardView: View {
             )
             .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 6)
         }
-        .frame(height: 122)
+        .frame(height: Layout.statCardHeight)
     }
 }
 

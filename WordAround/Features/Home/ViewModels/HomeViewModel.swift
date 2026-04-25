@@ -1,9 +1,10 @@
 import SwiftUI
 import Combine
+import FirebaseAuth
 
 @MainActor
 final class HomeViewModel: ObservableObject {
-    @Published var todayGoal: FlashcardSet = FlashcardSet(
+    @Published var todayGoal: HomeSetPreviewItem = HomeSetPreviewItem(
         title: "Today's goal",
         subtitle: "6 words left",
         iconSystemName: "book.closed",
@@ -22,14 +23,27 @@ final class HomeViewModel: ObservableObject {
     )
 
     @Published var statCards: [StatCardItem] = []
-    @Published var continueLearningSet: FlashcardSet?
-    @Published var userSets: [FlashcardSet] = []
+    @Published var continueLearningSet: HomeSetPreviewItem?
+    @Published var userSets: [HomeSetPreviewItem] = []
+    @Published var isLoadingSets = false
+    @Published var errorMessage: String?
+
+    private let setService = FlashcardSetService()
 
     init() {
-        loadDashboard()
+        loadStaticDashboardData()
+
+        Task {
+            await loadUserSets()
+        }
     }
 
-    func loadDashboard() {
+    func refresh() async {
+        loadStaticDashboardData()
+        await loadUserSets()
+    }
+
+    private func loadStaticDashboardData() {
         statCards = [
             StatCardItem(
                 title: "Learned today",
@@ -68,60 +82,30 @@ final class HomeViewModel: ObservableObject {
                 blobColor: Color(red: 0.98, green: 0.86, blue: 0.62)
             )
         ]
+    }
 
-        continueLearningSet = FlashcardSet(
-            title: "Food",
-            subtitle: "In progress",
-            iconSystemName: "fork.knife",
-            currentValue: 18,
-            totalValue: 30,
-            unit: "words",
-            progress: 0.68,
-            accentColor: AppColors.foodAccent,
-            backgroundColor: AppColors.foodBackground,
-            progressBackgroundColor: Color(red: 0.96, green: 0.84, blue: 0.85),
-            titleColor: AppColors.foodTitle,
-            valueColor: AppColors.foodTitle,
-            subtitleColor: AppColors.textSecondary,
-            iconBackground: Color(red: 0.99, green: 0.50, blue: 0.51),
-            blobColor: Color(red: 0.98, green: 0.82, blue: 0.84)
-        )
+    func loadUserSets() async {
+        guard let user = Auth.auth().currentUser else {
+            userSets = []
+            continueLearningSet = nil
+            errorMessage = "User is not signed in."
+            return
+        }
 
-        userSets = [
-            FlashcardSet(
-                title: "Relatives",
-                subtitle: "18 words",
-                iconSystemName: "person.3.fill",
-                currentValue: 18,
-                totalValue: 18,
-                unit: "words",
-                progress: 1.0,
-                accentColor: AppColors.orangeAccent,
-                backgroundColor: Color(red: 0.97, green: 0.94, blue: 0.89),
-                progressBackgroundColor: Color(red: 0.96, green: 0.86, blue: 0.62),
-                titleColor: AppColors.orangeTitle,
-                valueColor: AppColors.orangeTitle,
-                subtitleColor: AppColors.textSecondary,
-                iconBackground: AppColors.orangeAccent,
-                blobColor: Color(red: 0.96, green: 0.86, blue: 0.62)
-            ),
-            FlashcardSet(
-                title: "Travel",
-                subtitle: "24 words",
-                iconSystemName: "suitcase.fill",
-                currentValue: 24,
-                totalValue: 24,
-                unit: "words",
-                progress: 1.0,
-                accentColor: AppColors.greenAccent,
-                backgroundColor: Color(red: 0.93, green: 0.98, blue: 0.95),
-                progressBackgroundColor: Color(red: 0.80, green: 0.93, blue: 0.84),
-                titleColor: AppColors.greenTitle,
-                valueColor: AppColors.greenTitle,
-                subtitleColor: AppColors.textSecondary,
-                iconBackground: AppColors.greenAccent,
-                blobColor: Color(red: 0.80, green: 0.93, blue: 0.84)
-            )
-        ]
+        isLoadingSets = true
+        errorMessage = nil
+
+        do {
+            let sets = try await setService.fetchSets(for: user.uid)
+            let previewItems = sets.map { HomeSetPreviewMapper.map($0) }
+
+            userSets = previewItems
+            continueLearningSet = previewItems.first
+
+            isLoadingSets = false
+        } catch {
+            isLoadingSets = false
+            errorMessage = error.localizedDescription
+        }
     }
 }

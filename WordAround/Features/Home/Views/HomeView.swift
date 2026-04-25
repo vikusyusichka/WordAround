@@ -9,34 +9,6 @@ struct HomeView: View {
     @State private var isCreateMenuPresented = false
     @State private var isCreateSetPresented = false
 
-    private var isPadLike: Bool {
-        Layout.isPadLike
-    }
-
-    private var isCompactPhone: Bool {
-        Layout.isCompactPhone
-    }
-
-    private var sidebarWidth: CGFloat {
-        if isPadLike { return Layout.sidebarWidthPad }
-        return isCompactPhone ? Layout.sidebarWidthCompact : Layout.sidebarWidthPhone
-    }
-
-    private var horizontalPadding: CGFloat {
-        isPadLike ? Layout.screenHorizontalPaddingPad : Layout.screenHorizontalPaddingPhone
-    }
-
-    private var topSpacing: CGFloat {
-        isPadLike ? Layout.topPaddingPad : Layout.topPaddingPhone
-    }
-
-    private var bottomBarBottomPadding: CGFloat {
-        isPadLike ? 20 : 10
-    }
-
-    private var bottomSafeSpacing: CGFloat {
-        isPadLike ? 132 : 118
-    }
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -47,20 +19,21 @@ struct HomeView: View {
                     title: headerTitle,
                     subtitle: headerSubtitle
                 )
-                .padding(.top, topSpacing)
-                .padding(.horizontal, horizontalPadding)
+                .padding(.top, Layout.homeTopSpacing)
+                .padding(.horizontal, Layout.homeHorizontalPadding)
 
-                HStack(alignment: .top, spacing: isPadLike ? 14 : 8) {
+                HStack(alignment: .top, spacing: Layout.homeHeaderSidebarSpacing) {
                     CategorySidebarView(selectedCategory: $selectedCategory)
-                        .frame(width: sidebarWidth)
+                        .frame(width: Layout.homeSidebarWidth)
 
                     mainContent
                 }
-                .padding(.top, topSpacing)
-                .padding(.horizontal, horizontalPadding)
+                .padding(.top, Layout.homeTopSpacing)
+                .padding(.horizontal, Layout.homeHorizontalPadding)
 
-                Spacer(minLength: bottomSafeSpacing)
+                Spacer(minLength: Layout.homeBottomSafeSpacing)
             }
+
             if isCreateMenuPresented {
                 createMenuOverlay
                     .transition(.opacity)
@@ -72,13 +45,23 @@ struct HomeView: View {
                 selectedCategory: $selectedCategory,
                 isCreateMenuPresented: $isCreateMenuPresented
             )
-            .padding(.horizontal, isPadLike ? 28 : 14)
-            .padding(.bottom, bottomBarBottomPadding)
+            .padding(.horizontal, Layout.homeBottomBarHorizontalPadding)
+            .padding(.bottom, Layout.homeBottomBarBottomPadding)
             .zIndex(2)
         }
         .ignoresSafeArea(edges: .bottom)
         .fullScreenCover(isPresented: $isCreateSetPresented) {
             CreateSetView()
+        }
+        .task {
+            await viewModel.refresh()
+        }
+        .onChange(of: isCreateSetPresented) { isPresented in
+            if !isPresented {
+                Task {
+                    await viewModel.refresh()
+                }
+            }
         }
     }
 }
@@ -102,16 +85,16 @@ private extension HomeView {
                     createMenuItem(
                         icon: "folder.fill",
                         title: "Folder",
-                        xOffset: isPadLike ? -210 : -150,
-                        yOffset: isPadLike ? -92 : -74,
+                        xOffset: Layout.homeCreateFolderOffset.width,
+                        yOffset: Layout.homeCreateFolderOffset.height,
                         delay: 0.04
                     )
 
                     createMenuItem(
                         icon: "square.stack.3d.up.fill",
                         title: "Set",
-                        xOffset: isPadLike ? -120 : -86,
-                        yOffset: isPadLike ? -182 : -144,
+                        xOffset: Layout.homeCreateSetOffset.width,
+                        yOffset: Layout.homeCreateSetOffset.height,
                         delay: 0.10
                     ) {
                         isCreateSetPresented = true
@@ -121,28 +104,28 @@ private extension HomeView {
                         icon: "doc.text.fill",
                         title: "Text",
                         xOffset: 0,
-                        yOffset: isPadLike ? -220 : -174,
+                        yOffset: Layout.homeCreateTextOffset.height,
                         delay: 0.16
                     )
 
                     createMenuItem(
                         icon: "waveform",
                         title: "Audio",
-                        xOffset: isPadLike ? 120 : 86,
-                        yOffset: isPadLike ? -182 : -144,
+                        xOffset: Layout.homeCreateAudioOffset.width,
+                        yOffset: Layout.homeCreateSetOffset.height,
                         delay: 0.22
                     )
 
                     createMenuItem(
                         icon: "pencil.and.scribble",
                         title: "Essay",
-                        xOffset: isPadLike ? 210 : 150,
-                        yOffset: isPadLike ? -92 : -74,
+                        xOffset: Layout.homeCreateEssayOffset.width,
+                        yOffset: Layout.homeCreateFolderOffset.height,
                         delay: 0.28
                     )
                 }
-                .frame(height: isPadLike ? 300 : 235)
-                .padding(.bottom, isPadLike ? 58 : 48)
+                .frame(height: Layout.homeCreateMenuFrameHeight)
+                .padding(.bottom, Layout.homeCreateMenuBottomPadding)
             }
         }
     }
@@ -164,31 +147,31 @@ private extension HomeView {
                 action()
             }
         } label: {
-            VStack(spacing: isPadLike ? 10 : 7) {
+            VStack(spacing: Layout.homeCreateMenuItemSpacing) {
                 ZStack {
                     Circle()
                         .fill(Color.white.opacity(0.98))
                         .frame(
-                            width: isPadLike ? 78 : 58,
-                            height: isPadLike ? 78 : 58
+                            width: Layout.homeCreateMenuCircleSize,
+                            height: Layout.homeCreateMenuCircleSize
                         )
                         .shadow(
                             color: Color.black.opacity(0.10),
-                            radius: isPadLike ? 16 : 12,
+                            radius: Layout.homeCreateMenuShadowRadius,
                             x: 0,
-                            y: isPadLike ? 9 : 7
+                            y: Layout.homeCreateMenuShadowY
                         )
 
                     Image(systemName: icon)
-                        .font(.system(size: isPadLike ? 30 : 22, weight: .semibold))
+                        .font(.system(size: Layout.homeCreateMenuIconSize, weight: .semibold))
                         .foregroundColor(Color(red: 0.17, green: 0.36, blue: 0.98))
                 }
 
                 Text(title)
-                    .font(.system(size: isPadLike ? 16 : 13, weight: .semibold, design: .rounded))
+                    .font(.system(size: Layout.homeCreateMenuTitleSize, weight: .semibold, design: .rounded))
                     .foregroundColor(Color(red: 0.17, green: 0.36, blue: 0.98))
             }
-            .frame(width: isPadLike ? 100 : 78, height: isPadLike ? 112 : 86)
+            .frame(width: Layout.homeCreateMenuItemWidth, height: Layout.homeCreateMenuItemHeight)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -209,7 +192,7 @@ private extension HomeView {
             value: isCreateMenuPresented
         )
     }
-    
+
     var headerTitle: String {
         switch selectedTab ?? .home {
         case .home:
@@ -251,29 +234,29 @@ private extension HomeView {
                 BlobShape()
                     .fill(AppColors.blobBlue.opacity(0.45))
                     .frame(
-                        width: isPadLike ? 180 : 120,
-                        height: isPadLike ? 240 : 160
+                        width: Layout.homeBackgroundBlobSize.width,
+                        height: Layout.homeBackgroundBlobSize.height
                     )
                     .rotationEffect(.degrees(18))
                     .position(
-                        x: isPadLike ? 90 : 28,
-                        y: size.height - (isPadLike ? 130 : 110)
+                        x: Layout.homeBackgroundBlobX,
+                        y: size.height - Layout.homeBackgroundBlobBottomOffset
                     )
 
                 Circle()
                     .fill(AppColors.blobGreen.opacity(0.65))
-                    .frame(width: isPadLike ? 16 : 12, height: isPadLike ? 16 : 12)
+                    .frame(width: Layout.homeBackgroundGreenDotSize, height: Layout.homeBackgroundGreenDotSize)
                     .position(
-                        x: isPadLike ? 142 : 78,
-                        y: size.height - (isPadLike ? 98 : 76)
+                        x: Layout.homeBackgroundGreenDotX,
+                        y: size.height - Layout.homeBackgroundGreenDotBottomOffset
                     )
 
                 Circle()
                     .fill(AppColors.blobBlue.opacity(0.8))
-                    .frame(width: isPadLike ? 14 : 10, height: isPadLike ? 14 : 10)
+                    .frame(width: Layout.homeBackgroundBlueDotSize, height: Layout.homeBackgroundBlueDotSize)
                     .position(
-                        x: isPadLike ? 210 : 128,
-                        y: size.height - (isPadLike ? 148 : 142)
+                        x: Layout.homeBackgroundBlueDotX,
+                        y: size.height - Layout.homeBackgroundBlueDotBottomOffset
                     )
             }
             .ignoresSafeArea()
@@ -282,7 +265,7 @@ private extension HomeView {
 
     var mainContent: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            VStack(alignment: .leading, spacing: isPadLike ? 16 : 12) {
+            VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                 switch selectedTab ?? .home {
                 case .home:
                     if let selectedCategory {
@@ -290,6 +273,7 @@ private extension HomeView {
                     } else {
                         dashboardContent
                     }
+
                 case .folders:
                     placeholderCard(
                         title: "Folders",
@@ -297,10 +281,7 @@ private extension HomeView {
                     )
 
                 case .flashcards:
-                    placeholderCard(
-                        title: "Flashcards",
-                        subtitle: "Тут буде список сетів і папок."
-                    )
+                    setsContent
 
                 case .create:
                     placeholderCard(
@@ -316,15 +297,15 @@ private extension HomeView {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.bottom, isPadLike ? 18 : 8)
+            .padding(.bottom, Layout.homeScrollBottomPadding)
         }
     }
 
     var dashboardContent: some View {
-        VStack(alignment: .leading, spacing: isPadLike ? 16 : 12) {
+        VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
             todayGoalCard
 
-            HStack(spacing: isPadLike ? 14 : 8) {
+            HStack(spacing: Layout.homeStatCardSpacing) {
                 ForEach(viewModel.statCards) { card in
                     StatCardView(item: card)
                 }
@@ -338,21 +319,69 @@ private extension HomeView {
 
             sectionHeader(title: "Your sets", actionTitle: "View all")
 
-            VStack(spacing: isPadLike ? 14 : 10) {
-                ForEach(viewModel.userSets) { set in
-                    SetItemView(
-                        title: set.title,
-                        subtitle: set.subtitle,
-                        iconSystemName: set.iconSystemName,
-                        accentColor: set.accentColor,
-                        titleColor: set.titleColor,
-                        backgroundColor: set.backgroundColor,
-                        trailingText: "Review",
-                        blobColor: set.blobColor
-                    )
-                }
+            setsList
+        }
+    }
+
+    var setsContent: some View {
+        VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
+            sectionHeader(title: "Your sets", actionTitle: "Create")
+
+            if viewModel.isLoadingSets {
+                placeholderCard(
+                    title: "Loading",
+                    subtitle: "Loading your flashcard sets..."
+                )
+            } else if viewModel.userSets.isEmpty {
+                emptySetsCard
+            } else {
+                setsList
+            }
+
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+                    .font(.system(size: Layout.homeErrorTextSize, weight: .semibold, design: .rounded))
+                    .foregroundColor(.red)
+                    .multilineTextAlignment(.leading)
+                    .padding(.top, 4)
             }
         }
+    }
+
+    var setsList: some View {
+        VStack(spacing: Layout.homeSetsListSpacing) {
+            ForEach(viewModel.userSets) { set in
+                SetItemView(
+                    title: set.title,
+                    subtitle: set.subtitle,
+                    iconSystemName: set.iconSystemName,
+                    accentColor: set.accentColor,
+                    titleColor: set.titleColor,
+                    backgroundColor: set.backgroundColor,
+                    trailingText: "Review",
+                    blobColor: set.blobColor
+                )
+            }
+        }
+    }
+
+    var emptySetsCard: some View {
+        RoundedRectangle(cornerRadius: 24, style: .continuous)
+            .fill(Color.white.opacity(0.92))
+            .overlay(
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("No sets yet")
+                        .font(.system(size: Layout.homeEmptySetTitleSize, weight: .bold, design: .rounded))
+                        .foregroundColor(AppColors.primaryBlueDark)
+
+                    Text("Create your first flashcard set using the plus button.")
+                        .font(.system(size: Layout.homePlaceholderSubtitleSize, weight: .medium, design: .rounded))
+                        .foregroundColor(AppColors.textSecondary)
+                }
+                .padding(Layout.homePlaceholderPadding),
+                alignment: .topLeading
+            )
+            .frame(height: Layout.homeEmptySetHeight)
     }
 
     var todayGoalCard: some View {
@@ -376,7 +405,7 @@ private extension HomeView {
         )
     }
 
-    func learningProgressCard(from set: FlashcardSet) -> some View {
+    func learningProgressCard(from set: HomeSetPreviewItem) -> some View {
         ProgressCardView(
             layout: .action,
             title: set.title,
@@ -400,22 +429,26 @@ private extension HomeView {
 
     func sectionTitle(_ title: String) -> some View {
         Text(title)
-            .font(.system(size: isPadLike ? 34 : 22, weight: .bold, design: .rounded))
+            .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
             .foregroundColor(AppColors.primaryBlueDark)
-            .padding(.top, isPadLike ? 20 : 13)
+            .padding(.top, Layout.homeSectionTitleTopPadding)
     }
 
     func sectionHeader(title: String, actionTitle: String) -> some View {
         HStack(alignment: .center) {
             Text(title)
-                .font(.system(size: isPadLike ? 34 : 22, weight: .bold, design: .rounded))
+                .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
 
             Spacer()
 
-            Button(action: {}) {
+            Button {
+                if actionTitle == "Create" {
+                    isCreateSetPresented = true
+                }
+            } label: {
                 Text(actionTitle)
-                    .font(.system(size: isPadLike ? 18 : 14, weight: .medium, design: .rounded))
+                    .font(.system(size: Layout.homeSectionActionSize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.primaryBlue)
             }
             .buttonStyle(.plain)
@@ -435,17 +468,17 @@ private extension HomeView {
             .overlay(
                 VStack(alignment: .leading, spacing: 10) {
                     Text(title)
-                        .font(.system(size: isPadLike ? 34 : 24, weight: .bold, design: .rounded))
+                        .font(.system(size: Layout.homePlaceholderTitleSize, weight: .bold, design: .rounded))
                         .foregroundColor(AppColors.primaryBlueDark)
 
                     Text(subtitle)
-                        .font(.system(size: isPadLike ? 18 : 15, weight: .medium, design: .rounded))
+                        .font(.system(size: Layout.homePlaceholderSubtitleSize, weight: .medium, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                 }
-                .padding(isPadLike ? 24 : 18),
+                .padding(Layout.homePlaceholderPadding),
                 alignment: .topLeading
             )
-            .frame(height: isPadLike ? 220 : 160)
+            .frame(height: Layout.homePlaceholderHeight)
     }
 }
 

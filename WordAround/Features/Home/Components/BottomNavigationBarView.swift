@@ -7,34 +7,26 @@ struct BottomNavigationBar: View {
 
     @State private var pressedTab: HomeTab?
 
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
-
-    private var isCompact: Bool {
-        !isPadLike && UIScreen.main.bounds.width < 390
-    }
-
     var body: some View {
         HStack(spacing: 0) {
             ForEach(HomeTab.allCases) { tab in
                 tabButton(for: tab)
             }
         }
-        .padding(.horizontal, isPadLike ? 16 : (isCompact ? 8 : 10))
-        .frame(height: isPadLike ? 110 : (isCompact ? 76 : 84))
+        .padding(.horizontal, Layout.bottomNavHorizontalPadding)
+        .frame(height: Layout.bottomNavHeight)
         .background(
-            RoundedRectangle(cornerRadius: isPadLike ? 34 : 26, style: .continuous)
+            RoundedRectangle(cornerRadius: Layout.bottomNavCornerRadius, style: .continuous)
                 .fill(Color.white.opacity(0.96))
                 .shadow(
                     color: Color.black.opacity(0.04),
-                    radius: isPadLike ? 18 : 12,
+                    radius: Layout.bottomNavShadowRadius,
                     x: 0,
-                    y: isPadLike ? 8 : 5
+                    y: Layout.bottomNavShadowY
                 )
         )
         .overlay(
-            RoundedRectangle(cornerRadius: isPadLike ? 34 : 26, style: .continuous)
+            RoundedRectangle(cornerRadius: Layout.bottomNavCornerRadius, style: .continuous)
                 .stroke(Color.white.opacity(0.95), lineWidth: 1)
         )
     }
@@ -62,19 +54,19 @@ struct BottomNavigationBar: View {
                 }
             }
         } label: {
-            VStack(spacing: isPadLike ? 8 : 5) {
+            VStack(spacing: Layout.bottomNavRegularStackSpacing) {
                 ZStack {
                     if isSelected {
                         Circle()
                             .fill(Color(red: 0.92, green: 0.94, blue: 1.0))
                             .frame(
-                                width: isPadLike ? 50 : (isCompact ? 36 : 40),
-                                height: isPadLike ? 50 : (isCompact ? 36 : 40)
+                                width: Layout.bottomNavSelectedCircleSize,
+                                height: Layout.bottomNavSelectedCircleSize
                             )
                     }
 
                     Image(systemName: iconName(for: tab, isSelected: isSelected))
-                        .font(.system(size: isPadLike ? 26 : (isCompact ? 18 : 20), weight: .medium))
+                        .font(.system(size: Layout.bottomNavIconSize, weight: .medium))
                         .foregroundColor(
                             isSelected
                             ? Color(red: 0.17, green: 0.36, blue: 0.98)
@@ -82,7 +74,7 @@ struct BottomNavigationBar: View {
                         )
                         .scaleEffect(isPressed ? 0.92 : 1.0)
                 }
-                .frame(height: isPadLike ? 52 : (isCompact ? 36 : 40))
+                .frame(height: Layout.bottomNavIconFrameHeight)
 
                 Circle()
                     .fill(
@@ -91,14 +83,14 @@ struct BottomNavigationBar: View {
                         : Color.clear
                     )
                     .frame(
-                        width: isPadLike ? 8 : 6,
-                        height: isPadLike ? 8 : 6
+                        width: Layout.bottomNavIndicatorSize,
+                        height: Layout.bottomNavIndicatorSize
                     )
                     .scaleEffect(isSelected ? 1.0 : 0.5)
                     .animation(.spring(response: 0.34, dampingFraction: 0.8), value: isSelected)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: isPadLike ? 82 : (isCompact ? 56 : 60))
+            .frame(height: Layout.bottomNavButtonHeight)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -127,25 +119,25 @@ struct BottomNavigationBar: View {
                 Circle()
                     .fill(Color(red: 0.17, green: 0.36, blue: 0.98))
                     .frame(
-                        width: isPadLike ? 72 : (isCompact ? 54 : 60),
-                        height: isPadLike ? 72 : (isCompact ? 54 : 60)
+                        width: Layout.bottomNavCreateCircleSize,
+                        height: Layout.bottomNavCreateCircleSize
                     )
                     .shadow(
                         color: Color(red: 0.17, green: 0.36, blue: 0.98).opacity(0.24),
-                        radius: isPadLike ? 14 : 10,
+                        radius: Layout.bottomNavCreateShadowRadius,
                         x: 0,
-                        y: isPadLike ? 8 : 6
+                        y: Layout.bottomNavCreateShadowY
                     )
 
                 Image(systemName: "plus")
-                    .font(.system(size: isPadLike ? 36 : (isCompact ? 26 : 30), weight: .regular))
+                    .font(.system(size: Layout.bottomNavCreateIconSize, weight: .regular))
                     .foregroundColor(.white)
                     .rotationEffect(.degrees(isCreateMenuPresented ? 45 : 0))
                     .animation(.spring(response: 0.35, dampingFraction: 0.75), value: isCreateMenuPresented)
             }
             .scaleEffect(isPressed ? 0.92 : 1.0)
             .frame(maxWidth: .infinity)
-            .frame(height: isPadLike ? 82 : (isCompact ? 56 : 60))
+            .frame(height: Layout.bottomNavButtonHeight)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

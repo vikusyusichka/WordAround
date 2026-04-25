@@ -4,65 +4,13 @@ struct CategorySidebarView: View {
     @Binding var selectedCategory: HomeCategory?
     @State private var pressedCategory: HomeCategory?
 
-    private var isCompact: Bool {
-        UIScreen.main.bounds.width < 400
-    }
-
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
-
-    private var sidebarSpacing: CGFloat {
-        isPadLike ? 16 : 12
-    }
-
-    private var indicatorWidth: CGFloat {
-        isPadLike ? 4 : 3
-    }
-
-    private var selectedIndicatorHeight: CGFloat {
-        isPadLike ? 96 : 80
-    }
-
-    private var unselectedIndicatorHeight: CGFloat {
-        isPadLike ? 82 : 68
-    }
-
-    private var circleSize: CGFloat {
-        isPadLike ? 58 : 50
-    }
-
-    private var unselectedCircleSize: CGFloat {
-        isPadLike ? 54 : 46
-    }
-
-    private var iconSize: CGFloat {
-        isPadLike ? 21 : 18
-    }
-
-    private var textSize: CGFloat {
-        isPadLike ? 10.5 : 9
-    }
-
-    private var contentWidth: CGFloat {
-        isPadLike ? 78 : 60
-    }
-
-    private var contentHeight: CGFloat {
-        isPadLike ? 98 : 78
-    }
-
-    private var labelSpacing: CGFloat {
-        isPadLike ? 10 : 8
-    }
-
     var body: some View {
-        VStack(spacing: sidebarSpacing) {
+        VStack(spacing: Layout.categorySidebarSpacing) {
             ForEach(HomeCategory.allCases) { category in
                 sidebarItem(for: category)
             }
         }
-        .padding(.vertical, isPadLike ? 6 : 2)
+        .padding(.vertical, Layout.categorySidebarVerticalPadding)
     }
 
     @ViewBuilder
@@ -70,7 +18,7 @@ struct CategorySidebarView: View {
         let isSelected = selectedCategory == category
         let isPressed = pressedCategory == category
 
-        HStack(spacing: isPadLike ? 8 : 6) {
+        HStack(spacing: Layout.categorySidebarItemSpacing) {
             ZStack {
                 Capsule()
                     .fill(
@@ -90,14 +38,18 @@ struct CategorySidebarView: View {
                         )
                     )
                     .frame(
-                        width: isSelected ? indicatorWidth : max(2, indicatorWidth - 1),
-                        height: isSelected ? selectedIndicatorHeight : unselectedIndicatorHeight
+                        width: isSelected
+                        ? Layout.categorySidebarIndicatorWidth
+                        : max(2, Layout.categorySidebarIndicatorWidth - 1),
+                        height: isSelected
+                        ? Layout.categorySidebarSelectedIndicatorHeight
+                        : Layout.categorySidebarUnselectedIndicatorHeight
                     )
                     .shadow(
                         color: isSelected
                         ? Color(red: 0.22, green: 0.42, blue: 0.96).opacity(0.16)
                         : .clear,
-                        radius: isPadLike ? 8 : 6,
+                        radius: Layout.categorySidebarIndicatorShadowRadius,
                         x: 0,
                         y: 0
                     )
@@ -106,15 +58,15 @@ struct CategorySidebarView: View {
                     Capsule()
                         .fill(Color.white.opacity(0.55))
                         .frame(
-                            width: isPadLike ? 1.8 : 1.4,
-                            height: isPadLike ? 22 : 18
+                            width: Layout.categorySidebarHighlightWidth,
+                            height: Layout.categorySidebarHighlightHeight
                         )
-                        .offset(y: isPadLike ? -18 : -16)
+                        .offset(y: Layout.categorySidebarHighlightOffsetY)
                 }
             }
-            .frame(width: indicatorWidth)
+            .frame(width: Layout.categorySidebarIndicatorWidth)
 
-            VStack(spacing: labelSpacing) {
+            VStack(spacing: Layout.categorySidebarLabelSpacing) {
                 ZStack {
                     Circle()
                         .fill(
@@ -133,20 +85,24 @@ struct CategorySidebarView: View {
                             )
                         )
                         .frame(
-                            width: isSelected ? circleSize : unselectedCircleSize,
-                            height: isSelected ? circleSize : unselectedCircleSize
+                            width: isSelected
+                            ? Layout.categorySidebarCircleSize
+                            : Layout.categorySidebarUnselectedCircleSize,
+                            height: isSelected
+                            ? Layout.categorySidebarCircleSize
+                            : Layout.categorySidebarUnselectedCircleSize
                         )
                         .shadow(
                             color: isSelected
                             ? Color(red: 0.24, green: 0.44, blue: 0.98).opacity(0.10)
                             : Color.black.opacity(0.02),
-                            radius: isPadLike ? 9 : 6,
+                            radius: Layout.categorySidebarCircleShadowRadius,
                             x: 0,
-                            y: isPadLike ? 4 : 3
+                            y: Layout.categorySidebarCircleShadowY
                         )
 
                     Image(systemName: category.icon)
-                        .font(.system(size: iconSize, weight: .medium))
+                        .font(.system(size: Layout.categorySidebarIconSize, weight: .medium))
                         .foregroundStyle(
                             isSelected
                             ? LinearGradient(
@@ -172,7 +128,7 @@ struct CategorySidebarView: View {
                 }
 
                 Text(category.title)
-                    .font(.system(size: textSize, weight: .bold, design: .rounded))
+                    .font(.system(size: Layout.categorySidebarTextSize, weight: .bold, design: .rounded))
                     .foregroundColor(
                         isSelected
                         ? Color(red: 0.20, green: 0.38, blue: 0.94)
@@ -182,12 +138,15 @@ struct CategorySidebarView: View {
                     .lineLimit(2)
                     .minimumScaleFactor(0.85)
             }
-            .frame(width: contentWidth, height: contentHeight)
+            .frame(
+                width: Layout.categorySidebarContentWidth,
+                height: Layout.categorySidebarContentHeight
+            )
             .scaleEffect(isPressed ? 0.975 : 1.0)
             .animation(.spring(response: 0.24, dampingFraction: 0.72), value: isPressed)
             .contentShape(Rectangle())
         }
-        .padding(.horizontal, isPadLike ? 6 : 4)
+        .padding(.horizontal, Layout.categorySidebarHorizontalPadding)
         .onTapGesture {
             withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
                 selectedCategory = category

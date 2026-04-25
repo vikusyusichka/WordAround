@@ -11,9 +11,6 @@ struct SetItemView: View {
     let showsArrow: Bool
     let blobColor: Color
 
-    private var isPadLike: Bool { Layout.isPadLike }
-    private var isCompactPhone: Bool { Layout.isCompactPhone }
-
     init(
         title: String,
         subtitle: String,
@@ -38,7 +35,7 @@ struct SetItemView: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: isPadLike ? 30 : 22, style: .continuous)
+            RoundedRectangle(cornerRadius: Layout.setItemCornerRadius, style: .continuous)
                 .fill(backgroundColor)
 
             HStack {
@@ -46,41 +43,50 @@ struct SetItemView: View {
 
                 SetCardBlobShape()
                     .fill(blobColor.opacity(0.85))
-                    .frame(width: isPadLike ? 130 : 92, height: isPadLike ? 86 : 62)
-                    .offset(x: isPadLike ? 28 : 22, y: isPadLike ? 18 : 14)
+                    .frame(
+                        width: Layout.setItemBlobSize.width,
+                        height: Layout.setItemBlobSize.height
+                    )
+                    .offset(
+                        x: Layout.setItemBlobOffset.width,
+                        y: Layout.setItemBlobOffset.height
+                    )
             }
 
             content
         }
-        .frame(height: isPadLike ? 104 : (isCompactPhone ? 78 : 86))
-        .clipShape(RoundedRectangle(cornerRadius: isPadLike ? 30 : 22, style: .continuous))
+        .frame(height: Layout.setItemHeight)
+        .clipShape(RoundedRectangle(cornerRadius: Layout.setItemCornerRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: isPadLike ? 30 : 22, style: .continuous)
+            RoundedRectangle(cornerRadius: Layout.setItemCornerRadius, style: .continuous)
                 .stroke(Color.white.opacity(0.95), lineWidth: 1)
         )
         .shadow(color: Color.black.opacity(0.04), radius: 10, x: 0, y: 6)
     }
 
     private var content: some View {
-        HStack(spacing: isPadLike ? 16 : 12) {
+        HStack(spacing: Layout.setItemContentSpacing) {
             ZStack {
                 Circle()
                     .fill(accentColor.opacity(0.95))
-                    .frame(width: isPadLike ? 62 : 46, height: isPadLike ? 62 : 46)
+                    .frame(
+                        width: Layout.setItemIconCircleSize,
+                        height: Layout.setItemIconCircleSize
+                    )
 
                 Image(systemName: iconSystemName)
-                    .font(.system(size: isPadLike ? 24 : 18, weight: .bold))
+                    .font(.system(size: Layout.setItemIconSize, weight: .bold))
                     .foregroundColor(.white)
             }
 
-            VStack(alignment: .leading, spacing: isPadLike ? 7 : 5) {
+            VStack(alignment: .leading, spacing: Layout.setItemTextStackSpacing) {
                 Text(title)
-                    .font(.system(size: isPadLike ? 24 : 18, weight: .bold, design: .rounded))
+                    .font(.system(size: Layout.setItemTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(titleColor)
                     .lineLimit(1)
 
                 Text(subtitle)
-                    .font(.system(size: isPadLike ? 16 : 13, weight: .medium, design: .rounded))
+                    .font(.system(size: Layout.setItemSubtitleSize, weight: .medium, design: .rounded))
                     .foregroundColor(accentColor)
                     .lineLimit(1)
             }
@@ -90,20 +96,20 @@ struct SetItemView: View {
             HStack(spacing: 5) {
                 if let trailingText {
                     Text(trailingText)
-                        .font(.system(size: isPadLike ? 16 : 12, weight: .medium, design: .rounded))
+                        .font(.system(size: Layout.setItemTrailingTextSize, weight: .medium, design: .rounded))
                         .foregroundColor(accentColor)
                 }
 
                 if showsArrow {
                     Image(systemName: "chevron.right")
-                        .font(.system(size: isPadLike ? 15 : 11, weight: .bold))
+                        .font(.system(size: Layout.setItemArrowSize, weight: .bold))
                         .foregroundColor(accentColor)
                 }
             }
             .fixedSize()
         }
-        .padding(.horizontal, isPadLike ? 18 : 14)
-        .padding(.vertical, isPadLike ? 18 : 14)
+        .padding(.horizontal, Layout.setItemHorizontalPadding)
+        .padding(.vertical, Layout.setItemVerticalPadding)
     }
 }
 

@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UIKit
 
 enum FlashcardSetPrivacy: String, CaseIterable, Identifiable {
     case privateSet = "Private"
@@ -17,13 +18,60 @@ enum FlashcardSetPrivacy: String, CaseIterable, Identifiable {
     }
 }
 
+enum SetColor: String, CaseIterable, Identifiable {
+    case red
+    case blue
+    case yellow
+    case green
+    case purple
+    case cyan
+
+    var id: String { rawValue }
+
+    var color: Color {
+        switch self {
+        case .red:
+            return AppColors.createSetRed
+        case .blue:
+            return AppColors.createSetBlue
+        case .yellow:
+            return AppColors.createSetYellow
+        case .green:
+            return AppColors.createSetGreen
+        case .purple:
+            return AppColors.createSetPurple
+        case .cyan:
+            return AppColors.createSetCyan
+        }
+    }
+
+    var hex: String {
+        switch self {
+        case .red:
+            return "#FF5759"
+        case .blue:
+            return "#4169F5"
+        case .yellow:
+            return "#F5B942"
+        case .green:
+            return "#3CCF91"
+        case .purple:
+            return "#9B6BFF"
+        case .cyan:
+            return "#35C8E8"
+        }
+    }
+}
+
 struct CreateFlashcardDraft: Identifiable {
     let id = UUID()
 
     var word: String = ""
     var translation: String = ""
     var example: String = ""
-    var imageName: String? = nil
+
+    var selectedImage: UIImage? = nil
+    var imageURL: String? = nil
 }
 
 struct CreateFlashcardSetDraft {
@@ -32,6 +80,8 @@ struct CreateFlashcardSetDraft {
     var privacy: FlashcardSetPrivacy = .privateSet
     var cards: [CreateFlashcardDraft] = [CreateFlashcardDraft()]
     var folderName: String? = nil
-    var selectedColor: Color = Color(red: 1.00, green: 0.34, blue: 0.35)
+    var selectedColor: SetColor = .red
     var selectedIcon: String = "rectangle.stack.fill"
 }
+
+

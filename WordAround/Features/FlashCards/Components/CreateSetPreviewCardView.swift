@@ -3,36 +3,39 @@ import SwiftUI
 struct CreateSetPreviewCardView: View {
     @ObservedObject var viewModel: CreateSetViewModel
 
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: Layout.createSetPreviewSectionSpacing) {
             sectionLabel("Preview")
 
-            HStack(spacing: isPadLike ? 18 : 12) {
+            HStack(spacing: Layout.createSetPreviewCardSpacing) {
                 iconView
 
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: Layout.createSetPreviewTitleStackSpacing) {
                     Text(viewModel.draft.title.isEmpty ? "New Set" : viewModel.draft.title)
-                        .font(.system(size: isPadLike ? 24 : 18, weight: .bold, design: .rounded))
-                        .foregroundStyle(AppColors.createSetDarkRed)
+                        .font(.system(
+                            size: Layout.createSetPreviewTitleSize,
+                            weight: .bold,
+                            design: .rounded
+                        ))
+                        .foregroundStyle(viewModel.theme.titleColor)
                         .lineLimit(1)
 
                     Text("\(viewModel.draft.cards.count) cards")
-                        .font(.system(size: isPadLike ? 17 : 14, weight: .semibold))
-                        .foregroundStyle(AppColors.createSetTextMuted)
+                        .font(.system(size: Layout.createSetPreviewSubtitleSize, weight: .semibold))
+                        .foregroundStyle(viewModel.theme.mutedTextColor)
                 }
 
                 Spacer()
             }
-            .padding(isPadLike ? 16 : 12)
+            .padding(Layout.createSetPreviewPadding)
             .background(
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(AppColors.createSetPreviewBackground)
+                RoundedRectangle(
+                    cornerRadius: Layout.createSetPreviewCornerRadius,
+                    style: .continuous
+                )
+                .fill(viewModel.theme.previewBackground)
             )
-            .shadow(color: AppColors.createSetShadow, radius: 12, x: 0, y: 6)
+            .shadow(color: viewModel.theme.shadowColor, radius: 12, x: 0, y: 6)
         }
     }
 
@@ -48,12 +51,15 @@ struct CreateSetPreviewCardView: View {
         } label: {
             ZStack {
                 Circle()
-                    .fill(AppColors.createSetSoftRed)
-                    .frame(width: isPadLike ? 76 : 52, height: isPadLike ? 76 : 52)
+                    .fill(viewModel.theme.softAccent)
+                    .frame(
+                        width: Layout.createSetPreviewIconCircleSize,
+                        height: Layout.createSetPreviewIconCircleSize
+                    )
 
                 Image(systemName: viewModel.draft.selectedIcon)
-                    .font(.system(size: isPadLike ? 32 : 22, weight: .bold))
-                    .foregroundStyle(AppColors.createSetRed)
+                    .font(.system(size: Layout.createSetPreviewIconSize, weight: .bold))
+                    .foregroundStyle(viewModel.theme.accent)
             }
         }
         .buttonStyle(.plain)
@@ -61,21 +67,25 @@ struct CreateSetPreviewCardView: View {
 
     private func sectionLabel(_ text: String) -> some View {
         Text(text)
-            .font(.system(size: isPadLike ? 16 : 13, weight: .bold))
-            .foregroundStyle(AppColors.createSetDarkRed)
+            .font(.system(size: Layout.createSetSectionLabelSize, weight: .bold))
+            .foregroundStyle(viewModel.theme.titleColor)
     }
 }
 
 #Preview {
-    let vm = CreateSetViewModel()
-    vm.draft.title = "French B1"
-    vm.draft.cards = [
-        CreateFlashcardDraft(),
-        CreateFlashcardDraft()
-    ]
-    vm.draft.selectedIcon = "book.closed.fill"
+    let vm: CreateSetViewModel = {
+        let vm = CreateSetViewModel()
+        vm.draft.title = "French B1"
+        vm.draft.cards = [
+            CreateFlashcardDraft(),
+            CreateFlashcardDraft()
+        ]
+        vm.draft.selectedIcon = "book.closed.fill"
+        vm.selectColor(.blue)
+        return vm
+    }()
 
-    return CreateSetPreviewCardView(viewModel: vm)
+    CreateSetPreviewCardView(viewModel: vm)
         .padding()
-        .background(AppColors.createSetBackground)
+        .background(vm.theme.screenBackground)
 }

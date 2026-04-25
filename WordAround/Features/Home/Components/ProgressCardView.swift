@@ -28,9 +28,6 @@ struct ProgressCardView: View {
 
     let actionSystemName: String?
 
-    private var isPadLike: Bool { Layout.isPadLike }
-    private var isCompactPhone: Bool { Layout.isCompactPhone }
-
     init(
         layout: ProgressCardLayout = .goal,
         title: String,
@@ -70,7 +67,7 @@ struct ProgressCardView: View {
     }
 
     var body: some View {
-        let cornerRadius: CGFloat = isPadLike ? 30 : 22
+        let cornerRadius: CGFloat = Layout.progressCardCornerRadius
 
         ZStack {
             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
@@ -97,9 +94,9 @@ struct ProgressCardView: View {
     private var cardHeight: CGFloat {
         switch layout {
         case .goal:
-            return isPadLike ? 230 : (isCompactPhone ? 154 : 170)
+            return Layout.progressGoalCardHeight
         case .action:
-            return isPadLike ? 190 : 130
+            return Layout.progressActionCardHeight
         }
     }
 
@@ -110,10 +107,10 @@ struct ProgressCardView: View {
             ProgressBlobShape()
                 .fill(blobColor.opacity(0.9))
                 .frame(
-                    width: layout == .goal ? (isPadLike ? 250 : 170) : (isPadLike ? 270 : 180),
-                    height: layout == .goal ? (isPadLike ? 280 : 170) : (isPadLike ? 70 : 56)
+                    width: layout == .goal ? Layout.progressGoalBlobSize.width : Layout.progressActionBlobSize.width,
+                    height: layout == .goal ? Layout.progressGoalBlobSize.height : Layout.progressActionBlobSize.height
                 )
-                .padding(.trailing, isPadLike ? -24 : -24)
+                .padding(.trailing, -24)
                 .padding(.top, layout == .goal ? 20 : -16)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
@@ -121,66 +118,66 @@ struct ProgressCardView: View {
 
     private var goalLayout: some View {
         ZStack(alignment: .trailing) {
-            VStack(alignment: .leading, spacing: isPadLike ? 12 : 8) {
+            VStack(alignment: .leading, spacing: Layout.progressLayoutSpacing) {
                 HStack(spacing: 6) {
                     Text(title)
-                        .font(.system(size: isPadLike ? 21 : 15, weight: .semibold, design: .rounded))
+                        .font(.system(size: Layout.progressGoalTitleSize, weight: .semibold, design: .rounded))
                         .foregroundColor(titleColor)
 
                     Image(systemName: "sparkles")
-                        .font(.system(size: isPadLike ? 12 : 9, weight: .medium))
+                        .font(.system(size: Layout.progressGoalSparkleSize, weight: .medium))
                         .foregroundColor(Color(red: 0.66, green: 0.72, blue: 1.0))
                 }
 
                 valueLine
 
                 progressSection
-                    .frame(width: isPadLike ? 190 : 116, alignment: .leading)
+                    .frame(width: Layout.progressGoalProgressWidth, alignment: .leading)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, isPadLike ? 28 : 18)
-            .padding(.trailing, isPadLike ? 180 : 112)
-            .padding(.vertical, isPadLike ? 24 : 16)
+            .padding(.leading, Layout.progressGoalLeadingPadding)
+            .padding(.trailing, Layout.progressGoalTrailingPadding)
+            .padding(.vertical, Layout.progressGoalVerticalPadding)
 
             ZStack {
                 Circle()
                     .fill(iconBackground.opacity(0.96))
-                    .frame(width: isPadLike ? 98 : 78, height: isPadLike ? 98 : 78)
+                    .frame(width: Layout.progressGoalIconCircleSize, height: Layout.progressGoalIconCircleSize)
 
                 Image(systemName: iconSystemName)
-                    .font(.system(size: isPadLike ? 34 : 29, weight: .medium))
+                    .font(.system(size: Layout.progressGoalIconSize, weight: .medium))
                     .foregroundColor(tint)
             }
-            .frame(width: isPadLike ? 180 : 136, height: isPadLike ? 180 : 136)
-            .padding(.trailing, isPadLike ? 18 : 8)
+            .frame(width: Layout.progressGoalIconContainerSize.width, height: Layout.progressGoalIconContainerSize.height)
+            .padding(.trailing, Layout.progressGoalIconTrailingPadding)
         }
     }
 
     private var actionLayout: some View {
-        HStack(spacing: isPadLike ? 20 : 12) {
+        HStack(spacing: Layout.progressActionSpacing) {
             ZStack {
                 Circle()
                     .fill(iconBackground)
-                    .frame(width: isPadLike ? 74 : 52, height: isPadLike ? 74 : 52)
+                    .frame(width: Layout.progressActionIconCircleSize, height: Layout.progressActionIconCircleSize)
 
                 Image(systemName: iconSystemName)
-                    .font(.system(size: isPadLike ? 28 : 20, weight: .bold))
+                    .font(.system(size: Layout.progressActionIconSize, weight: .bold))
                     .foregroundColor(.white)
             }
 
-            VStack(alignment: .leading, spacing: isPadLike ? 10 : 6) {
+            VStack(alignment: .leading, spacing: Layout.progressSectionSpacing) {
                 Text(title)
-                    .font(.system(size: isPadLike ? 34 : 25, weight: .bold, design: .rounded))
+                    .font(.system(size: Layout.progressActionTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(titleColor)
 
                 Text(subtitle)
-                    .font(.system(size: isPadLike ? 20 : 17, weight: .medium, design: .rounded))
+                    .font(.system(size: Layout.progressActionSubtitleSize, weight: .medium, design: .rounded))
                     .foregroundColor(tint)
 
                 progressBar
 
                 Text("\(currentValue) / \(totalValue) \(unit)")
-                    .font(.system(size: isPadLike ? 18 : 15, weight: .medium, design: .rounded))
+                    .font(.system(size: Layout.progressSectionSubtitleSize, weight: .medium, design: .rounded))
                     .foregroundColor(subtitleColor)
             }
 
@@ -189,40 +186,40 @@ struct ProgressCardView: View {
             if let actionSystemName {
                 Button(action: {}) {
                     ZStack {
-                        RoundedRectangle(cornerRadius: isPadLike ? 18 : 14, style: .continuous)
+                        RoundedRectangle(cornerRadius: Layout.progressActionButtonCornerRadius, style: .continuous)
                             .fill(tint)
-                            .frame(width: isPadLike ? 62 : 46, height: isPadLike ? 62 : 46)
+                            .frame(width: Layout.progressActionButtonSize, height: Layout.progressActionButtonSize)
 
                         Image(systemName: actionSystemName)
-                            .font(.system(size: isPadLike ? 24 : 18, weight: .semibold))
+                            .font(.system(size: Layout.progressActionButtonIconSize, weight: .semibold))
                             .foregroundColor(.white)
                     }
                 }
                 .buttonStyle(.plain)
             }
         }
-        .padding(.horizontal, isPadLike ? 24 : 16)
-        .padding(.vertical, isPadLike ? 24 : 18)
+        .padding(.horizontal, Layout.progressActionHorizontalPadding)
+        .padding(.vertical, Layout.progressActionVerticalPadding)
     }
 
     private var valueLine: some View {
         HStack(alignment: .lastTextBaseline, spacing: 3) {
             Text("\(currentValue)")
-                .font(.system(size: isPadLike ? 56 : 38, weight: .bold, design: .rounded))
+                .font(.system(size: Layout.progressValueCurrentSize, weight: .bold, design: .rounded))
                 .foregroundColor(valueColor)
 
             Text("/ \(totalValue) \(unit)")
-                .font(.system(size: isPadLike ? 25 : 15, weight: .medium, design: .rounded))
+                .font(.system(size: Layout.progressValueTotalSize, weight: .medium, design: .rounded))
                 .foregroundColor(subtitleColor)
         }
     }
 
     private var progressSection: some View {
-        VStack(alignment: .leading, spacing: isPadLike ? 10 : 6) {
+        VStack(alignment: .leading, spacing: Layout.progressSectionSpacing) {
             progressBar
 
             Text(subtitle)
-                .font(.system(size: isPadLike ? 18 : 15, weight: .medium, design: .rounded))
+                .font(.system(size: Layout.progressSectionSubtitleSize, weight: .medium, design: .rounded))
                 .foregroundColor(tint)
         }
     }
@@ -238,7 +235,7 @@ struct ProgressCardView: View {
                     .frame(width: geo.size.width * max(0, min(progress, 1)))
             }
         }
-        .frame(height: isPadLike ? 10 : 7)
+        .frame(height: Layout.progressBarHeight)
     }
 }
 
