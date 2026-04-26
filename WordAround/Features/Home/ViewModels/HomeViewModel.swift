@@ -4,7 +4,56 @@ import FirebaseAuth
 
 @MainActor
 final class HomeViewModel: ObservableObject {
-    @Published var todayGoal: HomeSetPreviewItem = HomeSetPreviewItem(
+    @Published var todayGoal: HomeSetPreviewItem
+    @Published var statCards: [StatCardItem] = []
+    @Published var continueLearningSet: HomeSetPreviewItem?
+    @Published var userSets: [HomeSetPreviewItem] = []
+    @Published var isLoadingSets = false
+    @Published var errorMessage: String?
+
+    private let setService = FlashcardSetService()
+
+    // Static dashboard data created once — never recreated unless data changes
+    private static let staticStatCards: [StatCardItem] = [
+        StatCardItem(
+            title: "Learned today",
+            value: "24",
+            subtitle: "words",
+            iconSystemName: "chart.bar.fill",
+            accentColor: Color(red: 0.64, green: 0.54, blue: 0.98),
+            titleColor: Color(red: 0.58, green: 0.47, blue: 0.98),
+            valueColor: AppColors.primaryBlueDark,
+            subtitleColor: AppColors.textSecondary,
+            backgroundColor: Color(red: 0.96, green: 0.94, blue: 1.0),
+            blobColor: Color(red: 0.86, green: 0.81, blue: 1.0)
+        ),
+        StatCardItem(
+            title: "Accuracy",
+            value: "87%",
+            subtitle: "Great job!",
+            iconSystemName: "target",
+            accentColor: Color(red: 0.42, green: 0.80, blue: 0.67),
+            titleColor: Color(red: 0.33, green: 0.73, blue: 0.58),
+            valueColor: AppColors.primaryBlueDark,
+            subtitleColor: Color(red: 0.10, green: 0.66, blue: 0.38),
+            backgroundColor: Color(red: 0.93, green: 0.99, blue: 0.97),
+            blobColor: Color(red: 0.77, green: 0.92, blue: 0.85)
+        ),
+        StatCardItem(
+            title: "Streak",
+            value: "5",
+            subtitle: "days",
+            iconSystemName: "flame.fill",
+            accentColor: Color(red: 0.98, green: 0.68, blue: 0.20),
+            titleColor: Color(red: 0.67, green: 0.36, blue: 0.02),
+            valueColor: Color(red: 0.67, green: 0.36, blue: 0.02),
+            subtitleColor: AppColors.textSecondary,
+            backgroundColor: Color(red: 1.0, green: 0.96, blue: 0.89),
+            blobColor: Color(red: 0.98, green: 0.86, blue: 0.62)
+        )
+    ]
+
+    private static let staticTodayGoal = HomeSetPreviewItem(
         sourceSet: nil,
         title: "Today's goal",
         subtitle: "6 words left",
@@ -23,16 +72,9 @@ final class HomeViewModel: ObservableObject {
         blobColor: Color(red: 0.82, green: 0.86, blue: 0.98)
     )
 
-    @Published var statCards: [StatCardItem] = []
-    @Published var continueLearningSet: HomeSetPreviewItem?
-    @Published var userSets: [HomeSetPreviewItem] = []
-    @Published var isLoadingSets = false
-    @Published var errorMessage: String?
-
-    private let setService = FlashcardSetService()
-
     init() {
-        loadStaticDashboardData()
+        todayGoal = Self.staticTodayGoal
+        statCards = Self.staticStatCards
 
         Task {
             await loadUserSets()
@@ -40,49 +82,8 @@ final class HomeViewModel: ObservableObject {
     }
 
     func refresh() async {
-        loadStaticDashboardData()
+        // Static data never changes — only reload user sets
         await loadUserSets()
-    }
-
-    private func loadStaticDashboardData() {
-        statCards = [
-            StatCardItem(
-                title: "Learned today",
-                value: "24",
-                subtitle: "words",
-                iconSystemName: "chart.bar.fill",
-                accentColor: Color(red: 0.64, green: 0.54, blue: 0.98),
-                titleColor: Color(red: 0.58, green: 0.47, blue: 0.98),
-                valueColor: AppColors.primaryBlueDark,
-                subtitleColor: AppColors.textSecondary,
-                backgroundColor: Color(red: 0.96, green: 0.94, blue: 1.0),
-                blobColor: Color(red: 0.86, green: 0.81, blue: 1.0)
-            ),
-            StatCardItem(
-                title: "Accuracy",
-                value: "87%",
-                subtitle: "Great job!",
-                iconSystemName: "target",
-                accentColor: Color(red: 0.42, green: 0.80, blue: 0.67),
-                titleColor: Color(red: 0.33, green: 0.73, blue: 0.58),
-                valueColor: AppColors.primaryBlueDark,
-                subtitleColor: Color(red: 0.10, green: 0.66, blue: 0.38),
-                backgroundColor: Color(red: 0.93, green: 0.99, blue: 0.97),
-                blobColor: Color(red: 0.77, green: 0.92, blue: 0.85)
-            ),
-            StatCardItem(
-                title: "Streak",
-                value: "5",
-                subtitle: "days",
-                iconSystemName: "flame.fill",
-                accentColor: Color(red: 0.98, green: 0.68, blue: 0.20),
-                titleColor: Color(red: 0.67, green: 0.36, blue: 0.02),
-                valueColor: Color(red: 0.67, green: 0.36, blue: 0.02),
-                subtitleColor: AppColors.textSecondary,
-                backgroundColor: Color(red: 1.0, green: 0.96, blue: 0.89),
-                blobColor: Color(red: 0.98, green: 0.86, blue: 0.62)
-            )
-        ]
     }
 
     func loadUserSets() async {
@@ -102,7 +103,6 @@ final class HomeViewModel: ObservableObject {
 
             userSets = previewItems
             continueLearningSet = previewItems.first
-
             isLoadingSets = false
         } catch {
             isLoadingSets = false
@@ -135,12 +135,11 @@ final class HomeViewModel: ObservableObject {
 
     private func iconName(from icon: SetIconType) -> String {
         switch icon {
-        case .systemName(let name):
-            return name
-        default:
-            return "rectangle.stack.fill"
+        case .systemName(let name): return name
+        default: return "rectangle.stack.fill"
         }
     }
+
     func deleteSet(_ set: HomeSetPreviewItem) async {
         guard let user = Auth.auth().currentUser else {
             errorMessage = "User is not signed in."
@@ -155,9 +154,7 @@ final class HomeViewModel: ObservableObject {
         do {
             try await setService.deleteSet(id: sourceSet.id, ownerUID: user.uid)
 
-            userSets.removeAll { item in
-                item.sourceSet?.id == sourceSet.id
-            }
+            userSets.removeAll { $0.sourceSet?.id == sourceSet.id }
 
             if continueLearningSet?.sourceSet?.id == sourceSet.id {
                 continueLearningSet = userSets.first

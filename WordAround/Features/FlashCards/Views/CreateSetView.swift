@@ -4,22 +4,16 @@ struct CreateSetView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = CreateSetViewModel()
 
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
-
     var body: some View {
         ZStack {
             viewModel.theme.screenBackground
                 .ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: isPadLike ? 18 : 14) {
+                VStack(spacing: Layout.isPadLike ? 18 : 14) {
                     CreateSetHeaderView(
                         viewModel: viewModel,
-                        onBack: {
-                            dismiss()
-                        }
+                        onBack: { dismiss() }
                     )
 
                     CreateSetInfoSectionView(viewModel: viewModel)
@@ -37,20 +31,25 @@ struct CreateSetView: View {
                             .padding(.horizontal, 12)
                     }
                 }
-                .padding(.horizontal, isPadLike ? 20 : 16)
-                .padding(.top, isPadLike ? 12 : 8)
+                .padding(.horizontal, Layout.isPadLike ? 20 : 16)
+                .padding(.top, Layout.isPadLike ? 12 : 8)
                 .padding(.bottom, 28)
             }
+            // Фікс: ScrollView поступається клавіатурі без layout recalculation
+            .scrollDismissesKeyboard(.interactively)
         }
+        // Фікс: клавіатура піднімається плавно не перераховуючи layout
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .onChange(of: viewModel.didCreateSet) { didCreate in
-            if didCreate {
-                dismiss()
-            }
+            if didCreate { dismiss() }
         }
     }
 
     private var createButton: some View {
         Button {
+            // Закриваємо клавіатуру ДО збереження — прибирає затримку
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                            to: nil, from: nil, for: nil)
             Task {
                 await viewModel.createSet()
             }
@@ -59,24 +58,19 @@ struct CreateSetView: View {
                 Spacer()
 
                 Text(viewModel.isSaving ? "Saving..." : "Create Set")
-                    .font(.system(size: isPadLike ? 21 : 18, weight: .semibold))
+                    .font(.system(size: Layout.isPadLike ? 21 : 18, weight: .semibold))
 
                 Spacer()
 
                 Image(systemName: "arrow.right")
-                    .font(.system(size: isPadLike ? 22 : 19, weight: .medium))
+                    .font(.system(size: Layout.isPadLike ? 22 : 19, weight: .medium))
             }
             .foregroundStyle(Color.white)
             .padding(.horizontal, 24)
-            .frame(height: isPadLike ? 66 : 56)
+            .frame(height: Layout.isPadLike ? 66 : 56)
             .background(viewModel.theme.accent)
-            .clipShape(RoundedRectangle(cornerRadius: isPadLike ? 28 : 24, style: .continuous))
-            .shadow(
-                color: viewModel.theme.shadowColor,
-                radius: 12,
-                x: 0,
-                y: 8
-            )
+            .clipShape(RoundedRectangle(cornerRadius: Layout.isPadLike ? 28 : 24, style: .continuous))
+            .shadow(color: viewModel.theme.shadowColor, radius: 12, x: 0, y: 8)
         }
         .buttonStyle(.plain)
         .disabled(viewModel.isSaving)

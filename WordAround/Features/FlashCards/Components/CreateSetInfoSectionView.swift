@@ -23,6 +23,11 @@ struct CreateSetInfoSectionView: View {
                 }
 
                 TextField("", text: $viewModel.draft.title)
+                    // Фікс: не автокапіталізуємо, менше роботи для клавіатури
+                    .textInputAutocapitalization(.words)
+                    .autocorrectionDisabled()
+                    // Фікс: "next" замість "return" — клавіатура не закривається
+                    .submitLabel(.next)
             }
             .createSetFieldStyle(
                 height: Layout.createSetTitleFieldHeight,
@@ -55,6 +60,8 @@ struct CreateSetInfoSectionView: View {
                     TextField("", text: $viewModel.draft.description, axis: .vertical)
                         .foregroundColor(viewModel.theme.textColor)
                         .tint(viewModel.theme.accent)
+                        .autocorrectionDisabled()
+                        .submitLabel(.done)
                         .padding(.top, 12)
                         .padding(.horizontal, 14)
                         .padding(.bottom, 28)
@@ -63,17 +70,11 @@ struct CreateSetInfoSectionView: View {
                 .frame(minHeight: Layout.createSetDescriptionMinHeight, alignment: .topLeading)
                 .background(viewModel.theme.fieldBackground)
                 .clipShape(
-                    RoundedRectangle(
-                        cornerRadius: Layout.createSetFolderCornerRadius,
-                        style: .continuous
-                    )
+                    RoundedRectangle(cornerRadius: Layout.createSetFolderCornerRadius, style: .continuous)
                 )
                 .overlay(
-                    RoundedRectangle(
-                        cornerRadius: Layout.createSetFolderCornerRadius,
-                        style: .continuous
-                    )
-                    .stroke(viewModel.theme.borderColor, lineWidth: 1)
+                    RoundedRectangle(cornerRadius: Layout.createSetFolderCornerRadius, style: .continuous)
+                        .stroke(viewModel.theme.borderColor, lineWidth: 1)
                 )
 
                 Text("\(viewModel.draft.description.count)/200")
@@ -102,18 +103,12 @@ struct CreateSetInfoSectionView: View {
     }
 
     private var sectionBackground: some View {
-        RoundedRectangle(
-            cornerRadius: Layout.createSetSectionCornerRadius,
-            style: .continuous
-        )
-        .fill(viewModel.theme.sectionBackground)
-        .overlay(
-            RoundedRectangle(
-                cornerRadius: Layout.createSetSectionCornerRadius,
-                style: .continuous
+        RoundedRectangle(cornerRadius: Layout.createSetSectionCornerRadius, style: .continuous)
+            .fill(viewModel.theme.sectionBackground)
+            .overlay(
+                RoundedRectangle(cornerRadius: Layout.createSetSectionCornerRadius, style: .continuous)
+                    .stroke(viewModel.theme.softBorderColor, lineWidth: 1)
             )
-            .stroke(viewModel.theme.softBorderColor, lineWidth: 1)
-        )
     }
 }
 

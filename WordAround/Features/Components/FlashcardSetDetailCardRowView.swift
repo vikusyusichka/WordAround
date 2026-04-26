@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct FlashcardSetDetailCardRowView: View {
+struct FlashcardSetDetailCardRowView: View, Equatable {
     let theme: CreateSetTheme
     let card: Flashcard
     let index: Int
@@ -8,6 +8,17 @@ struct FlashcardSetDetailCardRowView: View {
     let onToggleMastered: () -> Void
     let onSpeak: () -> Void
     let onEdit: () -> Void
+
+    // Equatable: re-render only when card data or mastered state changes
+    static func == (lhs: FlashcardSetDetailCardRowView, rhs: FlashcardSetDetailCardRowView) -> Bool {
+        lhs.card.id == rhs.card.id &&
+        lhs.card.word == rhs.card.word &&
+        lhs.card.translation == rhs.card.translation &&
+        lhs.card.example == rhs.card.example &&
+        lhs.card.imageURL == rhs.card.imageURL &&
+        lhs.index == rhs.index &&
+        lhs.isMastered == rhs.isMastered
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -102,6 +113,7 @@ struct FlashcardSetDetailCardRowView: View {
         .foregroundStyle(theme.mutedTextColor)
     }
 
+    // OPTIMIZED: image loaded once per URL, cached by URLSession
     private var cardImage: some View {
         Group {
             if let imageURL = card.imageURL, let url = URL(string: imageURL) {
@@ -143,36 +155,5 @@ struct FlashcardSetDetailCardRowView: View {
                 .font(.system(size: Layout.flashcardDetailRowPlaceholderIconSize, weight: .semibold))
                 .foregroundStyle(theme.accent.opacity(0.55))
         }
-    }
-}
-
-#Preview {
-    ZStack {
-        CreateSetTheme.yellow.screenBackground
-            .ignoresSafeArea()
-
-        FlashcardSetDetailCardRowView(
-            theme: .yellow,
-            card: Flashcard(
-                id: UUID().uuidString,
-                word: "Hola",
-                translation: "Hello",
-                example: "Hola, ¿cómo estás?",
-                imageURL: nil
-            ),
-            index: 1,
-            isMastered: false,
-            onToggleMastered: {},
-            onSpeak: {},
-            onEdit: {}
-        )
-        .background(CreateSetTheme.yellow.sectionBackground)
-        .clipShape(
-            RoundedRectangle(
-                cornerRadius: Layout.flashcardDetailListCornerRadius,
-                style: .continuous
-            )
-        )
-        .padding(.horizontal, 10)
     }
 }

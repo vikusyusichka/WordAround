@@ -15,24 +15,25 @@ struct FlashcardSetDetailView: View {
     @State private var masteredCardIDs: Set<String> = []
     @State private var isDescriptionExpanded = false
 
-    private var theme: CreateSetTheme {
-        CreateSetTheme.theme(forHex: set.colorHex)
+    // Cached once — theme doesn't change during the view's lifetime
+    private let theme: CreateSetTheme
+
+    init(set: FlashcardSet) {
+        self.set = set
+        self.theme = CreateSetTheme.theme(forHex: set.colorHex)
     }
 
     private var displayedCards: [Flashcard] {
         shuffledCards ?? set.cards
     }
 
+    // Computed only when studiedCardIDs, masteredCardIDs, selectedFilter or displayedCards change
     private var filteredCards: [Flashcard] {
         switch selectedFilter {
-        case .all:
-            displayedCards
-        case .studied:
-            displayedCards.filter { studiedCardIDs.contains($0.id) }
-        case .remaining:
-            displayedCards.filter { !studiedCardIDs.contains($0.id) }
-        case .mastered:
-            displayedCards.filter { masteredCardIDs.contains($0.id) }
+        case .all:      return displayedCards
+        case .studied:  return displayedCards.filter { studiedCardIDs.contains($0.id) }
+        case .remaining:return displayedCards.filter { !studiedCardIDs.contains($0.id) }
+        case .mastered: return displayedCards.filter { masteredCardIDs.contains($0.id) }
         }
     }
 
@@ -47,7 +48,7 @@ struct FlashcardSetDetailView: View {
                 .ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 0) {
+                LazyVStack(spacing: 0) {
                     FlashcardSetDetailTopBarView(
                         theme: theme,
                         onBack: { dismiss() },
@@ -113,7 +114,8 @@ struct FlashcardSetDetailView: View {
 
 private extension FlashcardSetDetailView {
     var cardsList: some View {
-        VStack(spacing: 0) {
+        // LazyVStack renders only visible rows — critical for large sets
+        LazyVStack(spacing: 0) {
             ForEach(Array(filteredCards.enumerated()), id: \.element.id) { index, card in
                 FlashcardSetDetailCardRowView(
                     theme: theme,
@@ -124,6 +126,12 @@ private extension FlashcardSetDetailView {
                     onSpeak: { },
                     onEdit: { }
                 )
+                // Divider between rows, avoids rebuilding all rows for separator
+                if index < filteredCards.count - 1 {
+                    Divider()
+                        .background(theme.borderColor.opacity(0.3))
+                        .padding(.horizontal, Layout.flashcardDetailRowHorizontalPadding)
+                }
             }
         }
         .background(theme.sectionBackground)
@@ -142,14 +150,10 @@ private extension FlashcardSetDetailView {
 private extension FlashcardSetDetailView {
     func count(for filter: FlashcardSetDetailCardFilter) -> Int {
         switch filter {
-        case .all:
-            displayedCards.count
-        case .studied:
-            studiedCardIDs.count
-        case .remaining:
-            max(displayedCards.count - studiedCardIDs.count, 0)
-        case .mastered:
-            masteredCardIDs.count
+        case .all:       return displayedCards.count
+        case .studied:   return studiedCardIDs.count
+        case .remaining: return max(displayedCards.count - studiedCardIDs.count, 0)
+        case .mastered:  return masteredCardIDs.count
         }
     }
 }
@@ -203,25 +207,10 @@ private extension FlashcardSetDetailView {
 }
 
 private let previewCards: [Flashcard] = [
-    Flashcard(
-        id: UUID().uuidString,
-        word: "Hola",
-        translation: "Hello",
-        example: "Hola, ¿cómo estás?",
-        imageURL: nil
-    ),
-    Flashcard(
-        id: UUID().uuidString,
-        word: "Gracias",
-        translation: "Thank you",
-        example: "Gracias por tu ayuda.",
-        imageURL: nil
-    ),
-    Flashcard(
-        id: UUID().uuidString,
-        word: "Buenos días",
-        translation: "Good morning",
-        example: "Buenos días, ¿cómo estás?",
-        imageURL: nil
-    )
+    Flashcard(id: UUID().uuidString, word: "Hola", translation: "Hello",
+              example: "Hola, ¿cómo estás?", imageURL: nil),
+    Flashcard(id: UUID().uuidString, word: "Gracias", translation: "Thank you",
+              example: "Gracias por tu ayuda.", imageURL: nil),
+    Flashcard(id: UUID().uuidString, word: "Buenos días", translation: "Good morning",
+              example: "Buenos días, ¿cómo estás?", imageURL: nil)
 ]

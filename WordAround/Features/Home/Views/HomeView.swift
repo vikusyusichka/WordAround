@@ -13,6 +13,7 @@ struct HomeView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             backgroundLayer
+                .ignoresSafeArea()
 
             VStack(spacing: 0) {
                 HomeHeaderView(
@@ -69,160 +70,28 @@ struct HomeView: View {
     }
 }
 
+// MARK: - Subviews
+
 private extension HomeView {
-    var createMenuOverlay: some View {
-        ZStack {
-            Rectangle()
-                .fill(.ultraThinMaterial)
-                .ignoresSafeArea()
-                .onTapGesture {
-                    withAnimation(.spring(response: 0.36, dampingFraction: 0.82)) {
-                        isCreateMenuPresented = false
-                    }
-                }
 
-            VStack {
-                Spacer()
-
-                ZStack {
-                    createMenuItem(
-                        icon: "folder.fill",
-                        title: "Folder",
-                        xOffset: Layout.homeCreateFolderOffset.width,
-                        yOffset: Layout.homeCreateFolderOffset.height,
-                        delay: 0.04
-                    )
-
-                    createMenuItem(
-                        icon: "square.stack.3d.up.fill",
-                        title: "Set",
-                        xOffset: Layout.homeCreateSetOffset.width,
-                        yOffset: Layout.homeCreateSetOffset.height,
-                        delay: 0.10
-                    ) {
-                        isCreateSetPresented = true
-                    }
-
-                    createMenuItem(
-                        icon: "doc.text.fill",
-                        title: "Text",
-                        xOffset: 0,
-                        yOffset: Layout.homeCreateTextOffset.height,
-                        delay: 0.16
-                    )
-
-                    createMenuItem(
-                        icon: "waveform",
-                        title: "Audio",
-                        xOffset: Layout.homeCreateAudioOffset.width,
-                        yOffset: Layout.homeCreateSetOffset.height,
-                        delay: 0.22
-                    )
-
-                    createMenuItem(
-                        icon: "pencil.and.scribble",
-                        title: "Essay",
-                        xOffset: Layout.homeCreateEssayOffset.width,
-                        yOffset: Layout.homeCreateFolderOffset.height,
-                        delay: 0.28
-                    )
-                }
-                .frame(height: Layout.homeCreateMenuFrameHeight)
-                .padding(.bottom, Layout.homeCreateMenuBottomPadding)
-            }
-        }
-    }
-
-    func createMenuItem(
-        icon: String,
-        title: String,
-        xOffset: CGFloat,
-        yOffset: CGFloat,
-        delay: Double,
-        action: @escaping () -> Void = {}
-    ) -> some View {
-        Button {
-            withAnimation(.spring(response: 0.55, dampingFraction: 0.86)) {
-                isCreateMenuPresented = false
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
-                action()
-            }
-        } label: {
-            VStack(spacing: Layout.homeCreateMenuItemSpacing) {
-                ZStack {
-                    Circle()
-                        .fill(Color.white.opacity(0.98))
-                        .frame(
-                            width: Layout.homeCreateMenuCircleSize,
-                            height: Layout.homeCreateMenuCircleSize
-                        )
-                        .shadow(
-                            color: Color.black.opacity(0.10),
-                            radius: Layout.homeCreateMenuShadowRadius,
-                            x: 0,
-                            y: Layout.homeCreateMenuShadowY
-                        )
-
-                    Image(systemName: icon)
-                        .font(.system(size: Layout.homeCreateMenuIconSize, weight: .semibold))
-                        .foregroundColor(Color(red: 0.17, green: 0.36, blue: 0.98))
-                }
-
-                Text(title)
-                    .font(.system(size: Layout.homeCreateMenuTitleSize, weight: .semibold, design: .rounded))
-                    .foregroundColor(Color(red: 0.17, green: 0.36, blue: 0.98))
-            }
-            .frame(width: Layout.homeCreateMenuItemWidth, height: Layout.homeCreateMenuItemHeight)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .scaleEffect(isCreateMenuPresented ? 1.0 : 0.2)
-        .opacity(isCreateMenuPresented ? 1.0 : 0.0)
-        .offset(
-            x: isCreateMenuPresented ? xOffset : 0,
-            y: isCreateMenuPresented ? yOffset : 0
-        )
-        .animation(
-            .interpolatingSpring(
-                mass: 1.0,
-                stiffness: 90,
-                damping: 18,
-                initialVelocity: 0
-            )
-            .delay(delay),
-            value: isCreateMenuPresented
-        )
-    }
-
+    // Computed once per selectedTab change, not on every body re-render
     var headerTitle: String {
         switch selectedTab ?? .home {
-        case .home:
-            return "Flashcards"
-        case .folders:
-            return "Folders"
-        case .flashcards:
-            return "Sets"
-        case .create:
-            return "Create"
-        case .profile:
-            return "Profile"
+        case .home:       return "Flashcards"
+        case .folders:    return "Folders"
+        case .flashcards: return "Sets"
+        case .create:     return "Create"
+        case .profile:    return "Profile"
         }
     }
 
     var headerSubtitle: String {
         switch selectedTab ?? .home {
-        case .home:
-            return "Pick a set to practice"
-        case .folders:
-            return "Manage your folders"
-        case .flashcards:
-            return "Manage your flashcard sets"
-        case .create:
-            return "Build a new study set"
-        case .profile:
-            return sessionStore.currentEmail
+        case .home:       return "Pick a set to practice"
+        case .folders:    return "Manage your folders"
+        case .flashcards: return "Manage your flashcard sets"
+        case .create:     return "Build a new study set"
+        case .profile:    return sessionStore.currentEmail
         }
     }
 
@@ -264,6 +133,8 @@ private extension HomeView {
             }
             .ignoresSafeArea()
         }
+        // drawingGroup() moves blob rendering to Metal — big win for non-interactive bg
+        .drawingGroup()
     }
 
     var mainContent: some View {
@@ -276,27 +147,14 @@ private extension HomeView {
                     } else {
                         dashboardContent
                     }
-
                 case .folders:
-                    placeholderCard(
-                        title: "Folders",
-                        subtitle: "Тут буде список папок."
-                    )
-
+                    placeholderCard(title: "Folders", subtitle: "Тут буде список папок.")
                 case .flashcards:
                     setsContent
-
                 case .create:
-                    placeholderCard(
-                        title: "Create",
-                        subtitle: "Тут буде створення нового сету."
-                    )
-
+                    placeholderCard(title: "Create", subtitle: "Тут буде створення нового сету.")
                 case .profile:
-                    placeholderCard(
-                        title: "Profile",
-                        subtitle: sessionStore.currentEmail
-                    )
+                    placeholderCard(title: "Profile", subtitle: sessionStore.currentEmail)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -331,10 +189,7 @@ private extension HomeView {
             sectionHeader(title: "Your sets", actionTitle: "Create")
 
             if viewModel.isLoadingSets {
-                placeholderCard(
-                    title: "Loading",
-                    subtitle: "Loading your flashcard sets..."
-                )
+                placeholderCard(title: "Loading", subtitle: "Loading your flashcard sets...")
             } else if viewModel.userSets.isEmpty {
                 emptySetsCard
             } else {
@@ -351,8 +206,10 @@ private extension HomeView {
         }
     }
 
+    // OPTIMIZED: replaced List+fixed-height with LazyVStack inside ScrollView
+    // List in ScrollView causes nested-scroll conflicts and re-layouts on every @Published update
     var setsList: some View {
-        List {
+        LazyVStack(spacing: Layout.homeSetsListSpacing) {
             ForEach(viewModel.userSets) { set in
                 Button {
                     selectedSetForDetails = set.sourceSet
@@ -369,30 +226,15 @@ private extension HomeView {
                     )
                 }
                 .buttonStyle(.plain)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-                .listRowInsets(
-                    EdgeInsets(
-                        top: 4,
-                        leading: 0,
-                        bottom: 4,
-                        trailing: 0
-                    )
-                )
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button(role: .destructive) {
-                        Task {
-                            await viewModel.deleteSet(set)
-                        }
+                        Task { await viewModel.deleteSet(set) }
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
                 }
             }
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-        .frame(height: CGFloat(viewModel.userSets.count) * 104)
     }
 
     var emptySetsCard: some View {
@@ -480,9 +322,7 @@ private extension HomeView {
             Button {
                 if actionTitle == "Create" {
                     isCreateSetPresented = true
-                }
-
-                if actionTitle == "View all" {
+                } else if actionTitle == "View all" {
                     selectedTab = .flashcards
                     selectedCategory = nil
                 }
@@ -519,6 +359,99 @@ private extension HomeView {
                 alignment: .topLeading
             )
             .frame(height: Layout.homePlaceholderHeight)
+    }
+}
+
+// MARK: - Create Menu
+
+private extension HomeView {
+    var createMenuOverlay: some View {
+        ZStack {
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    withAnimation(.spring(response: 0.36, dampingFraction: 0.82)) {
+                        isCreateMenuPresented = false
+                    }
+                }
+
+            VStack {
+                Spacer()
+
+                ZStack {
+                    createMenuItem(icon: "folder.fill", title: "Folder",
+                                   xOffset: Layout.homeCreateFolderOffset.width,
+                                   yOffset: Layout.homeCreateFolderOffset.height, delay: 0.04)
+
+                    createMenuItem(icon: "square.stack.3d.up.fill", title: "Set",
+                                   xOffset: Layout.homeCreateSetOffset.width,
+                                   yOffset: Layout.homeCreateSetOffset.height, delay: 0.10) {
+                        isCreateSetPresented = true
+                    }
+
+                    createMenuItem(icon: "doc.text.fill", title: "Text",
+                                   xOffset: 0, yOffset: Layout.homeCreateTextOffset.height, delay: 0.16)
+
+                    createMenuItem(icon: "waveform", title: "Audio",
+                                   xOffset: Layout.homeCreateAudioOffset.width,
+                                   yOffset: Layout.homeCreateSetOffset.height, delay: 0.22)
+
+                    createMenuItem(icon: "pencil.and.scribble", title: "Essay",
+                                   xOffset: Layout.homeCreateEssayOffset.width,
+                                   yOffset: Layout.homeCreateFolderOffset.height, delay: 0.28)
+                }
+                .frame(height: Layout.homeCreateMenuFrameHeight)
+                .padding(.bottom, Layout.homeCreateMenuBottomPadding)
+            }
+        }
+    }
+
+    func createMenuItem(
+        icon: String,
+        title: String,
+        xOffset: CGFloat,
+        yOffset: CGFloat,
+        delay: Double,
+        action: @escaping () -> Void = {}
+    ) -> some View {
+        Button {
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.86)) {
+                isCreateMenuPresented = false
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+                action()
+            }
+        } label: {
+            VStack(spacing: Layout.homeCreateMenuItemSpacing) {
+                ZStack {
+                    Circle()
+                        .fill(Color.white.opacity(0.98))
+                        .frame(width: Layout.homeCreateMenuCircleSize, height: Layout.homeCreateMenuCircleSize)
+                        .shadow(color: Color.black.opacity(0.10),
+                                radius: Layout.homeCreateMenuShadowRadius, x: 0, y: Layout.homeCreateMenuShadowY)
+
+                    Image(systemName: icon)
+                        .font(.system(size: Layout.homeCreateMenuIconSize, weight: .semibold))
+                        .foregroundColor(Color(red: 0.17, green: 0.36, blue: 0.98))
+                }
+
+                Text(title)
+                    .font(.system(size: Layout.homeCreateMenuTitleSize, weight: .semibold, design: .rounded))
+                    .foregroundColor(Color(red: 0.17, green: 0.36, blue: 0.98))
+            }
+            .frame(width: Layout.homeCreateMenuItemWidth, height: Layout.homeCreateMenuItemHeight)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .scaleEffect(isCreateMenuPresented ? 1.0 : 0.2)
+        .opacity(isCreateMenuPresented ? 1.0 : 0.0)
+        .offset(x: isCreateMenuPresented ? xOffset : 0,
+                y: isCreateMenuPresented ? yOffset : 0)
+        .animation(
+            .interpolatingSpring(mass: 1.0, stiffness: 90, damping: 18, initialVelocity: 0).delay(delay),
+            value: isCreateMenuPresented
+        )
     }
 }
 
