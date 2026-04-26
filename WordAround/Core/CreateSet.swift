@@ -79,6 +79,7 @@ struct CreateFlashcardSetDraft {
     var description: String = ""
     var privacy: FlashcardSetPrivacy = .privateSet
     var cards: [CreateFlashcardDraft] = [CreateFlashcardDraft()]
+    var folderID: String? = nil
     var folderName: String? = nil
     var selectedColor: SetColor = .red
     var selectedIcon: String = "rectangle.stack.fill"

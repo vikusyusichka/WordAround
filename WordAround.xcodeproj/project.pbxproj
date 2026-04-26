@@ -69,6 +69,13 @@
 		E30A1D9D2F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */; };
 		E30A1D9E2F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */; };
 		E30A1DA22F9D730E00387BDC /* SFSymbolPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DA12F9D730400387BDC /* SFSymbolPickerView.swift */; };
+		E30A1DA42F9E076500387BDC /* Folders.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DA32F9E076200387BDC /* Folders.swift */; };
+		E30A1DA62F9E07A000387BDC /* FolderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DA52F9E079A00387BDC /* FolderService.swift */; };
+		E30A1DAC2F9E07E600387BDC /* CreateFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DAB2F9E07DB00387BDC /* CreateFolderView.swift */; };
+		E30A1DAE2F9E07F000387BDC /* CreateFolderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DAD2F9E07E900387BDC /* CreateFolderViewModel.swift */; };
+		E30A1DB02F9E098700387BDC /* FolderDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DAF2F9E097F00387BDC /* FolderDetailViewModel.swift */; };
+		E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB12F9E099000387BDC /* FolderDetailView.swift */; };
+		E30A1DB42F9E0C3D00387BDC /* FolderCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB32F9E0C3600387BDC /* FolderCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -130,6 +137,13 @@
 		E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailMainCardView.swift; sourceTree = "<group>"; };
 		E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailTopBarView.swift; sourceTree = "<group>"; };
 		E30A1DA12F9D730400387BDC /* SFSymbolPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolPickerView.swift; sourceTree = "<group>"; };
+		E30A1DA32F9E076200387BDC /* Folders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folders.swift; sourceTree = "<group>"; };
+		E30A1DA52F9E079A00387BDC /* FolderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderService.swift; sourceTree = "<group>"; };
+		E30A1DAB2F9E07DB00387BDC /* CreateFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderView.swift; sourceTree = "<group>"; };
+		E30A1DAD2F9E07E900387BDC /* CreateFolderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderViewModel.swift; sourceTree = "<group>"; };
+		E30A1DAF2F9E097F00387BDC /* FolderDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailViewModel.swift; sourceTree = "<group>"; };
+		E30A1DB12F9E099000387BDC /* FolderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailView.swift; sourceTree = "<group>"; };
+		E30A1DB32F9E0C3600387BDC /* FolderCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +225,7 @@
 		E30A1CB92F9801E800387BDC /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1DA72F9E07B800387BDC /* Folders */,
 				E30A1D8C2F9CE41700387BDC /* Components */,
 				E30A1D582F9BEB3700387BDC /* FlashCards */,
 				E30A1CBD2F98078A00387BDC /* Onboarding */,
@@ -252,6 +267,7 @@
 		E30A1CD12F99447400387BDC /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1DA52F9E079A00387BDC /* FolderService.swift */,
 				E30A1D822F9C2EE800387BDC /* LocalImageStorageService.swift */,
 				E30A1D742F9C0EF700387BDC /* FlashcardSetService.swift */,
 				E30A1CD22F99448400387BDC /* AuthService.swift */,
@@ -418,6 +434,7 @@
 		E30A1D852F9C9D6600387BDC /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1DA32F9E076200387BDC /* Folders.swift */,
 				E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */,
 				E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */,
 				E30A1D5C2F9BEB8200387BDC /* CreateSet.swift */,
@@ -443,6 +460,42 @@
 				E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		E30A1DA72F9E07B800387BDC /* Folders */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1DAA2F9E07D300387BDC /* Views */,
+				E30A1DA92F9E07CB00387BDC /* ViewModels */,
+				E30A1DA82F9E07C200387BDC /* Components */,
+			);
+			path = Folders;
+			sourceTree = "<group>";
+		};
+		E30A1DA82F9E07C200387BDC /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1DB32F9E0C3600387BDC /* FolderCardView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E30A1DA92F9E07CB00387BDC /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1DAF2F9E097F00387BDC /* FolderDetailViewModel.swift */,
+				E30A1DAD2F9E07E900387BDC /* CreateFolderViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E30A1DAA2F9E07D300387BDC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1DB12F9E099000387BDC /* FolderDetailView.swift */,
+				E30A1DAB2F9E07DB00387BDC /* CreateFolderView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -533,6 +586,8 @@
 				E30A1D5B2F9BEB5400387BDC /* CreateSetView.swift in Sources */,
 				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,
 				E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */,
+				E30A1DB42F9E0C3D00387BDC /* FolderCardView.swift in Sources */,
+				E30A1DAE2F9E07F000387BDC /* CreateFolderViewModel.swift in Sources */,
 				E30A1CBC2F98023B00387BDC /* HomeView.swift in Sources */,
 				E30A1CC32F9819B100387BDC /* AuthView.swift in Sources */,
 				E30A1D6B2F9BF7D200387BDC /* CreateSetCardsSectionView.swift in Sources */,
@@ -547,12 +602,14 @@
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
 				E30A1D832F9C2EF700387BDC /* LocalImageStorageService.swift in Sources */,
+				E30A1DA62F9E07A000387BDC /* FolderService.swift in Sources */,
 				E30A1D8B2F9CDB7300387BDC /* FlashcardSetDetailViewModel.swift in Sources */,
 				E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */,
 				E30A1D692F9BF7C500387BDC /* CreateSetPreviewCardView.swift in Sources */,
 				E30A1D7E2F9C236000387BDC /* CreateSetTheme.swift in Sources */,
 				E30A1D962F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift in Sources */,
 				E30A1DA22F9D730E00387BDC /* SFSymbolPickerView.swift in Sources */,
+				E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */,
 				E30A1D972F9CE42500387BDC /* FlashcardSetDetailAddButton.swift in Sources */,
 				E30A1D982F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift in Sources */,
 				E30A1D992F9CE42500387BDC /* FlashcardSetDetailControlsView.swift in Sources */,
@@ -564,6 +621,7 @@
 				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
 				E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */,
 				E30A1D5D2F9BEB8200387BDC /* CreateSet.swift in Sources */,
+				E30A1DAC2F9E07E600387BDC /* CreateFolderView.swift in Sources */,
 				E30A1D6D2F9BF7E100387BDC /* CreateSetFieldStyle.swift in Sources */,
 				E30A1D7C2F9C1D6900387BDC /* HomeSetPreviewItem.swift in Sources */,
 				E30A1D072F9A5FC000387BDC /* HomeHeaderView.swift in Sources */,
@@ -573,11 +631,13 @@
 				E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */,
 				E30A1CD32F99448B00387BDC /* AuthService.swift in Sources */,
 				E30A1D1D2F9AC1D500387BDC /* BaseCardView.swift in Sources */,
+				E30A1DB02F9E098700387BDC /* FolderDetailViewModel.swift in Sources */,
 				E30A1D6F2F9C0E9200387BDC /* SetIconType.swift in Sources */,
 				E30A1D812F9C24C100387BDC /* HomeSetPreviewMapper.swift in Sources */,
 				E30A1D712F9C0ED000387BDC /* FlashCard.swift in Sources */,
 				E30A1D552F9BBD3D00387BDC /* HomeViewModel.swift in Sources */,
 				E30A1D752F9C0EF800387BDC /* FlashcardSetService.swift in Sources */,
+				E30A1DA42F9E076500387BDC /* Folders.swift in Sources */,
 				E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */,
 				E30A1D4F2F9BB9D000387BDC /* AppColors.swift in Sources */,
 				E30A1D0D2F9A616F00387BDC /* HomeCategory.swift in Sources */,

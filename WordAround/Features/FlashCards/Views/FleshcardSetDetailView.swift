@@ -15,7 +15,6 @@ struct FlashcardSetDetailView: View {
     @State private var masteredCardIDs: Set<String> = []
     @State private var isDescriptionExpanded = false
 
-    // Cached once — theme doesn't change during the view's lifetime
     private let theme: CreateSetTheme
 
     init(set: FlashcardSet) {
@@ -27,7 +26,6 @@ struct FlashcardSetDetailView: View {
         shuffledCards ?? set.cards
     }
 
-    // Computed only when studiedCardIDs, masteredCardIDs, selectedFilter or displayedCards change
     private var filteredCards: [Flashcard] {
         switch selectedFilter {
         case .all:      return displayedCards
@@ -114,7 +112,6 @@ struct FlashcardSetDetailView: View {
 
 private extension FlashcardSetDetailView {
     var cardsList: some View {
-        // LazyVStack renders only visible rows — critical for large sets
         LazyVStack(spacing: 0) {
             ForEach(Array(filteredCards.enumerated()), id: \.element.id) { index, card in
                 FlashcardSetDetailCardRowView(
@@ -126,7 +123,6 @@ private extension FlashcardSetDetailView {
                     onSpeak: { },
                     onEdit: { }
                 )
-                // Divider between rows, avoids rebuilding all rows for separator
                 if index < filteredCards.count - 1 {
                     Divider()
                         .background(theme.borderColor.opacity(0.3))

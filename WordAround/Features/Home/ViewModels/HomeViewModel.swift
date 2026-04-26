@@ -10,6 +10,10 @@ final class HomeViewModel: ObservableObject {
     @Published var userSets: [HomeSetPreviewItem] = []
     @Published var isLoadingSets = false
     @Published var errorMessage: String?
+    @Published var folders: [Folder] = []
+    @Published var isLoadingFolders = false
+
+    private let folderService = FolderService()
 
     private let setService = FlashcardSetService()
 
@@ -82,8 +86,48 @@ final class HomeViewModel: ObservableObject {
     }
 
     func refresh() async {
-        // Static data never changes — only reload user sets
         await loadUserSets()
+        await loadFolders()
+    }
+    
+    func loadFolders() async {
+        guard let user = Auth.auth().currentUser else {
+            folders = []
+            errorMessage = "User is not signed in."
+            return
+        }
+
+        isLoadingFolders = true
+        errorMessage = nil
+
+        do {
+            folders = try await folderService.fetchFolders(for: user.uid)
+            isLoadingFolders = false
+        } catch {
+            isLoadingFolders = false
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func setsCount(for folder: Folder) -> Int {
+        userSets.filter { item in
+            item.sourceSet?.folderID == folder.id ||
+            item.sourceSet?.folderName == folder.title
+        }.count
+    }
+
+    func deleteFolder(_ folder: Folder) async {
+        guard let user = Auth.auth().currentUser else {
+            errorMessage = "User is not signed in."
+            return
+        }
+
+        do {
+            try await folderService.deleteFolder(id: folder.id, ownerUID: user.uid)
+            folders.removeAll { $0.id == folder.id }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     func loadUserSets() async {

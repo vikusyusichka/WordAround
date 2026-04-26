@@ -9,7 +9,9 @@ struct FlashcardSet: Identifiable, Codable {
     var description: String
     var privacy: String
 
+    var folderID: String?
     var folderName: String?
+
     var colorHex: String
     var icon: SetIconType
 

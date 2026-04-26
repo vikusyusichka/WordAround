@@ -11,9 +11,12 @@ final class CreateSetViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var didCreateSet = false
     @Published var theme: CreateSetTheme = .red
+    @Published var folders: [Folder] = []
+    @Published var isLoadingFolders = false
 
     private let setService = FlashcardSetService()
     private let imageStorageService = LocalImageStorageService()
+    private let folderService = FolderService()
 
     let availableColors: [SetColor] = SetColor.allCases
 
@@ -98,11 +101,6 @@ final class CreateSetViewModel: ObservableObject {
             return
         }
 
-        guard !validCards.isEmpty else {
-            errorMessage = "Add at least one word before creating a set."
-            return
-        }
-
         guard validCards.allSatisfy({ $0.example.trimmingCharacters(in: .whitespacesAndNewlines).count <= 150 }) else {
             errorMessage = "Card examples must be under 150 characters."
             return
@@ -153,6 +151,7 @@ final class CreateSetViewModel: ObservableObject {
                 title: title,
                 description: description,
                 privacy: draft.privacy.rawValue,
+                folderID: draft.folderID,
                 folderName: draft.folderName,
                 colorHex: draft.selectedColor.hex,
                 icon: .systemName(draft.selectedIcon),
@@ -169,6 +168,28 @@ final class CreateSetViewModel: ObservableObject {
             isSaving = false
             errorMessage = error.localizedDescription
         }
+    }
+    
+    func loadFolders() async {
+        guard let user = Auth.auth().currentUser else {
+            folders = []
+            return
+        }
+
+        isLoadingFolders = true
+
+        do {
+            folders = try await folderService.fetchFolders(for: user.uid)
+            isLoadingFolders = false
+        } catch {
+            isLoadingFolders = false
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func selectFolder(_ folder: Folder?) {
+        draft.folderID = folder?.id
+        draft.folderName = folder?.title
     }
 
     private func suggestedIcon(for title: String) -> String {

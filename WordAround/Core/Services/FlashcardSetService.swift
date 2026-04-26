@@ -13,10 +13,10 @@ final class FlashcardSetService {
             .setData(from: set)
     }
 
-    func fetchSets(for uid: String) async throws -> [FlashcardSet] {
+    func fetchSets(for ownerUID: String) async throws -> [FlashcardSet] {
         let snapshot = try await db
             .collection("users")
-            .document(uid)
+            .document(ownerUID)
             .collection("flashcardSets")
             .order(by: "createdAt", descending: true)
             .getDocuments()
@@ -25,6 +25,7 @@ final class FlashcardSetService {
             try document.data(as: FlashcardSet.self)
         }
     }
+
     func deleteSet(id: String, ownerUID: String) async throws {
         try await db
             .collection("users")
@@ -32,5 +33,35 @@ final class FlashcardSetService {
             .collection("flashcardSets")
             .document(id)
             .delete()
+    }
+
+    func fetchSets(folderID: String, ownerUID: String) async throws -> [FlashcardSet] {
+        let snapshot = try await db
+            .collection("users")
+            .document(ownerUID)
+            .collection("flashcardSets")
+            .whereField("folderID", isEqualTo: folderID)
+            .getDocuments()
+
+        return try snapshot.documents
+            .map { document in
+                try document.data(as: FlashcardSet.self)
+            }
+            .sorted { $0.createdAt > $1.createdAt }
+    }
+
+    func fetchSets(folderName: String, ownerUID: String) async throws -> [FlashcardSet] {
+        let snapshot = try await db
+            .collection("users")
+            .document(ownerUID)
+            .collection("flashcardSets")
+            .whereField("folderName", isEqualTo: folderName)
+            .getDocuments()
+
+        return try snapshot.documents
+            .map { document in
+                try document.data(as: FlashcardSet.self)
+            }
+            .sorted { $0.createdAt > $1.createdAt }
     }
 }

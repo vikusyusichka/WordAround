@@ -35,19 +35,19 @@ struct CreateSetView: View {
                 .padding(.top, Layout.isPadLike ? 12 : 8)
                 .padding(.bottom, 28)
             }
-            // Фікс: ScrollView поступається клавіатурі без layout recalculation
             .scrollDismissesKeyboard(.interactively)
         }
-        // Фікс: клавіатура піднімається плавно не перераховуючи layout
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .onChange(of: viewModel.didCreateSet) { didCreate in
             if didCreate { dismiss() }
+        }
+        .task {
+            await viewModel.loadFolders()
         }
     }
 
     private var createButton: some View {
         Button {
-            // Закриваємо клавіатуру ДО збереження — прибирає затримку
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
                                             to: nil, from: nil, for: nil)
             Task {

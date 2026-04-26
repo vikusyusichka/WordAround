@@ -44,7 +44,7 @@ final class SessionStore: ObservableObject {
         do {
             try await user.reload()
         } catch {
-            // навіть якщо reload впав, пробуємо визначити стан по поточному user
+            
         }
 
         let providers = user.providerData.map(\.providerID)
@@ -72,7 +72,7 @@ final class SessionStore: ObservableObject {
             try Auth.auth().signOut()
             state = .loggedOut
         } catch {
-            // залишаємо стан як є, бо без паніки
+            
         }
     }
 
