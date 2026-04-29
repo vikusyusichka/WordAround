@@ -26,6 +26,15 @@ final class FolderService {
         }
     }
 
+    func updateFolder(_ folder: Folder) async throws {
+        try db
+            .collection("users")
+            .document(folder.ownerUID)
+            .collection("folders")
+            .document(folder.id)
+            .setData(from: folder, merge: true)
+    }
+
     func deleteFolder(id: String, ownerUID: String) async throws {
         try await db
             .collection("users")

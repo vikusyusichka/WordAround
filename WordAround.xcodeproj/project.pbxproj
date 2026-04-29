@@ -76,6 +76,7 @@
 		E30A1DB02F9E098700387BDC /* FolderDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DAF2F9E097F00387BDC /* FolderDetailViewModel.swift */; };
 		E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB12F9E099000387BDC /* FolderDetailView.swift */; };
 		E30A1DB42F9E0C3D00387BDC /* FolderCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB32F9E0C3600387BDC /* FolderCardView.swift */; };
+		E30A1DB82FA14BAA00387BDC /* FoldersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB72FA14BA200387BDC /* FoldersListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -144,6 +145,7 @@
 		E30A1DAF2F9E097F00387BDC /* FolderDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailViewModel.swift; sourceTree = "<group>"; };
 		E30A1DB12F9E099000387BDC /* FolderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailView.swift; sourceTree = "<group>"; };
 		E30A1DB32F9E0C3600387BDC /* FolderCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderCardView.swift; sourceTree = "<group>"; };
+		E30A1DB72FA14BA200387BDC /* FoldersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldersListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -493,6 +495,7 @@
 			isa = PBXGroup;
 			children = (
 				E30A1DB12F9E099000387BDC /* FolderDetailView.swift */,
+				E30A1DB72FA14BA200387BDC /* FoldersListView.swift */,
 				E30A1DAB2F9E07DB00387BDC /* CreateFolderView.swift */,
 			);
 			path = Views;
@@ -635,6 +638,7 @@
 				E30A1D6F2F9C0E9200387BDC /* SetIconType.swift in Sources */,
 				E30A1D812F9C24C100387BDC /* HomeSetPreviewMapper.swift in Sources */,
 				E30A1D712F9C0ED000387BDC /* FlashCard.swift in Sources */,
+				E30A1DB82FA14BAA00387BDC /* FoldersListView.swift in Sources */,
 				E30A1D552F9BBD3D00387BDC /* HomeViewModel.swift in Sources */,
 				E30A1D752F9C0EF800387BDC /* FlashcardSetService.swift in Sources */,
 				E30A1DA42F9E076500387BDC /* Folders.swift in Sources */,

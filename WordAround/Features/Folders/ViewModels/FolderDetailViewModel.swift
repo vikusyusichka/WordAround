@@ -6,11 +6,13 @@ import Combine
 final class FolderDetailViewModel: ObservableObject {
     @Published var sets: [HomeSetPreviewItem] = []
     @Published var isLoading = false
+    @Published var isSavingFolder = false
     @Published var errorMessage: String?
 
-    let folder: Folder
+    @Published private(set) var folder: Folder
 
     private let setService = FlashcardSetService()
+    private let folderService = FolderService()
 
     init(folder: Folder) {
         self.folder = folder
@@ -44,6 +46,35 @@ final class FolderDetailViewModel: ObservableObject {
         } catch {
             isLoading = false
             errorMessage = error.localizedDescription
+        }
+    }
+
+    func updateFolder(title: String, description: String) async -> Bool {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !trimmedTitle.isEmpty else {
+            errorMessage = "Folder title cannot be empty."
+            return false
+        }
+
+        isSavingFolder = true
+        errorMessage = nil
+
+        var updatedFolder = folder
+        updatedFolder.title = trimmedTitle
+        updatedFolder.description = trimmedDescription
+        updatedFolder.updatedAt = Date()
+
+        do {
+            try await folderService.updateFolder(updatedFolder)
+            folder = updatedFolder
+            isSavingFolder = false
+            return true
+        } catch {
+            isSavingFolder = false
+            errorMessage = error.localizedDescription
+            return false
         }
     }
 }

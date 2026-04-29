@@ -5,23 +5,33 @@ struct FolderCardView: View {
     let setsCount: Int
     let colorHex: String
 
+    private var theme: CreateSetTheme {
+        CreateSetTheme.theme(forHex: colorHex)
+    }
+
     private var accentColor: Color {
-        Color(hex: colorHex) ?? AppColors.primaryBlue
+        theme.accent
     }
 
     var body: some View {
         ZStack {
             FolderShape()
-                .fill(accentColor.opacity(0.12))
+                .fill(theme.previewBackground)
                 .overlay(
                     FolderShape()
-                        .stroke(accentColor.opacity(0.14), lineWidth: 1)
+                        .stroke(theme.softBorderColor, lineWidth: 1)
+                )
+                .shadow(
+                    color: theme.shadowColor.opacity(0.55),
+                    radius: 10,
+                    x: 0,
+                    y: 6
                 )
 
             GeometryReader { proxy in
                 ZStack {
                     BottomRightWaveShape()
-                        .fill(accentColor.opacity(0.13))
+                        .fill(theme.softAccent)
                         .frame(width: 140, height: 70)
                         .position(
                             x: proxy.size.width - 50,
@@ -30,12 +40,12 @@ struct FolderCardView: View {
 
                     Image(systemName: "sparkle")
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(accentColor.opacity(0.22))
-                        .position(x: proxy.size.width * 0.7, y: proxy.size.height * 0.45)
+                        .foregroundColor(accentColor.opacity(0.20))
+                        .position(x: proxy.size.width * 0.70, y: proxy.size.height * 0.45)
 
                     Image(systemName: "sparkle")
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(accentColor.opacity(0.22))
+                        .foregroundColor(accentColor.opacity(0.20))
                         .position(x: proxy.size.width * 0.78, y: proxy.size.height * 0.62)
                 }
             }
@@ -50,17 +60,16 @@ struct FolderCardView: View {
                 VStack(alignment: .leading, spacing: 7) {
                     Text(title)
                         .font(.system(size: 23, weight: .bold, design: .rounded))
-                        .foregroundColor(accentColor)
+                        .foregroundColor(theme.titleColor)
                         .lineLimit(1)
 
                     Text("\(setsCount) sets")
                         .font(.system(size: 16, weight: .medium, design: .rounded))
-                        .foregroundColor(AppColors.textSecondary)
+                        .foregroundColor(theme.mutedTextColor)
                 }
 
                 Spacer()
 
-                // СТРІЛКА ЗАМІСТЬ ...
                 Image(systemName: "chevron.right")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(accentColor)
@@ -82,7 +91,6 @@ private struct FolderShape: Shape {
         let tabHeight: CGFloat = 26
 
         path.move(to: CGPoint(x: corner, y: 0))
-
         path.addLine(to: CGPoint(x: tabWidth - 20, y: 0))
 
         path.addQuadCurve(
@@ -148,9 +156,10 @@ private struct BottomRightWaveShape: Shape {
             .ignoresSafeArea()
 
         VStack(spacing: 18) {
-            FolderCardView(title: "Spanish", setsCount: 12, colorHex: "#4169F5")
-            FolderCardView(title: "Grammar", setsCount: 8, colorHex: "#FF5759")
-            FolderCardView(title: "Listening", setsCount: 5, colorHex: "#3CCF91")
+            FolderCardView(title: "Spanish", setsCount: 12, colorHex: SetColor.blue.hex)
+            FolderCardView(title: "Grammar", setsCount: 8, colorHex: SetColor.red.hex)
+            FolderCardView(title: "Listening", setsCount: 5, colorHex: SetColor.green.hex)
+            FolderCardView(title: "Kids", setsCount: 3, colorHex: SetColor.yellow.hex)
         }
         .padding(.horizontal, 24)
     }

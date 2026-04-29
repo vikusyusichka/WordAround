@@ -297,14 +297,29 @@ private extension HomeView {
 private extension HomeView {
     var foldersContent: some View {
         VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-            sectionHeader(title: "Your folders", actionTitle: "Create Folder")
-
             if viewModel.isLoadingFolders {
                 placeholderCard(title: "Loading", subtitle: "Loading your folders...")
-            } else if viewModel.folders.isEmpty {
-                emptyFoldersCard
             } else {
-                foldersList
+                FolderListView(
+                    folders: viewModel.folders,
+                    setsCount: { folder in
+                        viewModel.setsCount(for: folder)
+                    },
+                    onCreate: {
+                        isCreateFolderPresented = true
+                    },
+                    onSelect: { folder in
+                        selectedFolderForDetails = folder
+                    },
+                    onDelete: { folder in
+                        Task {
+                            await viewModel.deleteFolder(folder)
+                        }
+                    },
+                    onMove: { source, destination in
+                        viewModel.moveFolders(from: source, to: destination)
+                    }
+                )
             }
 
             if let errorMessage = viewModel.errorMessage {
@@ -315,42 +330,6 @@ private extension HomeView {
                     .padding(.top, 4)
             }
         }
-    }
-
-    var foldersList: some View {
-        LazyVStack(spacing: 22) {
-            ForEach(viewModel.folders) { folder in
-                Button {
-                    selectedFolderForDetails = folder
-                } label: {
-                    FolderCardView(
-                        title: folder.title,
-                        setsCount: viewModel.setsCount(for: folder),
-                        colorHex: folder.colorHex
-                    )
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-
-    var emptyFoldersCard: some View {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .fill(Color.white.opacity(0.92))
-            .overlay(
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("No folders yet")
-                        .font(.system(size: Layout.homeEmptySetTitleSize, weight: .bold, design: .rounded))
-                        .foregroundColor(AppColors.primaryBlueDark)
-
-                    Text("Create your first folder using the plus button.")
-                        .font(.system(size: Layout.homePlaceholderSubtitleSize, weight: .medium, design: .rounded))
-                        .foregroundColor(AppColors.textSecondary)
-                }
-                .padding(Layout.homePlaceholderPadding),
-                alignment: .topLeading
-            )
-            .frame(height: Layout.homeEmptySetHeight)
     }
 }
 

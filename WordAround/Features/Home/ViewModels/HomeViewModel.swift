@@ -117,18 +117,21 @@ final class HomeViewModel: ObservableObject {
     }
 
     func deleteFolder(_ folder: Folder) async {
-        guard let user = Auth.auth().currentUser else {
-            errorMessage = "User is not signed in."
-            return
+            do {
+                try await folderService.deleteFolder(
+                    id: folder.id,
+                    ownerUID: folder.ownerUID
+                )
+
+                folders.removeAll { $0.id == folder.id }
+            } catch {
+                errorMessage = error.localizedDescription
+            }
         }
 
-        do {
-            try await folderService.deleteFolder(id: folder.id, ownerUID: user.uid)
-            folders.removeAll { $0.id == folder.id }
-        } catch {
-            errorMessage = error.localizedDescription
+        func moveFolders(from source: IndexSet, to destination: Int) {
+            folders.move(fromOffsets: source, toOffset: destination)
         }
-    }
 
     func loadUserSets() async {
         guard let user = Auth.auth().currentUser else {
