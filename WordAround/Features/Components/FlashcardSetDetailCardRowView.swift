@@ -9,7 +9,6 @@ struct FlashcardSetDetailCardRowView: View, Equatable {
     let onSpeak: () -> Void
     let onEdit: () -> Void
 
-    // Equatable: re-render only when card data or mastered state changes
     static func == (lhs: FlashcardSetDetailCardRowView, rhs: FlashcardSetDetailCardRowView) -> Bool {
         lhs.card.id == rhs.card.id &&
         lhs.card.word == rhs.card.word &&
@@ -23,10 +22,7 @@ struct FlashcardSetDetailCardRowView: View, Equatable {
     var body: some View {
         VStack(spacing: 0) {
             mainRow
-
-            if !card.example.isEmpty {
-                exampleRow
-            }
+            if !card.example.isEmpty { exampleRow }
         }
     }
 
@@ -36,19 +32,10 @@ struct FlashcardSetDetailCardRowView: View, Equatable {
                 .font(.system(size: Layout.flashcardDetailRowIndexSize, weight: .semibold, design: .rounded))
                 .foregroundStyle(theme.mutedTextColor)
                 .frame(width: Layout.flashcardDetailRowIndexWidth)
-
             smallDivider
-
-            HStack(spacing: 10) {
-                cardImage
-                cardText
-            }
-
+            HStack(spacing: 10) { cardImage; cardText }
             Spacer(minLength: 8)
-
-            smallDivider
-                .padding(.leading, Layout.flashcardDetailRowRightDividerLeadingPadding)
-
+            smallDivider.padding(.leading, Layout.flashcardDetailRowRightDividerLeadingPadding)
             actionButtons
         }
         .padding(.horizontal, Layout.flashcardDetailRowHorizontalPadding)
@@ -59,98 +46,64 @@ struct FlashcardSetDetailCardRowView: View, Equatable {
         VStack(alignment: .leading, spacing: Layout.flashcardDetailRowTextSpacing) {
             Text(card.word)
                 .font(.system(size: Layout.flashcardDetailRowWordSize, weight: .bold, design: .rounded))
-                .foregroundStyle(theme.titleColor)
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
-
+                .foregroundStyle(theme.titleColor).lineLimit(1).minimumScaleFactor(0.75)
             Text(card.translation)
                 .font(.system(size: Layout.flashcardDetailRowTranslationSize, weight: .medium, design: .rounded))
-                .foregroundStyle(theme.mutedTextColor)
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
+                .foregroundStyle(theme.mutedTextColor).lineLimit(1).minimumScaleFactor(0.75)
         }
     }
 
     private var exampleRow: some View {
         Text("Example: \(card.example)")
             .font(.system(size: Layout.flashcardDetailRowExampleSize, weight: .medium, design: .rounded))
-            .foregroundStyle(theme.accent.opacity(0.8))
-            .lineLimit(2)
-            .minimumScaleFactor(0.75)
-            .padding(.vertical, 8)
-            .padding(.horizontal, 14)
+            .foregroundStyle(theme.accent.opacity(0.8)).lineLimit(2).minimumScaleFactor(0.75)
+            .padding(.vertical, 8).padding(.horizontal, 14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(theme.softAccent)
-            )
-            .padding(.horizontal, Layout.flashcardDetailRowHorizontalPadding)
-            .padding(.bottom, 8)
+            .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(theme.softAccent))
+            .padding(.horizontal, Layout.flashcardDetailRowHorizontalPadding).padding(.bottom, 8)
     }
 
     private var smallDivider: some View {
-        Rectangle()
-            .fill(theme.borderColor.opacity(0.4))
-            .frame(width: 1, height: 42)
+        Rectangle().fill(theme.borderColor.opacity(0.4)).frame(width: 1, height: 42)
     }
 
     private var actionButtons: some View {
         HStack(spacing: Layout.flashcardDetailRowIconSpacing) {
             Button(action: onToggleMastered) {
                 Image(systemName: isMastered ? "heart.fill" : "heart")
+                    .foregroundStyle(isMastered ? theme.accent : theme.mutedTextColor)
             }
-
-            Button(action: onSpeak) {
-                Image(systemName: "speaker.wave.2")
-            }
-
-            Button(action: onEdit) {
-                Image(systemName: "pencil")
-            }
+            Button(action: onSpeak) { Image(systemName: "speaker.wave.2") }
+            Button(action: onEdit) { Image(systemName: "pencil") }
         }
         .buttonStyle(.plain)
         .font(.system(size: Layout.flashcardDetailRowIconSize, weight: .semibold))
         .foregroundStyle(theme.mutedTextColor)
     }
 
-    // OPTIMIZED: image loaded once per URL, cached by URLSession
     private var cardImage: some View {
         Group {
-            if let imageURL = card.imageURL, let url = URL(string: imageURL) {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    default:
-                        imagePlaceholder
+            if let imageURL = card.imageURL, !imageURL.isEmpty {
+                if imageURL.hasPrefix("http") {
+                    AsyncImage(url: URL(string: imageURL)) { phase in
+                        if case .success(let image) = phase { image.resizable().scaledToFill() }
+                        else { imagePlaceholder }
                     }
+                } else {
+                    if let uiImage = LocalImageStorageService().loadImage(fileName: imageURL) {
+                        Image(uiImage: uiImage).resizable().scaledToFill()
+                    } else { imagePlaceholder }
                 }
-            } else {
-                imagePlaceholder
-            }
+            } else { imagePlaceholder }
         }
         .frame(width: Layout.flashcardDetailRowImageSize, height: Layout.flashcardDetailRowImageSize)
-        .clipShape(
-            RoundedRectangle(
-                cornerRadius: Layout.flashcardDetailRowImageCornerRadius,
-                style: .continuous
-            )
-        )
+        .clipShape(RoundedRectangle(cornerRadius: Layout.flashcardDetailRowImageCornerRadius, style: .continuous))
     }
 
     private var imagePlaceholder: some View {
         ZStack {
-            LinearGradient(
-                colors: [
-                    theme.fieldBackground.opacity(0.9),
-                    theme.softAccent
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-
+            LinearGradient(colors: [theme.fieldBackground.opacity(0.9), theme.softAccent],
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
             Image(systemName: "hand.wave.fill")
                 .font(.system(size: Layout.flashcardDetailRowPlaceholderIconSize, weight: .semibold))
                 .foregroundStyle(theme.accent.opacity(0.55))

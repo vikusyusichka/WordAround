@@ -77,6 +77,9 @@
 		E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB12F9E099000387BDC /* FolderDetailView.swift */; };
 		E30A1DB42F9E0C3D00387BDC /* FolderCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB32F9E0C3600387BDC /* FolderCardView.swift */; };
 		E30A1DB82FA14BAA00387BDC /* FoldersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB72FA14BA200387BDC /* FoldersListView.swift */; };
+		E30A1DC82FA25C9D00387BDC /* FlashcardEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DC72FA25C9100387BDC /* FlashcardEditView.swift */; };
+		E30A1DCD2FA2B30100387BDC /* FlashcardExpandedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DCC2FA2B2F400387BDC /* FlashcardExpandedView.swift */; };
+		E30A1DCF2FA2B4C800387BDC /* FlashcardSetAddCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DCE2FA2B4C500387BDC /* FlashcardSetAddCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -146,6 +149,9 @@
 		E30A1DB12F9E099000387BDC /* FolderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailView.swift; sourceTree = "<group>"; };
 		E30A1DB32F9E0C3600387BDC /* FolderCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderCardView.swift; sourceTree = "<group>"; };
 		E30A1DB72FA14BA200387BDC /* FoldersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldersListView.swift; sourceTree = "<group>"; };
+		E30A1DC72FA25C9100387BDC /* FlashcardEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardEditView.swift; sourceTree = "<group>"; };
+		E30A1DCC2FA2B2F400387BDC /* FlashcardExpandedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardExpandedView.swift; sourceTree = "<group>"; };
+		E30A1DCE2FA2B4C500387BDC /* FlashcardSetAddCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetAddCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -451,6 +457,9 @@
 		E30A1D8C2F9CE41700387BDC /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1DCE2FA2B4C500387BDC /* FlashcardSetAddCardView.swift */,
+				E30A1DCC2FA2B2F400387BDC /* FlashcardExpandedView.swift */,
+				E30A1DC72FA25C9100387BDC /* FlashcardEditView.swift */,
 				E30A1D8D2F9CE42500387BDC /* FlashcardSetDetailAddButton.swift */,
 				E30A1D8E2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift */,
 				E30A1D8F2F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift */,
@@ -598,9 +607,11 @@
 				E30A1D672F9BF7AB00387BDC /* CreateSetCustomizationSectionView.swift in Sources */,
 				E30A1D652F9BF79F00387BDC /* CreateSetInfoSectionView.swift in Sources */,
 				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
+				E30A1DC82FA25C9D00387BDC /* FlashcardEditView.swift in Sources */,
 				E30A1D892F9CCA6200387BDC /* FleshcardSetDetailView.swift in Sources */,
 				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
 				E30A1D632F9BF79100387BDC /* CreateSetHeaderView.swift in Sources */,
+				E30A1DCD2FA2B30100387BDC /* FlashcardExpandedView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
@@ -612,6 +623,7 @@
 				E30A1D7E2F9C236000387BDC /* CreateSetTheme.swift in Sources */,
 				E30A1D962F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift in Sources */,
 				E30A1DA22F9D730E00387BDC /* SFSymbolPickerView.swift in Sources */,
+				E30A1DCF2FA2B4C800387BDC /* FlashcardSetAddCardView.swift in Sources */,
 				E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */,
 				E30A1D972F9CE42500387BDC /* FlashcardSetDetailAddButton.swift in Sources */,
 				E30A1D982F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift in Sources */,

@@ -4,46 +4,24 @@ struct FlashcardSetDetailView: View {
     let set: FlashcardSet
 
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var viewModel: FlashcardSetDetailViewModel
 
-    @State private var currentCardIndex = 0
-    @State private var isShowingTranslation = false
-    @State private var trackProgress = true
-    @State private var selectedFilter: FlashcardSetDetailCardFilter = .all
-    @State private var shuffledCards: [Flashcard]? = nil
-
-    @State private var studiedCardIDs: Set<String> = []
-    @State private var masteredCardIDs: Set<String> = []
     @State private var isDescriptionExpanded = false
+    @State private var isExpandedMode = false
+    @State private var editingCard: Flashcard? = nil
+    @State private var isAddingCard = false
 
     private let theme: CreateSetTheme
 
     init(set: FlashcardSet) {
         self.set = set
         self.theme = CreateSetTheme.theme(forHex: set.colorHex)
-    }
-
-    private var displayedCards: [Flashcard] {
-        shuffledCards ?? set.cards
-    }
-
-    private var filteredCards: [Flashcard] {
-        switch selectedFilter {
-        case .all:      return displayedCards
-        case .studied:  return displayedCards.filter { studiedCardIDs.contains($0.id) }
-        case .remaining:return displayedCards.filter { !studiedCardIDs.contains($0.id) }
-        case .mastered: return displayedCards.filter { masteredCardIDs.contains($0.id) }
-        }
-    }
-
-    private var activeCard: Flashcard? {
-        guard !displayedCards.isEmpty else { return nil }
-        return displayedCards[min(currentCardIndex, displayedCards.count - 1)]
+        _viewModel = StateObject(wrappedValue: FlashcardSetDetailViewModel(set: set))
     }
 
     var body: some View {
         ZStack {
-            theme.screenBackground
-                .ignoresSafeArea()
+            theme.screenBackground.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 0) {
@@ -66,26 +44,41 @@ struct FlashcardSetDetailView: View {
 
                     FlashcardSetDetailMainCardView(
                         theme: theme,
-                        card: activeCard,
-                        currentIndex: currentCardIndex,
-                        cardsCount: displayedCards.count,
-                        isShowingTranslation: isShowingTranslation,
-                        onTap: toggleTranslation,
-                        onSpeak: { }
+                        card: viewModel.activeCard,
+                        currentIndex: viewModel.currentCardIndex,
+                        cardsCount: viewModel.cards.count,
+                        isShowingTranslation: viewModel.isShowingTranslation,
+                        onTap: { viewModel.toggleTranslation() },
+                        onSpeak: { viewModel.speakCurrentCard() },
+                        onExpand: { isExpandedMode = true },
+                        onSwipeLeft: { viewModel.handleSwipe(.left) },
+                        onSwipeRight: { viewModel.handleSwipe(.right) },
+                        onEditMain: {
+                            if let card = viewModel.activeCard {
+                                editingCard = card
+                            }
+                        }
                     )
 
                     FlashcardSetDetailControlsView(
                         theme: theme,
-                        trackProgress: $trackProgress,
-                        onShuffle: shuffleCards,
-                        onEdit: { }
+                        trackProgress: $viewModel.trackProgress,
+                        onShuffle: { viewModel.shuffleCards() },
+                        onEdit: {
+                            if let card = viewModel.activeCard {
+                                editingCard = card
+                            }
+                        }
                     )
                     .padding(.top, Layout.flashcardDetailControlsTopPadding)
 
                     FlashcardSetDetailFilterTabsView(
                         theme: theme,
-                        selectedFilter: $selectedFilter,
-                        count: count(for:)
+                        selectedFilter: Binding(
+                            get: { mapFilter(viewModel.selectedFilter) },
+                            set: { viewModel.selectFilter(mapBack($0)) }
+                        ),
+                        count: { filter in viewModel.count(for: mapBack(filter)) }
                     )
                     .padding(.top, 8)
 
@@ -94,7 +87,7 @@ struct FlashcardSetDetailView: View {
 
                     FlashcardSetDetailAddButton(
                         theme: theme,
-                        onTap: { }
+                        onTap: { isAddingCard = true }
                     )
                     .padding(.top, 10)
                 }
@@ -105,6 +98,31 @@ struct FlashcardSetDetailView: View {
         }
         .navigationBarHidden(true)
         .toolbar(.hidden, for: .navigationBar)
+        .fullScreenCover(isPresented: $isExpandedMode) {
+            FlashcardExpandedView(viewModel: viewModel, isPresented: $isExpandedMode)
+        }
+        .sheet(item: $editingCard) { card in
+            FlashcardEditView(
+                theme: theme,
+                card: card,
+                onSave: { updated in
+                    viewModel.saveEdit(updated)
+                },
+                onDelete: { toDelete in
+                    viewModel.deleteCard(toDelete)
+                }
+            )
+            .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $isAddingCard) {
+            FlashcardSetAddCardView(
+                theme: theme,
+                onSave: { newCard in
+                    viewModel.addCard(newCard)
+                }
+            )
+            .presentationDetents([.medium, .large])
+        }
     }
 }
 
@@ -113,17 +131,31 @@ struct FlashcardSetDetailView: View {
 private extension FlashcardSetDetailView {
     var cardsList: some View {
         LazyVStack(spacing: 0) {
-            ForEach(Array(filteredCards.enumerated()), id: \.element.id) { index, card in
+            ForEach(Array(viewModel.filteredCards.enumerated()), id: \.element.id) { index, card in
                 FlashcardSetDetailCardRowView(
                     theme: theme,
                     card: card,
                     index: index + 1,
-                    isMastered: masteredCardIDs.contains(card.id),
-                    onToggleMastered: { toggleMastered(card) },
-                    onSpeak: { },
-                    onEdit: { }
+                    isMastered: viewModel.isMastered(card),
+                    onToggleMastered: {
+                        viewModel.toggleMastered(card)
+                    },
+                    onSpeak: {
+                        viewModel.speakWordAndTranslation(card)
+                    },
+                    onEdit: {
+                        editingCard = card
+                    }
                 )
-                if index < filteredCards.count - 1 {
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button(role: .destructive) {
+                        viewModel.deleteCard(card)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+
+                if index < viewModel.filteredCards.count - 1 {
                     Divider()
                         .background(theme.borderColor.opacity(0.3))
                         .padding(.horizontal, Layout.flashcardDetailRowHorizontalPadding)
@@ -141,42 +173,32 @@ private extension FlashcardSetDetailView {
     }
 }
 
-// MARK: - Counts
+// MARK: - Filter mapping
 
 private extension FlashcardSetDetailView {
-    func count(for filter: FlashcardSetDetailCardFilter) -> Int {
+    func mapFilter(_ filter: FlashcardSetDetailViewModel.CardFilter) -> FlashcardSetDetailCardFilter {
         switch filter {
-        case .all:       return displayedCards.count
-        case .studied:   return studiedCardIDs.count
-        case .remaining: return max(displayedCards.count - studiedCardIDs.count, 0)
-        case .mastered:  return masteredCardIDs.count
-        }
-    }
-}
-
-// MARK: - Actions
-
-private extension FlashcardSetDetailView {
-    func toggleTranslation() {
-        withAnimation(.easeInOut(duration: 0.3)) {
-            isShowingTranslation.toggle()
+        case .all:
+            return .all
+        case .studied:
+            return .studied
+        case .remaining:
+            return .remaining
+        case .mastered:
+            return .mastered
         }
     }
 
-    func shuffleCards() {
-        withAnimation(.easeInOut(duration: 0.25)) {
-            shuffledCards = displayedCards.shuffled()
-            currentCardIndex = 0
-            isShowingTranslation = false
-        }
-    }
-
-    func toggleMastered(_ card: Flashcard) {
-        if masteredCardIDs.contains(card.id) {
-            masteredCardIDs.remove(card.id)
-        } else {
-            masteredCardIDs.insert(card.id)
-            studiedCardIDs.insert(card.id)
+    func mapBack(_ filter: FlashcardSetDetailCardFilter) -> FlashcardSetDetailViewModel.CardFilter {
+        switch filter {
+        case .all:
+            return .all
+        case .studied:
+            return .studied
+        case .remaining:
+            return .remaining
+        case .mastered:
+            return .mastered
         }
     }
 }
@@ -190,23 +212,29 @@ private extension FlashcardSetDetailView {
             ownerUID: "preview-user",
             ownerEmail: "vika@example.com",
             title: "Daily Conversation",
-            description: "A collection of useful phrases for everyday conversations. Practice speaking and listening to sound more natural and confident.",
+            description: "A collection of useful phrases.",
             privacy: "private",
             folderName: nil,
-            colorHex: SetColor.green.hex,
+            colorHex: SetColor.purple.hex,
             icon: .systemName("rectangle.stack.fill"),
-            cards: previewCards,
+            cards: [
+                Flashcard(
+                    id: UUID().uuidString,
+                    word: "Hola",
+                    translation: "Привіт",
+                    example: "Hola, ¿cómo estás?",
+                    imageURL: nil
+                ),
+                Flashcard(
+                    id: UUID().uuidString,
+                    word: "Gracias",
+                    translation: "Дякую",
+                    example: "Gracias por tu ayuda.",
+                    imageURL: nil
+                )
+            ],
             createdAt: Date(),
             updatedAt: Date()
         )
     )
 }
-
-private let previewCards: [Flashcard] = [
-    Flashcard(id: UUID().uuidString, word: "Hola", translation: "Hello",
-              example: "Hola, ¿cómo estás?", imageURL: nil),
-    Flashcard(id: UUID().uuidString, word: "Gracias", translation: "Thank you",
-              example: "Gracias por tu ayuda.", imageURL: nil),
-    Flashcard(id: UUID().uuidString, word: "Buenos días", translation: "Good morning",
-              example: "Buenos días, ¿cómo estás?", imageURL: nil)
-]
