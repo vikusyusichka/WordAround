@@ -11,25 +11,13 @@ struct CreateSetView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: Layout.isPadLike ? 18 : 14) {
-                    CreateSetHeaderView(
-                        viewModel: viewModel,
-                        onBack: { dismiss() }
-                    )
-
+                    CreateSetHeaderView(viewModel: viewModel, onBack: { dismiss() })
                     CreateSetInfoSectionView(viewModel: viewModel)
                     CreateSetCustomizationSectionView(viewModel: viewModel)
                     CreateSetPreviewCardView(viewModel: viewModel)
                     CreateSetCardsSectionView(viewModel: viewModel)
-
                     createButton
-
-                    if let errorMessage = viewModel.errorMessage {
-                        Text(errorMessage)
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.red)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 12)
-                    }
+                    errorText
                 }
                 .padding(.horizontal, Layout.isPadLike ? 20 : 16)
                 .padding(.top, Layout.isPadLike ? 12 : 8)
@@ -48,8 +36,7 @@ struct CreateSetView: View {
 
     private var createButton: some View {
         Button {
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                            to: nil, from: nil, for: nil)
+            CreateSetKeyboard.dismiss()
             Task {
                 await viewModel.createSet()
             }
@@ -74,6 +61,17 @@ struct CreateSetView: View {
         }
         .buttonStyle(.plain)
         .disabled(viewModel.isSaving)
+    }
+
+    @ViewBuilder
+    private var errorText: some View {
+        if let errorMessage = viewModel.errorMessage {
+            Text(errorMessage)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.red)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 12)
+        }
     }
 }
 

@@ -39,15 +39,7 @@
 		E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */; };
 		E30A1D552F9BBD3D00387BDC /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D542F9BBD3700387BDC /* HomeViewModel.swift */; };
 		E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D562F9BBF8500387BDC /* VerifyEmailViewModel.swift */; };
-		E30A1D5B2F9BEB5400387BDC /* CreateSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D5A2F9BEB4900387BDC /* CreateSetView.swift */; };
 		E30A1D5D2F9BEB8200387BDC /* CreateSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D5C2F9BEB8200387BDC /* CreateSet.swift */; };
-		E30A1D602F9BF5C600387BDC /* CreateSetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D5F2F9BF5BC00387BDC /* CreateSetViewModel.swift */; };
-		E30A1D632F9BF79100387BDC /* CreateSetHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D622F9BF77D00387BDC /* CreateSetHeaderView.swift */; };
-		E30A1D652F9BF79F00387BDC /* CreateSetInfoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D642F9BF79D00387BDC /* CreateSetInfoSectionView.swift */; };
-		E30A1D672F9BF7AB00387BDC /* CreateSetCustomizationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D662F9BF7A900387BDC /* CreateSetCustomizationSectionView.swift */; };
-		E30A1D692F9BF7C500387BDC /* CreateSetPreviewCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D682F9BF7C300387BDC /* CreateSetPreviewCardView.swift */; };
-		E30A1D6B2F9BF7D200387BDC /* CreateSetCardsSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D6A2F9BF7D000387BDC /* CreateSetCardsSectionView.swift */; };
-		E30A1D6D2F9BF7E100387BDC /* CreateSetFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D6C2F9BF7DF00387BDC /* CreateSetFieldStyle.swift */; };
 		E30A1D6F2F9C0E9200387BDC /* SetIconType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D6E2F9C0E9200387BDC /* SetIconType.swift */; };
 		E30A1D712F9C0ED000387BDC /* FlashCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D702F9C0ED000387BDC /* FlashCard.swift */; };
 		E30A1D752F9C0EF800387BDC /* FlashcardSetService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D742F9C0EF700387BDC /* FlashcardSetService.swift */; };
@@ -68,7 +60,6 @@
 		E30A1D9C2F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D922F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift */; };
 		E30A1D9D2F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */; };
 		E30A1D9E2F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */; };
-		E30A1DA22F9D730E00387BDC /* SFSymbolPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DA12F9D730400387BDC /* SFSymbolPickerView.swift */; };
 		E30A1DA42F9E076500387BDC /* Folders.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DA32F9E076200387BDC /* Folders.swift */; };
 		E30A1DA62F9E07A000387BDC /* FolderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DA52F9E079A00387BDC /* FolderService.swift */; };
 		E30A1DAC2F9E07E600387BDC /* CreateFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DAB2F9E07DB00387BDC /* CreateFolderView.swift */; };
@@ -80,6 +71,30 @@
 		E30A1DC82FA25C9D00387BDC /* FlashcardEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DC72FA25C9100387BDC /* FlashcardEditView.swift */; };
 		E30A1DCD2FA2B30100387BDC /* FlashcardExpandedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DCC2FA2B2F400387BDC /* FlashcardExpandedView.swift */; };
 		E30A1DCF2FA2B4C800387BDC /* FlashcardSetAddCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DCE2FA2B4C500387BDC /* FlashcardSetAddCardView.swift */; };
+		E39E8FE62FA7911E00472437 /* CreateSetCardEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FC52FA7911E00472437 /* CreateSetCardEditorView.swift */; };
+		E39E8FE72FA7911E00472437 /* CreateSetColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FCB2FA7911E00472437 /* CreateSetColorPickerView.swift */; };
+		E39E8FE82FA7911E00472437 /* CreateSetInfoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FD52FA7911E00472437 /* CreateSetInfoSectionView.swift */; };
+		E39E8FE92FA7911E00472437 /* CreateSetOptionalText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FD82FA7911E00472437 /* CreateSetOptionalText.swift */; };
+		E39E8FEA2FA7911E00472437 /* CreateSetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FE42FA7911E00472437 /* CreateSetViewModel.swift */; };
+		E39E8FEB2FA7911E00472437 /* SFSymbolCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FCF2FA7911E00472437 /* SFSymbolCatalog.swift */; };
+		E39E8FEC2FA7911E00472437 /* CreateSetFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FD42FA7911E00472437 /* CreateSetFieldStyle.swift */; };
+		E39E8FED2FA7911E00472437 /* CreateSetCardsSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FC72FA7911E00472437 /* CreateSetCardsSectionView.swift */; };
+		E39E8FEE2FA7911E00472437 /* CreateSetSectionContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FD92FA7911E00472437 /* CreateSetSectionContainer.swift */; };
+		E39E8FEF2FA7911E00472437 /* CreateSetCardTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FC82FA7911E00472437 /* CreateSetCardTextField.swift */; };
+		E39E8FF02FA7911E00472437 /* CreateSetValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FE02FA7911E00472437 /* CreateSetValidator.swift */; };
+		E39E8FF12FA7911E00472437 /* CreateSetImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FC92FA7911E00472437 /* CreateSetImagePickerView.swift */; };
+		E39E8FF22FA7911E00472437 /* CreateSetBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FDD2FA7911E00472437 /* CreateSetBuilder.swift */; };
+		E39E8FF32FA7911E00472437 /* CreateSetSavingUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FDF2FA7911E00472437 /* CreateSetSavingUseCase.swift */; };
+		E39E8FF42FA7911E00472437 /* CreateSetHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FD22FA7911E00472437 /* CreateSetHeaderView.swift */; };
+		E39E8FF52FA7911E00472437 /* CreateSetCardExampleField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FC62FA7911E00472437 /* CreateSetCardExampleField.swift */; };
+		E39E8FF62FA7911E00472437 /* CreateSetKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FD72FA7911E00472437 /* CreateSetKeyboard.swift */; };
+		E39E8FF72FA7911E00472437 /* CreateSetSectionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FDA2FA7911E00472437 /* CreateSetSectionLabel.swift */; };
+		E39E8FF82FA7911E00472437 /* CreateSetIconSuggester.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FDE2FA7911E00472437 /* CreateSetIconSuggester.swift */; };
+		E39E8FF92FA7911E00472437 /* SFSymbolPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FD02FA7911E00472437 /* SFSymbolPickerView.swift */; };
+		E39E8FFA2FA7911E00472437 /* CreateSetCustomizationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FCC2FA7911E00472437 /* CreateSetCustomizationSectionView.swift */; };
+		E39E8FFB2FA7911E00472437 /* CreateSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FE22FA7911E00472437 /* CreateSetView.swift */; };
+		E39E8FFC2FA7911E00472437 /* CreateSetPreviewCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FCE2FA7911E00472437 /* CreateSetPreviewCardView.swift */; };
+		E39E8FFD2FA7911E00472437 /* CreateSetFolderPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FCD2FA7911E00472437 /* CreateSetFolderPickerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -113,15 +128,7 @@
 		E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FlashCardSet.swift; path = WordAround/Core/FlashCardSet.swift; sourceTree = SOURCE_ROOT; };
 		E30A1D542F9BBD3700387BDC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		E30A1D562F9BBF8500387BDC /* VerifyEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailViewModel.swift; sourceTree = "<group>"; };
-		E30A1D5A2F9BEB4900387BDC /* CreateSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetView.swift; sourceTree = "<group>"; };
 		E30A1D5C2F9BEB8200387BDC /* CreateSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CreateSet.swift; path = WordAround/Core/CreateSet.swift; sourceTree = SOURCE_ROOT; };
-		E30A1D5F2F9BF5BC00387BDC /* CreateSetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetViewModel.swift; sourceTree = "<group>"; };
-		E30A1D622F9BF77D00387BDC /* CreateSetHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetHeaderView.swift; sourceTree = "<group>"; };
-		E30A1D642F9BF79D00387BDC /* CreateSetInfoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetInfoSectionView.swift; sourceTree = "<group>"; };
-		E30A1D662F9BF7A900387BDC /* CreateSetCustomizationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCustomizationSectionView.swift; sourceTree = "<group>"; };
-		E30A1D682F9BF7C300387BDC /* CreateSetPreviewCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetPreviewCardView.swift; sourceTree = "<group>"; };
-		E30A1D6A2F9BF7D000387BDC /* CreateSetCardsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCardsSectionView.swift; sourceTree = "<group>"; };
-		E30A1D6C2F9BF7DF00387BDC /* CreateSetFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetFieldStyle.swift; sourceTree = "<group>"; };
 		E30A1D6E2F9C0E9200387BDC /* SetIconType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SetIconType.swift; path = WordAround/Core/SetIconType.swift; sourceTree = SOURCE_ROOT; };
 		E30A1D702F9C0ED000387BDC /* FlashCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FlashCard.swift; path = WordAround/Core/FlashCard.swift; sourceTree = SOURCE_ROOT; };
 		E30A1D742F9C0EF700387BDC /* FlashcardSetService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetService.swift; sourceTree = "<group>"; };
@@ -140,7 +147,6 @@
 		E30A1D932F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailHeaderView.swift; sourceTree = "<group>"; };
 		E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailMainCardView.swift; sourceTree = "<group>"; };
 		E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailTopBarView.swift; sourceTree = "<group>"; };
-		E30A1DA12F9D730400387BDC /* SFSymbolPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolPickerView.swift; sourceTree = "<group>"; };
 		E30A1DA32F9E076200387BDC /* Folders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folders.swift; sourceTree = "<group>"; };
 		E30A1DA52F9E079A00387BDC /* FolderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderService.swift; sourceTree = "<group>"; };
 		E30A1DAB2F9E07DB00387BDC /* CreateFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderView.swift; sourceTree = "<group>"; };
@@ -152,6 +158,30 @@
 		E30A1DC72FA25C9100387BDC /* FlashcardEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardEditView.swift; sourceTree = "<group>"; };
 		E30A1DCC2FA2B2F400387BDC /* FlashcardExpandedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardExpandedView.swift; sourceTree = "<group>"; };
 		E30A1DCE2FA2B4C500387BDC /* FlashcardSetAddCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetAddCardView.swift; sourceTree = "<group>"; };
+		E39E8FC52FA7911E00472437 /* CreateSetCardEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCardEditorView.swift; sourceTree = "<group>"; };
+		E39E8FC62FA7911E00472437 /* CreateSetCardExampleField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCardExampleField.swift; sourceTree = "<group>"; };
+		E39E8FC72FA7911E00472437 /* CreateSetCardsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCardsSectionView.swift; sourceTree = "<group>"; };
+		E39E8FC82FA7911E00472437 /* CreateSetCardTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCardTextField.swift; sourceTree = "<group>"; };
+		E39E8FC92FA7911E00472437 /* CreateSetImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetImagePickerView.swift; sourceTree = "<group>"; };
+		E39E8FCB2FA7911E00472437 /* CreateSetColorPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetColorPickerView.swift; sourceTree = "<group>"; };
+		E39E8FCC2FA7911E00472437 /* CreateSetCustomizationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCustomizationSectionView.swift; sourceTree = "<group>"; };
+		E39E8FCD2FA7911E00472437 /* CreateSetFolderPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetFolderPickerView.swift; sourceTree = "<group>"; };
+		E39E8FCE2FA7911E00472437 /* CreateSetPreviewCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetPreviewCardView.swift; sourceTree = "<group>"; };
+		E39E8FCF2FA7911E00472437 /* SFSymbolCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolCatalog.swift; sourceTree = "<group>"; };
+		E39E8FD02FA7911E00472437 /* SFSymbolPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbolPickerView.swift; sourceTree = "<group>"; };
+		E39E8FD22FA7911E00472437 /* CreateSetHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetHeaderView.swift; sourceTree = "<group>"; };
+		E39E8FD42FA7911E00472437 /* CreateSetFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetFieldStyle.swift; sourceTree = "<group>"; };
+		E39E8FD52FA7911E00472437 /* CreateSetInfoSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetInfoSectionView.swift; sourceTree = "<group>"; };
+		E39E8FD72FA7911E00472437 /* CreateSetKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetKeyboard.swift; sourceTree = "<group>"; };
+		E39E8FD82FA7911E00472437 /* CreateSetOptionalText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetOptionalText.swift; sourceTree = "<group>"; };
+		E39E8FD92FA7911E00472437 /* CreateSetSectionContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetSectionContainer.swift; sourceTree = "<group>"; };
+		E39E8FDA2FA7911E00472437 /* CreateSetSectionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetSectionLabel.swift; sourceTree = "<group>"; };
+		E39E8FDD2FA7911E00472437 /* CreateSetBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetBuilder.swift; sourceTree = "<group>"; };
+		E39E8FDE2FA7911E00472437 /* CreateSetIconSuggester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetIconSuggester.swift; sourceTree = "<group>"; };
+		E39E8FDF2FA7911E00472437 /* CreateSetSavingUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetSavingUseCase.swift; sourceTree = "<group>"; };
+		E39E8FE02FA7911E00472437 /* CreateSetValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetValidator.swift; sourceTree = "<group>"; };
+		E39E8FE22FA7911E00472437 /* CreateSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetView.swift; sourceTree = "<group>"; };
+		E39E8FE42FA7911E00472437 /* CreateSetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,7 +265,7 @@
 			children = (
 				E30A1DA72F9E07B800387BDC /* Folders */,
 				E30A1D8C2F9CE41700387BDC /* Components */,
-				E30A1D582F9BEB3700387BDC /* FlashCards */,
+				E30A1D582F9BEB3700387BDC /* Flashcards */,
 				E30A1CBD2F98078A00387BDC /* Onboarding */,
 				E30A1CBA2F98023200387BDC /* Home */,
 				E30A1CCE2F99444400387BDC /* Auth */,
@@ -382,46 +412,13 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
-		E30A1D582F9BEB3700387BDC /* FlashCards */ = {
+		E30A1D582F9BEB3700387BDC /* Flashcards */ = {
 			isa = PBXGroup;
 			children = (
-				E30A1D612F9BF73000387BDC /* Components */,
-				E30A1D5E2F9BF4E600387BDC /* ViewModels */,
-				E30A1D592F9BEB4200387BDC /* Views */,
+				E39E8FC42FA7911000472437 /* CreateSet */,
+				E39E8FB72FA7892700472437 /* SetDetail */,
 			);
-			path = FlashCards;
-			sourceTree = "<group>";
-		};
-		E30A1D592F9BEB4200387BDC /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1D882F9CCA4400387BDC /* FleshcardSetDetailView.swift */,
-				E30A1D5A2F9BEB4900387BDC /* CreateSetView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		E30A1D5E2F9BF4E600387BDC /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1D8A2F9CDB7100387BDC /* FlashcardSetDetailViewModel.swift */,
-				E30A1D5F2F9BF5BC00387BDC /* CreateSetViewModel.swift */,
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		E30A1D612F9BF73000387BDC /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1DA12F9D730400387BDC /* SFSymbolPickerView.swift */,
-				E30A1D6C2F9BF7DF00387BDC /* CreateSetFieldStyle.swift */,
-				E30A1D6A2F9BF7D000387BDC /* CreateSetCardsSectionView.swift */,
-				E30A1D622F9BF77D00387BDC /* CreateSetHeaderView.swift */,
-				E30A1D682F9BF7C300387BDC /* CreateSetPreviewCardView.swift */,
-				E30A1D662F9BF7A900387BDC /* CreateSetCustomizationSectionView.swift */,
-				E30A1D642F9BF79D00387BDC /* CreateSetInfoSectionView.swift */,
-			);
-			path = Components;
+			path = Flashcards;
 			sourceTree = "<group>";
 		};
 		E30A1D762F9C14D700387BDC /* Frameworks */ = {
@@ -457,18 +454,6 @@
 		E30A1D8C2F9CE41700387BDC /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				E30A1DCE2FA2B4C500387BDC /* FlashcardSetAddCardView.swift */,
-				E30A1DCC2FA2B2F400387BDC /* FlashcardExpandedView.swift */,
-				E30A1DC72FA25C9100387BDC /* FlashcardEditView.swift */,
-				E30A1D8D2F9CE42500387BDC /* FlashcardSetDetailAddButton.swift */,
-				E30A1D8E2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift */,
-				E30A1D8F2F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift */,
-				E30A1D902F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift */,
-				E30A1D912F9CE42500387BDC /* FlashcardSetDetailControlsView.swift */,
-				E30A1D922F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift */,
-				E30A1D932F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift */,
-				E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */,
-				E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -508,6 +493,170 @@
 				E30A1DAB2F9E07DB00387BDC /* CreateFolderView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		E39E8FB72FA7892700472437 /* SetDetail */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FBB2FA78A1800472437 /* Layout */,
+				E39E8FBA2FA789B700472437 /* CardsList */,
+				E39E8FB92FA7899000472437 /* StudyCard */,
+				E39E8FB82FA7897200472437 /* Header */,
+				E39E8FBC2FA78A2900472437 /* Editing */,
+				E30A1D8A2F9CDB7100387BDC /* FlashcardSetDetailViewModel.swift */,
+				E30A1D882F9CCA4400387BDC /* FleshcardSetDetailView.swift */,
+			);
+			path = SetDetail;
+			sourceTree = "<group>";
+		};
+		E39E8FB82FA7897200472437 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D932F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift */,
+				E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
+		E39E8FB92FA7899000472437 /* StudyCard */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1DCC2FA2B2F400387BDC /* FlashcardExpandedView.swift */,
+				E30A1D912F9CE42500387BDC /* FlashcardSetDetailControlsView.swift */,
+				E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */,
+				E30A1D8F2F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift */,
+			);
+			path = StudyCard;
+			sourceTree = "<group>";
+		};
+		E39E8FBA2FA789B700472437 /* CardsList */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D902F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift */,
+				E30A1D922F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift */,
+			);
+			path = CardsList;
+			sourceTree = "<group>";
+		};
+		E39E8FBB2FA78A1800472437 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1D8E2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		E39E8FBC2FA78A2900472437 /* Editing */ = {
+			isa = PBXGroup;
+			children = (
+				E30A1DCE2FA2B4C500387BDC /* FlashcardSetAddCardView.swift */,
+				E30A1DC72FA25C9100387BDC /* FlashcardEditView.swift */,
+				E30A1D8D2F9CE42500387BDC /* FlashcardSetDetailAddButton.swift */,
+			);
+			path = Editing;
+			sourceTree = "<group>";
+		};
+		E39E8FC42FA7911000472437 /* CreateSet */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FDC2FA7911E00472437 /* Components */,
+				E39E8FE12FA7911E00472437 /* Domain */,
+				E39E8FE32FA7911E00472437 /* View */,
+				E39E8FE52FA7911E00472437 /* ViewModel */,
+			);
+			path = CreateSet;
+			sourceTree = "<group>";
+		};
+		E39E8FCA2FA7911E00472437 /* CardsEditor */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FC52FA7911E00472437 /* CreateSetCardEditorView.swift */,
+				E39E8FC62FA7911E00472437 /* CreateSetCardExampleField.swift */,
+				E39E8FC72FA7911E00472437 /* CreateSetCardsSectionView.swift */,
+				E39E8FC82FA7911E00472437 /* CreateSetCardTextField.swift */,
+				E39E8FC92FA7911E00472437 /* CreateSetImagePickerView.swift */,
+			);
+			path = CardsEditor;
+			sourceTree = "<group>";
+		};
+		E39E8FD12FA7911E00472437 /* Customization */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FCB2FA7911E00472437 /* CreateSetColorPickerView.swift */,
+				E39E8FCC2FA7911E00472437 /* CreateSetCustomizationSectionView.swift */,
+				E39E8FCD2FA7911E00472437 /* CreateSetFolderPickerView.swift */,
+				E39E8FCE2FA7911E00472437 /* CreateSetPreviewCardView.swift */,
+				E39E8FCF2FA7911E00472437 /* SFSymbolCatalog.swift */,
+				E39E8FD02FA7911E00472437 /* SFSymbolPickerView.swift */,
+			);
+			path = Customization;
+			sourceTree = "<group>";
+		};
+		E39E8FD32FA7911E00472437 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FD22FA7911E00472437 /* CreateSetHeaderView.swift */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
+		E39E8FD62FA7911E00472437 /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FD42FA7911E00472437 /* CreateSetFieldStyle.swift */,
+				E39E8FD52FA7911E00472437 /* CreateSetInfoSectionView.swift */,
+			);
+			path = Info;
+			sourceTree = "<group>";
+		};
+		E39E8FDB2FA7911E00472437 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FD72FA7911E00472437 /* CreateSetKeyboard.swift */,
+				E39E8FD82FA7911E00472437 /* CreateSetOptionalText.swift */,
+				E39E8FD92FA7911E00472437 /* CreateSetSectionContainer.swift */,
+				E39E8FDA2FA7911E00472437 /* CreateSetSectionLabel.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		E39E8FDC2FA7911E00472437 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FCA2FA7911E00472437 /* CardsEditor */,
+				E39E8FD12FA7911E00472437 /* Customization */,
+				E39E8FD32FA7911E00472437 /* Header */,
+				E39E8FD62FA7911E00472437 /* Info */,
+				E39E8FDB2FA7911E00472437 /* Shared */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E39E8FE12FA7911E00472437 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FDD2FA7911E00472437 /* CreateSetBuilder.swift */,
+				E39E8FDE2FA7911E00472437 /* CreateSetIconSuggester.swift */,
+				E39E8FDF2FA7911E00472437 /* CreateSetSavingUseCase.swift */,
+				E39E8FE02FA7911E00472437 /* CreateSetValidator.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		E39E8FE32FA7911E00472437 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FE22FA7911E00472437 /* CreateSetView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		E39E8FE52FA7911E00472437 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				E39E8FE42FA7911E00472437 /* CreateSetViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -595,22 +744,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				E30A1CE12F9A358000387BDC /* VerifyEmailView.swift in Sources */,
-				E30A1D5B2F9BEB5400387BDC /* CreateSetView.swift in Sources */,
 				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,
 				E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */,
 				E30A1DB42F9E0C3D00387BDC /* FolderCardView.swift in Sources */,
 				E30A1DAE2F9E07F000387BDC /* CreateFolderViewModel.swift in Sources */,
 				E30A1CBC2F98023B00387BDC /* HomeView.swift in Sources */,
 				E30A1CC32F9819B100387BDC /* AuthView.swift in Sources */,
-				E30A1D6B2F9BF7D200387BDC /* CreateSetCardsSectionView.swift in Sources */,
 				E30A1D0F2F9A618800387BDC /* HomeTab.swift in Sources */,
-				E30A1D672F9BF7AB00387BDC /* CreateSetCustomizationSectionView.swift in Sources */,
-				E30A1D652F9BF79F00387BDC /* CreateSetInfoSectionView.swift in Sources */,
 				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
 				E30A1DC82FA25C9D00387BDC /* FlashcardEditView.swift in Sources */,
 				E30A1D892F9CCA6200387BDC /* FleshcardSetDetailView.swift in Sources */,
 				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
-				E30A1D632F9BF79100387BDC /* CreateSetHeaderView.swift in Sources */,
 				E30A1DCD2FA2B30100387BDC /* FlashcardExpandedView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
@@ -619,10 +763,8 @@
 				E30A1DA62F9E07A000387BDC /* FolderService.swift in Sources */,
 				E30A1D8B2F9CDB7300387BDC /* FlashcardSetDetailViewModel.swift in Sources */,
 				E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */,
-				E30A1D692F9BF7C500387BDC /* CreateSetPreviewCardView.swift in Sources */,
 				E30A1D7E2F9C236000387BDC /* CreateSetTheme.swift in Sources */,
 				E30A1D962F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift in Sources */,
-				E30A1DA22F9D730E00387BDC /* SFSymbolPickerView.swift in Sources */,
 				E30A1DCF2FA2B4C800387BDC /* FlashcardSetAddCardView.swift in Sources */,
 				E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */,
 				E30A1D972F9CE42500387BDC /* FlashcardSetDetailAddButton.swift in Sources */,
@@ -637,12 +779,10 @@
 				E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */,
 				E30A1D5D2F9BEB8200387BDC /* CreateSet.swift in Sources */,
 				E30A1DAC2F9E07E600387BDC /* CreateFolderView.swift in Sources */,
-				E30A1D6D2F9BF7E100387BDC /* CreateSetFieldStyle.swift in Sources */,
 				E30A1D7C2F9C1D6900387BDC /* HomeSetPreviewItem.swift in Sources */,
 				E30A1D072F9A5FC000387BDC /* HomeHeaderView.swift in Sources */,
 				E30A1CDF2F9A2D3900387BDC /* SessionStore.swift in Sources */,
 				E30A1CCD2F99443200387BDC /* AppDelegate.swift in Sources */,
-				E30A1D602F9BF5C600387BDC /* CreateSetViewModel.swift in Sources */,
 				E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */,
 				E30A1CD32F99448B00387BDC /* AuthService.swift in Sources */,
 				E30A1D1D2F9AC1D500387BDC /* BaseCardView.swift in Sources */,
@@ -650,6 +790,30 @@
 				E30A1D6F2F9C0E9200387BDC /* SetIconType.swift in Sources */,
 				E30A1D812F9C24C100387BDC /* HomeSetPreviewMapper.swift in Sources */,
 				E30A1D712F9C0ED000387BDC /* FlashCard.swift in Sources */,
+				E39E8FE62FA7911E00472437 /* CreateSetCardEditorView.swift in Sources */,
+				E39E8FE72FA7911E00472437 /* CreateSetColorPickerView.swift in Sources */,
+				E39E8FE82FA7911E00472437 /* CreateSetInfoSectionView.swift in Sources */,
+				E39E8FE92FA7911E00472437 /* CreateSetOptionalText.swift in Sources */,
+				E39E8FEA2FA7911E00472437 /* CreateSetViewModel.swift in Sources */,
+				E39E8FEB2FA7911E00472437 /* SFSymbolCatalog.swift in Sources */,
+				E39E8FEC2FA7911E00472437 /* CreateSetFieldStyle.swift in Sources */,
+				E39E8FED2FA7911E00472437 /* CreateSetCardsSectionView.swift in Sources */,
+				E39E8FEE2FA7911E00472437 /* CreateSetSectionContainer.swift in Sources */,
+				E39E8FEF2FA7911E00472437 /* CreateSetCardTextField.swift in Sources */,
+				E39E8FF02FA7911E00472437 /* CreateSetValidator.swift in Sources */,
+				E39E8FF12FA7911E00472437 /* CreateSetImagePickerView.swift in Sources */,
+				E39E8FF22FA7911E00472437 /* CreateSetBuilder.swift in Sources */,
+				E39E8FF32FA7911E00472437 /* CreateSetSavingUseCase.swift in Sources */,
+				E39E8FF42FA7911E00472437 /* CreateSetHeaderView.swift in Sources */,
+				E39E8FF52FA7911E00472437 /* CreateSetCardExampleField.swift in Sources */,
+				E39E8FF62FA7911E00472437 /* CreateSetKeyboard.swift in Sources */,
+				E39E8FF72FA7911E00472437 /* CreateSetSectionLabel.swift in Sources */,
+				E39E8FF82FA7911E00472437 /* CreateSetIconSuggester.swift in Sources */,
+				E39E8FF92FA7911E00472437 /* SFSymbolPickerView.swift in Sources */,
+				E39E8FFA2FA7911E00472437 /* CreateSetCustomizationSectionView.swift in Sources */,
+				E39E8FFB2FA7911E00472437 /* CreateSetView.swift in Sources */,
+				E39E8FFC2FA7911E00472437 /* CreateSetPreviewCardView.swift in Sources */,
+				E39E8FFD2FA7911E00472437 /* CreateSetFolderPickerView.swift in Sources */,
 				E30A1DB82FA14BAA00387BDC /* FoldersListView.swift in Sources */,
 				E30A1D552F9BBD3D00387BDC /* HomeViewModel.swift in Sources */,
 				E30A1D752F9C0EF800387BDC /* FlashcardSetService.swift in Sources */,

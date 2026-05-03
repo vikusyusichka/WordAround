@@ -57,8 +57,11 @@ struct CreateSetHeaderView: View {
             }
             .buttonStyle(.plain)
             .sheet(isPresented: $isSymbolPickerPresented) {
-                SFSymbolPickerView(selectedSymbol: $viewModel.draft.selectedIcon)
-                    .presentationDetents([.medium, .large])
+                SFSymbolPickerView(
+                    selectedSymbol: $viewModel.draft.selectedIcon,
+                    theme: viewModel.theme
+                )
+                .presentationDetents([.medium, .large])
             }
         }
     }

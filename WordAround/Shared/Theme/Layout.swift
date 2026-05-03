@@ -453,3 +453,33 @@ extension Layout {
     static let flashcardDetailBottomPadding: CGFloat = isPadLike ? 180 : 152
     static let homeBottomBarHeight: CGFloat = isPadLike ? 110 : 90
 }
+
+// MARK: - SF Symbol Picker
+
+extension Layout {
+    static let symbolPickerHorizontalPadding: CGFloat = isPadLike ? 54 : (isCompactPhone ? 18 : 22)
+    static let symbolPickerTopPadding: CGFloat = isPadLike ? 18 : 14
+    static let symbolPickerBottomPadding: CGFloat = isPadLike ? 42 : 34
+    static let symbolPickerContentSpacing: CGFloat = isPadLike ? 22 : 18
+
+    static let symbolPickerTopBarHeight: CGFloat = isPadLike ? 48 : 44
+    static let symbolPickerTopBarSpacing: CGFloat = isPadLike ? 26 : 14
+    static let symbolPickerTitleSize: CGFloat = isPadLike ? 18 : 16
+
+    static let symbolPickerCloseButtonSize: CGFloat = isPadLike ? 42 : 36
+    static let symbolPickerCloseIconSize: CGFloat = isPadLike ? 15 : 14
+
+    static let symbolPickerSearchWidth: CGFloat = isPadLike ? 260 : (isCompactPhone ? 150 : 180)
+    static let symbolPickerSearchHeight: CGFloat = isPadLike ? 36 : 34
+    static let symbolPickerSearchHorizontalPadding: CGFloat = isPadLike ? 14 : 12
+    static let symbolPickerSearchIconSize: CGFloat = isPadLike ? 14 : 13
+    static let symbolPickerSearchTextSize: CGFloat = isPadLike ? 14 : 13
+    static let symbolPickerSearchIconSpacing: CGFloat = isPadLike ? 9 : 8
+
+    static let symbolPickerGridColumns: Int = isPadLike ? 5 : 4
+    static let symbolPickerGridSpacing: CGFloat = isPadLike ? 18 : 17
+    static let symbolPickerGridItemSpacing: CGFloat = isPadLike ? 26 : 16
+
+    static let symbolPickerCircleSize: CGFloat = isPadLike ? 58 : 54
+    static let symbolPickerIconSize: CGFloat = isPadLike ? 24 : 22
+}
