@@ -13,25 +13,23 @@ struct FlashcardExpandedView: View {
     }
 
     private var totalCards: Int {
-        max(viewModel.cards.count, 1)
+        max(viewModel.roundTotalCount, 1)
     }
 
     private var currentNumber: Int {
-        guard !viewModel.cards.isEmpty else { return 0 }
-        return min(viewModel.currentCardIndex + 1, totalCards)
+        viewModel.roundCurrentNumber
     }
 
     private var progress: CGFloat {
-        guard !viewModel.cards.isEmpty else { return 0 }
-        return CGFloat(viewModel.studiedCount) / CGFloat(totalCards)
+        viewModel.roundListingProgress
     }
 
     private var inProgressCount: Int {
-        viewModel.remainingCount
+        viewModel.roundLearningCount
     }
 
     private var knownCount: Int {
-        viewModel.studiedCount
+        viewModel.roundKnownCount
     }
 
     var body: some View {
@@ -39,26 +37,52 @@ struct FlashcardExpandedView: View {
             viewModel.theme.screenBackground
                 .ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                topBar
-                    .padding(.horizontal, isPadLike ? 38 : 22)
-                    .padding(.top, isPadLike ? 20 : 14)
+            if viewModel.trackProgress && viewModel.isShowingRoundFinish {
+                FlashcardRoundFinishView(
+                    theme: viewModel.theme,
+                    knownCount: viewModel.roundKnownCount,
+                    unknownCount: viewModel.roundLearningCount,
+                    totalCount: viewModel.roundTotalCount,
+                    onRepeatUnknown: {
+                        viewModel.repeatUnknownRound()
+                    },
+                    onRestartAll: {
+                        viewModel.restartAllCardsRound()
+                    },
+                    onClose: {
+                        isPresented = false
+                    }
+                )
+                .transition(.opacity.combined(with: .scale(scale: 0.98)))
+            } else {
+                VStack(spacing: 0) {
+                    topBar
+                        .padding(.horizontal, isPadLike ? 38 : 22)
+                        .padding(.top, isPadLike ? 20 : 14)
 
-                Spacer(minLength: isPadLike ? 18 : 12)
+                    Spacer(minLength: isPadLike ? 18 : 12)
 
-                rotatingCard
-                    .padding(.horizontal, isPadLike ? 70 : 24)
-                    .offset(x: cardOffset + dragOffset)
-                    .rotationEffect(.degrees(Double((cardOffset + dragOffset) / 38)))
-                    .highPriorityGesture(swipeGesture)
-                    .animation(.interactiveSpring(response: 0.32, dampingFraction: 0.82), value: dragOffset)
+                    rotatingCard
+                        .padding(.horizontal, isPadLike ? 70 : 24)
+                        .offset(x: cardOffset + dragOffset)
+                        .rotationEffect(.degrees(Double((cardOffset + dragOffset) / 38)))
+                        .highPriorityGesture(swipeGesture)
+                        .animation(.interactiveSpring(response: 0.32, dampingFraction: 0.82), value: dragOffset)
 
-                progressSection
-                    .padding(.top, isPadLike ? 34 : 28)
-                    .padding(.horizontal, isPadLike ? 88 : 24)
+                    if viewModel.trackProgress {
+                        progressSection
+                            .padding(.top, isPadLike ? 34 : 28)
+                            .padding(.horizontal, isPadLike ? 88 : 24)
+                    }
 
-                Spacer(minLength: isPadLike ? 34 : 26)
+                    Spacer(minLength: isPadLike ? 34 : 26)
+                }
+                .transition(.opacity)
             }
+        }
+        .animation(.easeInOut(duration: 0.25), value: viewModel.isShowingRoundFinish)
+        .onAppear {
+            viewModel.prepareExpandedPresentation()
         }
     }
 
@@ -84,14 +108,14 @@ struct FlashcardExpandedView: View {
     private var rotatingCard: some View {
         ZStack {
             cardSideView(
-                title: viewModel.activeCard?.word ?? "No cards",
+                title: viewModel.activeRoundCard?.word ?? "No cards",
                 subtitle: "word",
                 isBackSide: false
             )
             .opacity(isFlipped ? 0 : 1)
 
             cardSideView(
-                title: viewModel.activeCard?.translation ?? "",
+                title: viewModel.activeRoundCard?.translation ?? "",
                 subtitle: "translation",
                 isBackSide: true
             )
@@ -110,7 +134,7 @@ struct FlashcardExpandedView: View {
         .animation(.easeInOut(duration: 0.48), value: isFlipped)
         .contentShape(RoundedRectangle(cornerRadius: isPadLike ? 44 : 34, style: .continuous))
         .onTapGesture {
-            guard viewModel.activeCard != nil else { return }
+            guard viewModel.activeRoundCard != nil else { return }
 
             withAnimation(.easeInOut(duration: 0.48)) {
                 isFlipped.toggle()
@@ -188,7 +212,7 @@ struct FlashcardExpandedView: View {
 
     private var cardImage: some View {
         Group {
-            if let card = viewModel.activeCard,
+            if let card = viewModel.activeRoundCard,
                let imageURL = card.imageURL,
                !imageURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 if imageURL.hasPrefix("http"),
@@ -341,7 +365,7 @@ struct FlashcardExpandedView: View {
     }
 
     private func swipeRight() {
-        guard !viewModel.cards.isEmpty else { return }
+        guard viewModel.roundTotalCount > 0 else { return }
 
         withAnimation(.easeOut(duration: 0.22)) {
             cardOffset = 460
@@ -359,7 +383,7 @@ struct FlashcardExpandedView: View {
     }
 
     private func swipeLeft() {
-        guard !viewModel.cards.isEmpty else { return }
+        guard viewModel.roundTotalCount > 0 else { return }
 
         withAnimation(.easeOut(duration: 0.22)) {
             cardOffset = -460

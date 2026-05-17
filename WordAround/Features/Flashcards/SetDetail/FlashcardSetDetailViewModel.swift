@@ -31,10 +31,13 @@ final class FlashcardSetDetailViewModel: ObservableObject {
     @Published var swipeDirection: SwipeDirection = .none
     @Published var isExpandedMode = false
     @Published var editingCard: Flashcard? = nil
+    @Published var isShowingRoundFinish = false
 
     @Published private(set) var cards: [Flashcard]
     @Published private(set) var studiedCardIDs: Set<String> = []
     @Published private(set) var masteredCardIDs: Set<String> = []
+    @Published private(set) var learningCardIDs: Set<String> = []
+    @Published private(set) var activeRoundCardIDs: [String]
     @Published private(set) var set: FlashcardSet
 
     // MARK: - Properties
@@ -48,6 +51,7 @@ final class FlashcardSetDetailViewModel: ObservableObject {
     init(set: FlashcardSet, onSetChanged: @escaping (FlashcardSet) -> Void = { _ in }) {
         self.set = set
         self.cards = set.cards
+        self.activeRoundCardIDs = set.cards.map(\.id)
         self.onSetChanged = onSetChanged
     }
 
@@ -58,9 +62,45 @@ final class FlashcardSetDetailViewModel: ObservableObject {
     }
 
     var activeCard: Flashcard? {
-        guard !cards.isEmpty else { return nil }
-        let safeIndex = min(currentCardIndex, cards.count - 1)
-        return cards[safeIndex]
+        activeRoundCard
+    }
+
+    var roundCards: [Flashcard] {
+        activeRoundCardIDs.compactMap { id in
+            cards.first { $0.id == id }
+        }
+    }
+
+    var activeRoundCard: Flashcard? {
+        let currentRoundCards = roundCards
+        guard !currentRoundCards.isEmpty else { return nil }
+        let safeIndex = min(currentCardIndex, currentRoundCards.count - 1)
+        return currentRoundCards[safeIndex]
+    }
+
+    var roundTotalCount: Int {
+        roundCards.count
+    }
+
+    var roundKnownCount: Int {
+        roundCards.filter { studiedCardIDs.contains($0.id) }.count
+    }
+
+    var roundLearningCount: Int {
+        roundCards.filter { learningCardIDs.contains($0.id) }.count
+    }
+
+    var roundAnsweredCount: Int {
+        min(roundKnownCount + roundLearningCount, roundTotalCount)
+    }
+
+    var roundCurrentNumber: Int {
+        roundAnsweredCount
+    }
+
+    var roundListingProgress: CGFloat {
+        guard roundTotalCount > 0 else { return 0 }
+        return CGFloat(roundAnsweredCount) / CGFloat(roundTotalCount)
     }
 
     var filteredCards: [Flashcard] {
@@ -97,12 +137,17 @@ final class FlashcardSetDetailViewModel: ObservableObject {
 
     func shuffleCards() {
         cards.shuffle()
+        activeRoundCardIDs = cards.map(\.id)
+        studiedCardIDs.removeAll()
+        masteredCardIDs.removeAll()
+        learningCardIDs.removeAll()
         currentCardIndex = 0
         isShowingTranslation = false
+        isShowingRoundFinish = false
     }
 
     func goToNextCard() {
-        guard currentCardIndex < cards.count - 1 else { return }
+        guard currentCardIndex < roundCards.count - 1 else { return }
         markCurrentAsStudiedIfNeeded()
         currentCardIndex += 1
         isShowingTranslation = false
@@ -115,7 +160,7 @@ final class FlashcardSetDetailViewModel: ObservableObject {
     }
 
     func handleSwipe(_ direction: SwipeDirection) {
-        guard let card = activeCard else { return }
+        guard let card = activeRoundCard else { return }
 
         swipeDirection = direction
 
@@ -128,8 +173,42 @@ final class FlashcardSetDetailViewModel: ObservableObject {
             updateProgress(for: card, direction: direction)
         }
 
-        moveToNextCardLooping()
+        moveToNextCardUntilEnd()
         isShowingTranslation = false
+    }
+
+    func repeatUnknownRound() {
+        let unknownIDs = roundCards
+            .filter { learningCardIDs.contains($0.id) }
+            .map(\.id)
+
+        activeRoundCardIDs = unknownIDs.isEmpty ? cards.map(\.id) : unknownIDs
+        learningCardIDs.subtract(activeRoundCardIDs)
+        studiedCardIDs.subtract(activeRoundCardIDs)
+        masteredCardIDs.subtract(activeRoundCardIDs)
+        currentCardIndex = 0
+        isShowingTranslation = false
+        isShowingRoundFinish = false
+    }
+
+    func prepareExpandedPresentation() {
+        if !trackProgress {
+            isShowingRoundFinish = false
+            return
+        }
+
+        guard isShowingRoundFinish else { return }
+        restartAllCardsRound()
+    }
+
+    func restartAllCardsRound() {
+        studiedCardIDs.removeAll()
+        masteredCardIDs.removeAll()
+        learningCardIDs.removeAll()
+        activeRoundCardIDs = cards.map(\.id)
+        currentCardIndex = 0
+        isShowingTranslation = false
+        isShowingRoundFinish = false
     }
 
     func selectFilter(_ filter: CardFilter) {
@@ -146,6 +225,7 @@ final class FlashcardSetDetailViewModel: ObservableObject {
         } else {
             masteredCardIDs.insert(card.id)
             studiedCardIDs.insert(card.id)
+            learningCardIDs.remove(card.id)
         }
     }
 
@@ -190,6 +270,7 @@ final class FlashcardSetDetailViewModel: ObservableObject {
 
     func addCard(_ card: Flashcard) {
         cards.append(card)
+        activeRoundCardIDs.append(card.id)
         if cards.count == 1 {
             currentCardIndex = 0
             isShowingTranslation = false
@@ -205,8 +286,10 @@ final class FlashcardSetDetailViewModel: ObservableObject {
 
     func deleteCard(_ card: Flashcard) {
         cards.removeAll { $0.id == card.id }
+        activeRoundCardIDs.removeAll { $0 == card.id }
         studiedCardIDs.remove(card.id)
         masteredCardIDs.remove(card.id)
+        learningCardIDs.remove(card.id)
         clampCurrentIndex()
         persistCards()
     }
@@ -226,19 +309,22 @@ final class FlashcardSetDetailViewModel: ObservableObject {
             currentCardIndex = 0
             return
         }
-        currentCardIndex = min(currentCardIndex, cards.count - 1)
+        currentCardIndex = min(currentCardIndex, max(roundCards.count - 1, 0))
     }
 
     private func markCurrentAsStudiedIfNeeded() {
-        guard trackProgress, let card = activeCard else { return }
+        guard trackProgress, let card = activeRoundCard else { return }
         studiedCardIDs.insert(card.id)
+        learningCardIDs.remove(card.id)
     }
 
     private func updateProgress(for card: Flashcard, direction: SwipeDirection) {
         switch direction {
         case .right:
             studiedCardIDs.insert(card.id)
+            learningCardIDs.remove(card.id)
         case .left:
+            learningCardIDs.insert(card.id)
             studiedCardIDs.remove(card.id)
             masteredCardIDs.remove(card.id)
         case .none:
@@ -246,13 +332,19 @@ final class FlashcardSetDetailViewModel: ObservableObject {
         }
     }
 
-    private func moveToNextCardLooping() {
-        guard !cards.isEmpty else {
+    private func moveToNextCardUntilEnd() {
+        let currentRoundCards = roundCards
+        guard !currentRoundCards.isEmpty else {
             currentCardIndex = 0
+            isShowingRoundFinish = trackProgress
             return
         }
 
-        currentCardIndex = currentCardIndex < cards.count - 1 ? currentCardIndex + 1 : 0
+        if currentCardIndex < currentRoundCards.count - 1 {
+            currentCardIndex += 1
+        } else if trackProgress {
+            isShowingRoundFinish = true
+        }
     }
 
     // MARK: - Persist

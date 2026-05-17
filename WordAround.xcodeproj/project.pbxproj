@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E30901722FB952EF00C52238 /* FlashcardRoundFinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901712FB952DC00C52238 /* FlashcardRoundFinishView.swift */; };
 		E30A1CAA2F98010F00387BDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CA62F98010F00387BDC /* Assets.xcassets */; };
 		E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CA82F98010F00387BDC /* WordAroundApp.swift */; };
 		E30A1CB32F9801B600387BDC /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CB22F9801AE00387BDC /* .gitignore */; };
@@ -98,6 +99,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E30901712FB952DC00C52238 /* FlashcardRoundFinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardRoundFinishView.swift; sourceTree = "<group>"; };
 		E30A1C982F98003000387BDC /* WordAround.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordAround.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E30A1CA62F98010F00387BDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E30A1CA82F98010F00387BDC /* WordAroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordAroundApp.swift; sourceTree = "<group>"; };
@@ -593,6 +595,7 @@
 		E39E904D2FA7E4EE00472437 /* SetDetail */ = {
 			isa = PBXGroup;
 			children = (
+				E30901712FB952DC00C52238 /* FlashcardRoundFinishView.swift */,
 				E39E90742FA7E65200472437 /* CardsList */,
 				E39E90772FA7E65200472437 /* Editing */,
 				E39E90782FA7E65200472437 /* FlashcardSetDetailView.swift */,
@@ -772,6 +775,7 @@
 				E39E908C2FA7E65300472437 /* FlashcardSetDetailCardRowView.swift in Sources */,
 				E39E908D2FA7E65300472437 /* FlashcardSetDetailView.swift in Sources */,
 				E39E908E2FA7E65300472437 /* FlashcardSetDetailCardFilter.swift in Sources */,
+				E30901722FB952EF00C52238 /* FlashcardRoundFinishView.swift in Sources */,
 				E39E908F2FA7E65300472437 /* FlashcardSetDetailMainCardView.swift in Sources */,
 				E39E90902FA7E65300472437 /* FlashcardSetDetailAddButton.swift in Sources */,
 				E39E90912FA7E65300472437 /* FlashcardSetDetailBottomCover.swift in Sources */,
