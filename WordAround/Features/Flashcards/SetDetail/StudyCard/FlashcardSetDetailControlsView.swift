@@ -40,7 +40,7 @@ struct FlashcardSetDetailControlsView: View {
         }
         .font(.system(size: Layout.flashcardDetailControlsTextSize, weight: .bold, design: .rounded))
         .foregroundStyle(theme.mutedTextColor)
-        .padding(.top, Layout.flashcardDetailControlsTopPadding)
+        // NOTE: top padding removed from here — the caller (FlashcardSetDetailView) applies it.
     }
 
     private var controlsDivider: some View {

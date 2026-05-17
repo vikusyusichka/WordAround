@@ -23,7 +23,15 @@ struct FlashcardExpandedView: View {
 
     private var progress: CGFloat {
         guard !viewModel.cards.isEmpty else { return 0 }
-        return CGFloat(currentNumber) / CGFloat(totalCards)
+        return CGFloat(viewModel.studiedCount) / CGFloat(totalCards)
+    }
+
+    private var inProgressCount: Int {
+        viewModel.remainingCount
+    }
+
+    private var knownCount: Int {
+        viewModel.studiedCount
     }
 
     var body: some View {
@@ -47,7 +55,7 @@ struct FlashcardExpandedView: View {
 
                 progressSection
                     .padding(.top, isPadLike ? 34 : 28)
-                    .padding(.horizontal, isPadLike ? 170 : 82)
+                    .padding(.horizontal, isPadLike ? 88 : 24)
 
                 Spacer(minLength: isPadLike ? 34 : 26)
             }
@@ -233,19 +241,51 @@ struct FlashcardExpandedView: View {
                 .font(.system(size: isPadLike ? 24 : 19, weight: .bold, design: .rounded))
                 .foregroundStyle(viewModel.theme.mutedTextColor)
 
-            GeometryReader { proxy in
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(viewModel.theme.softAccent.opacity(0.65))
+            HStack(spacing: isPadLike ? 22 : 14) {
+                progressCounter(count: inProgressCount, title: "Learning")
 
-                    Capsule()
-                        .fill(viewModel.theme.accent)
-                        .frame(width: proxy.size.width * progress)
-                        .animation(.easeInOut(duration: 0.25), value: progress)
+                GeometryReader { proxy in
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(viewModel.theme.softAccent.opacity(0.60))
+
+                        Capsule()
+                            .fill(viewModel.theme.accent)
+                            .frame(width: proxy.size.width * progress)
+                            .animation(.easeInOut(duration: 0.25), value: progress)
+                    }
                 }
+                .frame(height: isPadLike ? 14 : 12)
+                .frame(maxWidth: .infinity)
+
+                progressCounter(count: knownCount, title: "Known")
             }
-            .frame(height: isPadLike ? 12 : 10)
         }
+    }
+
+    private func progressCounter(count: Int, title: String) -> some View {
+        VStack(spacing: isPadLike ? 3 : 2) {
+            Text("\(count)")
+                .font(.system(size: isPadLike ? 18 : 15, weight: .bold, design: .rounded))
+                .foregroundStyle(viewModel.theme.titleColor)
+                .monospacedDigit()
+
+            Text(title)
+                .font(.system(size: isPadLike ? 11 : 9, weight: .semibold, design: .rounded))
+                .foregroundStyle(viewModel.theme.mutedTextColor)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+        }
+        .frame(width: isPadLike ? 92 : 72, height: isPadLike ? 58 : 48)
+        .background(
+            Capsule(style: .continuous)
+                .fill(Color.white.opacity(0.96))
+                .overlay {
+                    Capsule(style: .continuous)
+                        .stroke(Color.white.opacity(0.85), lineWidth: 1)
+                }
+                .shadow(color: viewModel.theme.shadowColor.opacity(0.28), radius: 10, x: 0, y: 5)
+        )
     }
 
     private var decorativeBlobs: some View {

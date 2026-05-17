@@ -7,6 +7,8 @@ import SwiftUI
 @MainActor
 final class FlashcardSetDetailViewModel: ObservableObject {
 
+    // MARK: - Types
+
     enum CardFilter: String, CaseIterable, Identifiable {
         case all = "All"
         case studied = "Studied"
@@ -16,32 +18,40 @@ final class FlashcardSetDetailViewModel: ObservableObject {
         var id: String { rawValue }
     }
 
-    @Published var currentCardIndex = 0
-    @Published var isShowingTranslation = false
-    @Published var trackProgress = true
-    @Published var selectedFilter: CardFilter = .all
-    @Published private(set) var cards: [Flashcard]
-
-    @Published private(set) var studiedCardIDs: Set<String> = []
-    @Published private(set) var masteredCardIDs: Set<String> = []
-
-    @Published var isExpandedMode = false
-    @Published var editingCard: Flashcard? = nil
-    @Published var swipeDirection: SwipeDirection = .none
-
     enum SwipeDirection {
         case none, left, right
     }
 
-    let set: FlashcardSet
+    // MARK: - Published
+
+    @Published var currentCardIndex = 0
+    @Published var isShowingTranslation = false
+    @Published var trackProgress = true
+    @Published var selectedFilter: CardFilter = .all
+    @Published var swipeDirection: SwipeDirection = .none
+    @Published var isExpandedMode = false
+    @Published var editingCard: Flashcard? = nil
+
+    @Published private(set) var cards: [Flashcard]
+    @Published private(set) var studiedCardIDs: Set<String> = []
+    @Published private(set) var masteredCardIDs: Set<String> = []
+    @Published private(set) var set: FlashcardSet
+
+    // MARK: - Properties
 
     private let db = Firestore.firestore()
-    private var synthesizer = AVSpeechSynthesizer()
+    private let synthesizer = AVSpeechSynthesizer()
+    private let onSetChanged: (FlashcardSet) -> Void
 
-    init(set: FlashcardSet) {
+    // MARK: - Init
+
+    init(set: FlashcardSet, onSetChanged: @escaping (FlashcardSet) -> Void = { _ in }) {
         self.set = set
         self.cards = set.cards
+        self.onSetChanged = onSetChanged
     }
+
+    // MARK: - Computed
 
     var theme: CreateSetTheme {
         CreateSetTheme.theme(forHex: set.colorHex)
@@ -49,39 +59,37 @@ final class FlashcardSetDetailViewModel: ObservableObject {
 
     var activeCard: Flashcard? {
         guard !cards.isEmpty else { return nil }
-        return cards[min(currentCardIndex, cards.count - 1)]
+        let safeIndex = min(currentCardIndex, cards.count - 1)
+        return cards[safeIndex]
     }
 
     var filteredCards: [Flashcard] {
         switch selectedFilter {
-        case .all:
-            return cards
-        case .studied:
-            return cards.filter { studiedCardIDs.contains($0.id) }
-        case .remaining:
-            return cards.filter { !studiedCardIDs.contains($0.id) }
-        case .mastered:
-            return cards.filter { masteredCardIDs.contains($0.id) }
+        case .all:       return cards
+        case .studied:   return cards.filter { studiedCardIDs.contains($0.id) }
+        case .remaining: return cards.filter { !studiedCardIDs.contains($0.id) }
+        case .mastered:  return cards.filter { masteredCardIDs.contains($0.id) }
         }
     }
 
-    var allCount: Int { cards.count }
-    var studiedCount: Int { studiedCardIDs.count }
+    var allCount: Int       { cards.count }
+    var studiedCount: Int   { studiedCardIDs.count }
     var remainingCount: Int { max(cards.count - studiedCardIDs.count, 0) }
-    var masteredCount: Int { masteredCardIDs.count }
+    var masteredCount: Int  { masteredCardIDs.count }
 
     func count(for filter: CardFilter) -> Int {
         switch filter {
-        case .all:
-            return allCount
-        case .studied:
-            return studiedCount
-        case .remaining:
-            return remainingCount
-        case .mastered:
-            return masteredCount
+        case .all:       return allCount
+        case .studied:   return studiedCount
+        case .remaining: return remainingCount
+        case .mastered:  return masteredCount
         }
     }
+
+    func isMastered(_ card: Flashcard) -> Bool { masteredCardIDs.contains(card.id) }
+    func isStudied(_ card: Flashcard) -> Bool   { studiedCardIDs.contains(card.id) }
+
+    // MARK: - Card Navigation
 
     func toggleTranslation() {
         isShowingTranslation.toggle()
@@ -109,38 +117,28 @@ final class FlashcardSetDetailViewModel: ObservableObject {
     func handleSwipe(_ direction: SwipeDirection) {
         guard let card = activeCard else { return }
 
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            swipeDirection = direction
-        }
+        swipeDirection = direction
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+        Task {
+            try? await Task.sleep(nanoseconds: 150_000_000)
             self.swipeDirection = .none
         }
 
         if trackProgress {
-            switch direction {
-            case .right:
-                if studiedCardIDs.contains(card.id) {
-                    masteredCardIDs.insert(card.id)
-                } else {
-                    studiedCardIDs.insert(card.id)
-                }
-            case .left:
-                studiedCardIDs.remove(card.id)
-                masteredCardIDs.remove(card.id)
-            case .none:
-                break
-            }
+            updateProgress(for: card, direction: direction)
         }
 
-        if currentCardIndex < cards.count - 1 {
-            currentCardIndex += 1
-        } else {
-            currentCardIndex = 0
-        }
-
+        moveToNextCardLooping()
         isShowingTranslation = false
     }
+
+    func selectFilter(_ filter: CardFilter) {
+        selectedFilter = filter
+        currentCardIndex = 0
+        isShowingTranslation = false
+    }
+
+    // MARK: - Mastered
 
     func toggleMastered(_ card: Flashcard) {
         if masteredCardIDs.contains(card.id) {
@@ -151,34 +149,11 @@ final class FlashcardSetDetailViewModel: ObservableObject {
         }
     }
 
-    func isMastered(_ card: Flashcard) -> Bool {
-        masteredCardIDs.contains(card.id)
-    }
-
-    func isStudied(_ card: Flashcard) -> Bool {
-        studiedCardIDs.contains(card.id)
-    }
-
-    func selectFilter(_ filter: CardFilter) {
-        selectedFilter = filter
-        currentCardIndex = 0
-        isShowingTranslation = false
-    }
-
-    // MARK: - Speak
+    // MARK: - Speech
 
     func speak(_ text: String, language: String = "en-US") {
         synthesizer.stopSpeaking(at: .immediate)
-
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = bestVoice(for: language)
-        utterance.rate = 0.38
-        utterance.pitchMultiplier = 1.02
-        utterance.volume = 1.0
-        utterance.preUtteranceDelay = 0.05
-        utterance.postUtteranceDelay = 0.08
-
-        synthesizer.speak(utterance)
+        synthesizer.speak(makeUtterance(text: text, language: language))
     }
 
     func speakCurrentCard() {
@@ -189,12 +164,8 @@ final class FlashcardSetDetailViewModel: ObservableObject {
 
     func speakWordAndTranslation(_ card: Flashcard) {
         synthesizer.stopSpeaking(at: .immediate)
-
-        let wordUtterance = makeUtterance(text: card.word, language: "en-US")
-        let translationUtterance = makeUtterance(text: card.translation, language: "uk-UA")
-
-        synthesizer.speak(wordUtterance)
-        synthesizer.speak(translationUtterance)
+        synthesizer.speak(makeUtterance(text: card.word, language: "en-US"))
+        synthesizer.speak(makeUtterance(text: card.translation, language: "uk-UA"))
     }
 
     private func makeUtterance(text: String, language: String) -> AVSpeechUtterance {
@@ -205,29 +176,24 @@ final class FlashcardSetDetailViewModel: ObservableObject {
         utterance.volume = 1.0
         utterance.preUtteranceDelay = 0.05
         utterance.postUtteranceDelay = 0.12
-
         return utterance
     }
 
     private func bestVoice(for language: String) -> AVSpeechSynthesisVoice? {
-        let voices = AVSpeechSynthesisVoice.speechVoices()
-            .filter { $0.language == language }
-
+        let voices = AVSpeechSynthesisVoice.speechVoices().filter { $0.language == language }
         return voices.first(where: { $0.quality == .premium })
             ?? voices.first(where: { $0.quality == .enhanced })
             ?? voices.first
     }
 
-    // MARK: - Cards actions
+    // MARK: - CRUD
 
     func addCard(_ card: Flashcard) {
         cards.append(card)
-
         if cards.count == 1 {
             currentCardIndex = 0
             isShowingTranslation = false
         }
-
         persistCards()
     }
 
@@ -241,42 +207,73 @@ final class FlashcardSetDetailViewModel: ObservableObject {
         cards.removeAll { $0.id == card.id }
         studiedCardIDs.remove(card.id)
         masteredCardIDs.remove(card.id)
-
-        if currentCardIndex >= cards.count {
-            currentCardIndex = max(0, cards.count - 1)
-        }
-
+        clampCurrentIndex()
         persistCards()
     }
 
     func deleteCard(at offsets: IndexSet) {
-        let toDelete = offsets.map { filteredCards[$0] }
-        for card in toDelete {
-            deleteCard(card)
-        }
+        offsets.map { filteredCards[$0] }.forEach { deleteCard($0) }
     }
 
     func toggleExpandMode() {
         isExpandedMode.toggle()
     }
 
+    // MARK: - Private Helpers
+
+    private func clampCurrentIndex() {
+        guard !cards.isEmpty else {
+            currentCardIndex = 0
+            return
+        }
+        currentCardIndex = min(currentCardIndex, cards.count - 1)
+    }
+
+    private func markCurrentAsStudiedIfNeeded() {
+        guard trackProgress, let card = activeCard else { return }
+        studiedCardIDs.insert(card.id)
+    }
+
+    private func updateProgress(for card: Flashcard, direction: SwipeDirection) {
+        switch direction {
+        case .right:
+            studiedCardIDs.insert(card.id)
+        case .left:
+            studiedCardIDs.remove(card.id)
+            masteredCardIDs.remove(card.id)
+        case .none:
+            break
+        }
+    }
+
+    private func moveToNextCardLooping() {
+        guard !cards.isEmpty else {
+            currentCardIndex = 0
+            return
+        }
+
+        currentCardIndex = currentCardIndex < cards.count - 1 ? currentCardIndex + 1 : 0
+    }
+
     // MARK: - Persist
 
     private func persistCards() {
+        set.cards = cards
+        set.updatedAt = Date()
+        onSetChanged(set)
+
         guard !set.ownerUID.isEmpty else { return }
 
-        let updatedCards = cards.map { card -> [String: Any] in
+        let updatedCards: [[String: Any]] = cards.map { card in
             var dict: [String: Any] = [
                 "id": card.id,
                 "word": card.word,
                 "translation": card.translation,
                 "example": card.example
             ]
-
             if let url = card.imageURL {
                 dict["imageURL"] = url
             }
-
             return dict
         }
 
@@ -284,11 +281,13 @@ final class FlashcardSetDetailViewModel: ObservableObject {
             .document(set.ownerUID)
             .collection("flashcardSets")
             .document(set.id)
-            .updateData(["cards": updatedCards]) { _ in }
-    }
-
-    private func markCurrentAsStudiedIfNeeded() {
-        guard trackProgress, let activeCard else { return }
-        studiedCardIDs.insert(activeCard.id)
+            .updateData([
+                "cards": updatedCards,
+                "updatedAt": set.updatedAt
+            ]) { error in
+                if let error {
+                    print("[FlashcardSetDetailViewModel] persistCards error: \(error.localizedDescription)")
+                }
+            }
     }
 }

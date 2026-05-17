@@ -49,17 +49,6 @@
 		E30A1D7E2F9C236000387BDC /* CreateSetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D7D2F9C236000387BDC /* CreateSetTheme.swift */; };
 		E30A1D812F9C24C100387BDC /* HomeSetPreviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D802F9C24BF00387BDC /* HomeSetPreviewMapper.swift */; };
 		E30A1D832F9C2EF700387BDC /* LocalImageStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D822F9C2EE800387BDC /* LocalImageStorageService.swift */; };
-		E30A1D892F9CCA6200387BDC /* FleshcardSetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D882F9CCA4400387BDC /* FleshcardSetDetailView.swift */; };
-		E30A1D8B2F9CDB7300387BDC /* FlashcardSetDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D8A2F9CDB7100387BDC /* FlashcardSetDetailViewModel.swift */; };
-		E30A1D962F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D932F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift */; };
-		E30A1D972F9CE42500387BDC /* FlashcardSetDetailAddButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D8D2F9CE42500387BDC /* FlashcardSetDetailAddButton.swift */; };
-		E30A1D982F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D8F2F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift */; };
-		E30A1D992F9CE42500387BDC /* FlashcardSetDetailControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D912F9CE42500387BDC /* FlashcardSetDetailControlsView.swift */; };
-		E30A1D9A2F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D902F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift */; };
-		E30A1D9B2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D8E2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift */; };
-		E30A1D9C2F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D922F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift */; };
-		E30A1D9D2F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */; };
-		E30A1D9E2F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */; };
 		E30A1DA42F9E076500387BDC /* Folders.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DA32F9E076200387BDC /* Folders.swift */; };
 		E30A1DA62F9E07A000387BDC /* FolderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DA52F9E079A00387BDC /* FolderService.swift */; };
 		E30A1DAC2F9E07E600387BDC /* CreateFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DAB2F9E07DB00387BDC /* CreateFolderView.swift */; };
@@ -68,9 +57,6 @@
 		E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB12F9E099000387BDC /* FolderDetailView.swift */; };
 		E30A1DB42F9E0C3D00387BDC /* FolderCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB32F9E0C3600387BDC /* FolderCardView.swift */; };
 		E30A1DB82FA14BAA00387BDC /* FoldersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DB72FA14BA200387BDC /* FoldersListView.swift */; };
-		E30A1DC82FA25C9D00387BDC /* FlashcardEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DC72FA25C9100387BDC /* FlashcardEditView.swift */; };
-		E30A1DCD2FA2B30100387BDC /* FlashcardExpandedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DCC2FA2B2F400387BDC /* FlashcardExpandedView.swift */; };
-		E30A1DCF2FA2B4C800387BDC /* FlashcardSetAddCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1DCE2FA2B4C500387BDC /* FlashcardSetAddCardView.swift */; };
 		E39E8FE62FA7911E00472437 /* CreateSetCardEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FC52FA7911E00472437 /* CreateSetCardEditorView.swift */; };
 		E39E8FE72FA7911E00472437 /* CreateSetColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FCB2FA7911E00472437 /* CreateSetColorPickerView.swift */; };
 		E39E8FE82FA7911E00472437 /* CreateSetInfoSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FD52FA7911E00472437 /* CreateSetInfoSectionView.swift */; };
@@ -95,6 +81,20 @@
 		E39E8FFB2FA7911E00472437 /* CreateSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FE22FA7911E00472437 /* CreateSetView.swift */; };
 		E39E8FFC2FA7911E00472437 /* CreateSetPreviewCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FCE2FA7911E00472437 /* CreateSetPreviewCardView.swift */; };
 		E39E8FFD2FA7911E00472437 /* CreateSetFolderPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E8FCD2FA7911E00472437 /* CreateSetFolderPickerView.swift */; };
+		E39E90852FA7E65300472437 /* FlashcardSetDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90792FA7E65200472437 /* FlashcardSetDetailViewModel.swift */; };
+		E39E90862FA7E65300472437 /* FlashcardSetDetailTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E907B2FA7E65200472437 /* FlashcardSetDetailTopBarView.swift */; };
+		E39E90872FA7E65300472437 /* FlashcardEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90752FA7E65200472437 /* FlashcardEditView.swift */; };
+		E39E90882FA7E65300472437 /* FlashcardSetDetailHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E907A2FA7E65200472437 /* FlashcardSetDetailHeaderView.swift */; };
+		E39E90892FA7E65300472437 /* FlashcardSetDetailFilterTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90732FA7E65200472437 /* FlashcardSetDetailFilterTabsView.swift */; };
+		E39E908A2FA7E65300472437 /* FlashcardSetDetailControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90822FA7E65200472437 /* FlashcardSetDetailControlsView.swift */; };
+		E39E908B2FA7E65300472437 /* FlashcardSetAddCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90762FA7E65200472437 /* FlashcardSetAddCardView.swift */; };
+		E39E908C2FA7E65300472437 /* FlashcardSetDetailCardRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90722FA7E65200472437 /* FlashcardSetDetailCardRowView.swift */; };
+		E39E908D2FA7E65300472437 /* FlashcardSetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90782FA7E65200472437 /* FlashcardSetDetailView.swift */; };
+		E39E908E2FA7E65300472437 /* FlashcardSetDetailCardFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90812FA7E65200472437 /* FlashcardSetDetailCardFilter.swift */; };
+		E39E908F2FA7E65300472437 /* FlashcardSetDetailMainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90832FA7E65200472437 /* FlashcardSetDetailMainCardView.swift */; };
+		E39E90902FA7E65300472437 /* FlashcardSetDetailAddButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E907D2FA7E65200472437 /* FlashcardSetDetailAddButton.swift */; };
+		E39E90912FA7E65300472437 /* FlashcardSetDetailBottomCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E907E2FA7E65200472437 /* FlashcardSetDetailBottomCover.swift */; };
+		E39E90922FA7E65300472437 /* FlashcardExpandedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90802FA7E65200472437 /* FlashcardExpandedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -136,17 +136,6 @@
 		E30A1D7D2F9C236000387BDC /* CreateSetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CreateSetTheme.swift; path = WordAround/Core/CreateSetTheme.swift; sourceTree = SOURCE_ROOT; };
 		E30A1D802F9C24BF00387BDC /* HomeSetPreviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSetPreviewMapper.swift; sourceTree = "<group>"; };
 		E30A1D822F9C2EE800387BDC /* LocalImageStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImageStorageService.swift; sourceTree = "<group>"; };
-		E30A1D882F9CCA4400387BDC /* FleshcardSetDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FleshcardSetDetailView.swift; sourceTree = "<group>"; };
-		E30A1D8A2F9CDB7100387BDC /* FlashcardSetDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailViewModel.swift; sourceTree = "<group>"; };
-		E30A1D8D2F9CE42500387BDC /* FlashcardSetDetailAddButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailAddButton.swift; sourceTree = "<group>"; };
-		E30A1D8E2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailBottomCover.swift; sourceTree = "<group>"; };
-		E30A1D8F2F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailCardFilter.swift; sourceTree = "<group>"; };
-		E30A1D902F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailCardRowView.swift; sourceTree = "<group>"; };
-		E30A1D912F9CE42500387BDC /* FlashcardSetDetailControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailControlsView.swift; sourceTree = "<group>"; };
-		E30A1D922F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailFilterTabsView.swift; sourceTree = "<group>"; };
-		E30A1D932F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailHeaderView.swift; sourceTree = "<group>"; };
-		E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailMainCardView.swift; sourceTree = "<group>"; };
-		E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailTopBarView.swift; sourceTree = "<group>"; };
 		E30A1DA32F9E076200387BDC /* Folders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folders.swift; sourceTree = "<group>"; };
 		E30A1DA52F9E079A00387BDC /* FolderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderService.swift; sourceTree = "<group>"; };
 		E30A1DAB2F9E07DB00387BDC /* CreateFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderView.swift; sourceTree = "<group>"; };
@@ -155,9 +144,6 @@
 		E30A1DB12F9E099000387BDC /* FolderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDetailView.swift; sourceTree = "<group>"; };
 		E30A1DB32F9E0C3600387BDC /* FolderCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderCardView.swift; sourceTree = "<group>"; };
 		E30A1DB72FA14BA200387BDC /* FoldersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldersListView.swift; sourceTree = "<group>"; };
-		E30A1DC72FA25C9100387BDC /* FlashcardEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardEditView.swift; sourceTree = "<group>"; };
-		E30A1DCC2FA2B2F400387BDC /* FlashcardExpandedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardExpandedView.swift; sourceTree = "<group>"; };
-		E30A1DCE2FA2B4C500387BDC /* FlashcardSetAddCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetAddCardView.swift; sourceTree = "<group>"; };
 		E39E8FC52FA7911E00472437 /* CreateSetCardEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCardEditorView.swift; sourceTree = "<group>"; };
 		E39E8FC62FA7911E00472437 /* CreateSetCardExampleField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCardExampleField.swift; sourceTree = "<group>"; };
 		E39E8FC72FA7911E00472437 /* CreateSetCardsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetCardsSectionView.swift; sourceTree = "<group>"; };
@@ -182,6 +168,20 @@
 		E39E8FE02FA7911E00472437 /* CreateSetValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetValidator.swift; sourceTree = "<group>"; };
 		E39E8FE22FA7911E00472437 /* CreateSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetView.swift; sourceTree = "<group>"; };
 		E39E8FE42FA7911E00472437 /* CreateSetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSetViewModel.swift; sourceTree = "<group>"; };
+		E39E90722FA7E65200472437 /* FlashcardSetDetailCardRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailCardRowView.swift; sourceTree = "<group>"; };
+		E39E90732FA7E65200472437 /* FlashcardSetDetailFilterTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailFilterTabsView.swift; sourceTree = "<group>"; };
+		E39E90752FA7E65200472437 /* FlashcardEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardEditView.swift; sourceTree = "<group>"; };
+		E39E90762FA7E65200472437 /* FlashcardSetAddCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetAddCardView.swift; sourceTree = "<group>"; };
+		E39E90782FA7E65200472437 /* FlashcardSetDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailView.swift; sourceTree = "<group>"; };
+		E39E90792FA7E65200472437 /* FlashcardSetDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailViewModel.swift; sourceTree = "<group>"; };
+		E39E907A2FA7E65200472437 /* FlashcardSetDetailHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailHeaderView.swift; sourceTree = "<group>"; };
+		E39E907B2FA7E65200472437 /* FlashcardSetDetailTopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailTopBarView.swift; sourceTree = "<group>"; };
+		E39E907D2FA7E65200472437 /* FlashcardSetDetailAddButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailAddButton.swift; sourceTree = "<group>"; };
+		E39E907E2FA7E65200472437 /* FlashcardSetDetailBottomCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailBottomCover.swift; sourceTree = "<group>"; };
+		E39E90802FA7E65200472437 /* FlashcardExpandedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardExpandedView.swift; sourceTree = "<group>"; };
+		E39E90812FA7E65200472437 /* FlashcardSetDetailCardFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailCardFilter.swift; sourceTree = "<group>"; };
+		E39E90822FA7E65200472437 /* FlashcardSetDetailControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailControlsView.swift; sourceTree = "<group>"; };
+		E39E90832FA7E65200472437 /* FlashcardSetDetailMainCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailMainCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,7 +264,6 @@
 			isa = PBXGroup;
 			children = (
 				E30A1DA72F9E07B800387BDC /* Folders */,
-				E30A1D8C2F9CE41700387BDC /* Components */,
 				E30A1D582F9BEB3700387BDC /* Flashcards */,
 				E30A1CBD2F98078A00387BDC /* Onboarding */,
 				E30A1CBA2F98023200387BDC /* Home */,
@@ -415,8 +414,8 @@
 		E30A1D582F9BEB3700387BDC /* Flashcards */ = {
 			isa = PBXGroup;
 			children = (
+				E39E904D2FA7E4EE00472437 /* SetDetail */,
 				E39E8FC42FA7911000472437 /* CreateSet */,
-				E39E8FB72FA7892700472437 /* SetDetail */,
 			);
 			path = Flashcards;
 			sourceTree = "<group>";
@@ -449,13 +448,6 @@
 				E30A1D7D2F9C236000387BDC /* CreateSetTheme.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		E30A1D8C2F9CE41700387BDC /* Components */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Components;
 			sourceTree = "<group>";
 		};
 		E30A1DA72F9E07B800387BDC /* Folders */ = {
@@ -493,67 +485,6 @@
 				E30A1DAB2F9E07DB00387BDC /* CreateFolderView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		E39E8FB72FA7892700472437 /* SetDetail */ = {
-			isa = PBXGroup;
-			children = (
-				E39E8FBB2FA78A1800472437 /* Layout */,
-				E39E8FBA2FA789B700472437 /* CardsList */,
-				E39E8FB92FA7899000472437 /* StudyCard */,
-				E39E8FB82FA7897200472437 /* Header */,
-				E39E8FBC2FA78A2900472437 /* Editing */,
-				E30A1D8A2F9CDB7100387BDC /* FlashcardSetDetailViewModel.swift */,
-				E30A1D882F9CCA4400387BDC /* FleshcardSetDetailView.swift */,
-			);
-			path = SetDetail;
-			sourceTree = "<group>";
-		};
-		E39E8FB82FA7897200472437 /* Header */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1D932F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift */,
-				E30A1D952F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift */,
-			);
-			path = Header;
-			sourceTree = "<group>";
-		};
-		E39E8FB92FA7899000472437 /* StudyCard */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1DCC2FA2B2F400387BDC /* FlashcardExpandedView.swift */,
-				E30A1D912F9CE42500387BDC /* FlashcardSetDetailControlsView.swift */,
-				E30A1D942F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift */,
-				E30A1D8F2F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift */,
-			);
-			path = StudyCard;
-			sourceTree = "<group>";
-		};
-		E39E8FBA2FA789B700472437 /* CardsList */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1D902F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift */,
-				E30A1D922F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift */,
-			);
-			path = CardsList;
-			sourceTree = "<group>";
-		};
-		E39E8FBB2FA78A1800472437 /* Layout */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1D8E2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift */,
-			);
-			path = Layout;
-			sourceTree = "<group>";
-		};
-		E39E8FBC2FA78A2900472437 /* Editing */ = {
-			isa = PBXGroup;
-			children = (
-				E30A1DCE2FA2B4C500387BDC /* FlashcardSetAddCardView.swift */,
-				E30A1DC72FA25C9100387BDC /* FlashcardEditView.swift */,
-				E30A1D8D2F9CE42500387BDC /* FlashcardSetDetailAddButton.swift */,
-			);
-			path = Editing;
 			sourceTree = "<group>";
 		};
 		E39E8FC42FA7911000472437 /* CreateSet */ = {
@@ -659,6 +590,67 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		E39E904D2FA7E4EE00472437 /* SetDetail */ = {
+			isa = PBXGroup;
+			children = (
+				E39E90742FA7E65200472437 /* CardsList */,
+				E39E90772FA7E65200472437 /* Editing */,
+				E39E90782FA7E65200472437 /* FlashcardSetDetailView.swift */,
+				E39E90792FA7E65200472437 /* FlashcardSetDetailViewModel.swift */,
+				E39E907C2FA7E65200472437 /* Header */,
+				E39E907F2FA7E65200472437 /* Layout */,
+				E39E90842FA7E65200472437 /* StudyCard */,
+			);
+			path = SetDetail;
+			sourceTree = "<group>";
+		};
+		E39E90742FA7E65200472437 /* CardsList */ = {
+			isa = PBXGroup;
+			children = (
+				E39E90722FA7E65200472437 /* FlashcardSetDetailCardRowView.swift */,
+				E39E90732FA7E65200472437 /* FlashcardSetDetailFilterTabsView.swift */,
+			);
+			path = CardsList;
+			sourceTree = "<group>";
+		};
+		E39E90772FA7E65200472437 /* Editing */ = {
+			isa = PBXGroup;
+			children = (
+				E39E90752FA7E65200472437 /* FlashcardEditView.swift */,
+				E39E90762FA7E65200472437 /* FlashcardSetAddCardView.swift */,
+			);
+			path = Editing;
+			sourceTree = "<group>";
+		};
+		E39E907C2FA7E65200472437 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				E39E907A2FA7E65200472437 /* FlashcardSetDetailHeaderView.swift */,
+				E39E907B2FA7E65200472437 /* FlashcardSetDetailTopBarView.swift */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
+		E39E907F2FA7E65200472437 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				E39E907D2FA7E65200472437 /* FlashcardSetDetailAddButton.swift */,
+				E39E907E2FA7E65200472437 /* FlashcardSetDetailBottomCover.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		E39E90842FA7E65200472437 /* StudyCard */ = {
+			isa = PBXGroup;
+			children = (
+				E39E90802FA7E65200472437 /* FlashcardExpandedView.swift */,
+				E39E90812FA7E65200472437 /* FlashcardSetDetailCardFilter.swift */,
+				E39E90822FA7E65200472437 /* FlashcardSetDetailControlsView.swift */,
+				E39E90832FA7E65200472437 /* FlashcardSetDetailMainCardView.swift */,
+			);
+			path = StudyCard;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -752,29 +744,15 @@
 				E30A1CC32F9819B100387BDC /* AuthView.swift in Sources */,
 				E30A1D0F2F9A618800387BDC /* HomeTab.swift in Sources */,
 				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
-				E30A1DC82FA25C9D00387BDC /* FlashcardEditView.swift in Sources */,
-				E30A1D892F9CCA6200387BDC /* FleshcardSetDetailView.swift in Sources */,
 				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
-				E30A1DCD2FA2B30100387BDC /* FlashcardExpandedView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
 				E30A1D832F9C2EF700387BDC /* LocalImageStorageService.swift in Sources */,
 				E30A1DA62F9E07A000387BDC /* FolderService.swift in Sources */,
-				E30A1D8B2F9CDB7300387BDC /* FlashcardSetDetailViewModel.swift in Sources */,
 				E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */,
 				E30A1D7E2F9C236000387BDC /* CreateSetTheme.swift in Sources */,
-				E30A1D962F9CE42500387BDC /* FlashcardSetDetailHeaderView.swift in Sources */,
-				E30A1DCF2FA2B4C800387BDC /* FlashcardSetAddCardView.swift in Sources */,
 				E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */,
-				E30A1D972F9CE42500387BDC /* FlashcardSetDetailAddButton.swift in Sources */,
-				E30A1D982F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift in Sources */,
-				E30A1D992F9CE42500387BDC /* FlashcardSetDetailControlsView.swift in Sources */,
-				E30A1D9A2F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift in Sources */,
-				E30A1D9B2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift in Sources */,
-				E30A1D9C2F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift in Sources */,
-				E30A1D9D2F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift in Sources */,
-				E30A1D9E2F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift in Sources */,
 				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
 				E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */,
 				E30A1D5D2F9BEB8200387BDC /* CreateSet.swift in Sources */,
@@ -784,6 +762,20 @@
 				E30A1CDF2F9A2D3900387BDC /* SessionStore.swift in Sources */,
 				E30A1CCD2F99443200387BDC /* AppDelegate.swift in Sources */,
 				E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */,
+				E39E90852FA7E65300472437 /* FlashcardSetDetailViewModel.swift in Sources */,
+				E39E90862FA7E65300472437 /* FlashcardSetDetailTopBarView.swift in Sources */,
+				E39E90872FA7E65300472437 /* FlashcardEditView.swift in Sources */,
+				E39E90882FA7E65300472437 /* FlashcardSetDetailHeaderView.swift in Sources */,
+				E39E90892FA7E65300472437 /* FlashcardSetDetailFilterTabsView.swift in Sources */,
+				E39E908A2FA7E65300472437 /* FlashcardSetDetailControlsView.swift in Sources */,
+				E39E908B2FA7E65300472437 /* FlashcardSetAddCardView.swift in Sources */,
+				E39E908C2FA7E65300472437 /* FlashcardSetDetailCardRowView.swift in Sources */,
+				E39E908D2FA7E65300472437 /* FlashcardSetDetailView.swift in Sources */,
+				E39E908E2FA7E65300472437 /* FlashcardSetDetailCardFilter.swift in Sources */,
+				E39E908F2FA7E65300472437 /* FlashcardSetDetailMainCardView.swift in Sources */,
+				E39E90902FA7E65300472437 /* FlashcardSetDetailAddButton.swift in Sources */,
+				E39E90912FA7E65300472437 /* FlashcardSetDetailBottomCover.swift in Sources */,
+				E39E90922FA7E65300472437 /* FlashcardExpandedView.swift in Sources */,
 				E30A1CD32F99448B00387BDC /* AuthService.swift in Sources */,
 				E30A1D1D2F9AC1D500387BDC /* BaseCardView.swift in Sources */,
 				E30A1DB02F9E098700387BDC /* FolderDetailViewModel.swift in Sources */,

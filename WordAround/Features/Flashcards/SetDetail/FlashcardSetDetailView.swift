@@ -13,10 +13,15 @@ struct FlashcardSetDetailView: View {
 
     private let theme: CreateSetTheme
 
-    init(set: FlashcardSet) {
+    init(set: FlashcardSet, onSetChanged: @escaping (FlashcardSet) -> Void = { _ in }) {
         self.set = set
         self.theme = CreateSetTheme.theme(forHex: set.colorHex)
-        _viewModel = StateObject(wrappedValue: FlashcardSetDetailViewModel(set: set))
+        _viewModel = StateObject(
+            wrappedValue: FlashcardSetDetailViewModel(
+                set: set,
+                onSetChanged: onSetChanged
+            )
+        )
     }
 
     var body: some View {
@@ -53,22 +58,14 @@ struct FlashcardSetDetailView: View {
                         onExpand: { isExpandedMode = true },
                         onSwipeLeft: { viewModel.handleSwipe(.left) },
                         onSwipeRight: { viewModel.handleSwipe(.right) },
-                        onEditMain: {
-                            if let card = viewModel.activeCard {
-                                editingCard = card
-                            }
-                        }
+                        onEditMain: { editingCard = viewModel.activeCard }
                     )
 
                     FlashcardSetDetailControlsView(
                         theme: theme,
                         trackProgress: $viewModel.trackProgress,
                         onShuffle: { viewModel.shuffleCards() },
-                        onEdit: {
-                            if let card = viewModel.activeCard {
-                                editingCard = card
-                            }
-                        }
+                        onEdit: { editingCard = viewModel.activeCard }
                     )
                     .padding(.top, Layout.flashcardDetailControlsTopPadding)
 
@@ -105,21 +102,15 @@ struct FlashcardSetDetailView: View {
             FlashcardEditView(
                 theme: theme,
                 card: card,
-                onSave: { updated in
-                    viewModel.saveEdit(updated)
-                },
-                onDelete: { toDelete in
-                    viewModel.deleteCard(toDelete)
-                }
+                onSave: { viewModel.saveEdit($0) },
+                onDelete: { viewModel.deleteCard($0) }
             )
             .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $isAddingCard) {
             FlashcardSetAddCardView(
                 theme: theme,
-                onSave: { newCard in
-                    viewModel.addCard(newCard)
-                }
+                onSave: { viewModel.addCard($0) }
             )
             .presentationDetents([.medium, .large])
         }
@@ -137,15 +128,9 @@ private extension FlashcardSetDetailView {
                     card: card,
                     index: index + 1,
                     isMastered: viewModel.isMastered(card),
-                    onToggleMastered: {
-                        viewModel.toggleMastered(card)
-                    },
-                    onSpeak: {
-                        viewModel.speakWordAndTranslation(card)
-                    },
-                    onEdit: {
-                        editingCard = card
-                    }
+                    onToggleMastered: { viewModel.toggleMastered(card) },
+                    onSpeak: { viewModel.speakWordAndTranslation(card) },
+                    onEdit: { editingCard = card }
                 )
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button(role: .destructive) {
@@ -163,42 +148,29 @@ private extension FlashcardSetDetailView {
             }
         }
         .background(theme.sectionBackground)
-        .clipShape(
-            RoundedRectangle(
-                cornerRadius: Layout.flashcardDetailListCornerRadius,
-                style: .continuous
-            )
-        )
+        .clipShape(RoundedRectangle(cornerRadius: Layout.flashcardDetailListCornerRadius, style: .continuous))
         .shadow(color: theme.shadowColor, radius: 12, x: 0, y: 6)
     }
 }
 
-// MARK: - Filter mapping
+// MARK: - Filter Mapping
 
 private extension FlashcardSetDetailView {
     func mapFilter(_ filter: FlashcardSetDetailViewModel.CardFilter) -> FlashcardSetDetailCardFilter {
         switch filter {
-        case .all:
-            return .all
-        case .studied:
-            return .studied
-        case .remaining:
-            return .remaining
-        case .mastered:
-            return .mastered
+        case .all:       return .all
+        case .studied:   return .studied
+        case .remaining: return .remaining
+        case .mastered:  return .mastered
         }
     }
 
     func mapBack(_ filter: FlashcardSetDetailCardFilter) -> FlashcardSetDetailViewModel.CardFilter {
         switch filter {
-        case .all:
-            return .all
-        case .studied:
-            return .studied
-        case .remaining:
-            return .remaining
-        case .mastered:
-            return .mastered
+        case .all:       return .all
+        case .studied:   return .studied
+        case .remaining: return .remaining
+        case .mastered:  return .mastered
         }
     }
 }

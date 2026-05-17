@@ -62,7 +62,13 @@ struct HomeView: View {
             CreateFolderView()
         }
         .fullScreenCover(item: $selectedSetForDetails) { set in
-            FlashcardSetDetailView(set: set)
+            FlashcardSetDetailView(
+                set: set,
+                onSetChanged: { updatedSet in
+                    viewModel.applyUpdatedSet(updatedSet)
+                    selectedSetForDetails = updatedSet
+                }
+            )
         }
         .fullScreenCover(item: $selectedFolderForDetails) { folder in
             FolderDetailView(folder: folder)

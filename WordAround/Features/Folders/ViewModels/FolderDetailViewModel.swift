@@ -77,4 +77,12 @@ final class FolderDetailViewModel: ObservableObject {
             return false
         }
     }
+
+    func applyUpdatedSet(_ updatedSet: FlashcardSet) {
+        let updatedItem = HomeSetPreviewMapper.map(updatedSet)
+
+        if let index = sets.firstIndex(where: { $0.sourceSet?.id == updatedSet.id }) {
+            sets[index] = updatedItem
+        }
+    }
 }

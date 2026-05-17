@@ -38,7 +38,13 @@ struct FolderDetailView: View {
             await viewModel.loadSets()
         }
         .fullScreenCover(item: $selectedSetForDetails) { set in
-            FlashcardSetDetailView(set: set)
+            FlashcardSetDetailView(
+                set: set,
+                onSetChanged: { updatedSet in
+                    viewModel.applyUpdatedSet(updatedSet)
+                    selectedSetForDetails = updatedSet
+                }
+            )
         }
         .sheet(isPresented: $isShowingEditFolderSheet) {
             EditFolderSheet(

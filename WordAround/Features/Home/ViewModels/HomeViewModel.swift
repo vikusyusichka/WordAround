@@ -210,4 +210,16 @@ final class HomeViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
     }
+
+    func applyUpdatedSet(_ updatedSet: FlashcardSet) {
+        let updatedItem = makePreviewItem(from: updatedSet)
+
+        if let index = userSets.firstIndex(where: { $0.sourceSet?.id == updatedSet.id }) {
+            userSets[index] = updatedItem
+        }
+
+        if continueLearningSet?.sourceSet?.id == updatedSet.id {
+            continueLearningSet = updatedItem
+        }
+    }
 }

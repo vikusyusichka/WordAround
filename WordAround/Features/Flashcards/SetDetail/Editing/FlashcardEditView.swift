@@ -15,13 +15,33 @@ struct FlashcardEditView: View {
     @State private var example: String
     @State private var showDeleteAlert = false
 
-    init(theme: CreateSetTheme, card: Flashcard,
-         onSave: @escaping (Flashcard) -> Void,
-         onDelete: @escaping (Flashcard) -> Void) {
+    private var trimmedWord: String {
+        word.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var trimmedTranslation: String {
+        translation.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var trimmedExample: String {
+        example.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var canSave: Bool {
+        !trimmedWord.isEmpty && !trimmedTranslation.isEmpty
+    }
+
+    init(
+        theme: CreateSetTheme,
+        card: Flashcard,
+        onSave: @escaping (Flashcard) -> Void,
+        onDelete: @escaping (Flashcard) -> Void
+    ) {
         self.theme = theme
         self.card = card
         self.onSave = onSave
         self.onDelete = onDelete
+
         _word = State(initialValue: card.word)
         _translation = State(initialValue: card.translation)
         _example = State(initialValue: card.example)
@@ -32,35 +52,7 @@ struct FlashcardEditView: View {
             ZStack {
                 theme.screenBackground.ignoresSafeArea()
 
-                ScrollView {
-                    VStack(spacing: 16) {
-                        field(title: "Word", text: $word, placeholder: "e.g. Hola")
-                        field(title: "Translation", text: $translation, placeholder: "e.g. Hello")
-                        field(title: "Example (optional)", text: $example, placeholder: "e.g. Hola, ¿cómo estás?", isMultiline: true)
-
-                        Button {
-                            showDeleteAlert = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "trash")
-                                Text("Delete card")
-                            }
-                            .font(.system(size: 16, weight: .semibold, design: .rounded))
-                            .foregroundStyle(theme.fieldBackground)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 52)
-                            .background(theme.accent)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                    .stroke(theme.accent.opacity(0.4), lineWidth: 1)
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.top, 8)
-                    }
-                    .padding(20)
-                }
+                content
             }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
@@ -68,41 +60,13 @@ struct FlashcardEditView: View {
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.light, for: .navigationBar)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                        .foregroundStyle(theme.accent)
-                        .font(.system(size: 16, weight: .bold))
-                }
-
-                ToolbarItem(placement: .principal) {
-                    Text("Edit card")
-                        .font(.system(size: 17, weight: .bold, design: .rounded))
-                        .foregroundStyle(theme.titleColor)
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        let updated = Flashcard(
-                            id: card.id,
-                            word: word.trimmingCharacters(in: .whitespacesAndNewlines),
-                            translation: translation.trimmingCharacters(in: .whitespacesAndNewlines),
-                            example: example.trimmingCharacters(in: .whitespacesAndNewlines),
-                            imageURL: card.imageURL
-                        )
-                        onSave(updated)
-                        dismiss()
-                    }
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(theme.accent)
-                    .disabled(word.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-                              translation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                }
+                toolbarContent
             }
             .alert("Delete card?", isPresented: $showDeleteAlert) {
                 Button("Delete", role: .destructive) {
-                    onDelete(card)
-                    dismiss()
+                    deleteCard()
                 }
+
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("This action cannot be undone.")
@@ -110,7 +74,107 @@ struct FlashcardEditView: View {
         }
     }
 
-    private func field(title: String, text: Binding<String>, placeholder: String, isMultiline: Bool = false) -> some View {
+    private var content: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                field(
+                    title: "Word",
+                    text: $word,
+                    placeholder: "e.g. Hola"
+                )
+
+                field(
+                    title: "Translation",
+                    text: $translation,
+                    placeholder: "e.g. Hello"
+                )
+
+                field(
+                    title: "Example (optional)",
+                    text: $example,
+                    placeholder: "e.g. Hola, ¿cómo estás?",
+                    isMultiline: true
+                )
+
+                deleteButton
+            }
+            .padding(20)
+        }
+    }
+
+    private var deleteButton: some View {
+        Button {
+            showDeleteAlert = true
+        } label: {
+            HStack {
+                Image(systemName: "trash")
+                Text("Delete card")
+            }
+            .font(.system(size: 16, weight: .semibold, design: .rounded))
+            .foregroundStyle(theme.fieldBackground)
+            .frame(maxWidth: .infinity)
+            .frame(height: 52)
+            .background(theme.accent)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(theme.accent.opacity(0.4), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .padding(.top, 8)
+    }
+
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .cancellationAction) {
+            Button("Cancel") {
+                dismiss()
+            }
+            .foregroundStyle(theme.accent)
+            .font(.system(size: 16, weight: .bold))
+        }
+
+        ToolbarItem(placement: .principal) {
+            Text("Edit card")
+                .font(.system(size: 17, weight: .bold, design: .rounded))
+                .foregroundStyle(theme.titleColor)
+        }
+
+        ToolbarItem(placement: .confirmationAction) {
+            Button("Save") {
+                saveCard()
+            }
+            .font(.system(size: 16, weight: .bold))
+            .foregroundStyle(theme.accent)
+            .disabled(!canSave)
+        }
+    }
+
+    private func saveCard() {
+        let updated = Flashcard(
+            id: card.id,
+            word: trimmedWord,
+            translation: trimmedTranslation,
+            example: trimmedExample,
+            imageURL: card.imageURL
+        )
+
+        onSave(updated)
+        dismiss()
+    }
+
+    private func deleteCard() {
+        onDelete(card)
+        dismiss()
+    }
+
+    private func field(
+        title: String,
+        text: Binding<String>,
+        placeholder: String,
+        isMultiline: Bool = false
+    ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.system(size: 13, weight: .bold, design: .rounded))
