@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		E30901722FB952EF00C52238 /* FlashcardRoundFinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901712FB952DC00C52238 /* FlashcardRoundFinishView.swift */; };
+		E30901752FB95C8500C52238 /* SetsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901742FB95C7700C52238 /* SetsListView.swift */; };
+		E30901792FB9614C00C52238 /* SetListRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901762FB9614C00C52238 /* SetListRowView.swift */; };
+		E309017A2FB9614C00C52238 /* SetsListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901782FB9614C00C52238 /* SetsListScreen.swift */; };
+		E309017B2FB9614C00C52238 /* SetsListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901772FB9614C00C52238 /* SetsListHeaderView.swift */; };
+		E309017D2FB963D400C52238 /* SetsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309017C2FB963CB00C52238 /* SetsListViewModel.swift */; };
 		E30A1CAA2F98010F00387BDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CA62F98010F00387BDC /* Assets.xcassets */; };
 		E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CA82F98010F00387BDC /* WordAroundApp.swift */; };
 		E30A1CB32F9801B600387BDC /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CB22F9801AE00387BDC /* .gitignore */; };
@@ -100,6 +105,11 @@
 
 /* Begin PBXFileReference section */
 		E30901712FB952DC00C52238 /* FlashcardRoundFinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardRoundFinishView.swift; sourceTree = "<group>"; };
+		E30901742FB95C7700C52238 /* SetsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetsListView.swift; sourceTree = "<group>"; };
+		E30901762FB9614C00C52238 /* SetListRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetListRowView.swift; sourceTree = "<group>"; };
+		E30901772FB9614C00C52238 /* SetsListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetsListHeaderView.swift; sourceTree = "<group>"; };
+		E30901782FB9614C00C52238 /* SetsListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetsListScreen.swift; sourceTree = "<group>"; };
+		E309017C2FB963CB00C52238 /* SetsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetsListViewModel.swift; sourceTree = "<group>"; };
 		E30A1C982F98003000387BDC /* WordAround.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordAround.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E30A1CA62F98010F00387BDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E30A1CA82F98010F00387BDC /* WordAroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordAroundApp.swift; sourceTree = "<group>"; };
@@ -203,6 +213,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E30901732FB95C6F00C52238 /* Sets */ = {
+			isa = PBXGroup;
+			children = (
+				E309017C2FB963CB00C52238 /* SetsListViewModel.swift */,
+				E30901742FB95C7700C52238 /* SetsListView.swift */,
+				E30901762FB9614C00C52238 /* SetListRowView.swift */,
+				E30901772FB9614C00C52238 /* SetsListHeaderView.swift */,
+				E30901782FB9614C00C52238 /* SetsListScreen.swift */,
+			);
+			path = Sets;
+			sourceTree = "<group>";
+		};
 		E30A1C8F2F98003000387BDC = {
 			isa = PBXGroup;
 			children = (
@@ -416,6 +438,7 @@
 		E30A1D582F9BEB3700387BDC /* Flashcards */ = {
 			isa = PBXGroup;
 			children = (
+				E30901732FB95C6F00C52238 /* Sets */,
 				E39E904D2FA7E4EE00472437 /* SetDetail */,
 				E39E8FC42FA7911000472437 /* CreateSet */,
 			);
@@ -751,6 +774,7 @@
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
+				E30901752FB95C8500C52238 /* SetsListView.swift in Sources */,
 				E30A1D832F9C2EF700387BDC /* LocalImageStorageService.swift in Sources */,
 				E30A1DA62F9E07A000387BDC /* FolderService.swift in Sources */,
 				E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */,
@@ -777,6 +801,9 @@
 				E39E908E2FA7E65300472437 /* FlashcardSetDetailCardFilter.swift in Sources */,
 				E30901722FB952EF00C52238 /* FlashcardRoundFinishView.swift in Sources */,
 				E39E908F2FA7E65300472437 /* FlashcardSetDetailMainCardView.swift in Sources */,
+				E30901792FB9614C00C52238 /* SetListRowView.swift in Sources */,
+				E309017A2FB9614C00C52238 /* SetsListScreen.swift in Sources */,
+				E309017B2FB9614C00C52238 /* SetsListHeaderView.swift in Sources */,
 				E39E90902FA7E65300472437 /* FlashcardSetDetailAddButton.swift in Sources */,
 				E39E90912FA7E65300472437 /* FlashcardSetDetailBottomCover.swift in Sources */,
 				E39E90922FA7E65300472437 /* FlashcardExpandedView.swift in Sources */,
@@ -785,6 +812,7 @@
 				E30A1DB02F9E098700387BDC /* FolderDetailViewModel.swift in Sources */,
 				E30A1D6F2F9C0E9200387BDC /* SetIconType.swift in Sources */,
 				E30A1D812F9C24C100387BDC /* HomeSetPreviewMapper.swift in Sources */,
+				E309017D2FB963D400C52238 /* SetsListViewModel.swift in Sources */,
 				E30A1D712F9C0ED000387BDC /* FlashCard.swift in Sources */,
 				E39E8FE62FA7911E00472437 /* CreateSetCardEditorView.swift in Sources */,
 				E39E8FE72FA7911E00472437 /* CreateSetColorPickerView.swift in Sources */,

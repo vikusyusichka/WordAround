@@ -6,18 +6,12 @@ import FirebaseAuth
 final class HomeViewModel: ObservableObject {
     @Published var todayGoal: HomeSetPreviewItem
     @Published var statCards: [StatCardItem] = []
-    @Published var continueLearningSet: HomeSetPreviewItem?
-    @Published var userSets: [HomeSetPreviewItem] = []
-    @Published var isLoadingSets = false
-    @Published var errorMessage: String?
     @Published var folders: [Folder] = []
     @Published var isLoadingFolders = false
+    @Published var errorMessage: String?
 
     private let folderService = FolderService()
 
-    private let setService = FlashcardSetService()
-
-    // Static dashboard data created once — never recreated unless data changes
     private static let staticStatCards: [StatCardItem] = [
         StatCardItem(
             title: "Learned today",
@@ -81,15 +75,14 @@ final class HomeViewModel: ObservableObject {
         statCards = Self.staticStatCards
 
         Task {
-            await loadUserSets()
+            await loadFolders()
         }
     }
 
     func refresh() async {
-        await loadUserSets()
         await loadFolders()
     }
-    
+
     func loadFolders() async {
         guard let user = Auth.auth().currentUser else {
             folders = []
@@ -109,117 +102,27 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    func setsCount(for folder: Folder) -> Int {
-        userSets.filter { item in
+    func setsCount(for folder: Folder, in sets: [HomeSetPreviewItem]) -> Int {
+        sets.filter { item in
             item.sourceSet?.folderID == folder.id ||
             item.sourceSet?.folderName == folder.title
         }.count
     }
 
     func deleteFolder(_ folder: Folder) async {
-            do {
-                try await folderService.deleteFolder(
-                    id: folder.id,
-                    ownerUID: folder.ownerUID
-                )
-
-                folders.removeAll { $0.id == folder.id }
-            } catch {
-                errorMessage = error.localizedDescription
-            }
-        }
-
-        func moveFolders(from source: IndexSet, to destination: Int) {
-            folders.move(fromOffsets: source, toOffset: destination)
-        }
-
-    func loadUserSets() async {
-        guard let user = Auth.auth().currentUser else {
-            userSets = []
-            continueLearningSet = nil
-            errorMessage = "User is not signed in."
-            return
-        }
-
-        isLoadingSets = true
-        errorMessage = nil
-
         do {
-            let sets = try await setService.fetchSets(for: user.uid)
-            let previewItems = sets.map { makePreviewItem(from: $0) }
+            try await folderService.deleteFolder(
+                id: folder.id,
+                ownerUID: folder.ownerUID
+            )
 
-            userSets = previewItems
-            continueLearningSet = previewItems.first
-            isLoadingSets = false
-        } catch {
-            isLoadingSets = false
-            errorMessage = error.localizedDescription
-        }
-    }
-
-    private func makePreviewItem(from set: FlashcardSet) -> HomeSetPreviewItem {
-        let theme = CreateSetTheme.theme(forHex: set.colorHex)
-
-        return HomeSetPreviewItem(
-            sourceSet: set,
-            title: set.title,
-            subtitle: set.description.isEmpty ? "\(set.cards.count) cards" : set.description,
-            iconSystemName: iconName(from: set.icon),
-            currentValue: 0,
-            totalValue: max(set.cards.count, 1),
-            unit: "cards",
-            progress: 0,
-            accentColor: theme.accent,
-            backgroundColor: theme.previewBackground,
-            progressBackgroundColor: theme.softAccent,
-            titleColor: theme.titleColor,
-            valueColor: theme.titleColor,
-            subtitleColor: theme.mutedTextColor,
-            iconBackground: theme.softAccent,
-            blobColor: theme.softAccent
-        )
-    }
-
-    private func iconName(from icon: SetIconType) -> String {
-        switch icon {
-        case .systemName(let name): return name
-        default: return "rectangle.stack.fill"
-        }
-    }
-
-    func deleteSet(_ set: HomeSetPreviewItem) async {
-        guard let user = Auth.auth().currentUser else {
-            errorMessage = "User is not signed in."
-            return
-        }
-
-        guard let sourceSet = set.sourceSet else {
-            errorMessage = "Set data is missing."
-            return
-        }
-
-        do {
-            try await setService.deleteSet(id: sourceSet.id, ownerUID: user.uid)
-
-            userSets.removeAll { $0.sourceSet?.id == sourceSet.id }
-
-            if continueLearningSet?.sourceSet?.id == sourceSet.id {
-                continueLearningSet = userSets.first
-            }
+            folders.removeAll { $0.id == folder.id }
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
-    func applyUpdatedSet(_ updatedSet: FlashcardSet) {
-        let updatedItem = makePreviewItem(from: updatedSet)
-
-        if let index = userSets.firstIndex(where: { $0.sourceSet?.id == updatedSet.id }) {
-            userSets[index] = updatedItem
-        }
-
-        if continueLearningSet?.sourceSet?.id == updatedSet.id {
-            continueLearningSet = updatedItem
-        }
+    func moveFolders(from source: IndexSet, to destination: Int) {
+        folders.move(fromOffsets: source, toOffset: destination)
     }
 }

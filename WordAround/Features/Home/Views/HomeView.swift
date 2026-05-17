@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject private var sessionStore: SessionStore
     @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var setsViewModel = SetsListViewModel()
 
     @State private var selectedCategory: HomeCategory? = nil
     @State private var selectedTab: HomeTab? = nil
@@ -65,7 +66,7 @@ struct HomeView: View {
             FlashcardSetDetailView(
                 set: set,
                 onSetChanged: { updatedSet in
-                    viewModel.applyUpdatedSet(updatedSet)
+                    setsViewModel.applyUpdatedSet(updatedSet)
                     selectedSetForDetails = updatedSet
                 }
             )
@@ -74,19 +75,19 @@ struct HomeView: View {
             FolderDetailView(folder: folder)
         }
         .task {
-            await viewModel.refresh()
+            await refreshData()
         }
         .onChange(of: isCreateSetPresented) { isPresented in
             if !isPresented {
                 Task {
-                    await viewModel.refresh()
+                    await refreshData()
                 }
             }
         }
         .onChange(of: isCreateFolderPresented) { isPresented in
             if !isPresented {
                 Task {
-                    await viewModel.refresh()
+                    await refreshData()
                 }
             }
         }
@@ -220,13 +221,25 @@ private extension HomeView {
 
             sectionTitle("Continue learning")
 
-            if let set = viewModel.continueLearningSet {
+            if let set = setsViewModel.continueLearningSet {
                 learningProgressCard(from: set)
             }
 
-            sectionHeader(title: "Your sets", actionTitle: "View all")
-
-            setsList
+            SetsListView(
+                title: "Your sets",
+                actionTitle: "View all",
+                sets: setsViewModel.userSets,
+                isLoading: false,
+                errorMessage: nil,
+                showsEditButton: false,
+                onAction: {
+                    selectedTab = .flashcards
+                    selectedCategory = nil
+                },
+                onSelect: { set in
+                    selectedSetForDetails = set.sourceSet
+                }
+            )
         }
     }
 }
@@ -235,66 +248,15 @@ private extension HomeView {
 
 private extension HomeView {
     var setsContent: some View {
-        VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-            sectionHeader(title: "Your sets", actionTitle: "Create")
-
-            if viewModel.isLoadingSets {
-                placeholderCard(title: "Loading", subtitle: "Loading your flashcard sets...")
-            } else if viewModel.userSets.isEmpty {
-                emptySetsCard
-            } else {
-                setsList
+        SetsListScreen(
+            viewModel: setsViewModel,
+            onCreate: {
+                isCreateSetPresented = true
+            },
+            onSelect: { set in
+                selectedSetForDetails = set.sourceSet
             }
-
-            if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage)
-                    .font(.system(size: Layout.homeErrorTextSize, weight: .semibold, design: .rounded))
-                    .foregroundColor(.red)
-                    .multilineTextAlignment(.leading)
-                    .padding(.top, 4)
-            }
-        }
-    }
-
-    var setsList: some View {
-        LazyVStack(spacing: Layout.homeSetsListSpacing) {
-            ForEach(viewModel.userSets) { set in
-                Button {
-                    selectedSetForDetails = set.sourceSet
-                } label: {
-                    SetItemView(
-                        title: set.title,
-                        subtitle: set.subtitle,
-                        iconSystemName: set.iconSystemName,
-                        accentColor: set.accentColor,
-                        titleColor: set.titleColor,
-                        backgroundColor: set.backgroundColor,
-                        trailingText: "Review",
-                        blobColor: set.blobColor
-                    )
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-
-    var emptySetsCard: some View {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .fill(Color.white.opacity(0.92))
-            .overlay(
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("No sets yet")
-                        .font(.system(size: Layout.homeEmptySetTitleSize, weight: .bold, design: .rounded))
-                        .foregroundColor(AppColors.primaryBlueDark)
-
-                    Text("Create your first flashcard set using the plus button.")
-                        .font(.system(size: Layout.homePlaceholderSubtitleSize, weight: .medium, design: .rounded))
-                        .foregroundColor(AppColors.textSecondary)
-                }
-                .padding(Layout.homePlaceholderPadding),
-                alignment: .topLeading
-            )
-            .frame(height: Layout.homeEmptySetHeight)
+        )
     }
 }
 
@@ -309,7 +271,7 @@ private extension HomeView {
                 FolderListView(
                     folders: viewModel.folders,
                     setsCount: { folder in
-                        viewModel.setsCount(for: folder)
+                        viewModel.setsCount(for: folder, in: setsViewModel.userSets)
                     },
                     onCreate: {
                         isCreateFolderPresented = true
@@ -451,6 +413,13 @@ private extension HomeView {
                 alignment: .topLeading
             )
             .frame(height: Layout.homePlaceholderHeight)
+    }
+}
+
+private extension HomeView {
+    func refreshData() async {
+        await viewModel.refresh()
+        await setsViewModel.refresh()
     }
 }
 
