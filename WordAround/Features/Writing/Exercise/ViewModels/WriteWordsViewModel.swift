@@ -43,17 +43,36 @@ enum WriteWordsValidationState: Equatable {
     case incorrect
 }
 
-// MARK: - Lose State
+// MARK: - Navigation / Game Over State
 
 enum WriteWordsNavigationState: Equatable {
     case active
     case lose
 }
 
+enum WriteWordsGameOverReason: Equatable {
+    case timeout
+    case wrongAnswer
+}
+
 struct WriteWordsLoseStats: Equatable {
     let completedWords: Int
     let streak: Int
     let difficulty: String
+}
+
+struct WriteWordsRoundStats: Equatable {
+    let totalWords: Int
+    let completedWords: Int
+    let skippedWords: Int
+    let hintsUsed: Int
+    let difficulty: WriteWordsDifficulty
+}
+
+struct WriteWordsWrongAnswerDetails: Equatable {
+    let word: String
+    let userAnswer: String
+    let correctAnswer: String
 }
 
 // MARK: - ViewModel
@@ -73,6 +92,15 @@ final class WriteWordsViewModel: ObservableObject {
     @Published var isDifficultyMenuPresented: Bool = false
     @Published private(set) var navigationState: WriteWordsNavigationState = .active
     @Published private(set) var streak: Int = 0
+    @Published private(set) var isRoundCompleted: Bool = false
+    @Published private(set) var completedWords: Int = 0
+    @Published private(set) var skippedWords: Int = 0
+    @Published private(set) var hintsUsed: Int = 0
+    @Published private(set) var isGameOver: Bool = false
+    @Published private(set) var gameOverReason: WriteWordsGameOverReason?
+    @Published private(set) var gameOverCorrectAnswer: String = ""
+    @Published private(set) var gameOverUserAnswer: String = ""
+    @Published private(set) var gameOverWord: String = ""
 
     // Timer (Hard mode)
     @Published private(set) var secondsRemaining: Int = 0
@@ -96,7 +124,6 @@ final class WriteWordsViewModel: ObservableObject {
 
         static let refreshInterval: TimeInterval = 1.0 / 60.0
         static let correctAdvanceDelay: UInt64 = 700_000_000
-        static let failedAdvanceDelay: UInt64 = 250_000_000
     }
 
     private let exercises: [WriteWordsExercise]
@@ -166,23 +193,39 @@ final class WriteWordsViewModel: ObservableObject {
     // MARK: - Computed: progress
 
     var totalCount: Int { exercises.count }
+    var totalWords: Int { totalCount }
     var progressText: String { "\(currentIndex + 1) / \(max(totalCount, 1))" }
     var progress: CGFloat { CGFloat(currentIndex + 1) / CGFloat(max(totalCount, 1)) }
 
     var isCorrect: Bool { validationState == .correct }
     var isIncorrect: Bool { validationState == .incorrect }
-    var isInteractionLocked: Bool { navigationState == .lose || isTimerExpired }
+    var isInteractionLocked: Bool { navigationState == .lose || isRoundCompleted || isGameOver || isTimerExpired }
 
     var loseStats: WriteWordsLoseStats {
         WriteWordsLoseStats(
-            completedWords: completedWordsCount,
+            completedWords: completedWords,
             streak: streak,
             difficulty: difficulty.rawValue
         )
     }
 
-    private var completedWordsCount: Int {
-        min(currentIndex, totalCount)
+    var roundStats: WriteWordsRoundStats {
+        WriteWordsRoundStats(
+            totalWords: totalWords,
+            completedWords: completedWords,
+            skippedWords: skippedWords,
+            hintsUsed: hintsUsed,
+            difficulty: difficulty
+        )
+    }
+
+    var wrongAnswerDetails: WriteWordsWrongAnswerDetails? {
+        guard gameOverReason == .wrongAnswer else { return nil }
+        return WriteWordsWrongAnswerDetails(
+            word: gameOverWord,
+            userAnswer: gameOverUserAnswer,
+            correctAnswer: gameOverCorrectAnswer
+        )
     }
 
     // MARK: - Computed: hint
@@ -251,7 +294,7 @@ final class WriteWordsViewModel: ObservableObject {
 
     @discardableResult
     func attemptNext() -> Bool {
-        guard !isInteractionLocked else { return false }
+        guard !isInteractionLocked, validationState != .correct else { return false }
 
         delayedAdvanceTask?.cancel()
         stopTimer()
@@ -259,21 +302,25 @@ final class WriteWordsViewModel: ObservableObject {
         if normalize(typedAnswer) == normalize(correctAnswer) {
             validationState = .correct
             streak += 1
+            completedWords += 1
             scheduleAdvance(after: TimerConstants.correctAdvanceDelay)
             return true
-        } else {
-            validationState = .incorrect
-            if difficulty == .hard {
-                startTimer()
-            }
-            return false
         }
+
+        validationState = .incorrect
+
+        if difficulty == .hard {
+            triggerGameOver(reason: .wrongAnswer)
+        }
+
+        return false
     }
 
     // MARK: - Intent: Skip
 
     func skip() {
         guard !isInteractionLocked, canSkip else { return }
+        skippedWords += 1
         if difficulty == .medium { skippedCount += 1 }
         delayedAdvanceTask?.cancel()
         stopTimer()
@@ -285,6 +332,7 @@ final class WriteWordsViewModel: ObservableObject {
     func revealNextHint() {
         guard !isInteractionLocked, isHintAvailable else { return }
         hintRevealedCount += 1
+        hintsUsed += 1
     }
 
     // MARK: - Intent: Settings
@@ -363,25 +411,46 @@ final class WriteWordsViewModel: ObservableObject {
     }
 
     private func handleTimerExpired() {
-        guard navigationState == .active else { return }
+        guard navigationState == .active, !isGameOver else { return }
 
-        delayedAdvanceTask?.cancel()
-        stopTimer()
         isTimerExpired = true
         timerProgress = 0
         secondsRemaining = 0
         validationState = .incorrect
-        navigationState = .lose
+        triggerGameOver(reason: .timeout)
     }
 
-    func retryAfterLose() {
+    // MARK: - Round navigation
+
+    func restartRound() {
         resetFullSession()
     }
 
-    func closeLoseScreen() {
+    func exitRound() {
         stopTimer()
         delayedAdvanceTask?.cancel()
+    }
+
+    func retryAfterLose() {
+        restartRound()
+    }
+
+    func closeLoseScreen() {
+        exitRound()
         navigationState = .lose
+    }
+
+    private func triggerGameOver(reason: WriteWordsGameOverReason) {
+        delayedAdvanceTask?.cancel()
+        stopTimer()
+
+        gameOverReason = reason
+        isGameOver = true
+        navigationState = .lose
+
+        gameOverCorrectAnswer = correctAnswer
+        gameOverUserAnswer = typedAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
+        gameOverWord = displayWord
     }
 
     private func timerDuration(for answer: String) -> TimeInterval {
@@ -423,7 +492,7 @@ final class WriteWordsViewModel: ObservableObject {
         delayedAdvanceTask?.cancel()
 
         guard currentIndex < totalCount - 1 else {
-            stopTimer()
+            completeRound()
             return
         }
 
@@ -433,6 +502,16 @@ final class WriteWordsViewModel: ObservableObject {
         if difficulty == .hard {
             startTimer()
         }
+    }
+
+    private func completeRound() {
+        delayedAdvanceTask?.cancel()
+        stopTimer()
+        resetTimerDisplay()
+        typedAnswer = ""
+        validationState = .idle
+        hintRevealedCount = 0
+        isRoundCompleted = true
     }
 
     private func resetAnswerState() {
@@ -447,7 +526,16 @@ final class WriteWordsViewModel: ObservableObject {
         delayedAdvanceTask?.cancel()
         currentIndex = 0
         skippedCount = 0
+        skippedWords = 0
+        hintsUsed = 0
+        completedWords = 0
         streak = 0
+        isRoundCompleted = false
+        isGameOver = false
+        gameOverReason = nil
+        gameOverCorrectAnswer = ""
+        gameOverUserAnswer = ""
+        gameOverWord = ""
         navigationState = .active
         resetAnswerState()
         startTimerIfNeeded()

@@ -64,21 +64,24 @@ struct WriteWordsView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .contentShape(Rectangle())
-                .allowsHitTesting(viewModel.navigationState == .active)
+                .allowsHitTesting(viewModel.navigationState == .active && !viewModel.isRoundCompleted && !viewModel.isGameOver)
                 .onTapGesture { hideKeyboard() }
 
-                if viewModel.navigationState == .lose {
-                    WriteWordsLoseScreenView(
-                        stats: viewModel.loseStats,
+                if viewModel.navigationState == .lose || viewModel.isRoundCompleted {
+                    WriteWordsResultScreenView(
+                        resultType: resultType,
+                        roundStats: viewModel.roundStats,
+                        loseStats: viewModel.loseStats,
+                        wrongAnswerDetails: viewModel.wrongAnswerDetails,
                         onTryAgain: {
                             hideKeyboard()
                             withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
-                                viewModel.retryAfterLose()
+                                viewModel.restartRound()
                             }
                         },
                         onBack: {
                             hideKeyboard()
-                            viewModel.closeLoseScreen()
+                            viewModel.exitRound()
                             dismiss()
                         }
                     )
@@ -97,11 +100,16 @@ struct WriteWordsView: View {
                 hideKeyboard()
             }
         }
+        .onChange(of: viewModel.isRoundCompleted) { isCompleted in
+            if isCompleted {
+                hideKeyboard()
+            }
+        }
         .animation(.spring(response: 0.38, dampingFraction: 0.86), value: viewModel.navigationState)
+        .animation(.spring(response: 0.38, dampingFraction: 0.86), value: viewModel.isRoundCompleted)
         .sheet(isPresented: $viewModel.isSettingsPresented) {
             WriteWordsSettingsSheet(viewModel: viewModel)
         }
-        // Difficulty inline picker sheet
         .confirmationDialog(
             "Select difficulty",
             isPresented: $viewModel.isDifficultyMenuPresented,
@@ -113,6 +121,21 @@ struct WriteWordsView: View {
                 }
             }
             Button("Cancel", role: .cancel) {}
+        }
+    }
+
+    // MARK: - Result
+
+    private var resultType: WriteWordsResultType {
+        if viewModel.isRoundCompleted {
+            return .win
+        }
+
+        switch viewModel.gameOverReason {
+        case .wrongAnswer:
+            return .wrongAnswerLose
+        case .timeout, .none:
+            return .timeoutLose
         }
     }
 
@@ -157,12 +180,9 @@ struct WriteWordsView: View {
     }
 
     // MARK: - Bottom mode bar
-    // Mic icon removed.
-    // Difficulty tapped → shows inline confirmationDialog with 3 levels.
 
     private var bottomModeBar: some View {
         HStack {
-            // Left: training mode label
             Text(viewModel.modeTitle)
                 .font(.system(
                     size: LayoutConstants.Typography.caption(metrics),
@@ -173,7 +193,6 @@ struct WriteWordsView: View {
 
             Spacer()
 
-            // Right: difficulty picker button
             Button {
                 viewModel.isDifficultyMenuPresented = true
             } label: {
