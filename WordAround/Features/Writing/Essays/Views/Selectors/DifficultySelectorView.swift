@@ -69,6 +69,7 @@ struct DifficultySelectorView: View {
                     .stroke(AppColors.primaryBlue.opacity(isExpanded ? 0.18 : 0.08), lineWidth: 1)
             )
             .shadow(color: Color.black.opacity(0.035), radius: 12, x: 0, y: 7)
+            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
         .buttonStyle(.plain)
     }
@@ -120,6 +121,8 @@ struct DifficultySelectorView: View {
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .background(
                         selectedDifficulty == difficulty
                         ? AppColors.primaryBlue.opacity(0.07)

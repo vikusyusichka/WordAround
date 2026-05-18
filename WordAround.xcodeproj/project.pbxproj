@@ -37,6 +37,7 @@
 		E30902662FBAE1C300C52238 /* EssayScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902652FBAE1BE00C52238 /* EssayScore.swift */; };
 		E30902692FBAE26400C52238 /* LanguageSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902682FBAE25900C52238 /* LanguageSelectorView.swift */; };
 		E309026B2FBAE27600C52238 /* DifficultySelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309026A2FBAE27400C52238 /* DifficultySelectorView.swift */; };
+		E309026F2FBAE6CA00C52238 /* EssayInputSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309026E2FBAE6C600C52238 /* EssayInputSectionView.swift */; };
 		E30A1CAA2F98010F00387BDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CA62F98010F00387BDC /* Assets.xcassets */; };
 		E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CA82F98010F00387BDC /* WordAroundApp.swift */; };
 		E30A1CB32F9801B600387BDC /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CB22F9801AE00387BDC /* .gitignore */; };
@@ -143,6 +144,7 @@
 		E30902652FBAE1BE00C52238 /* EssayScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayScore.swift; sourceTree = "<group>"; };
 		E30902682FBAE25900C52238 /* LanguageSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectorView.swift; sourceTree = "<group>"; };
 		E309026A2FBAE27400C52238 /* DifficultySelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DifficultySelectorView.swift; sourceTree = "<group>"; };
+		E309026E2FBAE6C600C52238 /* EssayInputSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayInputSectionView.swift; sourceTree = "<group>"; };
 		E30A1C982F98003000387BDC /* WordAround.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordAround.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E30A1CA62F98010F00387BDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E30A1CA82F98010F00387BDC /* WordAroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordAroundApp.swift; sourceTree = "<group>"; };
@@ -348,6 +350,7 @@
 		E309024E2FBAC9BE00C52238 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E309026E2FBAE6C600C52238 /* EssayInputSectionView.swift */,
 				E30902672FBAE24E00C52238 /* Selectors */,
 				E30902592FBACA1C00C52238 /* EssayFeedbackSectionView.swift */,
 				E309025A2FBACA1C00C52238 /* EssayPracticeView.swift */,
@@ -879,6 +882,7 @@
 				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
 				E309025D2FBACA1C00C52238 /* EssayTopicCardView.swift in Sources */,
 				E309025E2FBACA1C00C52238 /* GrammarIssueCardView.swift in Sources */,
+				E309026F2FBAE6CA00C52238 /* EssayInputSectionView.swift in Sources */,
 				E309025F2FBACA1C00C52238 /* EssayFeedbackSectionView.swift in Sources */,
 				E30902602FBACA1C00C52238 /* EssayPracticeView.swift in Sources */,
 				E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */,
