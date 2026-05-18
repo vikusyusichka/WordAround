@@ -1,8 +1,49 @@
 import SwiftUI
 
 struct EssayTopicCardView: View {
-    let topic: EssayTopic
-    let onRefresh: () -> Void
+    private let title: String
+    private let taskDescription: String
+    private let level: String
+    private let estimatedMinutes: Int
+    private let wordRangeText: String
+    private let tips: [String]
+    private let isLoading: Bool
+    private let errorMessage: String?
+    private let onRefresh: () -> Void
+
+    init(
+        topic: EssayTopic,
+        isLoading: Bool = false,
+        errorMessage: String? = nil,
+        onRefresh: @escaping () -> Void
+    ) {
+        self.title = topic.title
+        self.taskDescription = topic.taskDescription
+        self.level = topic.level
+        self.estimatedMinutes = topic.estimatedMinutes
+        self.wordRangeText = topic.wordRangeText
+        self.tips = topic.tips
+        self.isLoading = isLoading
+        self.errorMessage = errorMessage
+        self.onRefresh = onRefresh
+    }
+
+    init(
+        task: GeneratedEssayTask,
+        isLoading: Bool = false,
+        errorMessage: String? = nil,
+        onRefresh: @escaping () -> Void
+    ) {
+        self.title = task.title
+        self.taskDescription = task.task
+        self.level = task.detectedLevel.rawValue
+        self.estimatedMinutes = task.estimatedTimeMinutes
+        self.wordRangeText = task.wordRangeText
+        self.tips = task.quickTips
+        self.isLoading = isLoading
+        self.errorMessage = errorMessage
+        self.onRefresh = onRefresh
+    }
 
     private var chipColumns: [GridItem] {
         [
@@ -20,11 +61,11 @@ struct EssayTopicCardView: View {
                 levelBadge
 
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(topic.title)
+                    Text(title)
                         .font(.system(size: Layout.essayTopicTitleSize, weight: .bold, design: .rounded))
                         .foregroundColor(AppColors.primaryBlueDark)
 
-                    Label("\(topic.estimatedMinutes) min", systemImage: "clock")
+                    Label("\(estimatedMinutes) min", systemImage: "clock")
                         .font(.system(size: Layout.essayTopicMetaSize, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                 }
@@ -32,17 +73,35 @@ struct EssayTopicCardView: View {
                 Spacer(minLength: 10)
 
                 Button(action: onRefresh) {
-                    Image(systemName: "arrow.triangle.2.circlepath")
-                        .font(.system(size: Layout.essayTopicRefreshIconSize, weight: .semibold))
-                        .foregroundColor(AppColors.primaryBlue)
-                        .frame(
-                            width: Layout.essayTopicRefreshButtonSize,
-                            height: Layout.essayTopicRefreshButtonSize
-                        )
-                        .background(AppColors.primaryBlue.opacity(0.08))
-                        .clipShape(Circle())
+                    Group {
+                        if isLoading {
+                            ProgressView()
+                                .tint(AppColors.primaryBlue)
+                        } else {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                                .font(.system(size: Layout.essayTopicRefreshIconSize, weight: .semibold))
+                        }
+                    }
+                    .foregroundColor(AppColors.primaryBlue)
+                    .frame(
+                        width: Layout.essayTopicRefreshButtonSize,
+                        height: Layout.essayTopicRefreshButtonSize
+                    )
+                    .background(AppColors.primaryBlue.opacity(0.08))
+                    .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
+                .disabled(isLoading)
+            }
+
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.system(size: Layout.essayTopicMetaSize, weight: .semibold, design: .rounded))
+                    .foregroundColor(AppColors.textSecondary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(AppColors.primaryBlue.opacity(0.06))
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
 
             VStack(alignment: .leading, spacing: 6) {
@@ -50,7 +109,7 @@ struct EssayTopicCardView: View {
                     .font(.system(size: Layout.essayTopicSectionLabelSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlue)
 
-                Text(topic.taskDescription)
+                Text(taskDescription)
                     .font(.system(size: Layout.essayTopicBodySize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .lineSpacing(3)
@@ -60,7 +119,7 @@ struct EssayTopicCardView: View {
                 Image(systemName: "text.word.spacing")
                     .font(.system(size: 13, weight: .semibold))
 
-                Text(topic.wordRangeText)
+                Text(wordRangeText)
                     .font(.system(size: Layout.essayTopicMetaSize, weight: .semibold, design: .rounded))
             }
             .foregroundColor(AppColors.primaryBlue)
@@ -70,7 +129,7 @@ struct EssayTopicCardView: View {
             .clipShape(Capsule())
 
             LazyVGrid(columns: chipColumns, alignment: .leading, spacing: 8) {
-                ForEach(topic.tips, id: \.self) { tip in
+                ForEach(tips, id: \.self) { tip in
                     Text(tip)
                         .font(.system(size: Layout.essayTipChipTextSize, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.primaryBlueDark)
@@ -96,7 +155,7 @@ struct EssayTopicCardView: View {
     }
 
     private var levelBadge: some View {
-        Text(topic.level)
+        Text(level)
             .font(.system(size: Layout.essayTopicLevelBadgeSize, weight: .bold, design: .rounded))
             .foregroundColor(.white)
             .padding(.horizontal, 10)
@@ -115,8 +174,25 @@ struct EssayTopicCardView: View {
     }
 }
 
-#Preview {
+#Preview("Static topic") {
     EssayTopicCardView(topic: .predefined[0], onRefresh: {})
         .padding()
         .background(AppColors.appBackground)
+}
+
+#Preview("Generated topic") {
+    EssayTopicCardView(
+        task: GeneratedEssayTask(
+            title: "Learning Languages Online",
+            task: "Write about why people learn languages online and give examples from daily life.",
+            detectedLevel: .b1,
+            estimatedTimeMinutes: 12,
+            wordLimitMin: 90,
+            wordLimitMax: 150,
+            quickTips: ["Use clear examples", "Compare two ideas", "Check verb forms"]
+        ),
+        onRefresh: {}
+    )
+    .padding()
+    .background(AppColors.appBackground)
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-enum EssayDifficulty: String, CaseIterable, Identifiable, Equatable {
+enum EssayDifficulty: String, CaseIterable, Identifiable, Equatable, Codable {
     case a1 = "A1"
     case a2 = "A2"
     case b1 = "B1"
@@ -19,34 +19,69 @@ enum EssayDifficulty: String, CaseIterable, Identifiable, Equatable {
         case .a1:
             return 15
         case .a2:
-            return 10
+            return 12
         case .b1:
             return 7
         case .b2:
-            return 4
+            return 5
         case .c1:
-            return 2
+            return 3
+        case .native:
+            return 0
+        }
+    }
+
+    var translationLimit: Int {
+        switch self {
+        case .a1:
+            return 20
+        case .a2:
+            return 15
+        case .b1:
+            return 10
+        case .b2:
+            return 6
+        case .c1:
+            return 3
+        case .native:
+            return 0
+        }
+    }
+
+    var synonymLimit: Int {
+        switch self {
+        case .a1:
+            return 10
+        case .a2:
+            return 8
+        case .b1:
+            return 6
+        case .b2:
+            return 5
+        case .c1:
+            return 3
         case .native:
             return 0
         }
     }
 
     var allowsTranslation: Bool {
-        switch self {
-        case .a1, .a2, .b1:
-            return true
-        case .b2, .c1, .native:
-            return false
-        }
+        translationLimit > 0
     }
 
     var translationWordLimit: Int {
         switch self {
-        case .a1, .a2:
-            return 5
+        case .a1:
+            return 20
+        case .a2:
+            return 15
         case .b1:
+            return 10
+        case .b2:
+            return 6
+        case .c1:
             return 3
-        case .b2, .c1, .native:
+        case .native:
             return 0
         }
     }

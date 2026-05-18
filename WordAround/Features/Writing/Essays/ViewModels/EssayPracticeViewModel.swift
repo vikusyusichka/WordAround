@@ -45,6 +45,13 @@ final class EssayPracticeViewModel: ObservableObject {
     }
 
     @Published private(set) var currentTopic: EssayTopic
+    @Published var currentTask: GeneratedEssayTask?
+    @Published var isGeneratingTask = false
+    @Published var taskGenerationError: String?
+    @Published var generatedHints: [EssayGeneratedHint] = []
+    @Published var isGeneratingHint = false
+    @Published var hintGenerationError: String?
+    @Published var usedTaskTitles: [String] = []
 
     @Published var essayText: String {
         didSet { updateWritingState() }
@@ -68,6 +75,7 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published var selectedDifficulty: EssayDifficulty {
         didSet {
             resetAssistanceUsage()
+            updateWritingState()
             clearFeedback()
         }
     }
@@ -98,16 +106,19 @@ final class EssayPracticeViewModel: ObservableObject {
     private let grammarService: GrammarChecking
     private let scoringService = EssayScoringService()
     private let assistanceService = EssayAssistanceService()
+    private let generationService: EssayGenerationServicing
 
     init(
         topics: [EssayTopic] = EssayTopic.predefined,
         grammarService: GrammarChecking = GrammarCheckService(),
+        generationService: EssayGenerationServicing = EssayGenerationService(),
         selectedLanguage: GrammarLanguage = .english,
         selectedDifficulty: EssayDifficulty = .b1
     ) {
         self.topics = topics.isEmpty ? [.fallback] : topics
         self.currentTopic = topics.randomElement() ?? .fallback
         self.grammarService = grammarService
+        self.generationService = generationService
         self.selectedLanguage = selectedLanguage
         self.selectedDifficulty = selectedDifficulty
         self.translationSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
@@ -125,16 +136,32 @@ final class EssayPracticeViewModel: ObservableObject {
         selectedDifficulty.hintsLimit
     }
 
+    var translationsLimit: Int {
+        selectedDifficulty.translationLimit
+    }
+
+    var synonymsLimit: Int {
+        selectedDifficulty.synonymLimit
+    }
+
     var hintsLeft: Int {
         max(0, hintsLimit - usedHints)
     }
 
+    var translationsLeft: Int {
+        max(0, translationsLimit - usedTranslations)
+    }
+
+    var synonymsLeft: Int {
+        max(0, synonymsLimit - usedSynonyms)
+    }
+
     var canUseHint: Bool {
-        hintsLeft > 0
+        hintsLeft > 0 && !isGeneratingHint
     }
 
     var canUseTranslation: Bool {
-        selectedDifficulty.allowsTranslation && hintsLeft > 0
+        translationsLeft > 0
     }
 
     var translationWordLimit: Int {
@@ -142,10 +169,14 @@ final class EssayPracticeViewModel: ObservableObject {
     }
 
     var canUseSynonym: Bool {
-        hintsLeft > 0
+        synonymsLeft > 0
     }
 
     var activeTopicTitle: String {
+        if let currentTask {
+            return currentTask.title
+        }
+
         switch topicMode {
         case .suggested:
             return currentTopic.title
@@ -154,8 +185,21 @@ final class EssayPracticeViewModel: ObservableObject {
         }
     }
 
+    var activeTopicTask: String {
+        if let currentTask {
+            return currentTask.task
+        }
+
+        switch topicMode {
+        case .suggested:
+            return currentTopic.taskDescription
+        case .custom:
+            return customTopicText.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+    }
+
     var assistanceUsageText: String {
-        "Hints: \(usedHints)  ·  Translations: \(usedTranslations)  ·  Synonyms: \(usedSynonyms)"
+        "Hints: \(usedHints)/\(hintsLimit)  ·  Translations: \(usedTranslations)/\(translationsLimit)  ·  Synonyms: \(usedSynonyms)/\(synonymsLimit)"
     }
 
     var privacyNoticeText: String {
@@ -170,7 +214,100 @@ final class EssayPracticeViewModel: ObservableObject {
         GrammarLanguage.allCases.filter { $0 != selectedLanguage }
     }
 
+    func generateSuggestedTask() async {
+        guard !isGeneratingTask else { return }
+
+        isGeneratingTask = true
+        taskGenerationError = nil
+
+        do {
+            let task = try await generateSuggestedTaskAvoidingDuplicates()
+            applyGeneratedTask(task)
+        } catch {
+            taskGenerationError = "Could not generate a topic. Try again."
+        }
+
+        isGeneratingTask = false
+    }
+
+    func generateTaskFromCustomTopic() async {
+        guard !isGeneratingTask else { return }
+
+        let topic = customTopicText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !topic.isEmpty else {
+            taskGenerationError = "Enter a topic first."
+            return
+        }
+
+        isGeneratingTask = true
+        taskGenerationError = nil
+
+        do {
+            let task = try await generationService.generateTaskFromCustomTopic(
+                topic: topic,
+                language: selectedLanguage
+            )
+            applyGeneratedTask(task)
+        } catch {
+            taskGenerationError = "Could not generate a topic. Try again."
+        }
+
+        isGeneratingTask = false
+    }
+
+    func requestHint() async {
+        guard canUseHint else {
+            hintGenerationError = "No hints are left for this level."
+            return
+        }
+
+        isGeneratingHint = true
+        isAssistanceLoading = true
+        hintGenerationError = nil
+        assistanceResultItems = []
+        assistanceResultMessage = nil
+        activeAssistanceModal = .hint
+
+        do {
+            let hint = try await generationService.generateHint(
+                language: selectedLanguage,
+                level: selectedDifficulty,
+                topicTitle: activeTopicTitle,
+                task: activeTopicTask,
+                essayText: essayText,
+                previousHints: generatedHints.map(\.text)
+            )
+
+            let finalHint = preventDuplicateHint(hint)
+            generatedHints.append(finalHint)
+            usedHints += 1
+            shownHintItems = [
+                EssayHintItem(
+                    word: finalHint.category.rawValue.capitalized,
+                    translation: selectedDifficulty.rawValue,
+                    example: finalHint.text
+                )
+            ]
+            assistanceResultItems = [
+                EssayAssistanceItem(
+                    word: finalHint.category.rawValue,
+                    result: finalHint.text,
+                    detail: finalHint.category.rawValue.capitalized
+                )
+            ]
+            recalculateScoreIfNeeded()
+        } catch {
+            hintGenerationError = "Could not generate a hint. Try again."
+            assistanceResultItems = []
+            assistanceResultMessage = "Could not generate a hint. Try again."
+        }
+
+        isGeneratingHint = false
+        isAssistanceLoading = false
+    }
+
     func selectRandomTopic() {
+        currentTask = nil
         let nextTopic = topics
             .filter { $0.id != currentTopic.id }
             .randomElement() ?? topics.randomElement() ?? .fallback
@@ -182,11 +319,19 @@ final class EssayPracticeViewModel: ObservableObject {
     func selectTopicMode(_ mode: EssayTopicMode) {
         guard topicMode != mode else { return }
         topicMode = mode
+        currentTask = nil
+        taskGenerationError = nil
         updateWritingState()
+
+        if mode == .suggested {
+            Task { await generateSuggestedTask() }
+        }
     }
 
     func updateCustomTopic(_ text: String) {
         customTopicText = text
+        currentTask = nil
+        taskGenerationError = nil
         updateWritingState()
     }
 
@@ -271,14 +416,10 @@ final class EssayPracticeViewModel: ObservableObject {
     }
 
     func calculateScoreAfterGrammarCheck() {
-        let wordRange: ClosedRange<Int> = topicMode == .suggested
-            ? currentTopic.wordRange
-            : 60...300
-
         let input = EssayScoringInput(
             text: essayText,
             topic: activeTopicTitle,
-            wordRange: wordRange,
+            wordRange: activeWordRange,
             grammarIssues: grammarIssues,
             usedHints: usedHints,
             usedTranslations: usedTranslations,
@@ -290,18 +431,7 @@ final class EssayPracticeViewModel: ObservableObject {
     }
 
     func showHint() {
-        guard canUseHint else { return }
-
-        let itemsToShow = min(3, hintsLeft)
-        let items = assistanceService.hints(
-            for: activeTopicTitle,
-            language: selectedLanguage,
-            count: itemsToShow
-        )
-
-        shownHintItems = items
-        usedHints += items.count
-        recalculateScoreIfNeeded()
+        Task { await requestHint() }
     }
 
     func openTranslateModal() {
@@ -388,7 +518,7 @@ final class EssayPracticeViewModel: ObservableObject {
         }
 
         guard canUseSynonym else {
-            assistanceResultMessage = "No helpers are left for this level."
+            assistanceResultMessage = "No synonym helpers are left for this level."
             return
         }
 
@@ -442,10 +572,16 @@ final class EssayPracticeViewModel: ObservableObject {
         usedTranslations = 0
         usedSynonyms = 0
         shownHintItems = []
+        generatedHints = []
+        hintGenerationError = nil
     }
 
     private var activeWordRange: ClosedRange<Int> {
-        topicMode == .suggested ? currentTopic.wordRange : 60...300
+        if let currentTask {
+            return currentTask.wordRange
+        }
+
+        return topicMode == .suggested ? currentTopic.wordRange : 60...300
     }
 
     private func updateWritingState() {
@@ -468,6 +604,55 @@ final class EssayPracticeViewModel: ObservableObject {
             feedbackState = .idle
             score = nil
         }
+    }
+
+    private func applyGeneratedTask(_ task: GeneratedEssayTask) {
+        currentTask = task
+        selectedDifficulty = task.detectedLevel
+        appendUsedTaskTitle(task.title)
+        resetEssay()
+        updateWritingState()
+    }
+
+    private func generateSuggestedTaskAvoidingDuplicates() async throws -> GeneratedEssayTask {
+        let firstTask = try await generationService.generateSuggestedTask(
+            language: selectedLanguage,
+            avoidTitles: usedTaskTitles
+        )
+
+        guard isDuplicateTitle(firstTask.title) else {
+            return firstTask
+        }
+
+        let retryTask = try await generationService.generateSuggestedTask(
+            language: selectedLanguage,
+            avoidTitles: usedTaskTitles + [firstTask.title]
+        )
+
+        return retryTask
+    }
+
+    private func appendUsedTaskTitle(_ title: String) {
+        let cleaned = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleaned.isEmpty else { return }
+
+        usedTaskTitles.append(cleaned)
+        usedTaskTitles = Array(usedTaskTitles.suffix(12))
+    }
+
+    private func isDuplicateTitle(_ title: String) -> Bool {
+        usedTaskTitles.contains { existing in
+            existing.caseInsensitiveCompare(title) == .orderedSame
+        }
+    }
+
+    private func preventDuplicateHint(_ hint: EssayGeneratedHint) -> EssayGeneratedHint {
+        let isDuplicate = generatedHints.contains { existing in
+            existing.text.caseInsensitiveCompare(hint.text) == .orderedSame
+        }
+
+        guard isDuplicate else { return hint }
+        return EssayGeneratedHint(text: "Add one clear supporting example.", category: .structure)
     }
 
     private func clearAssistanceResults() {

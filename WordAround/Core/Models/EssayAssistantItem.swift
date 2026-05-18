@@ -1,6 +1,7 @@
 import Foundation
 
 enum EssayAssistanceModalType: Equatable {
+    case hint
     case translate
     case synonym
 }

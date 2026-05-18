@@ -21,6 +21,8 @@ struct EssayAssistanceModalView: View {
 
     private var title: String {
         switch type {
+        case .hint:
+            return "Writing hint"
         case .translate:
             return "Translate"
         case .synonym:
@@ -30,6 +32,8 @@ struct EssayAssistanceModalView: View {
 
     private var buttonTitle: String {
         switch type {
+        case .hint:
+            return isLoading ? "Generating..." : "Generate hint"
         case .translate:
             return isLoading ? "Translating..." : "Translate"
         case .synonym:
@@ -39,6 +43,8 @@ struct EssayAssistanceModalView: View {
 
     private var placeholder: String {
         switch type {
+        case .hint:
+            return ""
         case .translate:
             return "Enter a word or short phrase"
         case .synonym:
@@ -48,6 +54,8 @@ struct EssayAssistanceModalView: View {
 
     private var icon: String {
         switch type {
+        case .hint:
+            return "lightbulb.fill"
         case .translate:
             return "character.book.closed.fill"
         case .synonym:
@@ -57,6 +65,8 @@ struct EssayAssistanceModalView: View {
 
     private var modalMaxWidth: CGFloat {
         switch type {
+        case .hint:
+            return Layout.isPadLike ? 560 : 420
         case .translate:
             return Layout.isPadLike ? 560 : 420
         case .synonym:
@@ -66,6 +76,8 @@ struct EssayAssistanceModalView: View {
 
     private var resultsMaxHeight: CGFloat {
         switch type {
+        case .hint:
+            return 180
         case .translate:
             return resultItems.count <= 1 ? 92 : 180
         case .synonym:
@@ -83,8 +95,12 @@ struct EssayAssistanceModalView: View {
 
             VStack(alignment: .leading, spacing: Layout.essayModalSpacing) {
                 header
-                languagePicker
-                input
+
+                if type != .hint {
+                    languagePicker
+                    input
+                }
+
                 resultContent
                 actions
             }
@@ -300,7 +316,7 @@ struct EssayAssistanceModalView: View {
         HStack(spacing: 12) {
             loadingCircle
 
-            Text(type == .translate ? "Translating..." : "Searching...")
+            Text(loadingText)
                 .font(.system(size: Layout.essayModalMessageTextSize, weight: .semibold, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
         }
@@ -314,6 +330,17 @@ struct EssayAssistanceModalView: View {
             )
         )
         .transition(.opacity)
+    }
+
+    private var loadingText: String {
+        switch type {
+        case .hint:
+            return "Generating hint..."
+        case .translate:
+            return "Translating..."
+        case .synonym:
+            return "Searching..."
+        }
     }
 
     private var loadingCircle: some View {
@@ -418,8 +445,9 @@ struct EssayAssistanceModalView: View {
             }
             .buttonStyle(.plain)
 
-            Button(action: onSubmit) {
-                Text(buttonTitle)
+            if type != .hint {
+                Button(action: onSubmit) {
+                    Text(buttonTitle)
                     .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -436,10 +464,30 @@ struct EssayAssistanceModalView: View {
                         )
                     )
             }
-            .disabled(isLoading)
-            .buttonStyle(.plain)
+                .disabled(isLoading)
+                .buttonStyle(.plain)
+            }
         }
     }
+}
+
+#Preview("Hint") {
+    EssayAssistanceModalView(
+        type: .hint,
+        inputText: .constant(""),
+        selectedTargetLanguage: .english,
+        selectedSourceLanguage: .spanish,
+        sourceLanguages: [.spanish, .french, .german],
+        resultItems: [
+            EssayAssistanceItem(word: "structure", result: "Add one clear supporting example.", detail: "Structure")
+        ],
+        resultMessage: nil,
+        usageText: "Hints: 1  ·  Translations: 0  ·  Synonyms: 0",
+        isLoading: false,
+        onSelectSourceLanguage: { _ in },
+        onSubmit: {},
+        onClose: {}
+    )
 }
 
 #Preview("Translate") {

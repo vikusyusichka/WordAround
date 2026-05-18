@@ -33,21 +33,6 @@ final class EssayAssistanceService {
         self.timeoutInterval = timeoutInterval
     }
 
-    private let genericHints: [EssayHintItem] = [
-        EssayHintItem(word: "however", translation: "однак", example: "However, this can also be difficult."),
-        EssayHintItem(word: "because", translation: "тому що", example: "I like this topic because it is important."),
-        EssayHintItem(word: "important", translation: "важливий", example: "This is an important part of my life."),
-        EssayHintItem(word: "experience", translation: "досвід", example: "This experience helped me learn."),
-        EssayHintItem(word: "improve", translation: "покращувати", example: "I want to improve my skills."),
-        EssayHintItem(word: "usually", translation: "зазвичай", example: "I usually study in the evening."),
-        EssayHintItem(word: "for example", translation: "наприклад", example: "For example, I read short articles."),
-        EssayHintItem(word: "in my opinion", translation: "на мою думку", example: "In my opinion, practice is useful.")
-    ]
-
-    func hints(for topic: String, language: GrammarLanguage, count: Int) -> [EssayHintItem] {
-        Array(genericHints.shuffled().prefix(count))
-    }
-
     func translate(
         text: String,
         sourceLanguage: GrammarLanguage,

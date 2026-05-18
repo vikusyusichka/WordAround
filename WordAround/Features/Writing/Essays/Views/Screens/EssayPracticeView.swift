@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 struct EssayPracticeView: View {
     @StateObject private var viewModel = EssayPracticeViewModel()
@@ -78,6 +79,11 @@ struct EssayPracticeView: View {
             .background(AppColors.appBackground.ignoresSafeArea())
             .navigationTitle("Essay Practice")
             .navigationBarTitleDisplayMode(.inline)
+            .task {
+                if viewModel.currentTask == nil && !Self.isPreview {
+                    await viewModel.generateSuggestedTask()
+                }
+            }
             .onTapGesture {
                 isEditorFocused = false
             }
@@ -99,6 +105,8 @@ struct EssayPracticeView: View {
                     isLoading: viewModel.isAssistanceLoading,
                     onSelectSourceLanguage: { language in
                         switch modal {
+                        case .hint:
+                            break
                         case .translate:
                             viewModel.selectTranslationSourceLanguage(language)
                         case .synonym:
@@ -108,6 +116,8 @@ struct EssayPracticeView: View {
                     onSubmit: {
                         Task {
                             switch modal {
+                            case .hint:
+                                break
                             case .translate:
                                 await viewModel.performTranslation()
                             case .synonym:
@@ -126,20 +136,39 @@ struct EssayPracticeView: View {
         }
     }
 
+    private static var isPreview: Bool {
+        ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+    }
+
     private var topicSection: some View {
         VStack(alignment: .leading, spacing: Layout.essayTopicModeSpacing) {
             topicModePicker
 
             switch viewModel.topicMode {
             case .suggested:
-                EssayTopicCardView(
-                    topic: viewModel.currentTopic,
-                    onRefresh: {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            viewModel.selectRandomTopic()
+                if let task = viewModel.currentTask {
+                    EssayTopicCardView(
+                        task: task,
+                        isLoading: viewModel.isGeneratingTask,
+                        errorMessage: viewModel.taskGenerationError,
+                        onRefresh: {
+                            Task {
+                                await viewModel.generateSuggestedTask()
+                            }
                         }
-                    }
-                )
+                    )
+                } else {
+                    EssayTopicCardView(
+                        topic: viewModel.currentTopic,
+                        isLoading: viewModel.isGeneratingTask,
+                        errorMessage: viewModel.taskGenerationError,
+                        onRefresh: {
+                            Task {
+                                await viewModel.generateSuggestedTask()
+                            }
+                        }
+                    )
+                }
             case .custom:
                 CustomEssayTopicInputView(
                     topicText: Binding(
@@ -147,8 +176,60 @@ struct EssayPracticeView: View {
                         set: { viewModel.updateCustomTopic($0) }
                     )
                 )
+
+                customTopicGenerationButton
+
+                if let task = viewModel.currentTask {
+                    EssayTopicCardView(
+                        task: task,
+                        isLoading: viewModel.isGeneratingTask,
+                        errorMessage: viewModel.taskGenerationError,
+                        onRefresh: {
+                            Task {
+                                await viewModel.generateTaskFromCustomTopic()
+                            }
+                        }
+                    )
+                } else if let error = viewModel.taskGenerationError {
+                    Text(error)
+                        .font(.system(size: Layout.essayTopicMetaSize, weight: .semibold, design: .rounded))
+                        .foregroundColor(AppColors.textSecondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(Layout.essayCardPadding)
+                        .background(Color.white.opacity(0.72))
+                        .clipShape(RoundedRectangle(cornerRadius: Layout.essayCardCornerRadius, style: .continuous))
+                }
             }
         }
+    }
+
+
+    private var customTopicGenerationButton: some View {
+        Button {
+            Task {
+                await viewModel.generateTaskFromCustomTopic()
+            }
+        } label: {
+            HStack(spacing: 8) {
+                if viewModel.isGeneratingTask {
+                    ProgressView()
+                        .tint(.white)
+                } else {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 14, weight: .semibold))
+                }
+
+                Text(viewModel.isGeneratingTask ? "Generating" : "Generate essay task")
+            }
+            .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, Layout.essayButtonVerticalPadding)
+            .background(AppColors.primaryBlue)
+            .clipShape(RoundedRectangle(cornerRadius: Layout.essayButtonCornerRadius, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .disabled(viewModel.isGeneratingTask)
     }
 
     private var topicModePicker: some View {

@@ -47,6 +47,11 @@
 		E30902AA2FBB729300C52238 /* EssayScoreCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A82FBB729300C52238 /* EssayScoreCardView.swift */; };
 		E30902AB2FBB729300C52238 /* CustomEssayTopicInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A62FBB729300C52238 /* CustomEssayTopicInputView.swift */; };
 		E30902AD2FBB754B00C52238 /* EssayHintItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902AC2FBB753C00C52238 /* EssayHintItem.swift */; };
+		E30902B42FBB96CB00C52238 /* EssayGeneratedHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902B32FBB96B800C52238 /* EssayGeneratedHint.swift */; };
+		E30902B62FBB96E400C52238 /* EssayAIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902B52FBB96DD00C52238 /* EssayAIClient.swift */; };
+		E30902B82FBB96FA00C52238 /* EssayGenerationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902B72FBB96F200C52238 /* EssayGenerationService.swift */; };
+		E30902BA2FBB973D00C52238 /* GeminiEssayAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902B92FBB973600C52238 /* GeminiEssayAPIClient.swift */; };
+		E30902BC2FBB975100C52238 /* GeneratedEssayTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902BB2FBB974900C52238 /* GeneratedEssayTask.swift */; };
 		E30A1CAA2F98010F00387BDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CA62F98010F00387BDC /* Assets.xcassets */; };
 		E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CA82F98010F00387BDC /* WordAroundApp.swift */; };
 		E30A1CB32F9801B600387BDC /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CB22F9801AE00387BDC /* .gitignore */; };
@@ -163,6 +168,11 @@
 		E30902A72FBB729300C52238 /* EssayAssistanceModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayAssistanceModalView.swift; sourceTree = "<group>"; };
 		E30902A82FBB729300C52238 /* EssayScoreCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayScoreCardView.swift; sourceTree = "<group>"; };
 		E30902AC2FBB753C00C52238 /* EssayHintItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayHintItem.swift; sourceTree = "<group>"; };
+		E30902B32FBB96B800C52238 /* EssayGeneratedHint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayGeneratedHint.swift; sourceTree = "<group>"; };
+		E30902B52FBB96DD00C52238 /* EssayAIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayAIClient.swift; sourceTree = "<group>"; };
+		E30902B72FBB96F200C52238 /* EssayGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayGenerationService.swift; sourceTree = "<group>"; };
+		E30902B92FBB973600C52238 /* GeminiEssayAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiEssayAPIClient.swift; sourceTree = "<group>"; };
+		E30902BB2FBB974900C52238 /* GeneratedEssayTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedEssayTask.swift; sourceTree = "<group>"; };
 		E30A1C982F98003000387BDC /* WordAround.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordAround.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E30A1CA62F98010F00387BDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E30A1CA82F98010F00387BDC /* WordAroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordAroundApp.swift; sourceTree = "<group>"; };
@@ -389,6 +399,8 @@
 		E30902502FBAC9D800C52238 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				E30902B92FBB973600C52238 /* GeminiEssayAPIClient.swift */,
+				E30902B72FBB96F200C52238 /* EssayGenerationService.swift */,
 				E30902A02FBB6EE100C52238 /* EssayAssistanceService.swift */,
 				E309029E2FBB6EBF00C52238 /* EssayScoringService.swift */,
 				E30902512FBAC9E500C52238 /* GrammarCheckService.swift */,
@@ -721,6 +733,9 @@
 		E30A1D852F9C9D6600387BDC /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E30902B52FBB96DD00C52238 /* EssayAIClient.swift */,
+				E30902BB2FBB974900C52238 /* GeneratedEssayTask.swift */,
+				E30902B32FBB96B800C52238 /* EssayGeneratedHint.swift */,
 				E30902AC2FBB753C00C52238 /* EssayHintItem.swift */,
 				E309029C2FBB6E9600C52238 /* EssayAssistantItem.swift */,
 				E309029A2FBB6E8000C52238 /* EssayTopicMode.swift */,
@@ -887,12 +902,15 @@
 				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,
 				E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */,
 				E30A1DB42F9E0C3D00387BDC /* FolderCardView.swift in Sources */,
+				E30902B42FBB96CB00C52238 /* EssayGeneratedHint.swift in Sources */,
 				E30A1DAE2F9E07F000387BDC /* CreateFolderViewModel.swift in Sources */,
 				E30A1CBC2F98023B00387BDC /* HomeView.swift in Sources */,
 				E30A1CC32F9819B100387BDC /* AuthView.swift in Sources */,
+				E30902BC2FBB975100C52238 /* GeneratedEssayTask.swift in Sources */,
 				E30A1D6B2F9BF7D200387BDC /* CreateSetCardsSectionView.swift in Sources */,
 				E30A1D0F2F9A618800387BDC /* HomeTab.swift in Sources */,
 				E30A1D672F9BF7AB00387BDC /* CreateSetCustomizationSectionView.swift in Sources */,
+				E30902B62FBB96E400C52238 /* EssayAIClient.swift in Sources */,
 				E30A1D652F9BF79F00387BDC /* CreateSetInfoSectionView.swift in Sources */,
 				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
 				E30A1DC82FA25C9D00387BDC /* FlashcardEditView.swift in Sources */,
@@ -951,6 +969,7 @@
 				E309026B2FBAE27600C52238 /* DifficultySelectorView.swift in Sources */,
 				E30A1D9E2F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift in Sources */,
 				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
+				E30902BA2FBB973D00C52238 /* GeminiEssayAPIClient.swift in Sources */,
 				E309025D2FBACA1C00C52238 /* EssayTopicCardView.swift in Sources */,
 				E309025E2FBACA1C00C52238 /* GrammarIssueCardView.swift in Sources */,
 				E30902A92FBB729300C52238 /* EssayAssistanceModalView.swift in Sources */,
@@ -980,6 +999,7 @@
 				E30A1DB82FA14BAA00387BDC /* FoldersListView.swift in Sources */,
 				E30A1D552F9BBD3D00387BDC /* HomeViewModel.swift in Sources */,
 				E30A1D752F9C0EF800387BDC /* FlashcardSetService.swift in Sources */,
+				E30902B82FBB96FA00C52238 /* EssayGenerationService.swift in Sources */,
 				E30A1DA42F9E076500387BDC /* Folders.swift in Sources */,
 				E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */,
 				E30A1D4F2F9BB9D000387BDC /* AppColors.swift in Sources */,
