@@ -43,6 +43,19 @@ enum WriteWordsValidationState: Equatable {
     case incorrect
 }
 
+// MARK: - Lose State
+
+enum WriteWordsNavigationState: Equatable {
+    case active
+    case lose
+}
+
+struct WriteWordsLoseStats: Equatable {
+    let completedWords: Int
+    let streak: Int
+    let difficulty: String
+}
+
 // MARK: - ViewModel
 
 @MainActor
@@ -58,6 +71,8 @@ final class WriteWordsViewModel: ObservableObject {
     @Published var hintRevealedCount: Int = 0
     @Published var isSettingsPresented: Bool = false
     @Published var isDifficultyMenuPresented: Bool = false
+    @Published private(set) var navigationState: WriteWordsNavigationState = .active
+    @Published private(set) var streak: Int = 0
 
     // Timer (Hard mode)
     @Published private(set) var secondsRemaining: Int = 0
@@ -156,6 +171,19 @@ final class WriteWordsViewModel: ObservableObject {
 
     var isCorrect: Bool { validationState == .correct }
     var isIncorrect: Bool { validationState == .incorrect }
+    var isInteractionLocked: Bool { navigationState == .lose || isTimerExpired }
+
+    var loseStats: WriteWordsLoseStats {
+        WriteWordsLoseStats(
+            completedWords: completedWordsCount,
+            streak: streak,
+            difficulty: difficulty.rawValue
+        )
+    }
+
+    private var completedWordsCount: Int {
+        min(currentIndex, totalCount)
+    }
 
     // MARK: - Computed: hint
 
@@ -212,6 +240,8 @@ final class WriteWordsViewModel: ObservableObject {
     // MARK: - Intent: validate on keystroke
 
     func validateAnswer() {
+        guard !isInteractionLocked else { return }
+
         if validationState == .incorrect {
             validationState = .idle
         }
@@ -221,11 +251,14 @@ final class WriteWordsViewModel: ObservableObject {
 
     @discardableResult
     func attemptNext() -> Bool {
+        guard !isInteractionLocked else { return false }
+
         delayedAdvanceTask?.cancel()
         stopTimer()
 
         if normalize(typedAnswer) == normalize(correctAnswer) {
             validationState = .correct
+            streak += 1
             scheduleAdvance(after: TimerConstants.correctAdvanceDelay)
             return true
         } else {
@@ -240,7 +273,7 @@ final class WriteWordsViewModel: ObservableObject {
     // MARK: - Intent: Skip
 
     func skip() {
-        guard canSkip else { return }
+        guard !isInteractionLocked, canSkip else { return }
         if difficulty == .medium { skippedCount += 1 }
         delayedAdvanceTask?.cancel()
         stopTimer()
@@ -250,7 +283,7 @@ final class WriteWordsViewModel: ObservableObject {
     // MARK: - Intent: Hint
 
     func revealNextHint() {
-        guard isHintAvailable else { return }
+        guard !isInteractionLocked, isHintAvailable else { return }
         hintRevealedCount += 1
     }
 
@@ -284,7 +317,7 @@ final class WriteWordsViewModel: ObservableObject {
     }
 
     private func startTimer() {
-        guard difficulty == .hard else { return }
+        guard difficulty == .hard, !isInteractionLocked else { return }
 
         stopTimer()
         resetTimerDisplay()
@@ -330,12 +363,25 @@ final class WriteWordsViewModel: ObservableObject {
     }
 
     private func handleTimerExpired() {
+        guard navigationState == .active else { return }
+
+        delayedAdvanceTask?.cancel()
         stopTimer()
         isTimerExpired = true
         timerProgress = 0
         secondsRemaining = 0
         validationState = .incorrect
-        scheduleAdvance(after: TimerConstants.failedAdvanceDelay)
+        navigationState = .lose
+    }
+
+    func retryAfterLose() {
+        resetFullSession()
+    }
+
+    func closeLoseScreen() {
+        stopTimer()
+        delayedAdvanceTask?.cancel()
+        navigationState = .lose
     }
 
     private func timerDuration(for answer: String) -> TimeInterval {
@@ -401,6 +447,8 @@ final class WriteWordsViewModel: ObservableObject {
         delayedAdvanceTask?.cancel()
         currentIndex = 0
         skippedCount = 0
+        streak = 0
+        navigationState = .active
         resetAnswerState()
         startTimerIfNeeded()
     }

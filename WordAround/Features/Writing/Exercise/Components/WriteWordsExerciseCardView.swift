@@ -44,7 +44,8 @@ struct WriteWordsExerciseCardView: View {
             WriteWordsAnswerInputView(
                 text: $viewModel.typedAnswer,
                 isCorrect: viewModel.isCorrect,
-                hintOverlay: viewModel.hintOverlayText
+                hintOverlay: viewModel.hintOverlayText,
+                isDisabled: viewModel.isInteractionLocked
             )
             .onChange(of: viewModel.typedAnswer) { _ in
                 viewModel.validateAnswer()
@@ -74,6 +75,8 @@ struct WriteWordsExerciseCardView: View {
                     .clipShape(RoundedRectangle(cornerRadius: LayoutConstants.WriteWords.primaryButtonCornerRadius(metrics), style: .continuous))
             }
             .buttonStyle(.plain)
+            .disabled(viewModel.isInteractionLocked)
+            .opacity(viewModel.isInteractionLocked ? 0.58 : 1)
 
             // MARK: Secondary buttons
             HStack(spacing: LayoutConstants.WriteWords.secondaryButtonSpacing(metrics)) {
@@ -153,6 +156,8 @@ struct WriteWordsExerciseCardView: View {
             )
         }
         .buttonStyle(.plain)
+        .disabled(viewModel.isInteractionLocked)
+        .opacity(viewModel.isInteractionLocked ? 0.58 : 1)
     }
 }
 

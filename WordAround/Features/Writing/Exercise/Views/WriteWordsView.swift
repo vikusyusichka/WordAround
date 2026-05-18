@@ -64,7 +64,26 @@ struct WriteWordsView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .contentShape(Rectangle())
+                .allowsHitTesting(viewModel.navigationState == .active)
                 .onTapGesture { hideKeyboard() }
+
+                if viewModel.navigationState == .lose {
+                    WriteWordsLoseScreenView(
+                        stats: viewModel.loseStats,
+                        onTryAgain: {
+                            hideKeyboard()
+                            withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
+                                viewModel.retryAfterLose()
+                            }
+                        },
+                        onBack: {
+                            hideKeyboard()
+                            viewModel.closeLoseScreen()
+                            dismiss()
+                        }
+                    )
+                    .zIndex(10)
+                }
             }
         }
         .onAppear {
@@ -73,6 +92,12 @@ struct WriteWordsView: View {
         .onDisappear {
             viewModel.stopTimerIfNeeded()
         }
+        .onChange(of: viewModel.navigationState) { state in
+            if state == .lose {
+                hideKeyboard()
+            }
+        }
+        .animation(.spring(response: 0.38, dampingFraction: 0.86), value: viewModel.navigationState)
         .sheet(isPresented: $viewModel.isSettingsPresented) {
             WriteWordsSettingsSheet(viewModel: viewModel)
         }

@@ -7,6 +7,7 @@ struct WriteWordsAnswerInputView: View {
     @Binding var text: String
     let isCorrect: Bool
     var hintOverlay: String? = nil
+    var isDisabled: Bool = false
 
     @FocusState private var isFocused: Bool
 
@@ -42,13 +43,23 @@ struct WriteWordsAnswerInputView: View {
                 .font(.system(size: LayoutConstants.WriteWords.answerInputFontSize(metrics), weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
                 .padding(.horizontal, LayoutConstants.WriteWords.answerInputHorizontalPadding(metrics))
+                .disabled(isDisabled)
         }
         .frame(height: LayoutConstants.WriteWords.answerInputHeight(metrics))
         .frame(maxWidth: LayoutConstants.WriteWords.answerInputMaxWidth(metrics))
         .shadow(color: Color.black.opacity(0.035), radius: LayoutConstants.Common.smallSpacing(metrics), x: 0, y: LayoutConstants.Common.hairline * 3)
         .onAppear {
+            guard !isDisabled else { return }
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                isFocused = true
+                if !isDisabled {
+                    isFocused = true
+                }
+            }
+        }
+        .onChange(of: isDisabled) { disabled in
+            if disabled {
+                isFocused = false
             }
         }
         .onSubmit {
@@ -67,6 +78,7 @@ struct WriteWordsAnswerInputView: View {
     VStack(spacing: 20) {
         WriteWordsAnswerInputView(text: .constant(""), isCorrect: false, hintOverlay: "ябл")
         WriteWordsAnswerInputView(text: .constant("яблуко"), isCorrect: true)
+        WriteWordsAnswerInputView(text: .constant(""), isCorrect: false, isDisabled: true)
     }
     .padding()
     .background(AppColors.appBackground)

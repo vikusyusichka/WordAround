@@ -666,3 +666,40 @@ struct AdaptiveContentContainer<Content: View>: View {
         }
     }
 }
+
+// MARK: - Write Words Lose Screen
+
+extension Layout {
+    static let writeWordsLoseHorizontalPadding: CGFloat = isPadLike ? screenHorizontalPaddingPad : screenHorizontalPaddingPhone
+    static let writeWordsLoseSectionSpacing: CGFloat = isPadLike ? sectionSpacingPad : sectionSpacingPhone
+    static let writeWordsLoseLargeSpacing: CGFloat = isPadLike ? 40 : 32
+
+    static let writeWordsLoseCardHorizontalPadding: CGFloat = isPadLike ? 24 : 18
+    static let writeWordsLoseCardVerticalPadding: CGFloat = isPadLike ? sectionSpacingPad : sectionSpacingPhone
+    static let writeWordsLoseCardMaxWidth: CGFloat = isPadLike ? contentMaxWidthPad : .infinity
+    static let writeWordsLoseCardCornerRadius: CGFloat = cardCornerRadius
+    static let writeWordsLoseCardShadowRadius: CGFloat = cardCornerRadius + 2
+    static let writeWordsLoseCardShadowY: CGFloat = topPaddingPhone + 2
+
+    static let writeWordsLoseIconSize: CGFloat = isPadLike ? 82 : 68
+    static let writeWordsLoseIconSymbolSize: CGFloat = isPadLike ? 34 : 28
+
+    static let writeWordsLoseTitleSize: CGFloat = isPadLike ? 34 : 28
+    static let writeWordsLoseSubtitleSize: CGFloat = isPadLike ? 16 : 14
+    static let writeWordsLoseBodyTextSize: CGFloat = isPadLike ? 16 : 14
+    static let writeWordsLoseCaptionSize: CGFloat = isPadLike ? 15 : 13
+
+    static let writeWordsLoseStatsPadding: CGFloat = isPadLike ? sectionSpacingPad : sectionSpacingPhone
+    static let writeWordsLoseStatsSpacing: CGFloat = 8
+    static let writeWordsLoseStatsCornerRadius: CGFloat = isPadLike ? 20 : 18
+
+    static let writeWordsLoseActionsSpacing: CGFloat = 10
+    static let writeWordsLosePrimaryButtonHeight: CGFloat = isPadLike ? 54 : 50
+    static let writeWordsLoseSecondaryButtonHeight: CGFloat = isPadLike ? 52 : 48
+    static let writeWordsLoseButtonCornerRadius: CGFloat = isPadLike ? 18 : 16
+
+    static let writeWordsLoseHeaderSpacing: CGFloat = 8
+    static let writeWordsLoseDividerHeight: CGFloat = 1
+
+    static let writeWordsLoseBlobSize: CGFloat = isPadLike ? 360 : 260
+}
