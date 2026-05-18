@@ -206,15 +206,9 @@
 		E309021F2FBA3E5B00C52238 /* Writing */ = {
 			isa = PBXGroup;
 			children = (
+				E30902472FBAB34D00C52238 /* SetSelection */,
+				E30902442FBAB26100C52238 /* Main */,
 				E309023E2FBAA56900C52238 /* Exercise */,
-				E30902222FBA3EC600C52238 /* WriteWordsProgressView.swift */,
-				E30902252FBA3EC600C52238 /* WritingGoalCardView.swift */,
-				E30902262FBA3EC600C52238 /* WritingMenuCardView.swift */,
-				E30902282FBA3EC600C52238 /* WritingSetCardView.swift */,
-				E30902292FBA3EC600C52238 /* WritingSetSelectionView.swift */,
-				E309022A2FBA3EC600C52238 /* WritingSetSelectionViewModel.swift */,
-				E309022B2FBA3EC600C52238 /* WritingView.swift */,
-				E309022C2FBA3EC600C52238 /* WritingViewModel.swift */,
 			);
 			path = Writing;
 			sourceTree = "<group>";
@@ -222,14 +216,9 @@
 		E309023E2FBAA56900C52238 /* Exercise */ = {
 			isa = PBXGroup;
 			children = (
-				E30902402FBAB03600C52238 /* WriteWordsCountdownTimerView.swift */,
+				E30902432FBAB21D00C52238 /* ViewModels */,
+				E30902422FBAB21500C52238 /* Views */,
 				E309023F2FBAB02B00C52238 /* Components */,
-				E30902202FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift */,
-				E309023C2FBAA0F800C52238 /* WriteWordsSettingsSheet.swift */,
-				E309023A2FBA8B8700C52238 /* WriteWordsAnswerInputView.swift */,
-				E30902212FBA3EC600C52238 /* WriteWordsExerciseCardView.swift */,
-				E30902232FBA3EC600C52238 /* WriteWordsView.swift */,
-				E30902242FBA3EC600C52238 /* WriteWordsViewModel.swift */,
 			);
 			path = Exercise;
 			sourceTree = "<group>";
@@ -237,8 +226,83 @@
 		E309023F2FBAB02B00C52238 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				E30902202FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift */,
+				E309023C2FBAA0F800C52238 /* WriteWordsSettingsSheet.swift */,
+				E309023A2FBA8B8700C52238 /* WriteWordsAnswerInputView.swift */,
+				E30902212FBA3EC600C52238 /* WriteWordsExerciseCardView.swift */,
+				E30902402FBAB03600C52238 /* WriteWordsCountdownTimerView.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		E30902422FBAB21500C52238 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30902232FBA3EC600C52238 /* WriteWordsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30902432FBAB21D00C52238 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E30902242FBA3EC600C52238 /* WriteWordsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E30902442FBAB26100C52238 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				E30902462FBAB28A00C52238 /* ViewModels */,
+				E30902452FBAB28300C52238 /* Views */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		E30902452FBAB28300C52238 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E309022B2FBA3EC600C52238 /* WritingView.swift */,
+				E30902252FBA3EC600C52238 /* WritingGoalCardView.swift */,
+				E30902262FBA3EC600C52238 /* WritingMenuCardView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30902462FBAB28A00C52238 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E309022C2FBA3EC600C52238 /* WritingViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E30902472FBAB34D00C52238 /* SetSelection */ = {
+			isa = PBXGroup;
+			children = (
+				E30902492FBAB36700C52238 /* ViewModels */,
+				E30902482FBAB35F00C52238 /* Views */,
+			);
+			path = SetSelection;
+			sourceTree = "<group>";
+		};
+		E30902482FBAB35F00C52238 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30902222FBA3EC600C52238 /* WriteWordsProgressView.swift */,
+				E30902282FBA3EC600C52238 /* WritingSetCardView.swift */,
+				E30902292FBA3EC600C52238 /* WritingSetSelectionView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30902492FBAB36700C52238 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E309022A2FBA3EC600C52238 /* WritingSetSelectionViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		E30A1C8F2F98003000387BDC = {
