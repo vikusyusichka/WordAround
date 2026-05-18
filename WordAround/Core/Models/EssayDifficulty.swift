@@ -1,0 +1,83 @@
+import Foundation
+
+enum EssayDifficulty: String, CaseIterable, Identifiable, Equatable {
+    case a1 = "A1"
+    case a2 = "A2"
+    case b1 = "B1"
+    case b2 = "B2"
+    case c1 = "C1"
+    case native = "Native"
+
+    var id: String { rawValue }
+
+    var title: String {
+        rawValue
+    }
+
+    var hintsLimit: Int {
+        switch self {
+        case .a1:
+            return 15
+        case .a2:
+            return 10
+        case .b1:
+            return 7
+        case .b2:
+            return 4
+        case .c1:
+            return 2
+        case .native:
+            return 0
+        }
+    }
+
+    var allowsTranslation: Bool {
+        switch self {
+        case .a1, .a2, .b1:
+            return true
+        case .b2, .c1, .native:
+            return false
+        }
+    }
+
+    var translationWordLimit: Int {
+        switch self {
+        case .a1, .a2:
+            return 5
+        case .b1:
+            return 3
+        case .b2, .c1, .native:
+            return 0
+        }
+    }
+
+    var helperIntensityTitle: String {
+        switch self {
+        case .a1, .a2:
+            return "Guided"
+        case .b1:
+            return "Balanced"
+        case .b2, .c1:
+            return "Limited"
+        case .native:
+            return "Independent"
+        }
+    }
+
+    var scoringPenaltyMultiplier: Double {
+        switch self {
+        case .a1:
+            return 0.6
+        case .a2:
+            return 0.75
+        case .b1:
+            return 1.0
+        case .b2:
+            return 1.15
+        case .c1:
+            return 1.3
+        case .native:
+            return 1.45
+        }
+    }
+}

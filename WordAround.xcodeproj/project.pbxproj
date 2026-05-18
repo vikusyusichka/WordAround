@@ -32,6 +32,11 @@
 		E309025E2FBACA1C00C52238 /* GrammarIssueCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309025C2FBACA1C00C52238 /* GrammarIssueCardView.swift */; };
 		E309025F2FBACA1C00C52238 /* EssayFeedbackSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902592FBACA1C00C52238 /* EssayFeedbackSectionView.swift */; };
 		E30902602FBACA1C00C52238 /* EssayPracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309025A2FBACA1C00C52238 /* EssayPracticeView.swift */; };
+		E30902622FBAE1A000C52238 /* EssayDifficulty.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902612FBAE18900C52238 /* EssayDifficulty.swift */; };
+		E30902642FBAE1B200C52238 /* GrammarLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902632FBAE1AB00C52238 /* GrammarLanguage.swift */; };
+		E30902662FBAE1C300C52238 /* EssayScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902652FBAE1BE00C52238 /* EssayScore.swift */; };
+		E30902692FBAE26400C52238 /* LanguageSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902682FBAE25900C52238 /* LanguageSelectorView.swift */; };
+		E309026B2FBAE27600C52238 /* DifficultySelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309026A2FBAE27400C52238 /* DifficultySelectorView.swift */; };
 		E30A1CAA2F98010F00387BDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CA62F98010F00387BDC /* Assets.xcassets */; };
 		E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CA82F98010F00387BDC /* WordAroundApp.swift */; };
 		E30A1CB32F9801B600387BDC /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CB22F9801AE00387BDC /* .gitignore */; };
@@ -133,6 +138,11 @@
 		E309025A2FBACA1C00C52238 /* EssayPracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayPracticeView.swift; sourceTree = "<group>"; };
 		E309025B2FBACA1C00C52238 /* EssayTopicCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayTopicCardView.swift; sourceTree = "<group>"; };
 		E309025C2FBACA1C00C52238 /* GrammarIssueCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarIssueCardView.swift; sourceTree = "<group>"; };
+		E30902612FBAE18900C52238 /* EssayDifficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayDifficulty.swift; sourceTree = "<group>"; };
+		E30902632FBAE1AB00C52238 /* GrammarLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarLanguage.swift; sourceTree = "<group>"; };
+		E30902652FBAE1BE00C52238 /* EssayScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayScore.swift; sourceTree = "<group>"; };
+		E30902682FBAE25900C52238 /* LanguageSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectorView.swift; sourceTree = "<group>"; };
+		E309026A2FBAE27400C52238 /* DifficultySelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DifficultySelectorView.swift; sourceTree = "<group>"; };
 		E30A1C982F98003000387BDC /* WordAround.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordAround.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E30A1CA62F98010F00387BDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E30A1CA82F98010F00387BDC /* WordAroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordAroundApp.swift; sourceTree = "<group>"; };
@@ -338,6 +348,7 @@
 		E309024E2FBAC9BE00C52238 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E30902672FBAE24E00C52238 /* Selectors */,
 				E30902592FBACA1C00C52238 /* EssayFeedbackSectionView.swift */,
 				E309025A2FBACA1C00C52238 /* EssayPracticeView.swift */,
 				E309025B2FBACA1C00C52238 /* EssayTopicCardView.swift */,
@@ -360,6 +371,15 @@
 				E30902512FBAC9E500C52238 /* GrammarCheckService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		E30902672FBAE24E00C52238 /* Selectors */ = {
+			isa = PBXGroup;
+			children = (
+				E309026A2FBAE27400C52238 /* DifficultySelectorView.swift */,
+				E30902682FBAE25900C52238 /* LanguageSelectorView.swift */,
+			);
+			path = Selectors;
 			sourceTree = "<group>";
 		};
 		E30A1C8F2F98003000387BDC = {
@@ -634,6 +654,9 @@
 		E30A1D852F9C9D6600387BDC /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E30902652FBAE1BE00C52238 /* EssayScore.swift */,
+				E30902632FBAE1AB00C52238 /* GrammarLanguage.swift */,
+				E30902612FBAE18900C52238 /* EssayDifficulty.swift */,
 				E30A1DA32F9E076200387BDC /* Folders.swift */,
 				E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */,
 				E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */,
@@ -837,16 +860,21 @@
 				E30A1DCF2FA2B4C800387BDC /* FlashcardSetAddCardView.swift in Sources */,
 				E30902552FBAC9F500C52238 /* EssayTopic.swift in Sources */,
 				E30902562FBAC9F500C52238 /* GrammarIssue.swift in Sources */,
+				E30902622FBAE1A000C52238 /* EssayDifficulty.swift in Sources */,
 				E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */,
 				E30A1D972F9CE42500387BDC /* FlashcardSetDetailAddButton.swift in Sources */,
 				E309023B2FBA8BA700C52238 /* WriteWordsAnswerInputView.swift in Sources */,
 				E309023D2FBAA11B00C52238 /* WriteWordsSettingsSheet.swift in Sources */,
 				E30A1D982F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift in Sources */,
+				E30902692FBAE26400C52238 /* LanguageSelectorView.swift in Sources */,
 				E30A1D992F9CE42500387BDC /* FlashcardSetDetailControlsView.swift in Sources */,
 				E30A1D9A2F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift in Sources */,
+				E30902662FBAE1C300C52238 /* EssayScore.swift in Sources */,
 				E30A1D9B2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift in Sources */,
 				E30A1D9C2F9CE42500387BDC /* FlashcardSetDetailFilterTabsView.swift in Sources */,
 				E30A1D9D2F9CE42500387BDC /* FlashcardSetDetailMainCardView.swift in Sources */,
+				E30902642FBAE1B200C52238 /* GrammarLanguage.swift in Sources */,
+				E309026B2FBAE27600C52238 /* DifficultySelectorView.swift in Sources */,
 				E30A1D9E2F9CE42500387BDC /* FlashcardSetDetailTopBarView.swift in Sources */,
 				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
 				E309025D2FBACA1C00C52238 /* EssayTopicCardView.swift in Sources */,

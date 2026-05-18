@@ -10,6 +10,7 @@ enum GrammarCheckServiceError: LocalizedError {
     case serverError(Int)
     case decodingFailed
     case emptyText
+    case textTooLong(Int)
 
     var errorDescription: String? {
         switch self {
@@ -23,6 +24,8 @@ enum GrammarCheckServiceError: LocalizedError {
             return "Could not read grammar feedback."
         case .emptyText:
             return "Write something before checking grammar."
+        case .textTooLong(let limit):
+            return "Try to keep your essay under \(limit) characters."
         }
     }
 }
@@ -30,15 +33,28 @@ enum GrammarCheckServiceError: LocalizedError {
 final class GrammarCheckService: GrammarChecking {
     private let endpoint = "https://api.languagetool.org/v2/check"
     private let session: URLSession
+    private let maxCharacterLimit: Int
+    private let timeoutInterval: TimeInterval
 
-    init(session: URLSession = .shared) {
+    init(
+        session: URLSession = .shared,
+        maxCharacterLimit: Int = 6_000,
+        timeoutInterval: TimeInterval = 20
+    ) {
         self.session = session
+        self.maxCharacterLimit = maxCharacterLimit
+        self.timeoutInterval = timeoutInterval
     }
 
-    func check(text: String, language: String = "en-US") async throws -> [GrammarIssue] {
+    func check(text: String, language: String = GrammarLanguage.english.languageToolCode) async throws -> [GrammarIssue] {
         let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
         guard !trimmedText.isEmpty else {
             throw GrammarCheckServiceError.emptyText
+        }
+
+        guard trimmedText.count <= maxCharacterLimit else {
+            throw GrammarCheckServiceError.textTooLong(maxCharacterLimit)
         }
 
         guard let url = URL(string: endpoint) else {
@@ -47,6 +63,7 @@ final class GrammarCheckService: GrammarChecking {
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        request.timeoutInterval = timeoutInterval
         request.setValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpBody = makeRequestBody(text: trimmedText, language: language)
 
@@ -62,6 +79,7 @@ final class GrammarCheckService: GrammarChecking {
 
         do {
             let decoded = try JSONDecoder().decode(LanguageToolResponse.self, from: data)
+
             return decoded.matches.compactMap { match in
                 guard let incorrectFragment = trimmedText.safeSubstring(offset: match.offset, length: match.length) else {
                     return nil
@@ -72,7 +90,8 @@ final class GrammarCheckService: GrammarChecking {
                     incorrectText: incorrectFragment,
                     suggestedCorrection: match.replacements.first?.value,
                     offset: match.offset,
-                    length: match.length
+                    length: match.length,
+                    category: GrammarIssueCategory(languageToolCategory: match.rule.category.id)
                 )
             }
         } catch {
@@ -100,10 +119,37 @@ private struct LanguageToolMatch: Decodable {
     let offset: Int
     let length: Int
     let replacements: [LanguageToolReplacement]
+    let rule: LanguageToolRule
 }
 
 private struct LanguageToolReplacement: Decodable {
     let value: String
+}
+
+private struct LanguageToolRule: Decodable {
+    let category: LanguageToolCategory
+}
+
+private struct LanguageToolCategory: Decodable {
+    let id: String
+}
+
+private extension GrammarIssueCategory {
+    init(languageToolCategory: String) {
+        let normalized = languageToolCategory.lowercased()
+
+        if normalized.contains("typography") ||
+            normalized.contains("style") ||
+            normalized.contains("misc") {
+            self = .style
+        } else if normalized.contains("vocabulary") ||
+                    normalized.contains("confused_words") ||
+                    normalized.contains("wordiness") {
+            self = .vocabulary
+        } else {
+            self = .grammar
+        }
+    }
 }
 
 private extension String {
@@ -111,6 +157,7 @@ private extension String {
         guard offset >= 0, length >= 0 else { return nil }
 
         let utf16View = self.utf16
+
         guard
             let from = utf16View.index(utf16View.startIndex, offsetBy: offset, limitedBy: utf16View.endIndex),
             let to = utf16View.index(from, offsetBy: length, limitedBy: utf16View.endIndex),
