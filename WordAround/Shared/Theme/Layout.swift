@@ -740,4 +740,62 @@ extension Layout {
     static let essayButtonTextSize: CGFloat = isPadLike ? 15 : 14
     static let essayButtonVerticalPadding: CGFloat = isPadLike ? 14 : 13
     static let essayButtonCornerRadius: CGFloat = 16
+
+    // MARK: - Essay Setup Section
+
+    static let essaySetupSpacing: CGFloat = isPadLike ? 12 : 10
+    static let essaySetupHeaderSpacing: CGFloat = 8
+    static let essaySetupIconSize: CGFloat = isPadLike ? 15 : 13
+    static let essaySetupTitleSize: CGFloat = isPadLike ? 16 : 15
+    static let essayHintsBadgeTextSize: CGFloat = isPadLike ? 12 : 11
+    static let essayHintsBadgeHorizontalPadding: CGFloat = 10
+    static let essayHintsBadgeVerticalPadding: CGFloat = 6
+    static let essaySetupSelectorColumnsSpacing: CGFloat = 12
+    static let essaySetupSelectorStackSpacing: CGFloat = 10
+    static let essayPrivacyNoticeTextSize: CGFloat = isPadLike ? 12 : 11
+    static let essayPrivacyNoticeLineSpacing: CGFloat = 3
+    static let essayPrivacyNoticeTopPadding: CGFloat = 2
+    static let essaySetupCardOpacity: CGFloat = 0.58
+    static let essaySetupShadowOpacity: CGFloat = 0.035
+    static let essaySetupShadowRadius: CGFloat = 14
+    static let essaySetupShadowYOffset: CGFloat = 8
+
+    // MARK: - Essay Selectors
+
+    static let essaySelectorOuterSpacing: CGFloat = 8
+    static let essaySelectorButtonContentSpacing: CGFloat = 9
+    static let essaySelectorIconSize: CGFloat = isPadLike ? 15 : 13
+    static let essaySelectorLabelSpacing: CGFloat = 2
+    static let essaySelectorLabelSize: CGFloat = isPadLike ? 11 : 10
+    static let essaySelectorTitleSize: CGFloat = isPadLike ? 14 : 13
+    static let essaySelectorBadgeTextSize: CGFloat = isPadLike ? 12 : 11
+    static let essaySelectorBadgeHorizontalPadding: CGFloat = 8
+    static let essaySelectorBadgeVerticalPadding: CGFloat = 5
+    static let essaySelectorChevronSize: CGFloat = 11
+    static let essaySelectorHorizontalPadding: CGFloat = isPadLike ? 16 : 14
+    static let essaySelectorVerticalPadding: CGFloat = isPadLike ? 13 : 12
+    static let essaySelectorCornerRadius: CGFloat = 18
+    static let essaySelectorBorderWidth: CGFloat = 1
+    static let essaySelectorShadowOpacity: CGFloat = 0.035
+    static let essaySelectorShadowRadius: CGFloat = 12
+    static let essaySelectorShadowYOffset: CGFloat = 7
+    static let essaySelectorAnimationDuration: Double = 0.22
+
+    static let essaySelectorOptionsSpacing: CGFloat = 6
+    static let essaySelectorOptionsPadding: CGFloat = 8
+    static let essaySelectorOptionContentSpacing: CGFloat = 10
+    static let essaySelectorOptionHorizontalPadding: CGFloat = 12
+    static let essaySelectorOptionVerticalPadding: CGFloat = 10
+    static let essaySelectorOptionCornerRadius: CGFloat = 14
+    static let essaySelectorOptionCodeWidth: CGFloat = 34
+    static let essaySelectorOptionLevelWidth: CGFloat = 46
+    static let essaySelectorOptionBadgeHeight: CGFloat = 26
+    static let essaySelectorOptionBadgeTextSize: CGFloat = 11
+    static let essaySelectorOptionTitleSize: CGFloat = isPadLike ? 14 : 13
+    static let essaySelectorOptionSubtitleSize: CGFloat = isPadLike ? 12 : 11
+    static let essaySelectorCheckmarkSize: CGFloat = 15
+    static let essaySelectorOptionsShadowOpacity: CGFloat = 0.05
+    static let essaySelectorOptionsShadowRadius: CGFloat = 14
+    static let essaySelectorOptionsShadowYOffset: CGFloat = 8
+
 }

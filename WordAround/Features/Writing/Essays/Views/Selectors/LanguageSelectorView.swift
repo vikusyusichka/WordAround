@@ -6,12 +6,8 @@ struct LanguageSelectorView: View {
 
     @State private var isExpanded = false
 
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Layout.essaySelectorOuterSpacing) {
             selectorButton
 
             if isExpanded {
@@ -19,27 +15,27 @@ struct LanguageSelectorView: View {
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .animation(.easeInOut(duration: 0.22), value: isExpanded)
+        .animation(.easeInOut(duration: Layout.essaySelectorAnimationDuration), value: isExpanded)
     }
 
     private var selectorButton: some View {
         Button {
-            withAnimation(.easeInOut(duration: 0.22)) {
+            withAnimation(.easeInOut(duration: Layout.essaySelectorAnimationDuration)) {
                 isExpanded.toggle()
             }
         } label: {
-            HStack(spacing: 9) {
+            HStack(spacing: Layout.essaySelectorButtonContentSpacing) {
                 Image(systemName: "globe.europe.africa.fill")
-                    .font(.system(size: isPadLike ? 15 : 13, weight: .semibold))
+                    .font(.system(size: Layout.essaySelectorIconSize, weight: .semibold))
                     .foregroundColor(AppColors.primaryBlue)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: Layout.essaySelectorLabelSpacing) {
                     Text("Language")
-                        .font(.system(size: isPadLike ? 11 : 10, weight: .bold, design: .rounded))
+                        .font(.system(size: Layout.essaySelectorLabelSize, weight: .bold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
 
                     Text(selectedLanguage.title)
-                        .font(.system(size: isPadLike ? 14 : 13, weight: .bold, design: .rounded))
+                        .font(.system(size: Layout.essaySelectorTitleSize, weight: .bold, design: .rounded))
                         .foregroundColor(AppColors.primaryBlueDark)
                         .lineLimit(1)
                 }
@@ -47,34 +43,39 @@ struct LanguageSelectorView: View {
                 Spacer(minLength: 6)
 
                 Text(selectedLanguage.shortTitle)
-                    .font(.system(size: isPadLike ? 12 : 11, weight: .bold, design: .rounded))
+                    .font(.system(size: Layout.essaySelectorBadgeTextSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlue)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 5)
+                    .padding(.horizontal, Layout.essaySelectorBadgeHorizontalPadding)
+                    .padding(.vertical, Layout.essaySelectorBadgeVerticalPadding)
                     .background(AppColors.primaryBlue.opacity(0.08))
                     .clipShape(Capsule())
 
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 11, weight: .bold))
+                    .font(.system(size: Layout.essaySelectorChevronSize, weight: .bold))
                     .foregroundColor(AppColors.textSecondary)
                     .rotationEffect(.degrees(isExpanded ? 180 : 0))
             }
-            .padding(.horizontal, isPadLike ? 16 : 14)
-            .padding(.vertical, isPadLike ? 13 : 12)
+            .contentShape(Rectangle())
+            .padding(.horizontal, Layout.essaySelectorHorizontalPadding)
+            .padding(.vertical, Layout.essaySelectorVerticalPadding)
             .background(Color.white.opacity(0.86))
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: Layout.essaySelectorCornerRadius, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(AppColors.primaryBlue.opacity(isExpanded ? 0.18 : 0.08), lineWidth: 1)
+                RoundedRectangle(cornerRadius: Layout.essaySelectorCornerRadius, style: .continuous)
+                    .stroke(AppColors.primaryBlue.opacity(isExpanded ? 0.18 : 0.08), lineWidth: Layout.essaySelectorBorderWidth)
             )
-            .shadow(color: Color.black.opacity(0.035), radius: 12, x: 0, y: 7)
-            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .shadow(
+                color: Color.black.opacity(Layout.essaySelectorShadowOpacity),
+                radius: Layout.essaySelectorShadowRadius,
+                x: 0,
+                y: Layout.essaySelectorShadowYOffset
+            )
         }
         .buttonStyle(.plain)
     }
 
     private var optionsList: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: Layout.essaySelectorOptionsSpacing) {
             ForEach(GrammarLanguage.allCases) { language in
                 Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
@@ -82,52 +83,47 @@ struct LanguageSelectorView: View {
                         isExpanded = false
                     }
                 } label: {
-                    HStack(spacing: 10) {
+                    HStack(spacing: Layout.essaySelectorOptionContentSpacing) {
                         Text(language.shortTitle)
-                            .font(.system(size: 11, weight: .bold, design: .rounded))
-                            .foregroundColor(
-                                selectedLanguage == language
-                                ? .white
-                                : AppColors.primaryBlue
+                            .font(.system(size: Layout.essaySelectorOptionBadgeTextSize, weight: .bold, design: .rounded))
+                            .foregroundColor(selectedLanguage == language ? .white : AppColors.primaryBlue)
+                            .frame(
+                                width: Layout.essaySelectorOptionCodeWidth,
+                                height: Layout.essaySelectorOptionBadgeHeight
                             )
-                            .frame(width: 34, height: 26)
-                            .background(
-                                selectedLanguage == language
-                                ? AppColors.primaryBlue
-                                : AppColors.primaryBlue.opacity(0.08)
-                            )
+                            .background(selectedLanguage == language ? AppColors.primaryBlue : AppColors.primaryBlue.opacity(0.08))
                             .clipShape(Capsule())
 
                         Text(language.title)
-                            .font(.system(size: isPadLike ? 14 : 13, weight: .semibold, design: .rounded))
+                            .font(.system(size: Layout.essaySelectorOptionTitleSize, weight: .semibold, design: .rounded))
                             .foregroundColor(AppColors.primaryBlueDark)
 
                         Spacer(minLength: 0)
 
                         if selectedLanguage == language {
                             Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 15, weight: .semibold))
+                                .font(.system(size: Layout.essaySelectorCheckmarkSize, weight: .semibold))
                                 .foregroundColor(AppColors.primaryBlue)
                         }
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .background(
-                        selectedLanguage == language
-                        ? AppColors.primaryBlue.opacity(0.07)
-                        : Color.clear
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .contentShape(Rectangle())
+                    .padding(.horizontal, Layout.essaySelectorOptionHorizontalPadding)
+                    .padding(.vertical, Layout.essaySelectorOptionVerticalPadding)
+                    .background(selectedLanguage == language ? AppColors.primaryBlue.opacity(0.07) : Color.clear)
+                    .clipShape(RoundedRectangle(cornerRadius: Layout.essaySelectorOptionCornerRadius, style: .continuous))
                 }
                 .buttonStyle(.plain)
             }
         }
-        .padding(8)
+        .padding(Layout.essaySelectorOptionsPadding)
         .background(Color.white.opacity(0.96))
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .shadow(color: Color.black.opacity(0.05), radius: 14, x: 0, y: 8)
+        .clipShape(RoundedRectangle(cornerRadius: Layout.essaySelectorCornerRadius, style: .continuous))
+        .shadow(
+            color: Color.black.opacity(Layout.essaySelectorOptionsShadowOpacity),
+            radius: Layout.essaySelectorOptionsShadowRadius,
+            x: 0,
+            y: Layout.essaySelectorOptionsShadowYOffset
+        )
     }
 }
 
