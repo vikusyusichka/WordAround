@@ -2,6 +2,7 @@ import SwiftUI
 
 struct WritingView: View {
     @StateObject private var viewModel = WritingViewModel()
+    @State private var openEssays = false
 
     var onOpenWriteSets: () -> Void = {}
 
@@ -16,7 +17,16 @@ struct WritingView: View {
             VStack(spacing: isPadLike ? 16 : 12) {
                 ForEach(viewModel.menuItems) { item in
                     Button {
-                        handle(item.action)
+                        switch item.action {
+                        case .writeFromSets:
+                            onOpenWriteSets()
+
+                        case .essays:
+                            openEssays = true
+
+                        case .grammarNotes:
+                            break
+                        }
                     } label: {
                         WritingMenuCardView(item: item)
                     }
@@ -25,21 +35,21 @@ struct WritingView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func handle(_ action: WritingMenuAction) {
-        switch action {
-        case .writeFromSets:
-            onOpenWriteSets()
-        case .essays, .grammarNotes:
-            break
+        .navigationDestination(isPresented: $openEssays) {
+            EssayPracticeView()
         }
     }
 }
 
 #Preview {
-    ZStack {
-        AppColors.appBackground.ignoresSafeArea()
-        ScrollView { WritingView().padding(24) }
+    NavigationStack {
+        ZStack {
+            AppColors.appBackground.ignoresSafeArea()
+
+            ScrollView {
+                WritingView()
+                    .padding(24)
+            }
+        }
     }
 }

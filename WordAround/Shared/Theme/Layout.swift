@@ -703,3 +703,41 @@ extension Layout {
 
     static let writeWordsLoseBlobSize: CGFloat = isPadLike ? 360 : 260
 }
+
+// MARK: - Essay Practice Layout
+
+extension Layout {
+    static let essayContentMaxWidth: CGFloat = isPadLike ? 720 : .infinity
+    static let essayScreenHorizontalPadding: CGFloat = isPadLike ? 28 : 20
+    static let essayScreenVerticalPadding: CGFloat = isPadLike ? 28 : 20
+    static let essayMainSpacing: CGFloat = isPadLike ? 22 : 16
+
+    static let essayCardSpacing: CGFloat = isPadLike ? 18 : 14
+    static let essayCardPadding: CGFloat = isPadLike ? 22 : 18
+    static let essayCardCornerRadius: CGFloat = 24
+    static let essayCardShadowRadius: CGFloat = 18
+    static let essayCardShadowYOffset: CGFloat = 10
+
+    static let essayTopicTitleSize: CGFloat = isPadLike ? 22 : 19
+    static let essayTopicMetaSize: CGFloat = isPadLike ? 13 : 12
+    static let essayTopicBodySize: CGFloat = isPadLike ? 16 : 14
+    static let essayTopicSectionLabelSize: CGFloat = isPadLike ? 14 : 12
+    static let essayTopicLevelBadgeSize: CGFloat = isPadLike ? 13 : 11
+    static let essayTopicRefreshButtonSize: CGFloat = isPadLike ? 38 : 34
+    static let essayTopicRefreshIconSize: CGFloat = isPadLike ? 16 : 14
+    static let essayTipChipMinWidth: CGFloat = isPadLike ? 140 : 110
+    static let essayTipChipTextSize: CGFloat = isPadLike ? 13 : 11
+
+    static let essayWritingCardSpacing: CGFloat = isPadLike ? 14 : 12
+    static let essayWritingTitleSize: CGFloat = isPadLike ? 20 : 17
+    static let essayWordCountSize: CGFloat = isPadLike ? 13 : 12
+    static let essayEditorPlaceholderSize: CGFloat = isPadLike ? 16 : 15
+    static let essayEditorTextSize: CGFloat = isPadLike ? 17 : 15
+    static let essayEditorMinHeight: CGFloat = isPadLike ? 260 : 220
+    static let essayEditorCornerRadius: CGFloat = 20
+    static let essayEditorScaleFocused: CGFloat = 1.01
+    static let essayValidationTextSize: CGFloat = isPadLike ? 13 : 12
+    static let essayButtonTextSize: CGFloat = isPadLike ? 15 : 14
+    static let essayButtonVerticalPadding: CGFloat = isPadLike ? 14 : 13
+    static let essayButtonCornerRadius: CGFloat = 16
+}
