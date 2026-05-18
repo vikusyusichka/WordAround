@@ -22,4 +22,17 @@ struct EssayScore: Equatable {
         cefrLevel: "A1",
         qualityLabel: "Not checked"
     )
+
+    var qualityColor: QualityColor {
+        switch total {
+        case 85...100: return .excellent
+        case 70..<85:  return .veryGood
+        case 50..<70:  return .good
+        default:       return .needsWork
+        }
+    }
+
+    enum QualityColor {
+        case excellent, veryGood, good, needsWork
+    }
 }

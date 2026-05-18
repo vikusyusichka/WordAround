@@ -798,4 +798,104 @@ extension Layout {
     static let essaySelectorOptionsShadowRadius: CGFloat = 14
     static let essaySelectorOptionsShadowYOffset: CGFloat = 8
 
+
+    // MARK: - Essay Topic Mode
+
+    static let essayTopicModeSpacing: CGFloat = isPadLike ? 14 : 10
+    static let essayTopicModeButtonSpacing: CGFloat = 8
+    static let essayTopicModeTextSize: CGFloat = isPadLike ? 14 : 13
+    static let essayTopicModeButtonVerticalPadding: CGFloat = isPadLike ? 12 : 10
+    static let essayTopicModeButtonCornerRadius: CGFloat = 16
+    static let essayTopicModePickerPadding: CGFloat = 6
+    static let essayTopicModePickerCornerRadius: CGFloat = 20
+
+    // MARK: - Essay Helper Toolbar
+
+    static let essayHelperToolbarSpacing: CGFloat = isPadLike ? 10 : 8
+    static let essayHelperToolbarButtonSpacing: CGFloat = isPadLike ? 10 : 7
+    static let essayHelperButtonInnerSpacing: CGFloat = isPadLike ? 6 : 4
+    static let essayHelperButtonIconSize: CGFloat = isPadLike ? 18 : 15
+    static let essayHelperButtonTitleSize: CGFloat = isPadLike ? 13 : 11
+    static let essayHelperButtonSubtitleSize: CGFloat = isPadLike ? 11 : 9
+    static let essayHelperButtonVerticalPadding: CGFloat = isPadLike ? 13 : 10
+    static let essayHelperButtonCornerRadius: CGFloat = isPadLike ? 18 : 15
+    static let essayHelperUsageTextSize: CGFloat = isPadLike ? 12 : 11
+
+    // MARK: - Essay Hints
+
+    static let essayHintListSpacing: CGFloat = isPadLike ? 10 : 8
+    static let essayHintWordSize: CGFloat = isPadLike ? 15 : 14
+    static let essayHintTranslationSize: CGFloat = isPadLike ? 12 : 11
+    static let essayHintExampleSize: CGFloat = isPadLike ? 13 : 12
+    static let essayHintItemPadding: CGFloat = isPadLike ? 14 : 12
+    static let essayHintItemCornerRadius: CGFloat = 16
+
+    // MARK: - Essay Custom Topic
+
+    static let essayCustomTopicSpacing: CGFloat = isPadLike ? 12 : 10
+    static let essayCustomTopicIconSize: CGFloat = isPadLike ? 16 : 14
+    static let essayCustomTopicTitleSize: CGFloat = isPadLike ? 18 : 16
+    static let essayCustomTopicTextSize: CGFloat = isPadLike ? 16 : 14
+    static let essayCustomTopicMinHeight: CGFloat = isPadLike ? 92 : 76
+    static let essayCustomTopicInnerPadding: CGFloat = isPadLike ? 16 : 14
+    static let essayCustomTopicCornerRadius: CGFloat = 18
+
+    // MARK: - Essay Assistance Modal
+
+    static let essayModalDimOpacity: CGFloat = 0.22
+    static let essayModalSpacing: CGFloat = isPadLike ? 18 : 14
+    static let essayModalPadding: CGFloat = isPadLike ? 24 : 18
+    static let essayModalMaxWidth: CGFloat = isPadLike ? 520 : .infinity
+    static let essayModalCornerRadius: CGFloat = isPadLike ? 28 : 24
+    static let essayModalIconBoxSize: CGFloat = isPadLike ? 48 : 42
+    static let essayModalIconCornerRadius: CGFloat = 15
+    static let essayModalIconSize: CGFloat = isPadLike ? 20 : 17
+    static let essayModalTitleSize: CGFloat = isPadLike ? 22 : 19
+    static let essayModalSubtitleSize: CGFloat = isPadLike ? 12 : 11
+    static let essayModalCloseButtonSize: CGFloat = isPadLike ? 36 : 32
+    static let essayModalCloseIconSize: CGFloat = isPadLike ? 13 : 11
+    static let essayModalInputTextSize: CGFloat = isPadLike ? 16 : 14
+    static let essayModalInputHorizontalPadding: CGFloat = isPadLike ? 16 : 14
+    static let essayModalInputVerticalPadding: CGFloat = isPadLike ? 14 : 12
+    static let essayModalInputCornerRadius: CGFloat = 17
+    static let essayModalMessageTextSize: CGFloat = isPadLike ? 14 : 13
+    static let essayModalResultPadding: CGFloat = isPadLike ? 14 : 12
+    static let essayModalResultSpacing: CGFloat = 8
+    static let essayModalResultCornerRadius: CGFloat = 16
+    static let essayModalResultTitleSize: CGFloat = isPadLike ? 16 : 14
+    static let essayModalResultDetailSize: CGFloat = isPadLike ? 13 : 12
+
+    // MARK: - Essay Feedback / Score
+
+    static let essayFeedbackSectionSpacing: CGFloat = isPadLike ? 14 : 12
+    static let essayFeedbackTitleSize: CGFloat = isPadLike ? 20 : 17
+    static let essayFeedbackCardSpacing: CGFloat = isPadLike ? 12 : 10
+    static let essayFeedbackCardPadding: CGFloat = isPadLike ? 18 : 16
+    static let essayFeedbackCardCornerRadius: CGFloat = 20
+    static let essayFeedbackIconBoxSize: CGFloat = isPadLike ? 42 : 38
+    static let essayFeedbackIconSize: CGFloat = isPadLike ? 18 : 16
+    static let essayFeedbackEmptyTitleSize: CGFloat = isPadLike ? 16 : 15
+    static let essayFeedbackBodySize: CGFloat = isPadLike ? 14 : 13
+    static let essayFeedbackScoreMiniValueSize: CGFloat = isPadLike ? 18 : 16
+    static let essayFeedbackScoreMiniLabelSize: CGFloat = isPadLike ? 11 : 10
+
+    static let essayScoreCardSpacing: CGFloat = isPadLike ? 16 : 13
+    static let essayScoreCardPadding: CGFloat = isPadLike ? 20 : 16
+    static let essayScoreCardCornerRadius: CGFloat = 22
+    static let essayScoreHeaderSpacing: CGFloat = 12
+    static let essayScoreTitleSize: CGFloat = isPadLike ? 18 : 16
+    static let essayScoreQualitySize: CGFloat = isPadLike ? 14 : 12
+    static let essayScoreValueSize: CGFloat = isPadLike ? 36 : 30
+    static let essayScoreLevelSize: CGFloat = isPadLike ? 13 : 11
+    static let essayScoreBreakdownSpacing: CGFloat = isPadLike ? 11 : 9
+    static let essayScoreRowTitleSize: CGFloat = isPadLike ? 13 : 12
+    static let essayScoreRowValueSize: CGFloat = isPadLike ? 13 : 12
+    static let essayScoreProgressHeight: CGFloat = isPadLike ? 8 : 6
+    static let essayScoreStatMinWidth: CGFloat = isPadLike ? 116 : 92
+    static let essayScoreStatValueSize: CGFloat = isPadLike ? 16 : 14
+    static let essayScoreStatTitleSize: CGFloat = isPadLike ? 11 : 10
+    static let essayScoreStatVerticalPadding: CGFloat = isPadLike ? 10 : 8
+    static let essayScoreStatCornerRadius: CGFloat = 14
+
 }
+

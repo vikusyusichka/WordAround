@@ -3,22 +3,52 @@ import SwiftUI
 struct EssayFeedbackSectionView: View {
     let state: EssayPracticeViewModel.FeedbackState
     let issues: [GrammarIssue]
+    let score: EssayScore?
+    let wordCount: Int
+    let usedHints: Int
+    let usedTranslations: Int
+    let usedSynonyms: Int
     let onRetry: () async -> Void
 
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: isPadLike ? 14 : 12) {
-            Text("Grammar feedback")
-                .font(.system(size: isPadLike ? 20 : 17, weight: .bold, design: .rounded))
-                .foregroundColor(AppColors.primaryBlueDark)
+        VStack(alignment: .leading, spacing: Layout.essayFeedbackSectionSpacing) {
+            HStack {
+                Text("Grammar feedback")
+                    .font(.system(size: Layout.essayFeedbackTitleSize, weight: .bold, design: .rounded))
+                    .foregroundColor(AppColors.primaryBlueDark)
+
+                Spacer(minLength: 0)
+
+                if let score {
+                    VStack(alignment: .trailing, spacing: 1) {
+                        Text("\(score.total)/100")
+                            .font(.system(size: Layout.essayFeedbackScoreMiniValueSize, weight: .black, design: .rounded))
+                            .foregroundColor(AppColors.primaryBlue)
+
+                        Text(score.qualityLabel)
+                            .font(.system(size: Layout.essayFeedbackScoreMiniLabelSize, weight: .bold, design: .rounded))
+                            .foregroundColor(AppColors.textSecondary)
+                    }
+                }
+            }
+
+            if let score {
+                EssayScoreCardView(
+                    score: score,
+                    wordCount: wordCount,
+                    issues: issues,
+                    usedHints: usedHints,
+                    usedTranslations: usedTranslations,
+                    usedSynonyms: usedSynonyms
+                )
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
 
             content
         }
         .animation(.easeInOut(duration: 0.25), value: issues)
         .animation(.easeInOut(duration: 0.25), value: state)
+        .animation(.easeInOut(duration: 0.25), value: score)
     }
 
     @ViewBuilder
@@ -35,7 +65,7 @@ struct EssayFeedbackSectionView: View {
             loadingCard
 
         case .success:
-            VStack(spacing: isPadLike ? 12 : 10) {
+            VStack(spacing: Layout.essayFeedbackCardSpacing) {
                 ForEach(issues) { issue in
                     GrammarIssueCardView(issue: issue)
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
@@ -50,7 +80,7 @@ struct EssayFeedbackSectionView: View {
             )
 
         case .error(let message):
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: Layout.essayFeedbackCardSpacing) {
                 emptyCard(icon: "wifi.exclamationmark", title: "Grammar check failed", message: message)
 
                 Button {
@@ -59,12 +89,12 @@ struct EssayFeedbackSectionView: View {
                     }
                 } label: {
                     Text("Try again")
-                        .font(.system(size: isPadLike ? 15 : 14, weight: .bold, design: .rounded))
+                        .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, isPadLike ? 14 : 13)
+                        .padding(.vertical, Layout.essayButtonVerticalPadding)
                         .background(AppColors.primaryBlue)
-                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        .clipShape(RoundedRectangle(cornerRadius: Layout.essayButtonCornerRadius, style: .continuous))
                 }
                 .buttonStyle(.plain)
             }
@@ -77,14 +107,14 @@ struct EssayFeedbackSectionView: View {
                 .tint(AppColors.primaryBlue)
 
             Text("Checking grammar...")
-                .font(.system(size: isPadLike ? 15 : 14, weight: .semibold, design: .rounded))
+                .font(.system(size: Layout.essayFeedbackBodySize, weight: .semibold, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
 
             Spacer(minLength: 0)
         }
-        .padding(isPadLike ? 18 : 16)
+        .padding(Layout.essayFeedbackCardPadding)
         .background(Color.white.opacity(0.94))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: Layout.essayFeedbackCardCornerRadius, style: .continuous))
         .shadow(color: Color.black.opacity(0.045), radius: 14, x: 0, y: 8)
     }
 
@@ -92,29 +122,29 @@ struct EssayFeedbackSectionView: View {
         HStack(alignment: .top, spacing: 12) {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(AppColors.primaryBlue.opacity(0.08))
-                .frame(width: isPadLike ? 42 : 38, height: isPadLike ? 42 : 38)
+                .frame(width: Layout.essayFeedbackIconBoxSize, height: Layout.essayFeedbackIconBoxSize)
                 .overlay(
                     Image(systemName: icon)
-                        .font(.system(size: isPadLike ? 18 : 16, weight: .semibold))
+                        .font(.system(size: Layout.essayFeedbackIconSize, weight: .semibold))
                         .foregroundColor(AppColors.primaryBlue)
                 )
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(title)
-                    .font(.system(size: isPadLike ? 16 : 15, weight: .bold, design: .rounded))
+                    .font(.system(size: Layout.essayFeedbackEmptyTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
                 Text(message)
-                    .font(.system(size: isPadLike ? 14 : 13, weight: .medium, design: .rounded))
+                    .font(.system(size: Layout.essayFeedbackBodySize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .lineSpacing(3)
             }
 
             Spacer(minLength: 0)
         }
-        .padding(isPadLike ? 18 : 16)
+        .padding(Layout.essayFeedbackCardPadding)
         .background(Color.white.opacity(0.94))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: Layout.essayFeedbackCardCornerRadius, style: .continuous))
         .shadow(color: Color.black.opacity(0.045), radius: 14, x: 0, y: 8)
     }
 }
@@ -125,6 +155,11 @@ struct EssayFeedbackSectionView: View {
         issues: [
             GrammarIssue(message: "Use the past tense form here.", incorrectText: "go", suggestedCorrection: "went", offset: 0, length: 2)
         ],
+        score: EssayScore(total: 86, grammar: 90, vocabulary: 80, length: 100, complexity: 70, relevance: 80, independence: 90, cefrLevel: "B2", qualityLabel: "Excellent"),
+        wordCount: 120,
+        usedHints: 1,
+        usedTranslations: 1,
+        usedSynonyms: 0,
         onRetry: {}
     )
     .padding()

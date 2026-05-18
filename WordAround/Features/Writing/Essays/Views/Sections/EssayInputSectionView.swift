@@ -8,12 +8,34 @@ struct EssayInputSectionView: View {
     let validationState: EssayPracticeViewModel.ValidationState
     let isLoading: Bool
     let canCheckGrammar: Bool
+    let hintsLeft: Int
+    let canUseHint: Bool
+    let canUseTranslation: Bool
+    let canUseSynonym: Bool
+    let assistanceUsageText: String
+    let shownHintItems: [EssayHintItem]
+    let onHint: () -> Void
+    let onTranslate: () -> Void
+    let onSynonym: () -> Void
     let onReset: () -> Void
     let onCheckGrammar: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.essayWritingCardSpacing) {
             header
+
+            EssayHelperToolbarView(
+                hintsLeft: hintsLeft,
+                canUseHint: canUseHint,
+                canUseTranslation: canUseTranslation,
+                canUseSynonym: canUseSynonym,
+                assistanceUsageText: assistanceUsageText,
+                onHint: onHint,
+                onTranslate: onTranslate,
+                onSynonym: onSynonym
+            )
+
+            hintItems
             editor
             validationMessage
             actionButtons
@@ -23,6 +45,7 @@ struct EssayInputSectionView: View {
         .clipShape(RoundedRectangle(cornerRadius: Layout.essayCardCornerRadius, style: .continuous))
         .shadow(color: Color.black.opacity(0.04), radius: 16, x: 0, y: 9)
         .animation(.easeInOut(duration: 0.2), value: validationState)
+        .animation(.easeInOut(duration: 0.2), value: shownHintItems)
     }
 
     private var header: some View {
@@ -40,6 +63,41 @@ struct EssayInputSectionView: View {
                 .padding(.vertical, 7)
                 .background(wordCountTint.opacity(0.08))
                 .clipShape(Capsule())
+        }
+    }
+
+    @ViewBuilder
+    private var hintItems: some View {
+        if !shownHintItems.isEmpty {
+            VStack(alignment: .leading, spacing: Layout.essayHintListSpacing) {
+                ForEach(shownHintItems) { item in
+                    VStack(alignment: .leading, spacing: 5) {
+                        HStack(spacing: 8) {
+                            Text(item.word)
+                                .font(.system(size: Layout.essayHintWordSize, weight: .bold, design: .rounded))
+                                .foregroundColor(AppColors.primaryBlueDark)
+
+                            Text(item.translation)
+                                .font(.system(size: Layout.essayHintTranslationSize, weight: .bold, design: .rounded))
+                                .foregroundColor(AppColors.primaryBlue)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(AppColors.primaryBlue.opacity(0.08))
+                                .clipShape(Capsule())
+                        }
+
+                        Text(item.example)
+                            .font(.system(size: Layout.essayHintExampleSize, weight: .medium, design: .rounded))
+                            .foregroundColor(AppColors.textSecondary)
+                            .lineSpacing(3)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(Layout.essayHintItemPadding)
+                    .background(Color.white.opacity(0.82))
+                    .clipShape(RoundedRectangle(cornerRadius: Layout.essayHintItemCornerRadius, style: .continuous))
+                }
+            }
+            .transition(.opacity.combined(with: .move(edge: .top)))
         }
     }
 
@@ -133,11 +191,7 @@ struct EssayInputSectionView: View {
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, Layout.essayButtonVerticalPadding)
-                .background(
-                    canCheckGrammar
-                    ? AppColors.primaryBlue
-                    : AppColors.primaryBlue.opacity(0.35)
-                )
+                .background(canCheckGrammar ? AppColors.primaryBlue : AppColors.primaryBlue.opacity(0.35))
                 .clipShape(RoundedRectangle(cornerRadius: Layout.essayButtonCornerRadius, style: .continuous))
             }
             .buttonStyle(.plain)
@@ -170,6 +224,15 @@ struct EssayInputSectionView: View {
                 validationState: .empty,
                 isLoading: false,
                 canCheckGrammar: false,
+                hintsLeft: 7,
+                canUseHint: true,
+                canUseTranslation: true,
+                canUseSynonym: true,
+                assistanceUsageText: "Hints: 0  ·  Translations: 0  ·  Synonyms: 0",
+                shownHintItems: [],
+                onHint: {},
+                onTranslate: {},
+                onSynonym: {},
                 onReset: {},
                 onCheckGrammar: {}
             )

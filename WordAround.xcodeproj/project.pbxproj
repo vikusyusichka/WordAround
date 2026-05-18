@@ -38,6 +38,15 @@
 		E30902692FBAE26400C52238 /* LanguageSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902682FBAE25900C52238 /* LanguageSelectorView.swift */; };
 		E309026B2FBAE27600C52238 /* DifficultySelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309026A2FBAE27400C52238 /* DifficultySelectorView.swift */; };
 		E309026F2FBAE6CA00C52238 /* EssayInputSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309026E2FBAE6C600C52238 /* EssayInputSectionView.swift */; };
+		E309029B2FBB6E8700C52238 /* EssayTopicMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309029A2FBB6E8000C52238 /* EssayTopicMode.swift */; };
+		E309029D2FBB6E9F00C52238 /* EssayAssistantItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309029C2FBB6E9600C52238 /* EssayAssistantItem.swift */; };
+		E309029F2FBB6EC700C52238 /* EssayScoringService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309029E2FBB6EBF00C52238 /* EssayScoringService.swift */; };
+		E30902A12FBB6EE900C52238 /* EssayAssistanceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A02FBB6EE100C52238 /* EssayAssistanceService.swift */; };
+		E30902A52FBB724D00C52238 /* EssayHelperToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A42FBB724D00C52238 /* EssayHelperToolbarView.swift */; };
+		E30902A92FBB729300C52238 /* EssayAssistanceModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A72FBB729300C52238 /* EssayAssistanceModalView.swift */; };
+		E30902AA2FBB729300C52238 /* EssayScoreCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A82FBB729300C52238 /* EssayScoreCardView.swift */; };
+		E30902AB2FBB729300C52238 /* CustomEssayTopicInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A62FBB729300C52238 /* CustomEssayTopicInputView.swift */; };
+		E30902AD2FBB754B00C52238 /* EssayHintItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902AC2FBB753C00C52238 /* EssayHintItem.swift */; };
 		E30A1CAA2F98010F00387BDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CA62F98010F00387BDC /* Assets.xcassets */; };
 		E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CA82F98010F00387BDC /* WordAroundApp.swift */; };
 		E30A1CB32F9801B600387BDC /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CB22F9801AE00387BDC /* .gitignore */; };
@@ -145,6 +154,15 @@
 		E30902682FBAE25900C52238 /* LanguageSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectorView.swift; sourceTree = "<group>"; };
 		E309026A2FBAE27400C52238 /* DifficultySelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DifficultySelectorView.swift; sourceTree = "<group>"; };
 		E309026E2FBAE6C600C52238 /* EssayInputSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayInputSectionView.swift; sourceTree = "<group>"; };
+		E309029A2FBB6E8000C52238 /* EssayTopicMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayTopicMode.swift; sourceTree = "<group>"; };
+		E309029C2FBB6E9600C52238 /* EssayAssistantItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayAssistantItem.swift; sourceTree = "<group>"; };
+		E309029E2FBB6EBF00C52238 /* EssayScoringService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayScoringService.swift; sourceTree = "<group>"; };
+		E30902A02FBB6EE100C52238 /* EssayAssistanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayAssistanceService.swift; sourceTree = "<group>"; };
+		E30902A42FBB724D00C52238 /* EssayHelperToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayHelperToolbarView.swift; sourceTree = "<group>"; };
+		E30902A62FBB729300C52238 /* CustomEssayTopicInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEssayTopicInputView.swift; sourceTree = "<group>"; };
+		E30902A72FBB729300C52238 /* EssayAssistanceModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayAssistanceModalView.swift; sourceTree = "<group>"; };
+		E30902A82FBB729300C52238 /* EssayScoreCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayScoreCardView.swift; sourceTree = "<group>"; };
+		E30902AC2FBB753C00C52238 /* EssayHintItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayHintItem.swift; sourceTree = "<group>"; };
 		E30A1C982F98003000387BDC /* WordAround.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordAround.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E30A1CA62F98010F00387BDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E30A1CA82F98010F00387BDC /* WordAroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordAroundApp.swift; sourceTree = "<group>"; };
@@ -350,12 +368,12 @@
 		E309024E2FBAC9BE00C52238 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				E309026E2FBAE6C600C52238 /* EssayInputSectionView.swift */,
+				E30902B12FBB8DE600C52238 /* Screens */,
+				E30902B02FBB8DAE00C52238 /* Modals */,
+				E30902AF2FBB8D9600C52238 /* Toolbars */,
 				E30902672FBAE24E00C52238 /* Selectors */,
-				E30902592FBACA1C00C52238 /* EssayFeedbackSectionView.swift */,
-				E309025A2FBACA1C00C52238 /* EssayPracticeView.swift */,
-				E309025B2FBACA1C00C52238 /* EssayTopicCardView.swift */,
-				E309025C2FBACA1C00C52238 /* GrammarIssueCardView.swift */,
+				E30902AE2FBB8D6500C52238 /* Cards */,
+				E30902B22FBB8E2C00C52238 /* Sections */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -371,6 +389,8 @@
 		E30902502FBAC9D800C52238 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				E30902A02FBB6EE100C52238 /* EssayAssistanceService.swift */,
+				E309029E2FBB6EBF00C52238 /* EssayScoringService.swift */,
 				E30902512FBAC9E500C52238 /* GrammarCheckService.swift */,
 			);
 			path = Services;
@@ -383,6 +403,50 @@
 				E30902682FBAE25900C52238 /* LanguageSelectorView.swift */,
 			);
 			path = Selectors;
+			sourceTree = "<group>";
+		};
+		E30902AE2FBB8D6500C52238 /* Cards */ = {
+			isa = PBXGroup;
+			children = (
+				E30902A82FBB729300C52238 /* EssayScoreCardView.swift */,
+				E309025B2FBACA1C00C52238 /* EssayTopicCardView.swift */,
+				E309025C2FBACA1C00C52238 /* GrammarIssueCardView.swift */,
+			);
+			path = Cards;
+			sourceTree = "<group>";
+		};
+		E30902AF2FBB8D9600C52238 /* Toolbars */ = {
+			isa = PBXGroup;
+			children = (
+				E30902A42FBB724D00C52238 /* EssayHelperToolbarView.swift */,
+			);
+			path = Toolbars;
+			sourceTree = "<group>";
+		};
+		E30902B02FBB8DAE00C52238 /* Modals */ = {
+			isa = PBXGroup;
+			children = (
+				E30902A72FBB729300C52238 /* EssayAssistanceModalView.swift */,
+			);
+			path = Modals;
+			sourceTree = "<group>";
+		};
+		E30902B12FBB8DE600C52238 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				E309025A2FBACA1C00C52238 /* EssayPracticeView.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		E30902B22FBB8E2C00C52238 /* Sections */ = {
+			isa = PBXGroup;
+			children = (
+				E30902592FBACA1C00C52238 /* EssayFeedbackSectionView.swift */,
+				E309026E2FBAE6C600C52238 /* EssayInputSectionView.swift */,
+				E30902A62FBB729300C52238 /* CustomEssayTopicInputView.swift */,
+			);
+			path = Sections;
 			sourceTree = "<group>";
 		};
 		E30A1C8F2F98003000387BDC = {
@@ -657,6 +721,9 @@
 		E30A1D852F9C9D6600387BDC /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E30902AC2FBB753C00C52238 /* EssayHintItem.swift */,
+				E309029C2FBB6E9600C52238 /* EssayAssistantItem.swift */,
+				E309029A2FBB6E8000C52238 /* EssayTopicMode.swift */,
 				E30902652FBAE1BE00C52238 /* EssayScore.swift */,
 				E30902632FBAE1AB00C52238 /* GrammarLanguage.swift */,
 				E30902612FBAE18900C52238 /* EssayDifficulty.swift */,
@@ -846,7 +913,9 @@
 				E30902322FBA3EC600C52238 /* WriteWordsProgressView.swift in Sources */,
 				E30902332FBA3EC600C52238 /* WriteWordsExerciseCardView.swift in Sources */,
 				E30902342FBA3EC600C52238 /* WritingSetSelectionViewModel.swift in Sources */,
+				E309029D2FBB6E9F00C52238 /* EssayAssistantItem.swift in Sources */,
 				E30902352FBA3EC600C52238 /* WritingGoalCardView.swift in Sources */,
+				E30902AD2FBB754B00C52238 /* EssayHintItem.swift in Sources */,
 				E30902362FBA3EC600C52238 /* WritingModels.swift in Sources */,
 				E30902372FBA3EC600C52238 /* WriteWordsView.swift in Sources */,
 				E30902382FBA3EC600C52238 /* WritingSetSelectionView.swift in Sources */,
@@ -865,12 +934,14 @@
 				E30902562FBAC9F500C52238 /* GrammarIssue.swift in Sources */,
 				E30902622FBAE1A000C52238 /* EssayDifficulty.swift in Sources */,
 				E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */,
+				E30902A52FBB724D00C52238 /* EssayHelperToolbarView.swift in Sources */,
 				E30A1D972F9CE42500387BDC /* FlashcardSetDetailAddButton.swift in Sources */,
 				E309023B2FBA8BA700C52238 /* WriteWordsAnswerInputView.swift in Sources */,
 				E309023D2FBAA11B00C52238 /* WriteWordsSettingsSheet.swift in Sources */,
 				E30A1D982F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift in Sources */,
 				E30902692FBAE26400C52238 /* LanguageSelectorView.swift in Sources */,
 				E30A1D992F9CE42500387BDC /* FlashcardSetDetailControlsView.swift in Sources */,
+				E309029B2FBB6E8700C52238 /* EssayTopicMode.swift in Sources */,
 				E30A1D9A2F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift in Sources */,
 				E30902662FBAE1C300C52238 /* EssayScore.swift in Sources */,
 				E30A1D9B2F9CE42500387BDC /* FlashcardSetDetailBottomCover.swift in Sources */,
@@ -882,11 +953,15 @@
 				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
 				E309025D2FBACA1C00C52238 /* EssayTopicCardView.swift in Sources */,
 				E309025E2FBACA1C00C52238 /* GrammarIssueCardView.swift in Sources */,
+				E30902A92FBB729300C52238 /* EssayAssistanceModalView.swift in Sources */,
+				E30902AA2FBB729300C52238 /* EssayScoreCardView.swift in Sources */,
+				E30902AB2FBB729300C52238 /* CustomEssayTopicInputView.swift in Sources */,
 				E309026F2FBAE6CA00C52238 /* EssayInputSectionView.swift in Sources */,
 				E309025F2FBACA1C00C52238 /* EssayFeedbackSectionView.swift in Sources */,
 				E30902602FBACA1C00C52238 /* EssayPracticeView.swift in Sources */,
 				E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */,
 				E30A1D5D2F9BEB8200387BDC /* CreateSet.swift in Sources */,
+				E30902A12FBB6EE900C52238 /* EssayAssistanceService.swift in Sources */,
 				E30A1DAC2F9E07E600387BDC /* CreateFolderView.swift in Sources */,
 				E30A1D6D2F9BF7E100387BDC /* CreateSetFieldStyle.swift in Sources */,
 				E30A1D7C2F9C1D6900387BDC /* HomeSetPreviewItem.swift in Sources */,
@@ -908,6 +983,7 @@
 				E30A1DA42F9E076500387BDC /* Folders.swift in Sources */,
 				E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */,
 				E30A1D4F2F9BB9D000387BDC /* AppColors.swift in Sources */,
+				E309029F2FBB6EC700C52238 /* EssayScoringService.swift in Sources */,
 				E30A1D0D2F9A616F00387BDC /* HomeCategory.swift in Sources */,
 				E30A1D092F9A5FDB00387BDC /* CategorySidebarView.swift in Sources */,
 			);
