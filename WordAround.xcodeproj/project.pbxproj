@@ -7,6 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E309022D2FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902202FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift */; };
+		E309022E2FBA3EC600C52238 /* WritingMenuCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902262FBA3EC600C52238 /* WritingMenuCardView.swift */; };
+		E309022F2FBA3EC600C52238 /* WriteWordsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902242FBA3EC600C52238 /* WriteWordsViewModel.swift */; };
+		E30902302FBA3EC600C52238 /* WritingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309022C2FBA3EC600C52238 /* WritingViewModel.swift */; };
+		E30902312FBA3EC600C52238 /* WritingSetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902282FBA3EC600C52238 /* WritingSetCardView.swift */; };
+		E30902322FBA3EC600C52238 /* WriteWordsProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902222FBA3EC600C52238 /* WriteWordsProgressView.swift */; };
+		E30902332FBA3EC600C52238 /* WriteWordsExerciseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902212FBA3EC600C52238 /* WriteWordsExerciseCardView.swift */; };
+		E30902342FBA3EC600C52238 /* WritingSetSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309022A2FBA3EC600C52238 /* WritingSetSelectionViewModel.swift */; };
+		E30902352FBA3EC600C52238 /* WritingGoalCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902252FBA3EC600C52238 /* WritingGoalCardView.swift */; };
+		E30902362FBA3EC600C52238 /* WritingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902272FBA3EC600C52238 /* WritingModels.swift */; };
+		E30902372FBA3EC600C52238 /* WriteWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902232FBA3EC600C52238 /* WriteWordsView.swift */; };
+		E30902382FBA3EC600C52238 /* WritingSetSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902292FBA3EC600C52238 /* WritingSetSelectionView.swift */; };
+		E30902392FBA3EC600C52238 /* WritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309022B2FBA3EC600C52238 /* WritingView.swift */; };
+		E309023B2FBA8BA700C52238 /* WriteWordsAnswerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309023A2FBA8B8700C52238 /* WriteWordsAnswerInputView.swift */; };
+		E309023D2FBAA11B00C52238 /* WriteWordsSettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309023C2FBAA0F800C52238 /* WriteWordsSettingsSheet.swift */; };
+		E30902412FBAB04600C52238 /* WriteWordsCountdownTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902402FBAB03600C52238 /* WriteWordsCountdownTimerView.swift */; };
 		E30A1CAA2F98010F00387BDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CA62F98010F00387BDC /* Assets.xcassets */; };
 		E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CA82F98010F00387BDC /* WordAroundApp.swift */; };
 		E30A1CB32F9801B600387BDC /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CB22F9801AE00387BDC /* .gitignore */; };
@@ -83,6 +99,22 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E30902202FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsAnswerCellsView.swift; sourceTree = "<group>"; };
+		E30902212FBA3EC600C52238 /* WriteWordsExerciseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsExerciseCardView.swift; sourceTree = "<group>"; };
+		E30902222FBA3EC600C52238 /* WriteWordsProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsProgressView.swift; sourceTree = "<group>"; };
+		E30902232FBA3EC600C52238 /* WriteWordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsView.swift; sourceTree = "<group>"; };
+		E30902242FBA3EC600C52238 /* WriteWordsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsViewModel.swift; sourceTree = "<group>"; };
+		E30902252FBA3EC600C52238 /* WritingGoalCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingGoalCardView.swift; sourceTree = "<group>"; };
+		E30902262FBA3EC600C52238 /* WritingMenuCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingMenuCardView.swift; sourceTree = "<group>"; };
+		E30902272FBA3EC600C52238 /* WritingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingModels.swift; sourceTree = "<group>"; };
+		E30902282FBA3EC600C52238 /* WritingSetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingSetCardView.swift; sourceTree = "<group>"; };
+		E30902292FBA3EC600C52238 /* WritingSetSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingSetSelectionView.swift; sourceTree = "<group>"; };
+		E309022A2FBA3EC600C52238 /* WritingSetSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingSetSelectionViewModel.swift; sourceTree = "<group>"; };
+		E309022B2FBA3EC600C52238 /* WritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingView.swift; sourceTree = "<group>"; };
+		E309022C2FBA3EC600C52238 /* WritingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingViewModel.swift; sourceTree = "<group>"; };
+		E309023A2FBA8B8700C52238 /* WriteWordsAnswerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsAnswerInputView.swift; sourceTree = "<group>"; };
+		E309023C2FBAA0F800C52238 /* WriteWordsSettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsSettingsSheet.swift; sourceTree = "<group>"; };
+		E30902402FBAB03600C52238 /* WriteWordsCountdownTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsCountdownTimerView.swift; sourceTree = "<group>"; };
 		E30A1C982F98003000387BDC /* WordAround.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordAround.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E30A1CA62F98010F00387BDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E30A1CA82F98010F00387BDC /* WordAroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordAroundApp.swift; sourceTree = "<group>"; };
@@ -171,6 +203,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E309021F2FBA3E5B00C52238 /* Writing */ = {
+			isa = PBXGroup;
+			children = (
+				E309023E2FBAA56900C52238 /* Exercise */,
+				E30902222FBA3EC600C52238 /* WriteWordsProgressView.swift */,
+				E30902252FBA3EC600C52238 /* WritingGoalCardView.swift */,
+				E30902262FBA3EC600C52238 /* WritingMenuCardView.swift */,
+				E30902282FBA3EC600C52238 /* WritingSetCardView.swift */,
+				E30902292FBA3EC600C52238 /* WritingSetSelectionView.swift */,
+				E309022A2FBA3EC600C52238 /* WritingSetSelectionViewModel.swift */,
+				E309022B2FBA3EC600C52238 /* WritingView.swift */,
+				E309022C2FBA3EC600C52238 /* WritingViewModel.swift */,
+			);
+			path = Writing;
+			sourceTree = "<group>";
+		};
+		E309023E2FBAA56900C52238 /* Exercise */ = {
+			isa = PBXGroup;
+			children = (
+				E30902402FBAB03600C52238 /* WriteWordsCountdownTimerView.swift */,
+				E309023F2FBAB02B00C52238 /* Components */,
+				E30902202FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift */,
+				E309023C2FBAA0F800C52238 /* WriteWordsSettingsSheet.swift */,
+				E309023A2FBA8B8700C52238 /* WriteWordsAnswerInputView.swift */,
+				E30902212FBA3EC600C52238 /* WriteWordsExerciseCardView.swift */,
+				E30902232FBA3EC600C52238 /* WriteWordsView.swift */,
+				E30902242FBA3EC600C52238 /* WriteWordsViewModel.swift */,
+			);
+			path = Exercise;
+			sourceTree = "<group>";
+		};
+		E309023F2FBAB02B00C52238 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		E30A1C8F2F98003000387BDC = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +303,7 @@
 		E30A1CB92F9801E800387BDC /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				E309021F2FBA3E5B00C52238 /* Writing */,
 				E30A1DA72F9E07B800387BDC /* Folders */,
 				E30A1D8C2F9CE41700387BDC /* Components */,
 				E30A1D582F9BEB3700387BDC /* FlashCards */,
@@ -450,6 +521,7 @@
 				E30A1D702F9C0ED000387BDC /* FlashCard.swift */,
 				E30A1D7B2F9C1D6900387BDC /* HomeSetPreviewItem.swift */,
 				E30A1D7D2F9C236000387BDC /* CreateSetTheme.swift */,
+				E30902272FBA3EC600C52238 /* WritingModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -615,7 +687,21 @@
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
+				E30902412FBAB04600C52238 /* WriteWordsCountdownTimerView.swift in Sources */,
 				E30A1D832F9C2EF700387BDC /* LocalImageStorageService.swift in Sources */,
+				E309022D2FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift in Sources */,
+				E309022E2FBA3EC600C52238 /* WritingMenuCardView.swift in Sources */,
+				E309022F2FBA3EC600C52238 /* WriteWordsViewModel.swift in Sources */,
+				E30902302FBA3EC600C52238 /* WritingViewModel.swift in Sources */,
+				E30902312FBA3EC600C52238 /* WritingSetCardView.swift in Sources */,
+				E30902322FBA3EC600C52238 /* WriteWordsProgressView.swift in Sources */,
+				E30902332FBA3EC600C52238 /* WriteWordsExerciseCardView.swift in Sources */,
+				E30902342FBA3EC600C52238 /* WritingSetSelectionViewModel.swift in Sources */,
+				E30902352FBA3EC600C52238 /* WritingGoalCardView.swift in Sources */,
+				E30902362FBA3EC600C52238 /* WritingModels.swift in Sources */,
+				E30902372FBA3EC600C52238 /* WriteWordsView.swift in Sources */,
+				E30902382FBA3EC600C52238 /* WritingSetSelectionView.swift in Sources */,
+				E30902392FBA3EC600C52238 /* WritingView.swift in Sources */,
 				E30A1DA62F9E07A000387BDC /* FolderService.swift in Sources */,
 				E30A1D8B2F9CDB7300387BDC /* FlashcardSetDetailViewModel.swift in Sources */,
 				E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */,
@@ -626,6 +712,8 @@
 				E30A1DCF2FA2B4C800387BDC /* FlashcardSetAddCardView.swift in Sources */,
 				E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */,
 				E30A1D972F9CE42500387BDC /* FlashcardSetDetailAddButton.swift in Sources */,
+				E309023B2FBA8BA700C52238 /* WriteWordsAnswerInputView.swift in Sources */,
+				E309023D2FBAA11B00C52238 /* WriteWordsSettingsSheet.swift in Sources */,
 				E30A1D982F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift in Sources */,
 				E30A1D992F9CE42500387BDC /* FlashcardSetDetailControlsView.swift in Sources */,
 				E30A1D9A2F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift in Sources */,

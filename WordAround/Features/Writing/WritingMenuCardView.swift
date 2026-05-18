@@ -1,51 +1,46 @@
 import SwiftUI
 
 struct WritingMenuCardView: View {
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
-
     let item: WritingMenuItem
 
-    private var metrics: ScreenMetrics {
-        ScreenMetrics.current(horizontal: horizontalSizeClass, vertical: verticalSizeClass)
+    private var isPadLike: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
     }
 
     var body: some View {
-        HStack(spacing: LayoutConstants.Writing.menuSpacing(metrics)) {
-            RoundedRectangle(cornerRadius: LayoutConstants.Writing.menuIconCornerRadius(metrics), style: .continuous)
+        HStack(spacing: isPadLike ? 18 : 14) {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(LinearGradient(colors: item.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(
-                    width: LayoutConstants.Writing.menuIconBoxSize(metrics),
-                    height: LayoutConstants.Writing.menuIconBoxSize(metrics)
-                )
+                .frame(width: isPadLike ? 62 : 50, height: isPadLike ? 62 : 50)
                 .overlay(
                     Image(systemName: item.systemImage)
-                        .font(.system(size: LayoutConstants.Writing.menuIconSize(metrics), weight: .semibold))
+                        .font(.system(size: isPadLike ? 25 : 21, weight: .semibold))
                         .foregroundColor(.white)
                 )
 
-            VStack(alignment: .leading, spacing: LayoutConstants.Writing.menuSpacing(metrics) / 3) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(item.title)
-                    .font(.system(size: LayoutConstants.Typography.cardTitle(metrics), weight: .bold, design: .rounded))
+                    .font(.system(size: isPadLike ? 18 : 16, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
                 Text(item.subtitle)
-                    .font(.system(size: LayoutConstants.Typography.caption(metrics), weight: .medium, design: .rounded))
+                    .font(.system(size: isPadLike ? 14 : 12, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
-                    .lineSpacing(LayoutConstants.Common.hairline * 2)
+                    .lineSpacing(2)
             }
 
-            Spacer(minLength: LayoutConstants.Common.smallSpacing(metrics))
+            Spacer(minLength: 8)
 
             Image(systemName: "chevron.right")
-                .font(.system(size: LayoutConstants.Writing.menuChevronSize(metrics), weight: .semibold))
+                .font(.system(size: isPadLike ? 16 : 14, weight: .semibold))
                 .foregroundColor(AppColors.textSecondary.opacity(0.75))
         }
-        .padding(.horizontal, LayoutConstants.Writing.menuHorizontalPadding(metrics))
-        .frame(height: LayoutConstants.Writing.menuHeight(metrics))
+        .padding(.horizontal, isPadLike ? 22 : 18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: isPadLike ? 94 : 80)
         .background(Color.white.opacity(0.94))
-        .clipShape(RoundedRectangle(cornerRadius: LayoutConstants.Writing.menuCornerRadius(metrics), style: .continuous))
-        .shadow(color: Color.black.opacity(0.055), radius: Layout.sectionSpacingPhone + 2, x: 0, y: LayoutConstants.Common.smallSpacing(metrics))
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .shadow(color: Color.black.opacity(0.055), radius: 18, x: 0, y: 10)
     }
 }
 

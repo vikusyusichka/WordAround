@@ -453,3 +453,216 @@ extension Layout {
     static let flashcardDetailBottomPadding: CGFloat = isPadLike ? 180 : 152
     static let homeBottomBarHeight: CGFloat = isPadLike ? 110 : 90
 }
+
+import SwiftUI
+
+// MARK: - Adaptive Layout System
+
+struct ScreenMetrics {
+    let horizontalSizeClass: UserInterfaceSizeClass?
+    let verticalSizeClass: UserInterfaceSizeClass?
+    let containerWidth: CGFloat
+
+    var isCompact: Bool {
+        horizontalSizeClass == .compact || containerWidth < LayoutConstants.Breakpoints.regularMinWidth
+    }
+
+    var isRegular: Bool { !isCompact }
+    var isLandscapeCompact: Bool { horizontalSizeClass == .compact && verticalSizeClass == .compact }
+
+    static func current(
+        horizontal: UserInterfaceSizeClass?,
+        vertical: UserInterfaceSizeClass?,
+        containerWidth: CGFloat = UIScreen.main.bounds.width
+    ) -> ScreenMetrics {
+        ScreenMetrics(
+            horizontalSizeClass: horizontal,
+            verticalSizeClass: vertical,
+            containerWidth: containerWidth
+        )
+    }
+}
+
+// MARK: - Centralized Layout Constants
+
+enum LayoutConstants {
+    enum Breakpoints {
+        static let regularMinWidth: CGFloat = 700
+    }
+
+    enum Common {
+        static func screenHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 34 : 22 }
+        static func screenTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 16 }
+        static func screenBottomPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 40 : 28 }
+        static func contentMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 620 : .infinity }
+        static func narrowContentMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 520 : .infinity }
+        static func sectionSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 18 }
+        static func itemSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 12 }
+        static func smallSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 8 }
+        static let hairline: CGFloat = 1
+    }
+
+    enum Typography {
+        static func writingTitle(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 42 : 34 }
+        static func screenTitle(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 40 : 32 }
+        static func largeTitle(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 34 : 28 }
+        static func title(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 18 }
+        static func cardTitle(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 19 : 16 }
+        static func body(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 14 }
+        static func bodySmall(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 15 : 13 }
+        static func caption(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 14 : 12 }
+        static func captionSmall(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 13 : 11 }
+    }
+
+    enum Writing {
+        static func topPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 6 : 0 }
+        static func headerSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 8 }
+
+        static func contentMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { .infinity }
+
+        static func goalHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 144 : 118 }
+        static func goalCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 26 : 24 }
+        static func goalHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 28 : 20 }
+        static func goalVerticalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 20 }
+        static func goalBlobSize(_ metrics: ScreenMetrics) -> CGSize { CGSize(width: metrics.isRegular ? 160 : 132, height: metrics.isRegular ? 135 : 112) }
+        static func goalBlobOffset(_ metrics: ScreenMetrics) -> CGSize { CGSize(width: 30, height: 2) }
+        static func goalContentSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 18 }
+        static func goalTextSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 10 }
+        static func goalProgressWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 190 : 152 }
+        static func goalProgressHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 6 : 5 }
+        static func goalIconCircleSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 58 : 48 }
+        static func goalIconSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 19 }
+        static func goalNumberSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 32 : 27 }
+
+        static func menuIconBoxSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 62 : 50 }
+        static func menuIconCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 16 }
+        static func menuIconSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 25 : 21 }
+        static func menuHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 94 : 80 }
+        static func menuCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 22 }
+        static func menuHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 18 }
+        static func menuSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 14 }
+        static func menuChevronSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 14 }
+    }
+
+    enum WriteWords {
+        static func topBarTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 12 }
+        static func progressTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 14 }
+        static func cardTopSpacer(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 10 }
+        static func afterCardSpacer(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 10 }
+        static func bottomPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 10 }
+        static func topBarTitleSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 16 }
+        static func topBarIconSize(_ metrics: ScreenMetrics) -> CGFloat { 18 }
+        static func topBarButtonSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 40 : 38 }
+
+        static func exerciseHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 500 : 390 }
+        static func exerciseHeight(_ metrics: ScreenMetrics, availableHeight: CGFloat) -> CGFloat {
+            let usedHeight = topBarTopPadding(metrics)
+            + topBarButtonSize(metrics)
+            + progressTopPadding(metrics)
+            + progressHeight(metrics)
+            + cardTopSpacer(metrics)
+            + afterCardSpacer(metrics)
+            + modeBarHeight(metrics)
+            + bottomPadding(metrics)
+            + Common.smallSpacing(metrics)
+
+            let availableCardHeight = availableHeight - usedHeight
+            let minimumHeight: CGFloat = metrics.isRegular ? 430 : 340
+            let maximumHeight: CGFloat = metrics.isRegular ? 500 : 390
+            return min(max(availableCardHeight, minimumHeight), maximumHeight)
+        }
+        static func exerciseHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 26 : 16 }
+        static func exerciseSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 16 }
+        static func exerciseTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 32 : 20 }
+        static func exerciseHeaderSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 9 }
+        static func exerciseTitleSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 34 : 28 }
+        static func exerciseHintSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 17 : 15 }
+        static func exerciseCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 28 : 24 }
+        static func primaryButtonHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 54 : 48 }
+        static func primaryButtonCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 20 : 18 }
+        static func secondaryButtonHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 50 : 44 }
+        static func secondaryButtonCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 17 }
+        static func secondaryButtonSpacing(_ metrics: ScreenMetrics) -> CGFloat { 14 }
+        static func cardBottomPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 18 }
+        static func successHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 22 }
+        static func successVerticalPadding(_ metrics: ScreenMetrics) -> CGFloat { 12 }
+
+        static func answerCellSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 7 }
+        static func answerCellSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 42 : 34 }
+        static func answerCellCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 9 : 8 }
+        static func answerCellFontSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 15 }
+
+        static func answerInputHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 58 : 54 }
+        static func answerInputMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 420 : .infinity }
+        static func answerInputHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 18 }
+        static func answerInputCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 17 }
+        static func answerInputFontSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 19 }
+
+        static func progressSegmentCount(_ metrics: ScreenMetrics) -> Int { metrics.isRegular ? 10 : 9 }
+        static func progressSegmentSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 8 : 7 }
+        static func progressHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 6 : 5 }
+        static func progressTextWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 52 : 44 }
+        static func progressSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 14 }
+
+        static func modeBarHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 54 : 48 }
+        static func modeBarHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 20 : 18 }
+        static func modeBarCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 17 }
+        static func modeIconSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 17 }
+        static func modeChevronSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 9 }
+        static func modeGapWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 22 }
+        static func modeInlineSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 6 : 5 }
+    }
+
+    enum WritingSetSelection {
+        static func listMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 620 : .infinity }
+        static func cardSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 12 }
+        static func topBarButtonSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 42 : 40 }
+        static func topBarIconSize(_ metrics: ScreenMetrics) -> CGFloat { 18 }
+        static func emptyPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 18 }
+        static func emptyCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 26 : 24 }
+
+        static func setCardSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 14 }
+        static func setCardPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 14 }
+        static func setCardCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 26 : 22 }
+        static func setIconSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 62 : 54 }
+        static func setIconCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 20 : 17 }
+        static func setIconSymbolSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 21 }
+        static func badgeHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { 10 }
+        static func badgeVerticalPadding(_ metrics: ScreenMetrics) -> CGFloat { 5 }
+    }
+}
+
+// MARK: - Reusable Adaptive Container
+
+struct AdaptiveContentContainer<Content: View>: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    let maxWidth: (ScreenMetrics) -> CGFloat
+    let alignment: Alignment
+    let content: (ScreenMetrics) -> Content
+
+    init(
+        maxWidth: @escaping (ScreenMetrics) -> CGFloat = LayoutConstants.Common.contentMaxWidth,
+        alignment: Alignment = .topLeading,
+        @ViewBuilder content: @escaping (ScreenMetrics) -> Content
+    ) {
+        self.maxWidth = maxWidth
+        self.alignment = alignment
+        self.content = content
+    }
+
+    var body: some View {
+        GeometryReader { proxy in
+            let metrics = ScreenMetrics.current(
+                horizontal: horizontalSizeClass,
+                vertical: verticalSizeClass,
+                containerWidth: proxy.size.width
+            )
+
+            content(metrics)
+                .frame(maxWidth: maxWidth(metrics), alignment: alignment)
+                .frame(maxWidth: .infinity, alignment: alignment)
+        }
+    }
+}

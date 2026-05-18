@@ -1,23 +1,19 @@
 import SwiftUI
 
 struct WritingView: View {
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @StateObject private var viewModel = WritingViewModel()
 
     var onOpenWriteSets: () -> Void = {}
 
-    private var metrics: ScreenMetrics {
-        ScreenMetrics.current(horizontal: horizontalSizeClass, vertical: verticalSizeClass)
+    private var isPadLike: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: LayoutConstants.Common.sectionSpacing(metrics)) {
-            header
-
+        VStack(alignment: .leading, spacing: isPadLike ? 24 : 18) {
             WritingGoalCardView(goal: viewModel.goal)
 
-            VStack(spacing: LayoutConstants.Common.itemSpacing(metrics)) {
+            VStack(spacing: isPadLike ? 16 : 12) {
                 ForEach(viewModel.menuItems) { item in
                     Button {
                         handle(item.action)
@@ -28,20 +24,7 @@ struct WritingView: View {
                 }
             }
         }
-        .frame(maxWidth: LayoutConstants.Writing.contentMaxWidth(metrics), alignment: .leading)
-    }
-
-    private var header: some View {
-        VStack(alignment: .leading, spacing: LayoutConstants.Writing.headerSpacing(metrics)) {
-            Text("Writing")
-                .font(.system(size: LayoutConstants.Typography.writingTitle(metrics), weight: .bold, design: .rounded))
-                .foregroundColor(AppColors.primaryBlueDark)
-
-            Text("Practice your language actively.")
-                .font(.system(size: LayoutConstants.Typography.body(metrics), weight: .medium, design: .rounded))
-                .foregroundColor(AppColors.textSecondary)
-        }
-        .padding(.top, LayoutConstants.Writing.topPadding(metrics))
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func handle(_ action: WritingMenuAction) {
@@ -57,6 +40,6 @@ struct WritingView: View {
 #Preview {
     ZStack {
         AppColors.appBackground.ignoresSafeArea()
-        ScrollView { WritingView().padding(LayoutConstants.Common.screenHorizontalPadding(.current(horizontal: .regular, vertical: .regular))) }
+        ScrollView { WritingView().padding(24) }
     }
 }
