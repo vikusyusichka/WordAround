@@ -3,6 +3,7 @@ import SwiftUI
 struct WritingView: View {
     @StateObject private var viewModel = WritingViewModel()
     @State private var openEssays = false
+    @State private var openGrammarNotes = false
 
     var onOpenWriteSets: () -> Void = {}
 
@@ -25,7 +26,7 @@ struct WritingView: View {
                             openEssays = true
 
                         case .grammarNotes:
-                            break
+                            openGrammarNotes = true
                         }
                     } label: {
                         WritingMenuCardView(item: item)
@@ -37,6 +38,9 @@ struct WritingView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .navigationDestination(isPresented: $openEssays) {
             EssayPracticeView()
+        }
+        .navigationDestination(isPresented: $openGrammarNotes) {
+            GrammarNotesHomeView()
         }
     }
 }
