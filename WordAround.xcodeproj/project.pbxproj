@@ -372,6 +372,7 @@
 		E309024D2FBAC9AC00C52238 /* Essays */ = {
 			isa = PBXGroup;
 			children = (
+				E30902CD2FBC621700C52238 /* Models */,
 				E30902502FBAC9D800C52238 /* Services */,
 				E309024F2FBAC9C600C52238 /* ViewModels */,
 				E309024E2FBAC9BE00C52238 /* Views */,
@@ -465,6 +466,24 @@
 				E30902A62FBB729300C52238 /* CustomEssayTopicInputView.swift */,
 			);
 			path = Sections;
+			sourceTree = "<group>";
+		};
+		E30902CD2FBC621700C52238 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E30902B52FBB96DD00C52238 /* EssayAIClient.swift */,
+				E30902B32FBB96B800C52238 /* EssayGeneratedHint.swift */,
+				E30902AC2FBB753C00C52238 /* EssayHintItem.swift */,
+				E309029C2FBB6E9600C52238 /* EssayAssistantItem.swift */,
+				E309029A2FBB6E8000C52238 /* EssayTopicMode.swift */,
+				E30902652FBAE1BE00C52238 /* EssayScore.swift */,
+				E30902532FBAC9F500C52238 /* EssayTopic.swift */,
+				E30902612FBAE18900C52238 /* EssayDifficulty.swift */,
+				E30902BB2FBB974900C52238 /* GeneratedEssayTask.swift */,
+				E30902632FBAE1AB00C52238 /* GrammarLanguage.swift */,
+				E30902542FBAC9F500C52238 /* GrammarIssue.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		E30A1C8F2F98003000387BDC = {
@@ -739,15 +758,6 @@
 		E30A1D852F9C9D6600387BDC /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				E30902B52FBB96DD00C52238 /* EssayAIClient.swift */,
-				E30902BB2FBB974900C52238 /* GeneratedEssayTask.swift */,
-				E30902B32FBB96B800C52238 /* EssayGeneratedHint.swift */,
-				E30902AC2FBB753C00C52238 /* EssayHintItem.swift */,
-				E309029C2FBB6E9600C52238 /* EssayAssistantItem.swift */,
-				E309029A2FBB6E8000C52238 /* EssayTopicMode.swift */,
-				E30902652FBAE1BE00C52238 /* EssayScore.swift */,
-				E30902632FBAE1AB00C52238 /* GrammarLanguage.swift */,
-				E30902612FBAE18900C52238 /* EssayDifficulty.swift */,
 				E30A1DA32F9E076200387BDC /* Folders.swift */,
 				E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */,
 				E30A1D5C2F9BEB8200387BDC /* CreateSet.swift */,
@@ -757,8 +767,6 @@
 				E30A1D702F9C0ED000387BDC /* FlashCard.swift */,
 				E30A1D7D2F9C236000387BDC /* CreateSetTheme.swift */,
 				E30902272FBA3EC600C52238 /* WritingModels.swift */,
-				E30902532FBAC9F500C52238 /* EssayTopic.swift */,
-				E30902542FBAC9F500C52238 /* GrammarIssue.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
