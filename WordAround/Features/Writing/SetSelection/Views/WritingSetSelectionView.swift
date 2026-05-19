@@ -24,17 +24,6 @@ struct WritingSetSelectionView: View {
                     topBar
                         .padding(.bottom, isPadLike ? 10 : 4)
 
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Choose set")
-                            .font(.system(size: Layout.homePlaceholderTitleSize, weight: .bold, design: .rounded))
-                            .foregroundColor(AppColors.primaryBlueDark)
-
-                        Text("Select the set whose words you want to write.")
-                            .font(.system(size: Layout.homePlaceholderSubtitleSize, weight: .medium, design: .rounded))
-                            .foregroundColor(AppColors.textSecondary)
-                    }
-                    .padding(.bottom, isPadLike ? 14 : 8)
-
                     if viewModel.isEmpty {
                         emptyState
                     } else {
@@ -60,18 +49,34 @@ struct WritingSetSelectionView: View {
     }
 
     private var topBar: some View {
-        HStack {
-            Button { dismiss() } label: {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: Layout.flashcardDetailTopButtonIconSize, weight: .bold))
-                    .foregroundColor(AppColors.primaryBlueDark)
-                    .frame(width: Layout.flashcardDetailTopButtonSize, height: Layout.flashcardDetailTopButtonSize)
-                    .background(Color.white.opacity(0.82))
-                    .clipShape(Circle())
-            }
-            .buttonStyle(.plain)
+        ZStack {
+            Text("Choose set")
+                .font(.system(
+                    size: Layout.homePlaceholderTitleSize - 4,
+                    weight: .bold,
+                    design: .rounded
+                ))
+                .foregroundColor(AppColors.primaryBlueDark)
 
-            Spacer()
+            HStack {
+                Button { dismiss() } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(
+                            size: Layout.flashcardDetailTopButtonIconSize,
+                            weight: .bold
+                        ))
+                        .foregroundColor(AppColors.primaryBlueDark)
+                        .frame(
+                            width: Layout.flashcardDetailTopButtonSize,
+                            height: Layout.flashcardDetailTopButtonSize
+                        )
+                        .background(Color.white.opacity(0.82))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+            }
         }
     }
 

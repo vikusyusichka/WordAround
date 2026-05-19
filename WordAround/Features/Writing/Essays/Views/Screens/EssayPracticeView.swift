@@ -2,13 +2,32 @@ import SwiftUI
 import Foundation
 
 struct EssayPracticeView: View {
-    @StateObject private var viewModel = EssayPracticeViewModel()
+    @Environment(\.dismiss) private var dismiss
+
+    @StateObject private var viewModel: EssayPracticeViewModel
     @FocusState private var isEditorFocused: Bool
+
+    private var isPadLike: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+    }
+
+    init(availableSets: [FlashcardSet] = []) {
+        _viewModel = StateObject(
+            wrappedValue: EssayPracticeViewModel(
+                availableSets: availableSets
+            )
+        )
+    }
 
     var body: some View {
         ZStack {
-            ScrollView {
+            AppColors.appBackground.ignoresSafeArea()
+
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: Layout.essayMainSpacing) {
+                    topBar
+                        .padding(.bottom, isPadLike ? 10 : 4)
+
                     topicSection
                     configurationSection
 
@@ -20,11 +39,19 @@ struct EssayPracticeView: View {
                         isLoading: viewModel.isLoading,
                         canCheckGrammar: viewModel.canCheckGrammar,
                         hintsLeft: viewModel.hintsLeft,
+                        translateLeft: viewModel.translateLeft,
+                        synonymLeft: viewModel.synonymLeft,
                         canUseHint: viewModel.canUseHint,
                         canUseTranslation: viewModel.canUseTranslation,
                         canUseSynonym: viewModel.canUseSynonym,
                         assistanceUsageText: viewModel.assistanceUsageText,
                         shownHintItems: viewModel.shownHintItems,
+                        selectedSetHintItems: viewModel.selectedEssaySetHints,
+                        onRemoveSetHint: { item in
+                            withAnimation(.easeInOut(duration: 0.18)) {
+                                viewModel.removeEssaySetHint(item)
+                            }
+                        },
                         onHint: {
                             withAnimation(.easeInOut(duration: 0.22)) {
                                 viewModel.showHint()
@@ -42,6 +69,12 @@ struct EssayPracticeView: View {
                                 viewModel.openSynonymModal()
                             }
                         },
+                        onSets: {
+                            isEditorFocused = false
+                            withAnimation(.easeInOut(duration: 0.22)) {
+                                viewModel.openSetSelection()
+                            }
+                        },
                         onReset: {
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 viewModel.resetEssay()
@@ -50,10 +83,7 @@ struct EssayPracticeView: View {
                         },
                         onCheckGrammar: {
                             isEditorFocused = false
-
-                            Task {
-                                await viewModel.checkGrammar()
-                            }
+                            Task { await viewModel.checkGrammar() }
                         }
                     )
 
@@ -72,13 +102,13 @@ struct EssayPracticeView: View {
                 }
                 .frame(maxWidth: Layout.essayContentMaxWidth)
                 .frame(maxWidth: .infinity)
-                .padding(.horizontal, Layout.essayScreenHorizontalPadding)
-                .padding(.vertical, Layout.essayScreenVerticalPadding)
+                .padding(.horizontal, Layout.homeHorizontalPadding)
+                .padding(.top, Layout.homeTopSpacing)
+                .padding(.bottom, Layout.homeBottomSafeSpacing)
             }
             .scrollDismissesKeyboard(.interactively)
-            .background(AppColors.appBackground.ignoresSafeArea())
-            .navigationTitle("Essay Practice")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
             .task {
                 if viewModel.currentTask == nil && !Self.isPreview {
                     await viewModel.generateSuggestedTask()
@@ -86,6 +116,43 @@ struct EssayPracticeView: View {
             }
             .onTapGesture {
                 isEditorFocused = false
+            }
+            .sheet(isPresented: $viewModel.isSetSelectionPresented) {
+                if viewModel.isLoadingSets {
+                    VStack(spacing: 14) {
+                        ProgressView()
+                            .tint(AppColors.primaryBlue)
+
+                        Text("Loading sets")
+                            .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
+                            .foregroundColor(AppColors.primaryBlueDark)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(AppColors.appBackground.ignoresSafeArea())
+                } else {
+                    WritingSetSelectionView(
+                        sets: viewModel.availableSets,
+                        onSelect: { set in
+                            viewModel.selectHintSet(set)
+                        }
+                    )
+                    .id(viewModel.availableSets.map(\.id).joined(separator: "-"))
+                }
+            }
+            .sheet(isPresented: $viewModel.isSetHintsPresented) {
+                if let selectedHintSet = viewModel.selectedHintSet {
+                    EssaySetHintsSelectionView(
+                        set: selectedHintSet,
+                        items: viewModel.selectedSetHintItems,
+                        selectedItems: viewModel.selectedEssaySetHints,
+                        onToggle: { item in
+                            viewModel.toggleEssaySetHint(item)
+                        },
+                        onDone: {
+                            viewModel.isSetHintsPresented = false
+                        }
+                    )
+                }
             }
 
             if let modal = viewModel.activeAssistanceModal {
@@ -114,15 +181,13 @@ struct EssayPracticeView: View {
                         }
                     },
                     onSubmit: {
-                        Task {
-                            switch modal {
-                            case .hint:
-                                break
-                            case .translate:
-                                await viewModel.performTranslation()
-                            case .synonym:
-                                await viewModel.performSynonymSearch()
-                            }
+                        switch modal {
+                        case .hint:
+                            break
+                        case .translate:
+                            viewModel.performTranslation()
+                        case .synonym:
+                            viewModel.performSynonymSearch()
                         }
                     },
                     onClose: {
@@ -136,8 +201,44 @@ struct EssayPracticeView: View {
         }
     }
 
+    // MARK: - Private
+
     private static var isPreview: Bool {
         ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+    }
+
+    private var topBar: some View {
+        ZStack {
+            Text("Essay Practice")
+                .font(.system(
+                    size: Layout.homePlaceholderTitleSize - 4,
+                    weight: .bold,
+                    design: .rounded
+                ))
+                .foregroundColor(AppColors.primaryBlueDark)
+
+            HStack {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(
+                            size: Layout.flashcardDetailTopButtonIconSize,
+                            weight: .bold
+                        ))
+                        .foregroundColor(AppColors.primaryBlueDark)
+                        .frame(
+                            width: Layout.flashcardDetailTopButtonSize,
+                            height: Layout.flashcardDetailTopButtonSize
+                        )
+                        .background(Color.white.opacity(0.82))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+            }
+        }
     }
 
     private var topicSection: some View {
@@ -152,9 +253,7 @@ struct EssayPracticeView: View {
                         isLoading: viewModel.isGeneratingTask,
                         errorMessage: viewModel.taskGenerationError,
                         onRefresh: {
-                            Task {
-                                await viewModel.generateSuggestedTask()
-                            }
+                            Task { await viewModel.generateSuggestedTask() }
                         }
                     )
                 } else {
@@ -163,12 +262,11 @@ struct EssayPracticeView: View {
                         isLoading: viewModel.isGeneratingTask,
                         errorMessage: viewModel.taskGenerationError,
                         onRefresh: {
-                            Task {
-                                await viewModel.generateSuggestedTask()
-                            }
+                            Task { await viewModel.generateSuggestedTask() }
                         }
                     )
                 }
+
             case .custom:
                 CustomEssayTopicInputView(
                     topicText: Binding(
@@ -185,9 +283,7 @@ struct EssayPracticeView: View {
                         isLoading: viewModel.isGeneratingTask,
                         errorMessage: viewModel.taskGenerationError,
                         onRefresh: {
-                            Task {
-                                await viewModel.generateTaskFromCustomTopic()
-                            }
+                            Task { await viewModel.generateTaskFromCustomTopic() }
                         }
                     )
                 } else if let error = viewModel.taskGenerationError {
@@ -203,12 +299,9 @@ struct EssayPracticeView: View {
         }
     }
 
-
     private var customTopicGenerationButton: some View {
         Button {
-            Task {
-                await viewModel.generateTaskFromCustomTopic()
-            }
+            Task { await viewModel.generateTaskFromCustomTopic() }
         } label: {
             HStack(spacing: 8) {
                 if viewModel.isGeneratingTask {

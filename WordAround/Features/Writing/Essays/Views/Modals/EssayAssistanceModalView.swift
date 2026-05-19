@@ -65,24 +65,17 @@ struct EssayAssistanceModalView: View {
 
     private var modalMaxWidth: CGFloat {
         switch type {
-        case .hint:
-            return Layout.isPadLike ? 560 : 420
-        case .translate:
-            return Layout.isPadLike ? 560 : 420
+        case .hint, .translate:
+            return Layout.isPadLike ? Layout.essayModalDefaultMaxWidthPad : Layout.essayModalDefaultMaxWidthPhone
         case .synonym:
-            return Layout.isPadLike ? 640 : 430
+            return Layout.isPadLike ? Layout.essayModalSynonymMaxWidthPad : Layout.essayModalSynonymMaxWidthPhone
         }
     }
 
     private var resultsMaxHeight: CGFloat {
-        switch type {
-        case .hint:
-            return 180
-        case .translate:
-            return resultItems.count <= 1 ? 92 : 180
-        case .synonym:
-            return Layout.isPadLike ? 360 : 430
-        }
+        Layout.isPadLike
+        ? Layout.essayModalSynonymResultsMaxHeightPad
+        : Layout.essayModalSynonymResultsMaxHeightPhone
     }
 
     var body: some View {
@@ -124,7 +117,7 @@ struct EssayAssistanceModalView: View {
     }
 
     private var header: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Layout.essayModalHeaderSpacing) {
             RoundedRectangle(
                 cornerRadius: Layout.essayModalIconCornerRadius,
                 style: .continuous
@@ -140,7 +133,7 @@ struct EssayAssistanceModalView: View {
                     .foregroundColor(AppColors.primaryBlue)
             }
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: Layout.essayModalTitleSpacing) {
                 Text(title)
                     .font(.system(size: Layout.essayModalTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
@@ -148,6 +141,8 @@ struct EssayAssistanceModalView: View {
                 Text(usageText)
                     .font(.system(size: Layout.essayModalSubtitleSize, weight: .semibold, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
+                    .lineLimit(Layout.essayModalUsageTextLineLimit)
+                    .minimumScaleFactor(Layout.essayModalUsageTextScale)
             }
 
             Spacer(minLength: 0)
@@ -168,7 +163,7 @@ struct EssayAssistanceModalView: View {
     }
 
     private var languagePicker: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Layout.essayModalLanguagePickerSpacing) {
             languagePill(
                 title: "From",
                 language: selectedSourceLanguage,
@@ -176,8 +171,9 @@ struct EssayAssistanceModalView: View {
             )
 
             Image(systemName: "arrow.right")
-                .font(.system(size: 13, weight: .bold))
+                .font(.system(size: Layout.essayModalLanguageArrowSize, weight: .bold))
                 .foregroundColor(AppColors.textSecondary)
+                .frame(width: Layout.essayModalLanguageArrowWidth)
 
             languagePill(
                 title: "To",
@@ -201,18 +197,10 @@ struct EssayAssistanceModalView: View {
                         }
                     }
                 } label: {
-                    pillContent(
-                        title: title,
-                        language: language,
-                        showsChevron: true
-                    )
+                    pillContent(title: title, language: language, showsChevron: true)
                 }
             } else {
-                pillContent(
-                    title: title,
-                    language: language,
-                    showsChevron: false
-                )
+                pillContent(title: title, language: language, showsChevron: false)
             }
         }
     }
@@ -222,40 +210,48 @@ struct EssayAssistanceModalView: View {
         language: GrammarLanguage,
         showsChevron: Bool
     ) -> some View {
-        HStack(spacing: 8) {
-            VStack(alignment: .leading, spacing: 1) {
+        HStack(spacing: Layout.essayModalLanguagePillSpacing) {
+            VStack(alignment: .leading, spacing: Layout.essayModalLanguagePillTextSpacing) {
                 Text(title)
-                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                    .font(.system(size: Layout.essayModalLanguagePillTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
+                    .lineLimit(1)
 
                 Text(language.title)
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .font(.system(size: Layout.essayModalLanguagePillTextSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
+                    .lineLimit(1)
+                    .minimumScaleFactor(Layout.essayModalLanguageTextScale)
+                    .allowsTightening(true)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            .layoutPriority(2)
 
-            Spacer(minLength: 0)
+            Spacer(minLength: Layout.essayModalLanguagePillSpacerMinLength)
 
             Text(language.shortTitle)
-                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .font(.system(size: Layout.essayModalLanguagePillCodeSize, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlue)
-                .padding(.horizontal, 9)
-                .padding(.vertical, 6)
+                .padding(.horizontal, Layout.essayModalLanguagePillCodeHorizontalPadding)
+                .padding(.vertical, Layout.essayModalLanguagePillCodeVerticalPadding)
                 .background(AppColors.primaryBlue.opacity(0.08))
                 .clipShape(Capsule())
+                .layoutPriority(1)
 
             if showsChevron {
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.system(size: Layout.essayModalLanguagePillChevronSize, weight: .bold))
                     .foregroundColor(AppColors.textSecondary)
+                    .layoutPriority(0)
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .frame(maxWidth: .infinity)
+        .padding(.horizontal, Layout.essayModalLanguagePillHorizontalPadding)
+        .padding(.vertical, Layout.essayModalLanguagePillVerticalPadding)
+        .frame(maxWidth: .infinity, minHeight: Layout.essayModalLanguagePillMinHeight)
         .background(AppColors.primaryBlue.opacity(0.05))
         .clipShape(
             RoundedRectangle(
-                cornerRadius: 18,
+                cornerRadius: Layout.essayModalLanguagePillCornerRadius,
                 style: .continuous
             )
         )
@@ -274,7 +270,7 @@ struct EssayAssistanceModalView: View {
             )
             .strokeBorder(
                 AppColors.primaryBlue.opacity(0.10),
-                lineWidth: 1
+                lineWidth: Layout.essayModalInputBorderWidth
             )
         }
         .overlay {
@@ -287,9 +283,9 @@ struct EssayAssistanceModalView: View {
                 .foregroundColor(AppColors.primaryBlueDark)
                 .padding(.horizontal, Layout.essayModalInputHorizontalPadding)
                 .padding(.vertical, Layout.essayModalInputVerticalPadding)
-                .lineLimit(1...3)
+                .lineLimit(Layout.essayModalInputMinLines...Layout.essayModalInputMaxLines)
         }
-        .frame(minHeight: 58)
+        .frame(minHeight: Layout.essayModalInputMinHeight)
         .compositingGroup()
     }
 
@@ -307,13 +303,14 @@ struct EssayAssistanceModalView: View {
                     .id("results-\(resultItems.map(\.result).joined(separator: "-"))")
             }
         }
-        .animation(.easeInOut(duration: 0.16), value: isLoading)
-        .animation(.easeInOut(duration: 0.16), value: resultMessage)
-        .animation(.easeInOut(duration: 0.16), value: resultItems)
+        .clipped()
+        .animation(.easeInOut(duration: Layout.essayModalResultAnimationDuration), value: isLoading)
+        .animation(.easeInOut(duration: Layout.essayModalResultAnimationDuration), value: resultMessage)
+        .animation(.easeInOut(duration: Layout.essayModalResultAnimationDuration), value: resultItems)
     }
 
     private var loadingCard: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Layout.essayModalLoadingSpacing) {
             loadingCircle
 
             Text(loadingText)
@@ -345,16 +342,25 @@ struct EssayAssistanceModalView: View {
 
     private var loadingCircle: some View {
         Circle()
-            .trim(from: 0.14, to: 0.86)
+            .trim(
+                from: Layout.essayModalLoadingCircleTrimStart,
+                to: Layout.essayModalLoadingCircleTrimEnd
+            )
             .stroke(
                 AppColors.primaryBlue.opacity(0.85),
-                style: StrokeStyle(lineWidth: 3, lineCap: .round)
+                style: StrokeStyle(
+                    lineWidth: Layout.essayModalLoadingCircleLineWidth,
+                    lineCap: .round
+                )
             )
-            .frame(width: 22, height: 22)
+            .frame(
+                width: Layout.essayModalLoadingCircleSize,
+                height: Layout.essayModalLoadingCircleSize
+            )
             .rotationEffect(.degrees(isLoadingCircleActive ? 360 : 0))
             .animation(
                 isLoadingCircleActive
-                ? .linear(duration: 0.72).repeatForever(autoreverses: false)
+                ? .linear(duration: Layout.essayModalLoadingCircleDuration).repeatForever(autoreverses: false)
                 : .default,
                 value: isLoadingCircleActive
             )
@@ -383,36 +389,46 @@ struct EssayAssistanceModalView: View {
     }
 
     private var resultsList: some View {
-        ScrollView {
-            VStack(spacing: Layout.essayModalResultSpacing) {
-                ForEach(resultItems) { item in
-                    resultRow(item)
+        Group {
+            if type == .synonym {
+                ScrollView {
+                    resultRows
                 }
+                .frame(height: resultsMaxHeight)
+                .scrollIndicators(.hidden)
+                .clipped()
+            } else {
+                resultRows
             }
-            .padding(.vertical, 1)
         }
-        .scrollIndicators(.hidden)
-        .clipped()
         .background(Color.clear)
-        .frame(maxHeight: resultsMaxHeight)
         .transaction { transaction in
             transaction.animation = nil
         }
     }
 
+    private var resultRows: some View {
+        VStack(spacing: Layout.essayModalResultSpacing) {
+            ForEach(resultItems) { item in
+                resultRow(item)
+            }
+        }
+        .padding(.vertical, Layout.essayModalResultListVerticalPadding)
+    }
+
     private func resultRow(_ item: EssayAssistanceItem) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Layout.essayModalResultRowSpacing) {
             Text(item.result)
                 .font(.system(size: Layout.essayModalResultTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
-                .lineLimit(2)
-                .minimumScaleFactor(0.85)
+                .lineLimit(Layout.essayModalResultTitleLineLimit)
+                .minimumScaleFactor(Layout.essayModalResultTitleScale)
 
             if let detail = item.detail {
                 Text(detail)
                     .font(.system(size: Layout.essayModalResultDetailSize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
-                    .lineSpacing(3)
+                    .lineSpacing(Layout.essayModalResultDetailLineSpacing)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -428,7 +444,7 @@ struct EssayAssistanceModalView: View {
     }
 
     private var actions: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Layout.essayModalActionsSpacing) {
             Button(action: onClose) {
                 Text("Close")
                     .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
@@ -448,84 +464,25 @@ struct EssayAssistanceModalView: View {
             if type != .hint {
                 Button(action: onSubmit) {
                     Text(buttonTitle)
-                    .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Layout.essayButtonVerticalPadding)
-                    .background(
-                        isLoading
-                        ? AppColors.primaryBlue.opacity(0.55)
-                        : AppColors.primaryBlue
-                    )
-                    .clipShape(
-                        RoundedRectangle(
-                            cornerRadius: Layout.essayButtonCornerRadius,
-                            style: .continuous
+                        .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, Layout.essayButtonVerticalPadding)
+                        .background(
+                            isLoading
+                            ? AppColors.primaryBlue.opacity(0.55)
+                            : AppColors.primaryBlue
                         )
-                    )
-            }
+                        .clipShape(
+                            RoundedRectangle(
+                                cornerRadius: Layout.essayButtonCornerRadius,
+                                style: .continuous
+                            )
+                        )
+                }
                 .disabled(isLoading)
                 .buttonStyle(.plain)
             }
         }
     }
-}
-
-#Preview("Hint") {
-    EssayAssistanceModalView(
-        type: .hint,
-        inputText: .constant(""),
-        selectedTargetLanguage: .english,
-        selectedSourceLanguage: .spanish,
-        sourceLanguages: [.spanish, .french, .german],
-        resultItems: [
-            EssayAssistanceItem(word: "structure", result: "Add one clear supporting example.", detail: "Structure")
-        ],
-        resultMessage: nil,
-        usageText: "Hints: 1  ·  Translations: 0  ·  Synonyms: 0",
-        isLoading: false,
-        onSelectSourceLanguage: { _ in },
-        onSubmit: {},
-        onClose: {}
-    )
-}
-
-#Preview("Translate") {
-    EssayAssistanceModalView(
-        type: .translate,
-        inputText: .constant("Hello"),
-        selectedTargetLanguage: .french,
-        selectedSourceLanguage: .english,
-        sourceLanguages: [.english, .spanish, .german],
-        resultItems: [
-            EssayAssistanceItem(word: "Hello", result: "Bonjour")
-        ],
-        resultMessage: nil,
-        usageText: "Hints: 0  ·  Translations: 1  ·  Synonyms: 0",
-        isLoading: false,
-        onSelectSourceLanguage: { _ in },
-        onSubmit: {},
-        onClose: {}
-    )
-}
-
-#Preview("Synonyms") {
-    EssayAssistanceModalView(
-        type: .synonym,
-        inputText: .constant("feo"),
-        selectedTargetLanguage: .english,
-        selectedSourceLanguage: .spanish,
-        sourceLanguages: [.spanish, .french, .german],
-        resultItems: [
-            EssayAssistanceItem(word: "feo", result: "ugly"),
-            EssayAssistanceItem(word: "feo", result: "unattractive"),
-            EssayAssistanceItem(word: "feo", result: "unpleasant")
-        ],
-        resultMessage: nil,
-        usageText: "Hints: 0  ·  Translations: 0  ·  Synonyms: 1",
-        isLoading: false,
-        onSelectSourceLanguage: { _ in },
-        onSubmit: {},
-        onClose: {}
-    )
 }

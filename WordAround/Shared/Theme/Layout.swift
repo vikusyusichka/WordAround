@@ -864,6 +864,59 @@ extension Layout {
     static let essayModalResultCornerRadius: CGFloat = 16
     static let essayModalResultTitleSize: CGFloat = isPadLike ? 16 : 14
     static let essayModalResultDetailSize: CGFloat = isPadLike ? 13 : 12
+    static let essayModalDefaultMaxWidthPhone: CGFloat = 420
+    static let essayModalDefaultMaxWidthPad: CGFloat = 560
+    static let essayModalSynonymMaxWidthPhone: CGFloat = 430
+    static let essayModalSynonymMaxWidthPad: CGFloat = 640
+
+    static let essayModalHeaderSpacing: CGFloat = 12
+    static let essayModalTitleSpacing: CGFloat = 3
+    static let essayModalUsageTextLineLimit: Int = 2
+    static let essayModalUsageTextScale: CGFloat = 0.8
+
+    static let essayModalInputBorderWidth: CGFloat = 1
+    static let essayModalInputMinHeight: CGFloat = 58
+    static let essayModalInputMinLines: Int = 1
+    static let essayModalInputMaxLines: Int = 3
+
+    static let essayModalResultAnimationDuration: Double = 0.16
+    static let essayModalResultListVerticalPadding: CGFloat = 1
+    static let essayModalResultRowSpacing: CGFloat = 4
+    static let essayModalResultTitleLineLimit: Int = 2
+    static let essayModalResultTitleScale: CGFloat = 0.85
+    static let essayModalResultDetailLineSpacing: CGFloat = 3
+
+    static let essayModalLoadingSpacing: CGFloat = 12
+    static let essayModalLoadingCircleTrimStart: CGFloat = 0.14
+    static let essayModalLoadingCircleTrimEnd: CGFloat = 0.86
+    static let essayModalLoadingCircleLineWidth: CGFloat = 3
+    static let essayModalLoadingCircleSize: CGFloat = 22
+    static let essayModalLoadingCircleDuration: Double = 0.72
+
+    static let essayModalActionsSpacing: CGFloat = 10
+    static let essayModalLanguagePickerSpacing: CGFloat = 10
+    static let essayModalLanguageArrowWidth: CGFloat = 18
+    static let essayModalLanguageArrowSize: CGFloat = 13
+
+    static let essayModalLanguagePillSpacing: CGFloat = 6
+    static let essayModalLanguagePillTextSpacing: CGFloat = 2
+    static let essayModalLanguagePillSpacerMinLength: CGFloat = 2
+    static let essayModalLanguagePillTitleSize: CGFloat = 10
+    static let essayModalLanguagePillTextSize: CGFloat = 13
+    static let essayModalLanguagePillCodeSize: CGFloat = 12
+    static let essayModalLanguagePillChevronSize: CGFloat = 11
+    static let essayModalLanguagePillHorizontalPadding: CGFloat = 12
+    static let essayModalLanguagePillVerticalPadding: CGFloat = 10
+    static let essayModalLanguagePillMinHeight: CGFloat = 76
+    static let essayModalLanguagePillCornerRadius: CGFloat = 18
+    static let essayModalLanguagePillCodeHorizontalPadding: CGFloat = 8
+    static let essayModalLanguagePillCodeVerticalPadding: CGFloat = 6
+    static let essayModalLanguageTextScale: CGFloat = 0.62
+
+    static let essayModalTranslateResultsMaxHeight: CGFloat = 120
+    static let essayModalHintResultsMaxHeight: CGFloat = 160
+    static let essayModalSynonymResultsMaxHeightPhone: CGFloat = 110
+    static let essayModalSynonymResultsMaxHeightPad: CGFloat = 280
 
     // MARK: - Essay Feedback / Score
 

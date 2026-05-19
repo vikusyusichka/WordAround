@@ -1,8 +1,11 @@
 import Foundation
 import Combine
+import FirebaseAuth
 
 @MainActor
 final class EssayPracticeViewModel: ObservableObject {
+
+    // MARK: - Nested types
 
     enum ValidationState: Equatable {
         case empty
@@ -36,6 +39,8 @@ final class EssayPracticeViewModel: ObservableObject {
         case error(String)
     }
 
+    // MARK: - Topic / task state
+
     @Published var topicMode: EssayTopicMode = .suggested {
         didSet { clearFeedback() }
     }
@@ -53,20 +58,18 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published var hintGenerationError: String?
     @Published var usedTaskTitles: [String] = []
 
+    // MARK: - Essay state
+
     @Published var essayText: String {
         didSet { updateWritingState() }
     }
 
+    // MARK: - Settings
+
     @Published var selectedLanguage: GrammarLanguage {
         didSet {
-            if translationSourceLanguage == selectedLanguage {
-                translationSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
-            }
-
-            if assistanceSourceLanguage == selectedLanguage {
-                assistanceSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
-            }
-
+            guard selectedLanguage != oldValue else { return }
+            resetSourceLanguagesIfNeeded()
             clearFeedback()
             clearAssistanceResults()
         }
@@ -74,6 +77,7 @@ final class EssayPracticeViewModel: ObservableObject {
 
     @Published var selectedDifficulty: EssayDifficulty {
         didSet {
+            guard selectedDifficulty != oldValue else { return }
             resetAssistanceUsage()
             updateWritingState()
             clearFeedback()
@@ -83,6 +87,8 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published var translationSourceLanguage: GrammarLanguage
     @Published var assistanceSourceLanguage: GrammarLanguage
 
+    // MARK: - Grammar feedback state
+
     @Published private(set) var wordCount: Int = 0
     @Published private(set) var grammarIssues: [GrammarIssue] = []
     @Published private(set) var isLoading = false
@@ -91,10 +97,25 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published private(set) var feedbackState: FeedbackState = .idle
     @Published private(set) var score: EssayScore?
 
+    // MARK: - Assistance usage
+
     @Published private(set) var usedHints: Int = 0
     @Published private(set) var usedTranslations: Int = 0
     @Published private(set) var usedSynonyms: Int = 0
-    @Published private(set) var shownHintItems: [EssayHintItem] = []
+    @Published private(set) var shownHintItems: [EssaySetHintItem] = []
+
+    // MARK: - Set selection
+
+    @Published var isSetSelectionPresented: Bool = false
+    @Published var selectedHintSet: FlashcardSet?
+    @Published var isSetHintsPresented: Bool = false
+    @Published var selectedSetHintItems: [EssaySetHintItem] = []
+    @Published var selectedEssaySetHints: [EssaySetHintItem] = []
+    @Published private(set) var availableSets: [FlashcardSet] = []
+    @Published private(set) var isLoadingSets: Bool = false
+    @Published private(set) var setSelectionError: String?
+
+    // MARK: - Assistance modal state
 
     @Published var activeAssistanceModal: EssayAssistanceModalType? = nil
     @Published var assistanceInputText: String = ""
@@ -102,16 +123,25 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published private(set) var assistanceResultMessage: String? = nil
     @Published private(set) var isAssistanceLoading = false
 
+    // MARK: - Services
+
     private let topics: [EssayTopic]
     private let grammarService: GrammarChecking
     private let scoringService = EssayScoringService()
     private let assistanceService = EssayAssistanceService()
     private let generationService: EssayGenerationServicing
+    private let flashcardSetService = FlashcardSetService()
+
+    /// Stored so it can be cancelled when the modal closes or a new request starts.
+    private var assistanceTask: Task<Void, Never>?
+
+    // MARK: - Init
 
     init(
         topics: [EssayTopic] = EssayTopic.predefined,
         grammarService: GrammarChecking = GrammarCheckService(),
         generationService: EssayGenerationServicing = EssayGenerationService(),
+        availableSets: [FlashcardSet] = [],
         selectedLanguage: GrammarLanguage = .english,
         selectedDifficulty: EssayDifficulty = .b1
     ) {
@@ -119,6 +149,7 @@ final class EssayPracticeViewModel: ObservableObject {
         self.currentTopic = topics.randomElement() ?? .fallback
         self.grammarService = grammarService
         self.generationService = generationService
+        self.availableSets = availableSets.filter { !$0.cards.isEmpty }
         self.selectedLanguage = selectedLanguage
         self.selectedDifficulty = selectedDifficulty
         self.translationSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
@@ -126,80 +157,52 @@ final class EssayPracticeViewModel: ObservableObject {
         self.essayText = ""
 
         updateWritingState()
+
+        if self.availableSets.isEmpty {
+            Task { await loadAvailableSets() }
+        }
     }
+
+    // MARK: - Computed properties
 
     var canCheckGrammar: Bool {
         !isLoading && validationState.allowsGrammarCheck
     }
 
-    var hintsLimit: Int {
-        selectedDifficulty.hintsLimit
-    }
+    var hintsLimit: Int        { selectedDifficulty.hintsLimit }
+    var translationsLimit: Int { selectedDifficulty.translationLimit }
+    var synonymsLimit: Int     { selectedDifficulty.synonymLimit }
 
-    var translationsLimit: Int {
-        selectedDifficulty.translationLimit
-    }
+    var hintsLeft: Int        { max(0, hintsLimit - usedHints) }
+    var translateLeft: Int    { max(selectedDifficulty.translationLimit - usedTranslations, 0)}
+    var synonymLeft: Int      { max(selectedDifficulty.synonymLimit - usedSynonyms, 0)}
+    var translationsLeft: Int { max(0, translationsLimit - usedTranslations) }
+    var synonymsLeft: Int     { max(0, synonymsLimit - usedSynonyms) }
 
-    var synonymsLimit: Int {
-        selectedDifficulty.synonymLimit
-    }
+    var canUseHint: Bool        { hintsLeft > 0 && !isGeneratingHint }
+    var canUseTranslation: Bool { translationsLeft > 0 }
+    var canUseSynonym: Bool     { synonymsLeft > 0 }
 
-    var hintsLeft: Int {
-        max(0, hintsLimit - usedHints)
-    }
-
-    var translationsLeft: Int {
-        max(0, translationsLimit - usedTranslations)
-    }
-
-    var synonymsLeft: Int {
-        max(0, synonymsLimit - usedSynonyms)
-    }
-
-    var canUseHint: Bool {
-        hintsLeft > 0 && !isGeneratingHint
-    }
-
-    var canUseTranslation: Bool {
-        translationsLeft > 0
-    }
-
-    var translationWordLimit: Int {
-        selectedDifficulty.translationWordLimit
-    }
-
-    var canUseSynonym: Bool {
-        synonymsLeft > 0
-    }
+    var translationWordLimit: Int { selectedDifficulty.translationWordLimit }
 
     var activeTopicTitle: String {
-        if let currentTask {
-            return currentTask.title
-        }
-
+        if let currentTask { return currentTask.title }
         switch topicMode {
-        case .suggested:
-            return currentTopic.title
-        case .custom:
-            return customTopicText.trimmingCharacters(in: .whitespacesAndNewlines)
+        case .suggested: return currentTopic.title
+        case .custom:    return customTopicText.trimmingCharacters(in: .whitespacesAndNewlines)
         }
     }
 
     var activeTopicTask: String {
-        if let currentTask {
-            return currentTask.task
-        }
-
+        if let currentTask { return currentTask.task }
         switch topicMode {
-        case .suggested:
-            return currentTopic.taskDescription
-        case .custom:
-            return customTopicText.trimmingCharacters(in: .whitespacesAndNewlines)
+        case .suggested: return currentTopic.taskDescription
+        case .custom:    return customTopicText.trimmingCharacters(in: .whitespacesAndNewlines)
         }
     }
 
     var assistanceUsageText: String {
-        "Hints: \(usedHints)/\(hintsLimit)  ·  Translations: \(usedTranslations)/\(translationsLimit)  ·  Synonyms: \(usedSynonyms)/\(synonymsLimit)"
+        "Hints: \(usedHints)/\(hintsLimit)  ·  Translations: \(usedTranslations)/\(translationsLimit)  ·  Synonyms: \(usedSynonyms)/\(synonymsLimit)  ·  Sets: \(selectedEssaySetHints.count)"
     }
 
     var privacyNoticeText: String {
@@ -214,9 +217,10 @@ final class EssayPracticeViewModel: ObservableObject {
         GrammarLanguage.allCases.filter { $0 != selectedLanguage }
     }
 
+    // MARK: - Task generation
+
     func generateSuggestedTask() async {
         guard !isGeneratingTask else { return }
-
         isGeneratingTask = true
         taskGenerationError = nil
 
@@ -224,10 +228,7 @@ final class EssayPracticeViewModel: ObservableObject {
             let task = try await generateSuggestedTaskAvoidingDuplicates()
             applyGeneratedTask(task)
         } catch {
-            taskGenerationError = Self.displayMessage(
-                from: error,
-                fallback: "Could not generate a topic. Try again."
-            )
+            taskGenerationError = "Could not generate a topic. Try again."
         }
 
         isGeneratingTask = false
@@ -252,14 +253,13 @@ final class EssayPracticeViewModel: ObservableObject {
             )
             applyGeneratedTask(task)
         } catch {
-            taskGenerationError = Self.displayMessage(
-                from: error,
-                fallback: "Could not generate a topic. Try again."
-            )
+            taskGenerationError = "Could not generate a topic. Try again."
         }
 
         isGeneratingTask = false
     }
+
+    // MARK: - Hints
 
     func requestHint() async {
         guard canUseHint else {
@@ -270,8 +270,7 @@ final class EssayPracticeViewModel: ObservableObject {
         isGeneratingHint = true
         isAssistanceLoading = true
         hintGenerationError = nil
-        assistanceResultItems = []
-        assistanceResultMessage = nil
+        clearAssistanceResults()
         activeAssistanceModal = .hint
 
         do {
@@ -287,13 +286,16 @@ final class EssayPracticeViewModel: ObservableObject {
             let finalHint = preventDuplicateHint(hint)
             generatedHints.append(finalHint)
             usedHints += 1
-            shownHintItems = [
-                EssayHintItem(
-                    word: finalHint.category.rawValue.capitalized,
-                    translation: selectedDifficulty.rawValue,
-                    example: finalHint.text
-                )
-            ]
+
+            let hintItem = EssaySetHintItem(
+                id: UUID().uuidString,
+                word: finalHint.category.rawValue.capitalized,
+                translation: selectedDifficulty.rawValue,
+                example: finalHint.text,
+                imageURL: nil
+            )
+            shownHintItems = [hintItem]
+
             assistanceResultItems = [
                 EssayAssistanceItem(
                     word: finalHint.category.rawValue,
@@ -304,13 +306,18 @@ final class EssayPracticeViewModel: ObservableObject {
             recalculateScoreIfNeeded()
         } catch {
             hintGenerationError = "Could not generate a hint. Try again."
-            assistanceResultItems = []
             assistanceResultMessage = "Could not generate a hint. Try again."
         }
 
         isGeneratingHint = false
         isAssistanceLoading = false
     }
+
+    func showHint() {
+        Task { await requestHint() }
+    }
+
+    // MARK: - Topic selection
 
     func selectRandomTopic() {
         currentTask = nil
@@ -346,14 +353,43 @@ final class EssayPracticeViewModel: ObservableObject {
         selectedLanguage = language
     }
 
+    func selectDifficulty(_ difficulty: EssayDifficulty) {
+        guard selectedDifficulty != difficulty else { return }
+        selectedDifficulty = difficulty
+    }
+
+    // MARK: - Translate modal
+
+    func openTranslateModal() {
+        cancelAssistanceTaskIfNeeded()
+        assistanceInputText = ""
+        clearAssistanceResults()
+        ensureTranslationSourceLanguageIsValid()
+        activeAssistanceModal = .translate
+    }
+
     func selectTranslationSourceLanguage(_ language: GrammarLanguage) {
         guard language != selectedLanguage else {
             assistanceResultMessage = "Choose another input language."
             return
         }
-
         translationSourceLanguage = language
         clearAssistanceResults()
+    }
+
+    func performTranslation() {
+        cancelAssistanceTaskIfNeeded()
+        assistanceTask = Task { await _performTranslation() }
+    }
+
+    // MARK: - Synonym modal
+
+    func openSynonymModal() {
+        cancelAssistanceTaskIfNeeded()
+        assistanceInputText = ""
+        clearAssistanceResults()
+        ensureAssistanceSourceLanguageIsValid()
+        activeAssistanceModal = .synonym
     }
 
     func selectAssistanceSourceLanguage(_ language: GrammarLanguage) {
@@ -361,15 +397,97 @@ final class EssayPracticeViewModel: ObservableObject {
             assistanceResultMessage = "Choose another input language."
             return
         }
-
         assistanceSourceLanguage = language
         clearAssistanceResults()
     }
 
-    func selectDifficulty(_ difficulty: EssayDifficulty) {
-        guard selectedDifficulty != difficulty else { return }
-        selectedDifficulty = difficulty
+    func performSynonymSearch() {
+        cancelAssistanceTaskIfNeeded()
+        assistanceTask = Task { await _performSynonymSearch() }
     }
+
+    // MARK: - Close modal
+
+    func closeAssistanceModal() {
+        cancelAssistanceTaskIfNeeded()
+        activeAssistanceModal = nil
+        assistanceInputText = ""
+        clearAssistanceResults()
+        isAssistanceLoading = false
+    }
+
+    // MARK: - Set selection
+
+    func openSetSelection() {
+        isSetSelectionPresented = true
+        if availableSets.isEmpty && !isLoadingSets {
+            Task { await loadAvailableSets() }
+        }
+    }
+
+    func closeSetSelection() {
+        isSetSelectionPresented = false
+    }
+
+    func loadAvailableSets() async {
+        guard !isLoadingSets else { return }
+
+        guard let uid = Auth.auth().currentUser?.uid else {
+            setSelectionError = "Sign in to use words from your sets."
+            availableSets = []
+            return
+        }
+
+        isLoadingSets = true
+        setSelectionError = nil
+
+        do {
+            let sets = try await flashcardSetService.fetchSets(for: uid)
+            availableSets = sets.filter { !$0.cards.isEmpty }
+        } catch {
+            setSelectionError = "Could not load your sets. Try again."
+            availableSets = []
+        }
+
+        isLoadingSets = false
+    }
+
+    func selectHintSet(_ set: FlashcardSet) {
+        selectedHintSet = set
+        selectedSetHintItems = set.cards.map { card in
+            EssaySetHintItem(
+                id: card.id,
+                word: card.word,
+                translation: card.translation,
+                example: card.example,
+                imageURL: card.imageURL
+            )
+        }
+        isSetSelectionPresented = false
+        isSetHintsPresented = true
+    }
+
+    func toggleEssaySetHint(_ item: EssaySetHintItem) {
+        if isEssaySetHintSelected(item) {
+            removeEssaySetHint(item)
+        } else {
+            selectedEssaySetHints.append(item)
+        }
+    }
+
+    func isEssaySetHintSelected(_ item: EssaySetHintItem) -> Bool {
+        selectedEssaySetHints.contains { $0.id == item.id }
+    }
+
+    func removeEssaySetHint(_ item: EssaySetHintItem) {
+        selectedEssaySetHints.removeAll { $0.id == item.id }
+    }
+
+    func clearEssaySetHints() {
+        selectedEssaySetHints = []
+    }
+
+    // MARK: - Essay lifecycle
 
     func resetEssay() {
         essayText = ""
@@ -432,134 +550,10 @@ final class EssayPracticeViewModel: ObservableObject {
             usedSynonyms: usedSynonyms,
             difficulty: selectedDifficulty
         )
-
         score = scoringService.score(input: input)
     }
 
-    func showHint() {
-        Task { await requestHint() }
-    }
-
-    func openTranslateModal() {
-        assistanceInputText = ""
-        clearAssistanceResults()
-
-        if translationSourceLanguage == selectedLanguage {
-            translationSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
-        }
-
-        activeAssistanceModal = .translate
-    }
-
-    func performTranslation() async {
-        let text = assistanceInputText.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        guard !text.isEmpty else {
-            assistanceResultMessage = "Enter a word or short phrase."
-            return
-        }
-
-        guard canUseTranslation else {
-            assistanceResultMessage = "Translation is not available for this level."
-            return
-        }
-
-        let wordsCount = Self.countWords(in: text)
-
-        if translationWordLimit > 0 && wordsCount > translationWordLimit {
-            assistanceResultMessage = "Use up to \(translationWordLimit) words."
-            return
-        }
-
-        guard translationSourceLanguage != selectedLanguage else {
-            assistanceResultMessage = "Choose another input language."
-            return
-        }
-
-        isAssistanceLoading = true
-        clearAssistanceResults()
-
-        do {
-            let translated = try await assistanceService.translate(
-                text: text,
-                sourceLanguage: translationSourceLanguage,
-                targetLanguage: selectedLanguage
-            )
-
-            assistanceResultItems = [
-                EssayAssistanceItem(
-                    word: text,
-                    result: translated,
-                    detail: nil
-                )
-            ]
-
-            usedTranslations += 1
-            recalculateScoreIfNeeded()
-        } catch {
-            assistanceResultItems = []
-            assistanceResultMessage = (error as? LocalizedError)?.errorDescription ?? "Translation failed."
-        }
-
-        isAssistanceLoading = false
-    }
-
-    func openSynonymModal() {
-        assistanceInputText = ""
-        clearAssistanceResults()
-
-        if assistanceSourceLanguage == selectedLanguage {
-            assistanceSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
-        }
-
-        activeAssistanceModal = .synonym
-    }
-
-    func performSynonymSearch() async {
-        let word = assistanceInputText.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        guard !word.isEmpty else {
-            assistanceResultMessage = "Enter a word."
-            return
-        }
-
-        guard canUseSynonym else {
-            assistanceResultMessage = "No synonym helpers are left for this level."
-            return
-        }
-
-        guard assistanceSourceLanguage != selectedLanguage else {
-            assistanceResultMessage = "Choose another input language."
-            return
-        }
-
-        isAssistanceLoading = true
-        clearAssistanceResults()
-
-        do {
-            let results = try await assistanceService.synonyms(
-                for: word,
-                sourceLanguage: assistanceSourceLanguage,
-                targetLanguage: selectedLanguage
-            )
-
-            assistanceResultItems = results
-            usedSynonyms += 1
-            recalculateScoreIfNeeded()
-        } catch {
-            assistanceResultItems = []
-            assistanceResultMessage = (error as? LocalizedError)?.errorDescription ?? "No result found."
-        }
-
-        isAssistanceLoading = false
-    }
-
-    func closeAssistanceModal() {
-        activeAssistanceModal = nil
-        assistanceInputText = ""
-        clearAssistanceResults()
-        isAssistanceLoading = false
-    }
+    // MARK: - Legacy usage tracking (kept for compatibility)
 
     func registerHintUsage() {
         guard canUseHint else { return }
@@ -582,11 +576,120 @@ final class EssayPracticeViewModel: ObservableObject {
         hintGenerationError = nil
     }
 
-    private var activeWordRange: ClosedRange<Int> {
-        if let currentTask {
-            return currentTask.wordRange
+    // MARK: - Static helpers
+
+    static func countWords(in text: String) -> Int {
+        text
+            .split { $0.isWhitespace || $0.isNewline }
+            .filter { !$0.isEmpty }
+            .count
+    }
+
+    // MARK: - Private: Assistance execution
+
+    /// Internal translate implementation — always called inside a stored `assistanceTask`.
+    private func _performTranslation() async {
+        let text = assistanceInputText.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !text.isEmpty else {
+            assistanceResultMessage = "Enter a word or short phrase."
+            return
         }
 
+        guard canUseTranslation else {
+            assistanceResultMessage = "Translation is not available for this level."
+            return
+        }
+
+        let wordsCount = Self.countWords(in: text)
+        if translationWordLimit > 0 && wordsCount > translationWordLimit {
+            assistanceResultMessage = "Use up to \(translationWordLimit) words."
+            return
+        }
+
+        guard translationSourceLanguage != selectedLanguage else {
+            assistanceResultMessage = "Choose another input language."
+            return
+        }
+
+        // Clear results and start loading atomically — no flash of stale data
+        assistanceResultItems = []
+        assistanceResultMessage = nil
+        isAssistanceLoading = true
+
+        do {
+            let translated = try await assistanceService.translate(
+                text: text,
+                sourceLanguage: translationSourceLanguage,
+                targetLanguage: selectedLanguage
+            )
+
+            // Only write results if this task is still active (not cancelled)
+            guard !Task.isCancelled else { return }
+
+            assistanceResultItems = [
+                EssayAssistanceItem(word: text, result: translated, detail: nil)
+            ]
+            usedTranslations += 1
+            recalculateScoreIfNeeded()
+        } catch {
+            guard !Task.isCancelled else { return }
+            assistanceResultItems = []
+            assistanceResultMessage = (error as? LocalizedError)?.errorDescription ?? "Translation failed."
+        }
+
+        isAssistanceLoading = false
+    }
+
+    /// Internal synonym implementation — always called inside a stored `assistanceTask`.
+    private func _performSynonymSearch() async {
+        let word = assistanceInputText.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !word.isEmpty else {
+            assistanceResultMessage = "Enter a word."
+            return
+        }
+
+        guard canUseSynonym else {
+            assistanceResultMessage = "No synonym helpers are left for this level."
+            return
+        }
+
+        guard assistanceSourceLanguage != selectedLanguage else {
+            assistanceResultMessage = "Choose another input language."
+            return
+        }
+
+        // Clear results and start loading atomically — no flash of stale data
+        assistanceResultItems = []
+        assistanceResultMessage = nil
+        isAssistanceLoading = true
+
+        do {
+            let results = try await assistanceService.synonyms(
+                for: word,
+                sourceLanguage: assistanceSourceLanguage,
+                targetLanguage: selectedLanguage
+            )
+
+            guard !Task.isCancelled else { return }
+
+            assistanceResultItems = results
+            usedSynonyms += 1
+            recalculateScoreIfNeeded()
+        } catch {
+            guard !Task.isCancelled else { return }
+            assistanceResultItems = []
+            assistanceResultMessage = (error as? LocalizedError)?.errorDescription ?? "No result found."
+        }
+
+        isAssistanceLoading = false
+    }
+
+    // MARK: - Private helpers
+
+    private var activeWordRange: ClosedRange<Int> {
+        if let currentTask { return currentTask.wordRange }
         return topicMode == .suggested ? currentTopic.wordRange : 60...300
     }
 
@@ -604,6 +707,7 @@ final class EssayPracticeViewModel: ObservableObject {
             validationState = .valid
         }
 
+        // Reset feedback if the essay changed after a grammar check
         if !grammarIssues.isEmpty || errorState != nil || score != nil {
             grammarIssues = []
             errorState = nil
@@ -630,33 +734,25 @@ final class EssayPracticeViewModel: ObservableObject {
             return firstTask
         }
 
-        let retryTask = try await generationService.generateSuggestedTask(
+        return try await generationService.generateSuggestedTask(
             language: selectedLanguage,
             avoidTitles: usedTaskTitles + [firstTask.title]
         )
-
-        return retryTask
     }
 
     private func appendUsedTaskTitle(_ title: String) {
         let cleaned = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleaned.isEmpty else { return }
-
         usedTaskTitles.append(cleaned)
         usedTaskTitles = Array(usedTaskTitles.suffix(12))
     }
 
     private func isDuplicateTitle(_ title: String) -> Bool {
-        usedTaskTitles.contains { existing in
-            existing.caseInsensitiveCompare(title) == .orderedSame
-        }
+        usedTaskTitles.contains { $0.caseInsensitiveCompare(title) == .orderedSame }
     }
 
     private func preventDuplicateHint(_ hint: EssayGeneratedHint) -> EssayGeneratedHint {
-        let isDuplicate = generatedHints.contains { existing in
-            existing.text.caseInsensitiveCompare(hint.text) == .orderedSame
-        }
-
+        let isDuplicate = generatedHints.contains { $0.text.caseInsensitiveCompare(hint.text) == .orderedSame }
         guard isDuplicate else { return hint }
         return EssayGeneratedHint(text: "Add one clear supporting example.", category: .structure)
     }
@@ -671,23 +767,40 @@ final class EssayPracticeViewModel: ObservableObject {
         calculateScoreAfterGrammarCheck()
     }
 
-    private static func defaultSourceLanguage(for targetLanguage: GrammarLanguage) -> GrammarLanguage {
-        switch targetLanguage {
-        case .english:
-            return .spanish
-        case .spanish, .french, .german:
-            return .english
+    /// Cancels any in-flight translate/synonym task so stale results can't write back.
+    private func cancelAssistanceTaskIfNeeded() {
+        assistanceTask?.cancel()
+        assistanceTask = nil
+    }
+
+    /// Resets source languages when the target writing language changes.
+    private func resetSourceLanguagesIfNeeded() {
+        if translationSourceLanguage == selectedLanguage {
+            translationSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
+        }
+        if assistanceSourceLanguage == selectedLanguage {
+            assistanceSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
         }
     }
 
-    private static func displayMessage(from error: Error, fallback: String) -> String {
-        (error as? LocalizedError)?.errorDescription ?? fallback
+    /// Ensures the translation source language is not the same as the writing language.
+    private func ensureTranslationSourceLanguageIsValid() {
+        if translationSourceLanguage == selectedLanguage {
+            translationSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
+        }
     }
 
-    static func countWords(in text: String) -> Int {
-        text
-            .split { $0.isWhitespace || $0.isNewline }
-            .filter { !$0.isEmpty }
-            .count
+    /// Ensures the assistance (synonym) source language is not the same as the writing language.
+    private func ensureAssistanceSourceLanguageIsValid() {
+        if assistanceSourceLanguage == selectedLanguage {
+            assistanceSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
+        }
+    }
+
+    private static func defaultSourceLanguage(for targetLanguage: GrammarLanguage) -> GrammarLanguage {
+        switch targetLanguage {
+        case .english:            return .spanish
+        case .spanish, .french, .german: return .english
+        }
     }
 }

@@ -9,14 +9,19 @@ struct EssayInputSectionView: View {
     let isLoading: Bool
     let canCheckGrammar: Bool
     let hintsLeft: Int
+    let translateLeft: Int
+    let synonymLeft: Int
     let canUseHint: Bool
     let canUseTranslation: Bool
     let canUseSynonym: Bool
     let assistanceUsageText: String
-    let shownHintItems: [EssayHintItem]
+    let shownHintItems: [EssaySetHintItem]
+    let selectedSetHintItems: [EssaySetHintItem]
+    let onRemoveSetHint: (EssaySetHintItem) -> Void
     let onHint: () -> Void
     let onTranslate: () -> Void
     let onSynonym: () -> Void
+    let onSets: () -> Void
     let onReset: () -> Void
     let onCheckGrammar: () -> Void
 
@@ -26,16 +31,21 @@ struct EssayInputSectionView: View {
 
             EssayHelperToolbarView(
                 hintsLeft: hintsLeft,
+                translateLeft: translateLeft,
+                synonymLeft: synonymLeft,
                 canUseHint: canUseHint,
                 canUseTranslation: canUseTranslation,
                 canUseSynonym: canUseSynonym,
                 assistanceUsageText: assistanceUsageText,
                 onHint: onHint,
                 onTranslate: onTranslate,
-                onSynonym: onSynonym
+                onSynonym: onSynonym,
+                setsCount: selectedSetHintItems.count,
+                onSets: onSets
             )
 
             hintItems
+            setHintItems
             editor
             validationMessage
             actionButtons
@@ -86,13 +96,52 @@ struct EssayInputSectionView: View {
                                 .clipShape(Capsule())
                         }
 
-                        Text(item.example)
-                            .font(.system(size: Layout.essayHintExampleSize, weight: .medium, design: .rounded))
-                            .foregroundColor(AppColors.textSecondary)
-                            .lineSpacing(3)
+                        if let example = item.example,
+                           !example.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            Text(example)
+                                .font(.system(size: Layout.essayHintExampleSize, weight: .medium, design: .rounded))
+                                .foregroundColor(AppColors.textSecondary)
+                                .lineSpacing(3)
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(Layout.essayHintItemPadding)
+                    .background(Color.white.opacity(0.82))
+                    .clipShape(RoundedRectangle(cornerRadius: Layout.essayHintItemCornerRadius, style: .continuous))
+                }
+            }
+            .transition(.opacity.combined(with: .move(edge: .top)))
+        }
+    }
+
+    @ViewBuilder
+    private var setHintItems: some View {
+        if !selectedSetHintItems.isEmpty {
+            VStack(alignment: .leading, spacing: Layout.essayHintListSpacing) {
+                ForEach(selectedSetHintItems) { item in
+                    HStack(spacing: 8) {
+                        Text("\(item.word) — \(item.translation)")
+                            .font(.system(size: Layout.essayHintTranslationSize, weight: .bold, design: .rounded))
+                            .foregroundColor(AppColors.primaryBlueDark)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.78)
+
+                        Spacer(minLength: 8)
+
+                        Button {
+                            onRemoveSetHint(item)
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundColor(AppColors.primaryBlue)
+                                .frame(width: 22, height: 22)
+                                .background(AppColors.primaryBlue.opacity(0.08))
+                                .clipShape(Circle())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 9)
                     .background(Color.white.opacity(0.82))
                     .clipShape(RoundedRectangle(cornerRadius: Layout.essayHintItemCornerRadius, style: .continuous))
                 }
@@ -225,14 +274,19 @@ struct EssayInputSectionView: View {
                 isLoading: false,
                 canCheckGrammar: false,
                 hintsLeft: 7,
+                translateLeft: 5,
+                synonymLeft: 3,
                 canUseHint: true,
                 canUseTranslation: true,
                 canUseSynonym: true,
-                assistanceUsageText: "Hints: 0  ·  Translations: 0  ·  Synonyms: 0",
+                assistanceUsageText: "Hints: 0  ·  Translations: 0  ·  Synonyms: 0  ·  Sets: 0",
                 shownHintItems: [],
+                selectedSetHintItems: [],
+                onRemoveSetHint: { _ in },
                 onHint: {},
                 onTranslate: {},
                 onSynonym: {},
+                onSets: {},
                 onReset: {},
                 onCheckGrammar: {}
             )
