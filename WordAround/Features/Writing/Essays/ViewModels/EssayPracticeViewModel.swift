@@ -224,7 +224,10 @@ final class EssayPracticeViewModel: ObservableObject {
             let task = try await generateSuggestedTaskAvoidingDuplicates()
             applyGeneratedTask(task)
         } catch {
-            taskGenerationError = "Could not generate a topic. Try again."
+            taskGenerationError = Self.displayMessage(
+                from: error,
+                fallback: "Could not generate a topic. Try again."
+            )
         }
 
         isGeneratingTask = false
@@ -249,7 +252,10 @@ final class EssayPracticeViewModel: ObservableObject {
             )
             applyGeneratedTask(task)
         } catch {
-            taskGenerationError = "Could not generate a topic. Try again."
+            taskGenerationError = Self.displayMessage(
+                from: error,
+                fallback: "Could not generate a topic. Try again."
+            )
         }
 
         isGeneratingTask = false
@@ -672,6 +678,10 @@ final class EssayPracticeViewModel: ObservableObject {
         case .spanish, .french, .german:
             return .english
         }
+    }
+
+    private static func displayMessage(from error: Error, fallback: String) -> String {
+        (error as? LocalizedError)?.errorDescription ?? fallback
     }
 
     static func countWords(in text: String) -> Int {

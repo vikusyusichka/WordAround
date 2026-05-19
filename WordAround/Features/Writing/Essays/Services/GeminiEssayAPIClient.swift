@@ -4,24 +4,27 @@ enum GeminiEssayAIClientError: LocalizedError {
     case missingAPIKey
     case invalidURL
     case invalidResponse
-    case serverError(Int)
+    case serverError(Int, String)
     case emptyResponse
-    case malformedJSON
+    case malformedJSON(String)
 
     var errorDescription: String? {
         switch self {
         case .missingAPIKey:
-            return "Add GEMINI_API_KEY to Info.plist, xcconfig, or environment config."
+            return "Gemini API key is missing. Add GEMINI_API_KEY to Info.plist, xcconfig, or the app environment."
         case .invalidURL:
-            return "Could not build the AI request."
+            return "Could not build the Gemini request URL."
         case .invalidResponse:
-            return "The AI service returned an unexpected response."
-        case .serverError:
-            return "The AI service is temporarily unavailable."
+            return "Gemini returned an unexpected response."
+        case .serverError(let code, let message):
+            if message.isEmpty {
+                return "Gemini request failed with status code \(code)."
+            }
+            return "Gemini request failed with status code \(code): \(message)"
         case .emptyResponse:
-            return "The AI service returned an empty response."
-        case .malformedJSON:
-            return "The AI service returned unreadable data."
+            return "Gemini returned an empty response."
+        case .malformedJSON(let rawText):
+            return "Gemini returned data that could not be decoded as JSON: \(rawText)"
         }
     }
 }
@@ -35,8 +38,8 @@ final class GeminiEssayAIClient: EssayAIClient {
     init(
         session: URLSession = .shared,
         apiKey: String? = GeminiEssayAIClient.loadAPIKey(),
-        model: String = "gemini-2.5-flash-lite",
-        timeoutInterval: TimeInterval = 25
+        model: String = "gemini-3.1-flash-lite",
+        timeoutInterval: TimeInterval = 30
     ) {
         self.session = session
         self.apiKey = apiKey
@@ -158,13 +161,20 @@ final class GeminiEssayAIClient: EssayAIClient {
         return try await request(prompt: prompt, responseType: EssayGeneratedHint.self)
     }
 
-    private func request<T: Decodable>(prompt: String, responseType: T.Type) async throws -> T {
+    private func request<T: Decodable>(
+        prompt: String,
+        responseType: T.Type
+    ) async throws -> T {
         guard let apiKey, !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw GeminiEssayAIClientError.missingAPIKey
         }
 
-        var components = URLComponents(string: "https://generativelanguage.googleapis.com/v1beta/models/\(model):generateContent")
-        components?.queryItems = [URLQueryItem(name: "key", value: apiKey)]
+        var components = URLComponents(
+            string: "https://generativelanguage.googleapis.com/v1beta/models/\(model):generateContent"
+        )
+        components?.queryItems = [
+            URLQueryItem(name: "key", value: apiKey.trimmingCharacters(in: .whitespacesAndNewlines))
+        ]
 
         guard let url = components?.url else {
             throw GeminiEssayAIClientError.invalidURL
@@ -173,10 +183,21 @@ final class GeminiEssayAIClient: EssayAIClient {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.timeoutInterval = timeoutInterval
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(GeminiRequest(contents: [
-            GeminiContent(parts: [GeminiPart(text: prompt)])
-        ]))
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONEncoder().encode(
+            GeminiRequest(
+                contents: [
+                    GeminiContent(
+                        role: "user",
+                        parts: [GeminiPart(text: prompt)]
+                    )
+                ],
+                generationConfig: GeminiGenerationConfig(
+                    responseMimeType: "application/json",
+                    temperature: 0.8
+                )
+            )
+        )
 
         let (data, response) = try await session.data(for: request)
 
@@ -185,62 +206,120 @@ final class GeminiEssayAIClient: EssayAIClient {
         }
 
         guard (200...299).contains(httpResponse.statusCode) else {
-            throw GeminiEssayAIClientError.serverError(httpResponse.statusCode)
+            throw GeminiEssayAIClientError.serverError(
+                httpResponse.statusCode,
+                Self.extractServerMessage(from: data)
+            )
         }
 
         let decoded = try JSONDecoder().decode(GeminiResponse.self, from: data)
-        guard let text = decoded.candidates.first?.content.parts.first?.text
-            .trimmingCharacters(in: .whitespacesAndNewlines),
-              !text.isEmpty else {
+        let text = decoded.candidates
+            .flatMap { $0.content.parts }
+            .compactMap { $0.text }
+            .joined(separator: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !text.isEmpty else {
             throw GeminiEssayAIClientError.emptyResponse
         }
 
         let jsonString = Self.extractJSONString(from: text)
+
         guard let jsonData = jsonString.data(using: .utf8) else {
-            throw GeminiEssayAIClientError.malformedJSON
+            throw GeminiEssayAIClientError.malformedJSON(Self.safePreview(text))
         }
 
         do {
             return try JSONDecoder().decode(T.self, from: jsonData)
         } catch {
-            throw GeminiEssayAIClientError.malformedJSON
+            throw GeminiEssayAIClientError.malformedJSON(Self.safePreview(jsonString))
         }
     }
 
     private static func loadAPIKey() -> String? {
-        if let key = Bundle.main.object(forInfoDictionaryKey: "GEMINI_API_KEY") as? String,
-           !key.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return key
+        if let key = Bundle.main.object(forInfoDictionaryKey: "GEMINI_API_KEY") as? String {
+            let cleaned = key.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !cleaned.isEmpty {
+                return cleaned
+            }
         }
 
-        let environmentKey = ProcessInfo.processInfo.environment["GEMINI_API_KEY"]
-        return environmentKey?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let environmentKey = ProcessInfo.processInfo.environment["GEMINI_API_KEY"]?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if let environmentKey, !environmentKey.isEmpty {
+            return environmentKey
+        }
+
+        return nil
     }
 
     private static func extractJSONString(from text: String) -> String {
         var cleaned = text
             .replacingOccurrences(of: "```json", with: "")
+            .replacingOccurrences(of: "```JSON", with: "")
             .replacingOccurrences(of: "```", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if let start = cleaned.firstIndex(of: "{"), let end = cleaned.lastIndex(of: "}") {
+        if let start = cleaned.firstIndex(of: "{"),
+           let end = cleaned.lastIndex(of: "}"),
+           start <= end {
             cleaned = String(cleaned[start...end])
         }
 
         return cleaned
     }
+
+    private static func extractServerMessage(from data: Data) -> String {
+        guard !data.isEmpty else { return "" }
+
+        if let apiError = try? JSONDecoder().decode(GeminiAPIErrorResponse.self, from: data) {
+            return apiError.error.message
+        }
+
+        return String(data: data, encoding: .utf8) ?? ""
+    }
+
+    private static func safePreview(_ text: String) -> String {
+        let compact = text
+            .replacingOccurrences(of: "\n", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return String(compact.prefix(220))
+    }
 }
 
 private struct GeminiRequest: Encodable {
     let contents: [GeminiContent]
+    let generationConfig: GeminiGenerationConfig
+}
+
+private struct GeminiGenerationConfig: Encodable {
+    let responseMimeType: String
+    let temperature: Double
+
+    enum CodingKeys: String, CodingKey {
+        case responseMimeType = "response_mime_type"
+        case temperature
+    }
 }
 
 private struct GeminiContent: Codable {
+    let role: String?
     let parts: [GeminiPart]
+
+    init(role: String? = nil, parts: [GeminiPart]) {
+        self.role = role
+        self.parts = parts
+    }
 }
 
 private struct GeminiPart: Codable {
-    let text: String
+    let text: String?
+
+    init(text: String?) {
+        self.text = text
+    }
 }
 
 private struct GeminiResponse: Decodable {
@@ -249,4 +328,12 @@ private struct GeminiResponse: Decodable {
 
 private struct GeminiCandidate: Decodable {
     let content: GeminiContent
+}
+
+private struct GeminiAPIErrorResponse: Decodable {
+    let error: GeminiAPIError
+}
+
+private struct GeminiAPIError: Decodable {
+    let message: String
 }
