@@ -30,6 +30,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
 
         return notes.filter { note in
             let matchesFilter: Bool
+
             switch selectedFilter {
             case .all:
                 matchesFilter = true
@@ -48,7 +49,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
 
             return note.title.lowercased().contains(query)
                 || note.previewText.lowercased().contains(query)
-                || note.tags.contains(where: { $0.lowercased().contains(query) })
+                || note.tags.contains { $0.lowercased().contains(query) }
                 || note.noteType.title.lowercased().contains(query)
         }
     }
@@ -87,17 +88,43 @@ final class GrammarNotesTopicViewModel: ObservableObject {
             return
         }
 
-        isLoading = true
+        // Phase 1: show cached previews immediately — no spinner needed
+        if notes.isEmpty {
+            if let cached = try? await noteService.fetchNotePreviews(
+                ownerUID: ownerUID, topicId: topic.id, source: .cache
+            ), !cached.isEmpty {
+                notes = Self.sortNotes(cached)
+                topic.notesCount = notes.count
+            }
+        }
+
+        // Phase 2: server refresh; show spinner only when cache was empty
+        let needsSpinner = notes.isEmpty
+        if needsSpinner { isLoading = true }
+        defer { isLoading = false }
         errorMessage = nil
 
         do {
-            notes = Self.sortNotes(try await noteService.fetchNotes(ownerUID: ownerUID, topicId: topic.id))
+            let loadedNotes = try await noteService.fetchNotePreviews(
+                ownerUID: ownerUID,
+                topicId: topic.id
+            )
+            notes = Self.sortNotes(loadedNotes)
             topic.notesCount = notes.count
         } catch {
-            errorMessage = readableMessage(for: error)
+            if notes.isEmpty {
+                errorMessage = readableMessage(for: error)
+            }
         }
+    }
 
-        isLoading = false
+    /// Silent cache refresh — called on re-appear to pick up edits made in the editor.
+    func refreshFromCache() async {
+        guard let cached = try? await noteService.fetchNotePreviews(
+            ownerUID: ownerUID, topicId: topic.id, source: .cache
+        ), !cached.isEmpty else { return }
+        notes = Self.sortNotes(cached)
+        topic.notesCount = notes.count
     }
 
     func retryLoading() async {
@@ -109,7 +136,8 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         previewText: String,
         noteType: GrammarNoteType,
         tags: [String],
-        hasQuiz: Bool
+        hasQuiz: Bool,
+        template: GrammarNoteTemplate? = nil
     ) async -> Bool {
         guard !ownerUID.isEmpty else {
             errorMessage = "User session is not available. Please sign in again."
@@ -118,6 +146,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
 
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedPreview = previewText.trimmingCharacters(in: .whitespacesAndNewlines)
+
         let cleanedTags = tags
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
@@ -138,12 +167,29 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         }
 
         let now = Date()
+
+        let templateBlocks: [GrammarNoteBlock] = makeBlocks(
+            from: template,
+            date: now
+        )
+
+        let generatedPlainText = makePlainText(from: templateBlocks)
+
+        let generatedPreview: String
+        if !trimmedPreview.isEmpty {
+            generatedPreview = trimmedPreview
+        } else if let templateDescription = template?.description, !templateDescription.isEmpty {
+            generatedPreview = templateDescription
+        } else {
+            generatedPreview = makePreviewText(from: templateBlocks)
+        }
+
         let note = GrammarNote(
             id: UUID().uuidString,
             ownerUID: ownerUID,
             topicId: topic.id,
             title: trimmedTitle,
-            previewText: trimmedPreview,
+            previewText: generatedPreview,
             languageCode: topic.languageCode,
             languageName: topic.languageName,
             noteType: noteType,
@@ -152,22 +198,27 @@ final class GrammarNotesTopicViewModel: ObservableObject {
             isPinned: false,
             isFavorite: false,
             isMistakeNote: noteType == .mistake || topic.isMistakesTopic,
-            hasQuiz: hasQuiz,
+            hasQuiz: hasQuiz || templateBlocks.contains { $0.type == GrammarNoteBlockType.quiz },
+            contentBlocks: templateBlocks,
+            plainTextContent: generatedPlainText,
+            coverImageURL: nil,
+            localImagePaths: [],
+            templateId: template?.id,
             createdAt: now,
-            updatedAt: now
+            updatedAt: now,
+            lastEditedAt: now
         )
 
         isCreatingNote = true
         errorMessage = nil
+        defer { isCreatingNote = false }
 
         do {
             try await noteService.createNote(note)
             notes = Self.sortNotes(notes + [note])
             topic.notesCount = notes.count
-            isCreatingNote = false
             return true
         } catch {
-            isCreatingNote = false
             errorMessage = readableMessage(for: error)
             return false
         }
@@ -175,7 +226,12 @@ final class GrammarNotesTopicViewModel: ObservableObject {
 
     func deleteNote(_ note: GrammarNote) async {
         do {
-            try await noteService.deleteNote(id: note.id, ownerUID: ownerUID, topicId: topic.id)
+            try await noteService.deleteNote(
+                id: note.id,
+                ownerUID: ownerUID,
+                topicId: topic.id
+            )
+
             notes.removeAll { $0.id == note.id }
             topic.notesCount = notes.count
             errorMessage = nil
@@ -185,37 +241,132 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     }
 
     func togglePinned(_ note: GrammarNote) async {
+        // Optimistic update — apply locally first for instant feedback
+        replace(note) {
+            $0.isPinned.toggle()
+            $0.updatedAt = Date()
+        }
         do {
-            try await noteService.togglePinned(note: note)
-            replace(note) { $0.isPinned.toggle(); $0.updatedAt = Date() }
+            try await noteService.setNotePinned(
+                id: note.id,
+                ownerUID: ownerUID,
+                topicId: topic.id,
+                isPinned: !note.isPinned
+            )
             errorMessage = nil
         } catch {
+            // Revert on failure
+            replace(note) {
+                $0.isPinned  = note.isPinned
+                $0.updatedAt = note.updatedAt
+            }
             errorMessage = readableMessage(for: error)
         }
     }
 
     func toggleFavorite(_ note: GrammarNote) async {
+        // Optimistic update — apply locally first for instant feedback
+        replace(note) {
+            $0.isFavorite.toggle()
+            $0.updatedAt = Date()
+        }
         do {
-            try await noteService.toggleFavorite(note: note)
-            replace(note) { $0.isFavorite.toggle(); $0.updatedAt = Date() }
+            try await noteService.setNoteFavorite(
+                id: note.id,
+                ownerUID: ownerUID,
+                topicId: topic.id,
+                isFavorite: !note.isFavorite
+            )
             errorMessage = nil
         } catch {
+            // Revert on failure
+            replace(note) {
+                $0.isFavorite = note.isFavorite
+                $0.updatedAt  = note.updatedAt
+            }
             errorMessage = readableMessage(for: error)
         }
     }
 
-    private func replace(_ note: GrammarNote, mutate: (inout GrammarNote) -> Void) {
+    private func replace(
+        _ note: GrammarNote,
+        mutate: (inout GrammarNote) -> Void
+    ) {
         guard let index = notes.firstIndex(where: { $0.id == note.id }) else { return }
+
         var updatedNote = notes[index]
         mutate(&updatedNote)
+
         notes[index] = updatedNote
         notes = Self.sortNotes(notes)
     }
 
+    private func makeBlocks(
+        from template: GrammarNoteTemplate?,
+        date: Date
+    ) -> [GrammarNoteBlock] {
+        guard let template else { return [] }
+
+        return template.blocks.enumerated().map { index, block in
+            GrammarNoteBlock(
+                id: UUID().uuidString,
+                type: block.type,
+                text: block.text,
+                secondaryText: block.secondaryText,
+                imageURL: block.imageURL,
+                imageCaption: block.imageCaption,
+                items: block.items,
+                order: index,
+                createdAt: date,
+                updatedAt: date
+            )
+        }
+    }
+
+    private func makePlainText(from blocks: [GrammarNoteBlock]) -> String {
+        blocks
+            .flatMap { block -> [String] in
+                var parts: [String] = []
+
+                if !block.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    parts.append(block.text)
+                }
+
+                if let secondaryText = block.secondaryText,
+                   !secondaryText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    parts.append(secondaryText)
+                }
+
+                parts.append(contentsOf: block.items.filter {
+                    !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                })
+
+                return parts
+            }
+            .joined(separator: "\n")
+    }
+
+    private func makePreviewText(from blocks: [GrammarNoteBlock]) -> String {
+        let text = makePlainText(from: blocks)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !text.isEmpty else {
+            return "No preview yet"
+        }
+
+        return String(text.prefix(180))
+    }
+
     private static func sortNotes(_ notes: [GrammarNote]) -> [GrammarNote] {
         notes.sorted { lhs, rhs in
-            if lhs.isPinned != rhs.isPinned { return lhs.isPinned && !rhs.isPinned }
-            if lhs.isFavorite != rhs.isFavorite { return lhs.isFavorite && !rhs.isFavorite }
+            if lhs.isPinned != rhs.isPinned {
+                return lhs.isPinned && !rhs.isPinned
+            }
+
+            if lhs.isFavorite != rhs.isFavorite {
+                return lhs.isFavorite && !rhs.isFavorite
+            }
+
             return lhs.updatedAt > rhs.updatedAt
         }
     }

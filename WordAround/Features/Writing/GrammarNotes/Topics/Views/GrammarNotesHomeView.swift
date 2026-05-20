@@ -50,6 +50,7 @@ struct GrammarNotesHomeView: View {
         }
         .sheet(isPresented: $isCreateSheetPresented) {
             CreateGrammarTopicSheet(
+                isCreating: viewModel.isCreatingTopic,
                 onCancel: { isCreateSheetPresented = false },
                 onCreate: { title, description, languageCode, languageName, icon, colorHex in
                     Task {

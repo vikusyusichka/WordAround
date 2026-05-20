@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CreateGrammarTopicSheet: View {
+    let isCreating: Bool
     let onCancel: () -> Void
     let onCreate: (_ title: String, _ description: String, _ languageCode: String, _ languageName: String, _ icon: String, _ colorHex: String) -> Void
 
@@ -363,19 +364,27 @@ struct CreateGrammarTopicSheet: View {
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
                         .stroke(theme.softBorderColor, lineWidth: 1)
                 )
+                .disabled(isCreating)
 
             Button {
                 onCreate(trimmedTitle, trimmedDescription, selectedLanguage.code, selectedLanguage.name, selectedIcon, selectedColor.hex)
             } label: {
-                Text("Create")
-                    .font(.system(size: isPadLike ? 16 : 15, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: isPadLike ? 58 : 52)
-                    .background(canCreate ? theme.accent : theme.accent.opacity(0.35))
-                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                HStack(spacing: 8) {
+                    if isCreating {
+                        ProgressView()
+                            .tint(Color.white)
+                            .scaleEffect(0.85)
+                    }
+                    Text("Create")
+                        .font(.system(size: isPadLike ? 16 : 15, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color.white)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: isPadLike ? 58 : 52)
+                .background(canCreate && !isCreating ? theme.accent : theme.accent.opacity(0.35))
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             }
-            .disabled(!canCreate)
+            .disabled(!canCreate || isCreating)
         }
     }
 
@@ -442,5 +451,5 @@ private extension View {
 }
 
 #Preview {
-    CreateGrammarTopicSheet(onCancel: {}, onCreate: { _, _, _, _, _, _ in })
+    CreateGrammarTopicSheet(isCreating: false, onCancel: {}, onCreate: { _, _, _, _, _, _ in })
 }

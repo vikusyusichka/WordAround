@@ -15,8 +15,14 @@ struct GrammarNote: Identifiable, Codable, Equatable {
     var isFavorite: Bool
     var isMistakeNote: Bool
     var hasQuiz: Bool
+    var contentBlocks: [GrammarNoteBlock]
+    var plainTextContent: String
+    var coverImageURL: String?
+    var localImagePaths: [String]
+    var templateId: String?
     var createdAt: Date
     var updatedAt: Date
+    var lastEditedAt: Date
 }
 
 extension GrammarNote {
@@ -30,7 +36,8 @@ extension GrammarNote {
         isFavorite: Bool = false,
         hasQuiz: Bool = false
     ) -> GrammarNote {
-        GrammarNote(
+        let now = Date()
+        return GrammarNote(
             id: id,
             ownerUID: "preview-user",
             topicId: topicId,
@@ -45,8 +52,18 @@ extension GrammarNote {
             isFavorite: isFavorite,
             isMistakeNote: noteType == .mistake,
             hasQuiz: hasQuiz,
-            createdAt: Date().addingTimeInterval(-3600),
-            updatedAt: Date()
+            contentBlocks: [
+                GrammarNoteBlock(type: .heading, text: title, order: 0),
+                GrammarNoteBlock(type: .rule, text: "Use ser for identity and estar for temporary state or location.", secondaryText: "Ser + noun/adjective. Estar + place/state.", order: 1),
+                GrammarNoteBlock(type: .example, text: "Soy estudiante.", secondaryText: "Estoy en casa.", order: 2)
+            ],
+            plainTextContent: previewText,
+            coverImageURL: nil,
+            localImagePaths: [],
+            templateId: nil,
+            createdAt: now.addingTimeInterval(-3600),
+            updatedAt: now,
+            lastEditedAt: now
         )
     }
 }

@@ -12,6 +12,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
 
     private let ownerUID: String
     private let service: GrammarNoteTopicServicing
+    private var isEnsuringDefaultTopic = false
 
     var filteredTopics: [GrammarNoteTopic] {
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
@@ -45,7 +46,18 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             return
         }
 
-        isLoading = true
+        // Phase 1: show cached topics immediately — no spinner needed
+        if topics.isEmpty {
+            if let cached = try? await service.fetchTopics(for: ownerUID, source: .cache),
+               !cached.isEmpty {
+                topics = sortTopics(cached)
+            }
+        }
+
+        // Phase 2: server refresh; show spinner only when cache was empty
+        let needsSpinner = topics.isEmpty
+        if needsSpinner { isLoading = true }
+        defer { isLoading = false }
         errorMessage = nil
 
         do {
@@ -53,10 +65,10 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             loadedTopics = try await ensureCommonMistakesTopicExists(in: loadedTopics)
             topics = sortTopics(loadedTopics)
         } catch {
-            errorMessage = readableMessage(for: error)
+            if topics.isEmpty {
+                errorMessage = readableMessage(for: error)
+            }
         }
-
-        isLoading = false
     }
 
     func createTopic(
@@ -109,14 +121,13 @@ final class GrammarNotesHomeViewModel: ObservableObject {
 
         isCreatingTopic = true
         errorMessage = nil
+        defer { isCreatingTopic = false }
 
         do {
             try await service.createTopic(topic)
             topics = sortTopics(topics + [topic])
-            isCreatingTopic = false
             return true
         } catch {
-            isCreatingTopic = false
             errorMessage = readableMessage(for: error)
             return false
         }
@@ -138,6 +149,9 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         guard !loadedTopics.contains(where: { $0.isMistakesTopic }) else {
             return loadedTopics
         }
+        guard !isEnsuringDefaultTopic else { return loadedTopics }
+        isEnsuringDefaultTopic = true
+        defer { isEnsuringDefaultTopic = false }
 
         let mistakesTopic = GrammarNoteTopic.commonMistakes(ownerUID: ownerUID)
         try await service.createTopic(mistakesTopic)

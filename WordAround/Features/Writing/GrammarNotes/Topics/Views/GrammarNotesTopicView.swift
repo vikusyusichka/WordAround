@@ -55,14 +55,15 @@ struct GrammarNotesTopicView: View {
                 topic: viewModel.topic,
                 isCreating: viewModel.isCreatingNote,
                 onCancel: { isCreateSheetPresented = false },
-                onCreate: { title, previewText, noteType, tags, hasQuiz in
+                onCreate: { title, previewText, noteType, tags, hasQuiz, template in
                     Task {
                         let didCreate = await viewModel.createNote(
                             title: title,
                             previewText: previewText,
                             noteType: noteType,
                             tags: tags,
-                            hasQuiz: hasQuiz
+                            hasQuiz: hasQuiz,
+                            template: template
                         )
 
                         if didCreate {
@@ -75,6 +76,13 @@ struct GrammarNotesTopicView: View {
         .task {
             if viewModel.notes.isEmpty {
                 await viewModel.loadNotes()
+            }
+        }
+        .onAppear {
+            // Re-appear from editor: refresh previews from cache so edited
+            // titles/previewText are reflected without a server round-trip
+            if !viewModel.notes.isEmpty {
+                Task { await viewModel.refreshFromCache() }
             }
         }
     }
@@ -248,7 +256,7 @@ struct GrammarNotesTopicView: View {
             VStack(spacing: isPadLike ? 13 : 11) {
                 ForEach(notes) { note in
                     NavigationLink {
-                        GrammarNoteEditorView(note: note)
+                        GrammarNoteEditorView(note: note, ownerUID: viewModel.topic.ownerUID, topicId: viewModel.topic.id, allowsQuiz: true)
                     } label: {
                         GrammarNoteCardView(note: note, isCompact: isCompact)
                     }

@@ -3,22 +3,28 @@ import FirebaseFirestore
 
 protocol GrammarNoteTopicServicing {
     func fetchTopics(for ownerUID: String) async throws -> [GrammarNoteTopic]
+    func fetchTopics(for ownerUID: String, source: FirestoreSource) async throws -> [GrammarNoteTopic]
     func createTopic(_ topic: GrammarNoteTopic) async throws
     func updateTopic(_ topic: GrammarNoteTopic) async throws
     func deleteTopic(id: String, ownerUID: String) async throws
+}
+
+extension GrammarNoteTopicServicing {
+    func fetchTopics(for ownerUID: String) async throws -> [GrammarNoteTopic] {
+        try await fetchTopics(for: ownerUID, source: .default)
+    }
 }
 
 final class GrammarNoteTopicService: GrammarNoteTopicServicing {
     private let db = Firestore.firestore()
 
     func fetchTopics(for ownerUID: String) async throws -> [GrammarNoteTopic] {
-        let snapshot = try await topicsCollection(ownerUID: ownerUID).getDocuments()
+        try await fetchTopics(for: ownerUID, source: .default)
+    }
 
-        let topics = snapshot.documents.compactMap { document -> GrammarNoteTopic? in
-            makeTopic(from: document)
-        }
-
-        return sortTopics(topics)
+    func fetchTopics(for ownerUID: String, source: FirestoreSource) async throws -> [GrammarNoteTopic] {
+        let snapshot = try await topicsCollection(ownerUID: ownerUID).getDocuments(source: source)
+        return sortTopics(snapshot.documents.compactMap(makeTopic(from:)))
     }
 
     func createTopic(_ topic: GrammarNoteTopic) async throws {
@@ -121,10 +127,8 @@ final class GrammarNoteTopicService: GrammarNoteTopicServicing {
 struct MockGrammarNoteTopicService: GrammarNoteTopicServicing {
     var topics: [GrammarNoteTopic] = []
 
-    func fetchTopics(for ownerUID: String) async throws -> [GrammarNoteTopic] {
-        topics
-    }
-
+    func fetchTopics(for ownerUID: String) async throws -> [GrammarNoteTopic] { topics }
+    func fetchTopics(for ownerUID: String, source: FirestoreSource) async throws -> [GrammarNoteTopic] { topics }
     func createTopic(_ topic: GrammarNoteTopic) async throws {}
     func updateTopic(_ topic: GrammarNoteTopic) async throws {}
     func deleteTopic(id: String, ownerUID: String) async throws {}

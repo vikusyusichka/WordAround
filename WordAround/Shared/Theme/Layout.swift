@@ -952,3 +952,45 @@ extension Layout {
 
 }
 
+
+// MARK: - Generic pad/phone picker
+
+extension Layout {
+    /// Returns `pad` when on iPad/wide screen, `phone` otherwise.
+    /// Replaces the old DeviceLayout.value(pad:phone:) helper.
+    @inlinable
+    static func value<T>(pad: T, phone: T) -> T {
+        isPadLike ? pad : phone
+    }
+}
+
+// MARK: - Grammar Note Editor
+
+extension Layout {
+    static let grammarNoteHorizontalPadding: CGFloat      = isPadLike ? 28 : 20
+    static let grammarNoteTopPadding: CGFloat              = isPadLike ? 20 : 14
+    static let grammarNoteBlockSpacing: CGFloat            = isPadLike ? 16 : 13
+    static let grammarNoteBlockPadding: CGFloat            = isPadLike ? 16 : 14
+    static let grammarNoteBlockCornerRadius: CGFloat       = isPadLike ? 24 : 21
+
+    static let grammarNoteHeadingSize: CGFloat             = isPadLike ? 26 : 22
+    static let grammarNoteSubheadingSize: CGFloat          = isPadLike ? 20 : 18
+
+    static let grammarNoteCardCornerRadius: CGFloat        = isPadLike ? 25 : 22
+    static let grammarNoteCardHorizontalPadding: CGFloat   = isPadLike ? 18 : 15
+    static let grammarNoteCardVerticalPadding: CGFloat     = isPadLike ? 17 : 15
+    static let grammarNoteCardIconSize: CGFloat            = isPadLike ? 52 : 46
+    static let grammarNoteCardIconImageSize: CGFloat       = isPadLike ? 21 : 18
+    static let grammarNoteCardTitleSize: CGFloat           = isPadLike ? 17 : 15
+    static let grammarNoteCardPreviewSize: CGFloat         = isPadLike ? 14 : 12
+    static let grammarNoteCardChevronSize: CGFloat         = isPadLike ? 15 : 13
+
+    static let grammarNoteCreateSpacing: CGFloat           = isPadLike ? 18 : 14
+    static let grammarNoteCreatePadding: CGFloat           = isPadLike ? 28 : 20
+    static let grammarNoteCreateTitleSize: CGFloat         = isPadLike ? 28 : 24
+    static let grammarNoteCreateSubtitleSize: CGFloat      = isPadLike ? 15 : 13
+    static let grammarNoteCreateFieldHeight: CGFloat       = isPadLike ? 58 : 52
+    static let grammarNoteCreateFieldFontSize: CGFloat     = isPadLike ? 16 : 14
+    static let grammarNoteCreatePreviewMinHeight: CGFloat  = isPadLike ? 112 : 96
+    static let grammarNoteCreateTypeMinWidth: CGFloat      = isPadLike ? 150 : 126
+}
