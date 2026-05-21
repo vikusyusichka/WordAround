@@ -364,7 +364,6 @@ struct CreateGrammarTopicSheet: View {
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
                         .stroke(theme.softBorderColor, lineWidth: 1)
                 )
-                .disabled(isCreating)
 
             Button {
                 onCreate(trimmedTitle, trimmedDescription, selectedLanguage.code, selectedLanguage.name, selectedIcon, selectedColor.hex)

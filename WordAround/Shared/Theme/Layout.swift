@@ -993,4 +993,100 @@ extension Layout {
     static let grammarNoteCreateFieldFontSize: CGFloat     = isPadLike ? 16 : 14
     static let grammarNoteCreatePreviewMinHeight: CGFloat  = isPadLike ? 112 : 96
     static let grammarNoteCreateTypeMinWidth: CGFloat      = isPadLike ? 150 : 126
+    
+    // MARK: - Grammar Notes FAB
+    static let grammarNotesFABSize: CGFloat = isPadLike ? 70 : 58
+    static let grammarNotesFABIconSize: CGFloat = isPadLike ? 30 : 25
+    static let grammarNotesFABTrailingPadding: CGFloat = isPadLike ? 34 : 22
+    static let grammarNotesFABBottomPadding: CGFloat = isPadLike ? 38 : 26
+    static let grammarNotesFABDimOpacity: CGFloat = 0.10
+    static let grammarNotesFABMenuSpacing: CGFloat = isPadLike ? 14 : 11
+    static let grammarNotesFABMenuItemSpacing: CGFloat = isPadLike ? 10 : 8
+    static let grammarNotesFABMenuPadding: CGFloat = isPadLike ? 13 : 11
+    static let grammarNotesFABMenuWidth: CGFloat = isPadLike ? 250 : 218
+    static let grammarNotesFABMenuCornerRadius: CGFloat = isPadLike ? 28 : 24
+    static let grammarNotesFABMenuRowHeight: CGFloat = isPadLike ? 56 : 50
+    static let grammarNotesFABMenuRowCornerRadius: CGFloat = isPadLike ? 20 : 17
+    static let grammarNotesFABMenuIconBox: CGFloat = isPadLike ? 36 : 32
+    static let grammarNotesFABMenuIconSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarNotesFABMenuTitleSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarNotesFABItemDelay: Double = 0.035
+    static let grammarNotesFABSpring: Animation = .spring(response: 0.34, dampingFraction: 0.86)
+
+    // MARK: - Quick Grammar Sheets
+    static let grammarQuickSheetMaxWidth: CGFloat = isPadLike ? 620 : .infinity
+    static let grammarQuickSheetPadding: CGFloat = isPadLike ? 24 : 18
+    static let grammarQuickSheetSectionSpacing: CGFloat = isPadLike ? 15 : 12
+    static let grammarQuickMiniSectionSpacing: CGFloat = isPadLike ? 12 : 10
+    static let grammarQuickSheetAnimation: Animation = .easeInOut(duration: 0.22)
+    static let grammarQuickNoteSheetHeight: CGFloat = isPadLike ? 720 : 660
+    static let grammarQuickMistakeSheetHeight: CGFloat = isPadLike ? 780 : 720
+
+    static let grammarQuickHeaderIconBox: CGFloat = isPadLike ? 52 : 46
+    static let grammarQuickHeaderIconSize: CGFloat = isPadLike ? 21 : 18
+    static let grammarQuickTitleSize: CGFloat = isPadLike ? 28 : 23
+    static let grammarQuickSubtitleSize: CGFloat = isPadLike ? 14 : 12
+
+    static let grammarQuickSectionCornerRadius: CGFloat = isPadLike ? 24 : 21
+    static let grammarQuickSectionTitleSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarQuickHelperSize: CGFloat = isPadLike ? 12 : 11
+    static let grammarQuickFieldCornerRadius: CGFloat = isPadLike ? 19 : 17
+    static let grammarQuickTitleFieldHeight: CGFloat = isPadLike ? 56 : 50
+    static let grammarQuickTitleFieldSize: CGFloat = isPadLike ? 18 : 16
+    static let grammarQuickEditorTextSize: CGFloat = isPadLike ? 15 : 14
+    static let grammarQuickNoteEditorMinHeight: CGFloat = isPadLike ? 128 : 112
+    static let grammarQuickMistakeExplanationHeight: CGFloat = isPadLike ? 106 : 92
+    static let grammarQuickTypeMinWidth: CGFloat = isPadLike ? 135 : 112
+    static let grammarQuickActionHeight: CGFloat = isPadLike ? 54 : 50
+    static let grammarQuickActionCornerRadius: CGFloat = isPadLike ? 19 : 17
+
+    // MARK: - Grammar Empty States
+    static let grammarEmptyStateSpacing: CGFloat = isPadLike ? 18 : 15
+    static let grammarEmptyStatePadding: CGFloat = isPadLike ? 28 : 22
+    static let grammarEmptyStateCornerRadius: CGFloat = isPadLike ? 30 : 26
+    static let grammarEmptyStateOuterIconSize: CGFloat = isPadLike ? 116 : 96
+    static let grammarEmptyStateInnerIconSize: CGFloat = isPadLike ? 82 : 70
+    static let grammarEmptyStateIconSize: CGFloat = isPadLike ? 34 : 28
+    static let grammarEmptyStateSparkleSize: CGFloat = isPadLike ? 18 : 15
+    static let grammarEmptyStateTitleSize: CGFloat = isPadLike ? 27 : 22
+    static let grammarEmptyStateMessageSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarEmptyStateTextMaxWidth: CGFloat = isPadLike ? 430 : 310
+    static let grammarEmptyStateButtonTextSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarEmptyStateButtonHorizontalPadding: CGFloat = isPadLike ? 22 : 18
+    static let grammarEmptyStateButtonHeight: CGFloat = isPadLike ? 52 : 47
+    static let grammarEmptyStateButtonCornerRadius: CGFloat = isPadLike ? 18 : 16
+    static let grammarEmptyStateBlobWidth: CGFloat = isPadLike ? 170 : 130
+    static let grammarEmptyStateBlobHeight: CGFloat = isPadLike ? 135 : 102
+    static let grammarEmptyStateBlobOffsetX: CGFloat = isPadLike ? 58 : 44
+    static let grammarEmptyStateBlobOffsetY: CGFloat = isPadLike ? -42 : -34
+
+    // MARK: - Grammar Settings
+    static let grammarSettingsContentMaxWidth: CGFloat = isPadLike ? 690 : .infinity
+    static let grammarSettingsHorizontalPadding: CGFloat = isPadLike ? 32 : 18
+    static let grammarSettingsTopPadding: CGFloat = isPadLike ? 26 : 16
+    static let grammarSettingsBottomPadding: CGFloat = isPadLike ? 42 : 30
+    static let grammarSettingsSectionSpacing: CGFloat = isPadLike ? 18 : 14
+    static let grammarSettingsBackButtonSize: CGFloat = isPadLike ? 48 : 42
+    static let grammarSettingsBackIconSize: CGFloat = isPadLike ? 17 : 15
+    static let grammarSettingsTitleSize: CGFloat = isPadLike ? 32 : 26
+    static let grammarSettingsSubtitleSize: CGFloat = isPadLike ? 15 : 13
+
+    static let grammarSettingsCardPadding: CGFloat = isPadLike ? 20 : 16
+    static let grammarSettingsCardCornerRadius: CGFloat = isPadLike ? 28 : 24
+    static let grammarSettingsCardInnerSpacing: CGFloat = isPadLike ? 15 : 12
+    static let grammarSettingsSectionIconBox: CGFloat = isPadLike ? 46 : 40
+    static let grammarSettingsSectionIconSize: CGFloat = isPadLike ? 18 : 16
+    static let grammarSettingsSectionTitleSize: CGFloat = isPadLike ? 18 : 16
+    static let grammarSettingsSectionSubtitleSize: CGFloat = isPadLike ? 13 : 12
+
+    static let grammarSettingsRowPadding: CGFloat = isPadLike ? 14 : 12
+    static let grammarSettingsRowCornerRadius: CGFloat = isPadLike ? 20 : 18
+    static let grammarSettingsRowIconBox: CGFloat = isPadLike ? 38 : 34
+    static let grammarSettingsRowTitleSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarSettingsRowSubtitleSize: CGFloat = isPadLike ? 12 : 11
+    static let grammarSettingsTypeMinWidth: CGFloat = isPadLike ? 130 : 104
+    static let grammarSettingsTypeButtonHeight: CGFloat = isPadLike ? 92 : 82
 }
+
+
+

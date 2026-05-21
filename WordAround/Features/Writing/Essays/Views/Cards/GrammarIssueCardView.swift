@@ -2,6 +2,8 @@ import SwiftUI
 
 struct GrammarIssueCardView: View {
     let issue: GrammarIssue
+    var saveState: SaveGrammarMistakeConfirmationSheet.SaveState = .idle
+    var onSave: (() -> Void)? = nil
 
     private var isPadLike: Bool {
         UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
@@ -37,11 +39,67 @@ struct GrammarIssueCardView: View {
                     .foregroundColor(AppColors.textSecondary)
                     .lineSpacing(3)
             }
+
+            if onSave != nil || saveState != .idle {
+                saveButton
+            }
         }
         .padding(isPadLike ? 18 : 15)
         .background(Color.white.opacity(0.94))
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: Color.black.opacity(0.045), radius: 14, x: 0, y: 8)
+    }
+
+    private var saveButton: some View {
+        Button(action: {
+            guard saveState != .saving, saveState != .saved, saveState != .duplicate else { return }
+            onSave?()
+        }) {
+            HStack(spacing: 8) {
+                switch saveState {
+                case .saving:
+                    ProgressView()
+                        .tint(.white)
+                case .saved:
+                    Image(systemName: "checkmark.circle.fill")
+                case .duplicate:
+                    Image(systemName: "doc.on.doc.fill")
+                case .failed:
+                    Image(systemName: "exclamationmark.triangle.fill")
+                case .idle:
+                    Image(systemName: "square.and.arrow.down.fill")
+                }
+
+                Text(saveButtonTitle)
+                    .font(.system(size: isPadLike ? 14 : 13, weight: .black, design: .rounded))
+            }
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .frame(height: isPadLike ? 44 : 40)
+            .background(saveButtonTint)
+            .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .disabled(saveState == .saving || saveState == .saved || saveState == .duplicate)
+    }
+
+    private var saveButtonTitle: String {
+        switch saveState {
+        case .idle: return "Save to Grammar Notes"
+        case .saving: return "Saving..."
+        case .saved: return "Saved"
+        case .duplicate: return "Already saved"
+        case .failed: return "Try saving again"
+        }
+    }
+
+    private var saveButtonTint: Color {
+        switch saveState {
+        case .failed:
+            return Color(red: 0.78, green: 0.55, blue: 0.26)
+        default:
+            return AppColors.primaryBlue
+        }
     }
 
     private func feedbackRow(

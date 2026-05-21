@@ -8,7 +8,10 @@ protocol GrammarNoteServicing {
     func fetchNotePreviews(ownerUID: String, topicId: String, source: FirestoreSource) async throws -> [GrammarNote]
     /// Fetches a single fully-populated note (including contentBlocks).
     func fetchNote(id: String, ownerUID: String, topicId: String) async throws -> GrammarNote?
+    func fetchNoteBySavedIssueKey(ownerUID: String, topicId: String, savedIssueKey: String) async throws -> GrammarNote?
     func createNote(_ note: GrammarNote) async throws
+    /// Creates a note and returns it (useful when the caller needs the saved note for navigation).
+    func createAndReturnNote(_ note: GrammarNote) async throws -> GrammarNote
     func updateNote(_ note: GrammarNote) async throws
     func updateNoteContent(_ note: GrammarNote) async throws
     func uploadNoteImage(data: Data, ownerUID: String, topicId: String, noteId: String) async throws -> String
@@ -49,10 +52,25 @@ final class GrammarNoteService: GrammarNoteServicing {
         return makeNote(from: data, id: doc.documentID)
     }
 
+    func fetchNoteBySavedIssueKey(ownerUID: String, topicId: String, savedIssueKey: String) async throws -> GrammarNote? {
+        let snapshot = try await notesCollection(ownerUID: ownerUID, topicId: topicId)
+            .whereField("savedIssueKey", isEqualTo: savedIssueKey)
+            .limit(to: 1)
+            .getDocuments()
+
+        guard let document = snapshot.documents.first else { return nil }
+        return makeNote(from: document)
+    }
+
     // MARK: Create / Update
     func createNote(_ note: GrammarNote) async throws {
         try await writeNote(note)
         try await updateTopicNotesCount(ownerUID: note.ownerUID, topicId: note.topicId, delta: 1)
+    }
+
+    func createAndReturnNote(_ note: GrammarNote) async throws -> GrammarNote {
+        try await createNote(note)
+        return note
     }
 
     /// Full update — stamps `updatedAt` automatically.
@@ -171,6 +189,7 @@ final class GrammarNoteService: GrammarNoteServicing {
             isPinned:         data["isPinned"]         as? Bool ?? false,
             isFavorite:       data["isFavorite"]       as? Bool ?? false,
             isMistakeNote:    data["isMistakeNote"]    as? Bool ?? (noteType == .mistake),
+            savedIssueKey:    data["savedIssueKey"]    as? String,
             hasQuiz:          data["hasQuiz"]          as? Bool ?? false,
             contentBlocks:    decodeBlocks(from: data["contentBlocks"]),
             plainTextContent: data["plainTextContent"] as? String ?? previewText,
@@ -214,6 +233,7 @@ final class GrammarNoteService: GrammarNoteServicing {
             isPinned:         data["isPinned"]      as? Bool ?? false,
             isFavorite:       data["isFavorite"]    as? Bool ?? false,
             isMistakeNote:    data["isMistakeNote"] as? Bool ?? (noteType == .mistake),
+            savedIssueKey:    data["savedIssueKey"] as? String,
             hasQuiz:          data["hasQuiz"]       as? Bool ?? false,
             contentBlocks:    [],
             plainTextContent: data["plainTextContent"] as? String ?? previewText,
@@ -248,6 +268,7 @@ final class GrammarNoteService: GrammarNoteServicing {
             "updatedAt":       Timestamp(date: note.updatedAt),
             "lastEditedAt":    Timestamp(date: note.lastEditedAt)
         ]
+        if let savedIssueKey = note.savedIssueKey { data["savedIssueKey"] = savedIssueKey }
         if let coverImageURL = note.coverImageURL { data["coverImageURL"] = coverImageURL }
         if let templateId    = note.templateId    { data["templateId"]    = templateId }
         return data
@@ -315,7 +336,9 @@ struct MockGrammarNoteService: GrammarNoteServicing {
     func fetchNotes(ownerUID: String, topicId: String) async throws -> [GrammarNote] { notes }
     func fetchNotePreviews(ownerUID: String, topicId: String, source: FirestoreSource) async throws -> [GrammarNote] { notes }
     func fetchNote(id: String, ownerUID: String, topicId: String) async throws -> GrammarNote? { notes.first { $0.id == id } }
+    func fetchNoteBySavedIssueKey(ownerUID: String, topicId: String, savedIssueKey: String) async throws -> GrammarNote? { notes.first { $0.savedIssueKey == savedIssueKey } }
     func createNote(_ note: GrammarNote)                                   async throws {}
+    func createAndReturnNote(_ note: GrammarNote)                          async throws -> GrammarNote { note }
     func updateNote(_ note: GrammarNote)                                   async throws {}
     func updateNoteContent(_ note: GrammarNote)                            async throws {}
     func uploadNoteImage(data: Data, ownerUID: String, topicId: String, noteId: String) async throws -> String { "" }

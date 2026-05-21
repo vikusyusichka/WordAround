@@ -5,6 +5,7 @@ protocol GrammarNoteTopicServicing {
     func fetchTopics(for ownerUID: String) async throws -> [GrammarNoteTopic]
     func fetchTopics(for ownerUID: String, source: FirestoreSource) async throws -> [GrammarNoteTopic]
     func createTopic(_ topic: GrammarNoteTopic) async throws
+    func ensureDefaultMistakesTopic(ownerUID: String) async throws -> GrammarNoteTopic
     func updateTopic(_ topic: GrammarNoteTopic) async throws
     func deleteTopic(id: String, ownerUID: String) async throws
 }
@@ -31,6 +32,17 @@ final class GrammarNoteTopicService: GrammarNoteTopicServicing {
         try await topicsCollection(ownerUID: topic.ownerUID)
             .document(topic.id)
             .setData(dictionary(from: topic), merge: true)
+    }
+
+    func ensureDefaultMistakesTopic(ownerUID: String) async throws -> GrammarNoteTopic {
+        let existingTopics = try await fetchTopics(for: ownerUID, source: .default)
+        if let existing = existingTopics.first(where: { $0.isMistakesTopic }) {
+            return existing
+        }
+
+        let topic = GrammarNoteTopic.commonMistakes(ownerUID: ownerUID)
+        try await createTopic(topic)
+        return topic
     }
 
     func updateTopic(_ topic: GrammarNoteTopic) async throws {
@@ -130,6 +142,9 @@ struct MockGrammarNoteTopicService: GrammarNoteTopicServicing {
     func fetchTopics(for ownerUID: String) async throws -> [GrammarNoteTopic] { topics }
     func fetchTopics(for ownerUID: String, source: FirestoreSource) async throws -> [GrammarNoteTopic] { topics }
     func createTopic(_ topic: GrammarNoteTopic) async throws {}
+    func ensureDefaultMistakesTopic(ownerUID: String) async throws -> GrammarNoteTopic {
+        topics.first(where: { $0.isMistakesTopic }) ?? GrammarNoteTopic.commonMistakes(ownerUID: ownerUID)
+    }
     func updateTopic(_ topic: GrammarNoteTopic) async throws {}
     func deleteTopic(id: String, ownerUID: String) async throws {}
 }

@@ -14,6 +14,7 @@ struct GrammarNote: Identifiable, Codable, Equatable {
     var isPinned: Bool
     var isFavorite: Bool
     var isMistakeNote: Bool
+    var savedIssueKey: String?
     var hasQuiz: Bool
     var contentBlocks: [GrammarNoteBlock]
     var plainTextContent: String
@@ -23,6 +24,10 @@ struct GrammarNote: Identifiable, Codable, Equatable {
     var createdAt: Date
     var updatedAt: Date
     var lastEditedAt: Date
+}
+
+extension GrammarNote: Hashable {
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
 
 extension GrammarNote {
@@ -51,6 +56,7 @@ extension GrammarNote {
             isPinned: isPinned,
             isFavorite: isFavorite,
             isMistakeNote: noteType == .mistake,
+            savedIssueKey: nil,
             hasQuiz: hasQuiz,
             contentBlocks: [
                 GrammarNoteBlock(type: .heading, text: title, order: 0),

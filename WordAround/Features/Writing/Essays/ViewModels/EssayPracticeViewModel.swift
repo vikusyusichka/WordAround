@@ -96,6 +96,7 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published private(set) var validationState: ValidationState = .empty
     @Published private(set) var feedbackState: FeedbackState = .idle
     @Published private(set) var score: EssayScore?
+    @Published private(set) var grammarIssueSaveStates: [String: SaveGrammarMistakeConfirmationSheet.SaveState] = [:]
 
     // MARK: - Assistance usage
 
@@ -131,6 +132,10 @@ final class EssayPracticeViewModel: ObservableObject {
     private let assistanceService = EssayAssistanceService()
     private let generationService: EssayGenerationServicing
     private let flashcardSetService = FlashcardSetService()
+    private let grammarMistakeSaveService = GrammarMistakeSaveService()
+    private let grammarNotesSettingsStore = GrammarNotesSettingsStore()
+
+    private static let autoSaveEssayMistakesKey = "grammarNotes.autoSaveEssayMistakes"
 
     /// Stored so it can be cancelled when the modal closes or a new request starts.
     private var assistanceTask: Task<Void, Never>?
@@ -498,6 +503,7 @@ final class EssayPracticeViewModel: ObservableObject {
 
     func clearFeedback() {
         grammarIssues = []
+        grammarIssueSaveStates = [:]
         errorState = nil
         feedbackState = .idle
         score = nil
@@ -528,8 +534,10 @@ final class EssayPracticeViewModel: ObservableObject {
             )
 
             grammarIssues = issues
+            grammarIssueSaveStates = [:]
             feedbackState = issues.isEmpty ? .emptyResult : .success
             calculateScoreAfterGrammarCheck()
+            await saveAllGrammarIssuesIfAutoSaveEnabled()
         } catch {
             let message = (error as? LocalizedError)?.errorDescription ?? "Grammar check failed. Try again."
             errorState = message
@@ -551,6 +559,55 @@ final class EssayPracticeViewModel: ObservableObject {
             difficulty: selectedDifficulty
         )
         score = scoringService.score(input: input)
+    }
+
+
+    // MARK: - Save grammar issues to Grammar Notes
+
+    func saveState(for issue: GrammarIssue) -> SaveGrammarMistakeConfirmationSheet.SaveState {
+        grammarIssueSaveStates[issueSaveStateKey(issue)] ?? .idle
+    }
+
+    func saveGrammarIssueToNotes(_ issue: GrammarIssue) async {
+        let key = issueSaveStateKey(issue)
+        guard saveState(for: issue) != .saving else { return }
+        guard saveState(for: issue) != .saved, saveState(for: issue) != .duplicate else { return }
+
+        guard let ownerUID = Auth.auth().currentUser?.uid else {
+            grammarIssueSaveStates[key] = .failed("Sign in to save this mistake.")
+            return
+        }
+
+        grammarIssueSaveStates[key] = .saving
+
+        do {
+            let result = try await grammarMistakeSaveService.saveMistake(
+                payload: makeMistakeSavePayload(from: issue),
+                ownerUID: ownerUID,
+                preferredTopic: nil,
+                settings: grammarNotesSettingsStore
+            )
+
+            switch result {
+            case .saved:
+                grammarIssueSaveStates[key] = .saved
+            case .duplicate:
+                grammarIssueSaveStates[key] = .duplicate
+            }
+        } catch {
+            let message = (error as? LocalizedError)?.errorDescription ?? "Could not save this mistake."
+            grammarIssueSaveStates[key] = .failed(message)
+        }
+    }
+
+    func saveAllGrammarIssuesIfAutoSaveEnabled() async {
+        guard UserDefaults.standard.bool(forKey: Self.autoSaveEssayMistakesKey) else { return }
+
+        for issue in grammarIssues {
+            let state = saveState(for: issue)
+            guard state != .saving, state != .saved, state != .duplicate else { continue }
+            await saveGrammarIssueToNotes(issue)
+        }
     }
 
     // MARK: - Legacy usage tracking (kept for compatibility)
@@ -688,6 +745,32 @@ final class EssayPracticeViewModel: ObservableObject {
 
     // MARK: - Private helpers
 
+
+    private func issueSaveStateKey(_ issue: GrammarIssue) -> String {
+        [
+            selectedLanguage.languageToolCode,
+            issue.incorrectText,
+            issue.suggestedCorrection ?? "",
+            issue.message,
+            String(issue.offset),
+            String(issue.length)
+        ]
+        .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+        .joined(separator: "|")
+    }
+
+    private func makeMistakeSavePayload(from issue: GrammarIssue) -> GrammarMistakeSavePayload {
+        GrammarMistakeSavePayload(
+            originalSentence: issue.incorrectText,
+            correctedSentence: issue.suggestedCorrection ?? issue.incorrectText,
+            explanation: issue.message,
+            languageCode: selectedLanguage.languageToolCode,
+            languageName: String(describing: selectedLanguage).capitalized,
+            sourceIssueId: issueSaveStateKey(issue),
+            ruleId: nil
+        )
+    }
+
     private var activeWordRange: ClosedRange<Int> {
         if let currentTask { return currentTask.wordRange }
         return topicMode == .suggested ? currentTopic.wordRange : 60...300
@@ -710,6 +793,7 @@ final class EssayPracticeViewModel: ObservableObject {
         // Reset feedback if the essay changed after a grammar check
         if !grammarIssues.isEmpty || errorState != nil || score != nil {
             grammarIssues = []
+            grammarIssueSaveStates = [:]
             errorState = nil
             feedbackState = .idle
             score = nil

@@ -3,7 +3,12 @@ import SwiftUI
 struct GrammarNotesTopicView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: GrammarNotesTopicViewModel
+    @StateObject private var settings = GrammarNotesSettingsStore()
     @State private var isCreateSheetPresented = false
+    @State private var isFABExpanded = false
+    @State private var isQuickNoteSheetPresented = false
+    @State private var isQuickMistakeSheetPresented = false
+    @State private var editorNote: GrammarNote?
 
     private let theme: CreateSetTheme
 
@@ -30,7 +35,7 @@ struct GrammarNotesTopicView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
+        ZStack {
             theme.screenBackground.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
@@ -44,12 +49,24 @@ struct GrammarNotesTopicView: View {
                 .padding(.top, isPadLike ? 22 : 16)
                 .padding(.bottom, 96)
             }
-
-            floatingAddButton
-                .padding(.trailing, isPadLike ? 34 : 24)
-                .padding(.bottom, isPadLike ? 34 : 26)
+        }
+        .overlay(alignment: .bottomTrailing) {
+            GrammarNotesFABMenu(
+                tint: theme.accent,
+                items: GrammarNotesFABMenuItem.topicItems,
+                onSelect: handleFABSelection,
+                isExpanded: $isFABExpanded
+            )
         }
         .navigationBarBackButtonHidden(true)
+        .navigationDestination(item: $editorNote) { note in
+            GrammarNoteEditorView(
+                note: note,
+                ownerUID: note.ownerUID,
+                topicId: note.topicId,
+                allowsQuiz: true
+            )
+        }
         .sheet(isPresented: $isCreateSheetPresented) {
             CreateGrammarNoteSheet(
                 topic: viewModel.topic,
@@ -65,9 +82,46 @@ struct GrammarNotesTopicView: View {
                             hasQuiz: hasQuiz,
                             template: template
                         )
-
-                        if didCreate {
-                            isCreateSheetPresented = false
+                        if didCreate { isCreateSheetPresented = false }
+                    }
+                }
+            )
+        }
+        .sheet(isPresented: $isQuickNoteSheetPresented) {
+            QuickGrammarNoteSheet(
+                topics: [viewModel.topicOption],
+                isCreating: viewModel.isCreatingQuickNote,
+                errorMessage: viewModel.quickNoteError,
+                showsTopicPicker: false,
+                onCancel: { isQuickNoteSheetPresented = false },
+                onSave: { draft in
+                    Task {
+                        let saved = await viewModel.createQuickNote(draft: draft)
+                        if let saved {
+                            isQuickNoteSheetPresented = false
+                            if draft.opensEditorAfterSaving {
+                                editorNote = saved
+                            }
+                        }
+                    }
+                }
+            )
+        }
+        .sheet(isPresented: $isQuickMistakeSheetPresented) {
+            QuickGrammarMistakeSheet(
+                topics: [viewModel.topicOption],
+                isCreating: viewModel.isCreatingQuickMistake,
+                errorMessage: viewModel.quickMistakeError,
+                showsTopicPicker: settings.groupMistakesByTopic,
+                onCancel: { isQuickMistakeSheetPresented = false },
+                onSave: { draft in
+                    Task {
+                        let saved = await viewModel.createQuickMistake(draft: draft, settings: settings)
+                        if let saved {
+                            isQuickMistakeSheetPresented = false
+                            if draft.opensEditorAfterSaving {
+                                editorNote = saved
+                            }
                         }
                     }
                 }
@@ -84,6 +138,15 @@ struct GrammarNotesTopicView: View {
             if !viewModel.notes.isEmpty {
                 Task { await viewModel.refreshFromCache() }
             }
+        }
+    }
+
+    private func handleFABSelection(_ item: GrammarNotesFABMenuItem) {
+        switch item.role {
+        case .newNote:      isCreateSheetPresented = true
+        case .quickNote:    isQuickNoteSheetPresented = true
+        case .quickMistake: isQuickMistakeSheetPresented = true
+        case .newTopic:     break
         }
     }
 
@@ -382,21 +445,6 @@ struct GrammarNotesTopicView: View {
         .background(theme.sectionBackground)
         .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
         .shadow(color: theme.shadowColor, radius: 14, x: 0, y: 8)
-    }
-
-    private var floatingAddButton: some View {
-        Button {
-            isCreateSheetPresented = true
-        } label: {
-            Image(systemName: "plus")
-                .font(.system(size: isPadLike ? 26 : 23, weight: .bold))
-                .foregroundStyle(Color.white)
-                .frame(width: isPadLike ? 66 : 58, height: isPadLike ? 66 : 58)
-                .background(theme.accent)
-                .clipShape(Circle())
-                .shadow(color: theme.shadowColor, radius: 18, x: 0, y: 10)
-        }
-        .buttonStyle(.plain)
     }
 
     private func metaPill(text: String, systemImage: String) -> some View {

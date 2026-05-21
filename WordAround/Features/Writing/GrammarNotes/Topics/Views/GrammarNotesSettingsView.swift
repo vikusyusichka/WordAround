@@ -2,20 +2,9 @@ import SwiftUI
 
 struct GrammarNotesSettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var settings = GrammarNotesSettingsStore()
 
-    @AppStorage("grammarNotes.saveMistakesAutomatically") private var saveMistakesAutomatically = true
-    @AppStorage("grammarNotes.askBeforeSavingMistakes") private var askBeforeSavingMistakes = true
-    @AppStorage("grammarNotes.createMistakeNotesWithExplanation") private var createMistakeNotesWithExplanation = true
-    @AppStorage("grammarNotes.groupMistakesByTopic") private var groupMistakesByTopic = true
-    @AppStorage("grammarNotes.includeOriginalSentence") private var includeOriginalSentence = true
-    @AppStorage("grammarNotes.includeCorrectedSentence") private var includeCorrectedSentence = true
-    @AppStorage("grammarNotes.includeAIExplanation") private var includeAIExplanation = true
-    @AppStorage("grammarNotes.allowQuickQuizzes") private var allowQuickQuizzes = false
-    @AppStorage("grammarNotes.enableReviewReminders") private var enableReviewReminders = false
-
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
+    @State private var selectedDefaultType: GrammarNoteType = .standard
 
     var body: some View {
         ZStack {
@@ -23,126 +12,387 @@ struct GrammarNotesSettingsView: View {
                 .ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: isPadLike ? 18 : 14) {
-                    headerView
-
-                    settingsSection(
-                        title: "Mistake Saving",
-                        subtitle: "Control how corrections from essays and writing practice will become notes."
-                    ) {
-                        settingToggle("Save grammar mistakes automatically", isOn: $saveMistakesAutomatically)
-                        settingDivider
-                        settingToggle("Ask before saving mistakes", isOn: $askBeforeSavingMistakes)
-                        settingDivider
-                        settingToggle("Create mistake notes with explanation", isOn: $createMistakeNotesWithExplanation)
-                        settingDivider
-                        settingToggle("Group mistakes by topic", isOn: $groupMistakesByTopic)
-                    }
-
-                    settingsSection(
-                        title: "Saved Content",
-                        subtitle: "Choose what information should be included inside future mistake notes."
-                    ) {
-                        settingToggle("Include original sentence", isOn: $includeOriginalSentence)
-                        settingDivider
-                        settingToggle("Include corrected sentence", isOn: $includeCorrectedSentence)
-                        settingDivider
-                        settingToggle("Include AI explanation", isOn: $includeAIExplanation)
-                    }
-
-                    settingsSection(
-                        title: "Review",
-                        subtitle: "Prepare settings for future grammar review and quick practice."
-                    ) {
-                        settingToggle("Allow quick quizzes", isOn: $allowQuickQuizzes)
-                        settingDivider
-                        settingToggle("Enable review reminders", isOn: $enableReviewReminders)
-                    }
+                VStack(alignment: .leading, spacing: Layout.grammarSettingsSectionSpacing) {
+                    header
+                    quickCaptureSection
+                    mistakeNotesSection
+                    notesAppearanceSection
+                    defaultTypeSection
+                    helperSection
                 }
-                .padding(.horizontal, isPadLike ? 28 : 20)
-                .padding(.top, isPadLike ? 22 : 16)
-                .padding(.bottom, 36)
+                .padding(.horizontal, Layout.grammarSettingsHorizontalPadding)
+                .padding(.top, Layout.grammarSettingsTopPadding)
+                .padding(.bottom, Layout.grammarSettingsBottomPadding)
+                .frame(maxWidth: Layout.grammarSettingsContentMaxWidth)
+                .frame(maxWidth: .infinity)
             }
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
+        .animation(Layout.grammarQuickSheetAnimation, value: settings.opensEditorAfterQuickSave)
+        .animation(Layout.grammarQuickSheetAnimation, value: settings.showsMistakeHighlights)
+        .animation(Layout.grammarQuickSheetAnimation, value: settings.showsHelperTips)
+        .animation(Layout.grammarQuickSheetAnimation, value: settings.groupsPinnedNotesFirst)
+        .animation(Layout.grammarQuickSheetAnimation, value: settings.usesCompactCards)
+        .animation(Layout.grammarQuickSheetAnimation, value: settings.groupMistakesByTopic)
+        .animation(Layout.grammarQuickSheetAnimation, value: selectedDefaultType)
     }
 
-    private var headerView: some View {
-        HStack(alignment: .center) {
+    private var header: some View {
+        HStack(spacing: 13) {
             Button {
                 dismiss()
             } label: {
                 Image(systemName: "chevron.left")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(AppColors.primaryBlue)
-                    .frame(width: isPadLike ? 62 : 58, height: isPadLike ? 62 : 58)
-                    .background(
-                        Circle()
-                            .fill(Color.white.opacity(0.96))
+                    .font(.system(size: Layout.grammarSettingsBackIconSize, weight: .black))
+                    .foregroundStyle(AppColors.primaryBlueDark)
+                    .frame(
+                        width: Layout.grammarSettingsBackButtonSize,
+                        height: Layout.grammarSettingsBackButtonSize
                     )
-                    .shadow(color: Color.black.opacity(0.04), radius: 10, x: 0, y: 4)
+                    .background(Color.white.opacity(0.88))
+                    .clipShape(Circle())
+                    .shadow(color: Color.black.opacity(0.04), radius: 10, x: 0, y: 5)
             }
             .buttonStyle(.plain)
 
-            Spacer()
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Grammar Notes")
+                    .font(.system(size: Layout.grammarSettingsTitleSize, weight: .black, design: .rounded))
+                    .foregroundStyle(AppColors.primaryBlueDark)
 
-            Text("Settings")
-                .font(.system(size: isPadLike ? 34 : 28, weight: .bold, design: .rounded))
-                .foregroundStyle(AppColors.primaryBlue)
-                .lineLimit(1)
-                .minimumScaleFactor(0.82)
+                Text("Settings")
+                    .font(.system(size: Layout.grammarSettingsSubtitleSize, weight: .bold, design: .rounded))
+                    .foregroundStyle(AppColors.textSecondary)
+            }
 
-            Spacer()
+            Spacer(minLength: 0)
+        }
+        .padding(.bottom, 4)
+    }
 
-            Color.clear
-                .frame(width: isPadLike ? 62 : 58, height: isPadLike ? 62 : 58)
+    private var quickCaptureSection: some View {
+        settingsSection(
+            title: "Quick capture",
+            subtitle: "Make fast notes and mistakes feel instant, not like filling tax forms with vowels.",
+            icon: "bolt.fill",
+            tint: AppColors.primaryBlue
+        ) {
+            settingsToggleRow(
+                title: "Open editor after quick save",
+                subtitle: "After saving a quick note, jump straight into the full editor.",
+                icon: "arrow.up.forward.app.fill",
+                tint: AppColors.primaryBlue,
+                isOn: $settings.opensEditorAfterQuickSave
+            )
+
+            settingsToggleRow(
+                title: "Highlight mistake notes",
+                subtitle: "Use a subtle warm tint for mistake cards and quick mistake blocks.",
+                icon: "exclamationmark.triangle.fill",
+                tint: GrammarNoteType.mistake.tintColor,
+                isOn: $settings.showsMistakeHighlights
+            )
+        }
+    }
+
+    private var mistakeNotesSection: some View {
+        settingsSection(
+            title: "Mistake notes",
+            subtitle: "Control what gets saved when you capture a quick mistake.",
+            icon: "exclamationmark.bubble.fill",
+            tint: GrammarNoteType.mistake.tintColor
+        ) {
+            settingsToggleRow(
+                title: "Include original sentence",
+                subtitle: "Save the wrong version as a quote block in the note.",
+                icon: "quote.bubble.fill",
+                tint: GrammarNoteType.mistake.tintColor,
+                isOn: $settings.includeOriginalSentence
+            )
+
+            settingsToggleRow(
+                title: "Include corrected sentence",
+                subtitle: "Save the fixed version as an example block.",
+                icon: "checkmark.bubble.fill",
+                tint: CreateSetTheme.green.accent,
+                isOn: $settings.includeCorrectedSentence
+            )
+
+            settingsToggleRow(
+                title: "Include explanation",
+                subtitle: "Add your explanation as a paragraph block below.",
+                icon: "lightbulb.fill",
+                tint: CreateSetTheme.yellow.accent,
+                isOn: $settings.createMistakeNotesWithExplanation
+            )
+
+            settingsToggleRow(
+                title: "Group mistakes by topic",
+                subtitle: "Save quick mistakes to the chosen topic instead of Common Mistakes.",
+                icon: "folder.fill",
+                tint: CreateSetTheme.purple.accent,
+                isOn: $settings.groupMistakesByTopic
+            )
+        }
+    }
+
+    private var notesAppearanceSection: some View {
+        settingsSection(
+            title: "Notes appearance",
+            subtitle: "Tune the list so it looks like an app, not a spreadsheet having a bad day.",
+            icon: "rectangle.stack.fill",
+            tint: CreateSetTheme.purple.accent
+        ) {
+            settingsToggleRow(
+                title: "Pinned notes first",
+                subtitle: "Keep important rules at the top of each topic.",
+                icon: "pin.fill",
+                tint: CreateSetTheme.purple.accent,
+                isOn: $settings.groupsPinnedNotesFirst
+            )
+
+            settingsToggleRow(
+                title: "Compact note cards",
+                subtitle: "Show tighter cards when you want more notes visible on screen.",
+                icon: "rectangle.compress.vertical",
+                tint: CreateSetTheme.cyan.accent,
+                isOn: $settings.usesCompactCards
+            )
+        }
+    }
+
+    private var defaultTypeSection: some View {
+        settingsSection(
+            title: "Default note type",
+            subtitle: "Choose what a new quick note should look like by default.",
+            icon: "doc.text.fill",
+            tint: selectedDefaultType.tintColor
+        ) {
+            LazyVGrid(
+                columns: [
+                    GridItem(
+                        .adaptive(minimum: Layout.grammarSettingsTypeMinWidth),
+                        spacing: 10
+                    )
+                ],
+                spacing: 10
+            ) {
+                ForEach(GrammarNoteType.allCases) { type in
+                    defaultTypeButton(type)
+                }
+            }
+        }
+    }
+
+    private var helperSection: some View {
+        settingsSection(
+            title: "Learning helpers",
+            subtitle: "Small nudges inside empty states and quick sheets.",
+            icon: "lightbulb.fill",
+            tint: CreateSetTheme.yellow.accent
+        ) {
+            settingsToggleRow(
+                title: "Show helper tips",
+                subtitle: "Display short contextual hints while creating notes.",
+                icon: "lightbulb.fill",
+                tint: CreateSetTheme.yellow.accent,
+                isOn: $settings.showsHelperTips
+            )
+
+            helperPreviewCard
         }
     }
 
     private func settingsSection<Content: View>(
         title: String,
         subtitle: String,
+        icon: String,
+        tint: Color,
         @ViewBuilder content: () -> Content
     ) -> some View {
-        VStack(alignment: .leading, spacing: isPadLike ? 14 : 12) {
-            VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Layout.grammarSettingsCardInnerSpacing) {
+            HStack(alignment: .top, spacing: 11) {
+                ZStack {
+                    Circle()
+                        .fill(tint.opacity(0.12))
+
+                    Image(systemName: icon)
+                        .font(.system(size: Layout.grammarSettingsSectionIconSize, weight: .bold))
+                        .foregroundStyle(tint)
+                }
+                .frame(
+                    width: Layout.grammarSettingsSectionIconBox,
+                    height: Layout.grammarSettingsSectionIconBox
+                )
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(title)
+                        .font(.system(size: Layout.grammarSettingsSectionTitleSize, weight: .black, design: .rounded))
+                        .foregroundStyle(AppColors.primaryBlueDark)
+
+                    Text(subtitle)
+                        .font(.system(size: Layout.grammarSettingsSectionSubtitleSize, weight: .semibold, design: .rounded))
+                        .foregroundStyle(AppColors.textSecondary)
+                        .lineSpacing(3)
+                }
+
+                Spacer(minLength: 0)
+            }
+
+            content()
+        }
+        .padding(Layout.grammarSettingsCardPadding)
+        .background(sectionBackground(tint: tint))
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: Layout.grammarSettingsCardCornerRadius,
+                style: .continuous
+            )
+        )
+        .overlay(
+            RoundedRectangle(
+                cornerRadius: Layout.grammarSettingsCardCornerRadius,
+                style: .continuous
+            )
+            .stroke(Color.white.opacity(0.62), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.045), radius: 18, x: 0, y: 10)
+    }
+
+    private func settingsToggleRow(
+        title: String,
+        subtitle: String,
+        icon: String,
+        tint: Color,
+        isOn: Binding<Bool>
+    ) -> some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(tint.opacity(0.10))
+
+                Image(systemName: icon)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(tint)
+            }
+            .frame(
+                width: Layout.grammarSettingsRowIconBox,
+                height: Layout.grammarSettingsRowIconBox
+            )
+
+            VStack(alignment: .leading, spacing: 3) {
                 Text(title)
-                    .font(.system(size: isPadLike ? 18 : 16, weight: .bold, design: .rounded))
+                    .font(.system(size: Layout.grammarSettingsRowTitleSize, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
 
                 Text(subtitle)
-                    .font(.system(size: isPadLike ? 14 : 12, weight: .semibold, design: .rounded))
+                    .font(.system(size: Layout.grammarSettingsRowSubtitleSize, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                     .lineSpacing(2)
             }
 
-            VStack(spacing: 0) {
-                content()
+            Spacer(minLength: 0)
+
+            Toggle("", isOn: isOn)
+                .labelsHidden()
+                .tint(tint)
+        }
+        .padding(Layout.grammarSettingsRowPadding)
+        .background(Color.white.opacity(0.68))
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: Layout.grammarSettingsRowCornerRadius,
+                style: .continuous
+            )
+        )
+    }
+
+    private func defaultTypeButton(_ type: GrammarNoteType) -> some View {
+        let isSelected = selectedDefaultType == type
+
+        return Button {
+            selectedDefaultType = type
+        } label: {
+            VStack(spacing: 8) {
+                ZStack {
+                    Circle()
+                        .fill((isSelected ? Color.white : type.tintColor).opacity(isSelected ? 0.22 : 0.12))
+
+                    Image(systemName: type.systemImage)
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(isSelected ? Color.white : type.tintColor)
+                }
+                .frame(width: 38, height: 38)
+
+                Text(type.title)
+                    .font(.system(size: 12, weight: .black, design: .rounded))
+                    .foregroundStyle(isSelected ? Color.white : AppColors.primaryBlueDark)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.78)
             }
+            .frame(maxWidth: .infinity)
+            .frame(height: Layout.grammarSettingsTypeButtonHeight)
+            .background(isSelected ? type.tintColor : Color.white.opacity(0.68))
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(
+                        isSelected ? Color.white.opacity(0.34) : type.tintColor.opacity(0.08),
+                        lineWidth: 1
+                    )
+            )
         }
-        .padding(isPadLike ? 20 : 16)
-        .background(Color.white.opacity(0.96))
-        .clipShape(RoundedRectangle(cornerRadius: isPadLike ? 28 : 24, style: .continuous))
-        .shadow(color: Color.black.opacity(0.045), radius: 16, x: 0, y: 8)
+        .buttonStyle(GrammarNotesScaleButtonStyle())
     }
 
-    private func settingToggle(_ title: String, isOn: Binding<Bool>) -> some View {
-        Toggle(isOn: isOn) {
-            Text(title)
-                .font(.system(size: isPadLike ? 16 : 14, weight: .semibold, design: .rounded))
-                .foregroundStyle(AppColors.primaryBlueDark)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
+    private var helperPreviewCard: some View {
+        HStack(alignment: .top, spacing: 11) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(AppColors.primaryBlue)
+                .padding(.top, 2)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Quick tip preview")
+                    .font(.system(size: 13, weight: .black, design: .rounded))
+                    .foregroundStyle(AppColors.primaryBlueDark)
+
+                Text("Use quick mistakes for sentences you actually wrote wrong. Those are more useful than textbook-perfect examples, naturally.")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(AppColors.textSecondary)
+                    .lineSpacing(3)
+            }
+
+            Spacer(minLength: 0)
         }
-        .toggleStyle(SwitchToggleStyle(tint: AppColors.primaryBlue))
-        .padding(.vertical, isPadLike ? 12 : 10)
+        .padding(Layout.grammarSettingsRowPadding)
+        .background(AppColors.primaryBlue.opacity(0.07))
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: Layout.grammarSettingsRowCornerRadius,
+                style: .continuous
+            )
+        )
+        .opacity(settings.showsHelperTips ? 1 : 0.45)
     }
 
-    private var settingDivider: some View {
-        Rectangle()
-            .fill(AppColors.primaryBlue.opacity(0.08))
-            .frame(height: 1)
+    private func sectionBackground(tint: Color) -> some View {
+        ZStack(alignment: .topTrailing) {
+            Color.white.opacity(0.84)
+
+            BlobShape()
+                .fill(tint.opacity(0.09))
+                .frame(
+                    width: Layout.isPadLike ? 150 : 110,
+                    height: Layout.isPadLike ? 120 : 90
+                )
+                .rotationEffect(.degrees(-9))
+                .offset(
+                    x: Layout.isPadLike ? 48 : 36,
+                    y: Layout.isPadLike ? -40 : -28
+                )
+        }
     }
 }
 

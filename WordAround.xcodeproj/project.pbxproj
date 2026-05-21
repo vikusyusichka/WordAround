@@ -149,6 +149,13 @@
 		E3820FDE2FBC8C92007BDB57 /* GrammarNoteEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FDD2FBC8C7E007BDB57 /* GrammarNoteEditorViewModel.swift */; };
 		E3820FE02FBC8CDE007BDB57 /* AddGrammarNoteBlockSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FDF2FBC8CCE007BDB57 /* AddGrammarNoteBlockSheet.swift */; };
 		E3820FE22FBC8D1B007BDB57 /* GrammarNoteBlockEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FE12FBC8D07007BDB57 /* GrammarNoteBlockEditorView.swift */; };
+		E3820FE92FBE5A23007BDB57 /* GrammarNoteEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FE82FBE5A0D007BDB57 /* GrammarNoteEmptyStateView.swift */; };
+		E3820FEB2FBE5A51007BDB57 /* GrammarNotesFABMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FEA2FBE5A43007BDB57 /* GrammarNotesFABMenu.swift */; };
+		E3820FEF2FBE5A86007BDB57 /* QuickGrammarMistakeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FEE2FBE5A76007BDB57 /* QuickGrammarMistakeSheet.swift */; };
+		E3820FF12FBE5AA0007BDB57 /* QuickGrammarNoteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FF02FBE5A95007BDB57 /* QuickGrammarNoteSheet.swift */; };
+		E3820FF32FBED64A007BDB57 /* GrammarMistakeSaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FF22FBED641007BDB57 /* GrammarMistakeSaveService.swift */; };
+		E3820FF52FBED6CC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FF42FBED6AC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift */; };
+		E3CC00022FBC65CA00C52238 /* GrammarNotesSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3CC00012FBC65CA00C52238 /* GrammarNotesSettingsStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -290,6 +297,13 @@
 		E3820FDD2FBC8C7E007BDB57 /* GrammarNoteEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteEditorViewModel.swift; sourceTree = "<group>"; };
 		E3820FDF2FBC8CCE007BDB57 /* AddGrammarNoteBlockSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGrammarNoteBlockSheet.swift; sourceTree = "<group>"; };
 		E3820FE12FBC8D07007BDB57 /* GrammarNoteBlockEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteBlockEditorView.swift; sourceTree = "<group>"; };
+		E3820FE82FBE5A0D007BDB57 /* GrammarNoteEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteEmptyStateView.swift; sourceTree = "<group>"; };
+		E3820FEA2FBE5A43007BDB57 /* GrammarNotesFABMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesFABMenu.swift; sourceTree = "<group>"; };
+		E3820FEE2FBE5A76007BDB57 /* QuickGrammarMistakeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickGrammarMistakeSheet.swift; sourceTree = "<group>"; };
+		E3820FF02FBE5A95007BDB57 /* QuickGrammarNoteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickGrammarNoteSheet.swift; sourceTree = "<group>"; };
+		E3820FF22FBED641007BDB57 /* GrammarMistakeSaveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarMistakeSaveService.swift; sourceTree = "<group>"; };
+		E3820FF42FBED6AC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveGrammarMistakeConfirmationSheet.swift; sourceTree = "<group>"; };
+		E3CC00012FBC65CA00C52238 /* GrammarNotesSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesSettingsStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -573,6 +587,7 @@
 			children = (
 				E3820FBF2FBC839C007BDB57 /* Notes */,
 				E3820FBE2FBC838B007BDB57 /* Topics */,
+				E3CC00032FBC65CA00C52238 /* Stores */,
 			);
 			path = GrammarNotes;
 			sourceTree = "<group>";
@@ -952,6 +967,7 @@
 		E3820FC52FBC83E2007BDB57 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				E3820FF22FBED641007BDB57 /* GrammarMistakeSaveService.swift */,
 				E3820FDA2FBC8C47007BDB57 /* GrammarNoteTemplateProvider.swift */,
 				E3820FC62FBC83ED007BDB57 /* GrammarNoteService.swift */,
 			);
@@ -961,6 +977,11 @@
 		E3820FCA2FBC8440007BDB57 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E3820FF42FBED6AC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift */,
+				E3820FF02FBE5A95007BDB57 /* QuickGrammarNoteSheet.swift */,
+				E3820FEE2FBE5A76007BDB57 /* QuickGrammarMistakeSheet.swift */,
+				E3820FEA2FBE5A43007BDB57 /* GrammarNotesFABMenu.swift */,
+				E3820FE82FBE5A0D007BDB57 /* GrammarNoteEmptyStateView.swift */,
 				E3820FE12FBC8D07007BDB57 /* GrammarNoteBlockEditorView.swift */,
 				E3820FDF2FBC8CCE007BDB57 /* AddGrammarNoteBlockSheet.swift */,
 				E3820FCB2FBC8451007BDB57 /* CreateGrammarNoteSheet.swift */,
@@ -987,6 +1008,14 @@
 				E3820FC02FBC83CD007BDB57 /* Models */,
 			);
 			path = Editor;
+			sourceTree = "<group>";
+		};
+		E3CC00032FBC65CA00C52238 /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				E3CC00012FBC65CA00C52238 /* GrammarNotesSettingsStore.swift */,
+			);
+			path = Stores;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1082,6 +1111,7 @@
 				E30A1DAE2F9E07F000387BDC /* CreateFolderViewModel.swift in Sources */,
 				E30A1CBC2F98023B00387BDC /* HomeView.swift in Sources */,
 				E30A1CC32F9819B100387BDC /* AuthView.swift in Sources */,
+				E3820FF12FBE5AA0007BDB57 /* QuickGrammarNoteSheet.swift in Sources */,
 				E30902BC2FBB975100C52238 /* GeneratedEssayTask.swift in Sources */,
 				E30A1D6B2F9BF7D200387BDC /* CreateSetCardsSectionView.swift in Sources */,
 				E30A1D0F2F9A618800387BDC /* HomeTab.swift in Sources */,
@@ -1099,12 +1129,14 @@
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
 				E3820FD42FBC8BD7007BDB57 /* GrammarNoteBlock.swift in Sources */,
+				E3820FF32FBED64A007BDB57 /* GrammarMistakeSaveService.swift in Sources */,
 				E30902412FBAB04600C52238 /* WriteWordsCountdownTimerView.swift in Sources */,
 				E30A1D832F9C2EF700387BDC /* LocalImageStorageService.swift in Sources */,
 				E309022D2FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift in Sources */,
 				E309022E2FBA3EC600C52238 /* WritingMenuCardView.swift in Sources */,
 				E309022F2FBA3EC600C52238 /* WriteWordsViewModel.swift in Sources */,
 				E30902302FBA3EC600C52238 /* WritingViewModel.swift in Sources */,
+				E3820FF52FBED6CC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift in Sources */,
 				E30902312FBA3EC600C52238 /* WritingSetCardView.swift in Sources */,
 				E30902322FBA3EC600C52238 /* WriteWordsProgressView.swift in Sources */,
 				E30902332FBA3EC600C52238 /* WriteWordsExerciseCardView.swift in Sources */,
@@ -1137,6 +1169,7 @@
 				E30902F52FBC65CA00C52238 /* GrammarNotesHomeViewModel.swift in Sources */,
 				E30902F62FBC65CA00C52238 /* GrammarNoteTopic.swift in Sources */,
 				E30902F72FBC65CA00C52238 /* GrammarNotesTopicView.swift in Sources */,
+				E3CC00022FBC65CA00C52238 /* GrammarNotesSettingsStore.swift in Sources */,
 				E30902552FBAC9F500C52238 /* EssayTopic.swift in Sources */,
 				E30902562FBAC9F500C52238 /* GrammarIssue.swift in Sources */,
 				E30902622FBAE1A000C52238 /* EssayDifficulty.swift in Sources */,
@@ -1147,6 +1180,7 @@
 				E309023D2FBAA11B00C52238 /* WriteWordsSettingsSheet.swift in Sources */,
 				E30A1D982F9CE42500387BDC /* FlashcardSetDetailCardFilter.swift in Sources */,
 				E30902692FBAE26400C52238 /* LanguageSelectorView.swift in Sources */,
+				E3820FE92FBE5A23007BDB57 /* GrammarNoteEmptyStateView.swift in Sources */,
 				E30A1D992F9CE42500387BDC /* FlashcardSetDetailControlsView.swift in Sources */,
 				E309029B2FBB6E8700C52238 /* EssayTopicMode.swift in Sources */,
 				E30A1D9A2F9CE42500387BDC /* FlashcardSetDetailCardRowView.swift in Sources */,
@@ -1164,6 +1198,7 @@
 				E30902BA2FBB973D00C52238 /* GeminiEssayAPIClient.swift in Sources */,
 				E309025D2FBACA1C00C52238 /* EssayTopicCardView.swift in Sources */,
 				E309025E2FBACA1C00C52238 /* GrammarIssueCardView.swift in Sources */,
+				E3820FEB2FBE5A51007BDB57 /* GrammarNotesFABMenu.swift in Sources */,
 				E30902A92FBB729300C52238 /* EssayAssistanceModalView.swift in Sources */,
 				E30902AA2FBB729300C52238 /* EssayScoreCardView.swift in Sources */,
 				E3820FD92FBC8C1A007BDB57 /* GrammarNoteTemplate.swift in Sources */,
@@ -1206,6 +1241,7 @@
 				E309029F2FBB6EC700C52238 /* EssayScoringService.swift in Sources */,
 				E30A1D0D2F9A616F00387BDC /* HomeCategory.swift in Sources */,
 				E30A1D092F9A5FDB00387BDC /* CategorySidebarView.swift in Sources */,
+				E3820FEF2FBE5A86007BDB57 /* QuickGrammarMistakeSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
