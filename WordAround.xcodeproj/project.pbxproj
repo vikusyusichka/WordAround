@@ -13,6 +13,61 @@
 		E309017A2FB9614C00C52238 /* SetsListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901782FB9614C00C52238 /* SetsListScreen.swift */; };
 		E309017B2FB9614C00C52238 /* SetsListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901772FB9614C00C52238 /* SetsListHeaderView.swift */; };
 		E309017D2FB963D400C52238 /* SetsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309017C2FB963CB00C52238 /* SetsListViewModel.swift */; };
+		E309022D2FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902202FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift */; };
+		E309022E2FBA3EC600C52238 /* WritingMenuCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902262FBA3EC600C52238 /* WritingMenuCardView.swift */; };
+		E309022F2FBA3EC600C52238 /* WriteWordsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902242FBA3EC600C52238 /* WriteWordsViewModel.swift */; };
+		E30902302FBA3EC600C52238 /* WritingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309022C2FBA3EC600C52238 /* WritingViewModel.swift */; };
+		E30902312FBA3EC600C52238 /* WritingSetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902282FBA3EC600C52238 /* WritingSetCardView.swift */; };
+		E30902322FBA3EC600C52238 /* WriteWordsProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902222FBA3EC600C52238 /* WriteWordsProgressView.swift */; };
+		E30902332FBA3EC600C52238 /* WriteWordsExerciseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902212FBA3EC600C52238 /* WriteWordsExerciseCardView.swift */; };
+		E30902342FBA3EC600C52238 /* WritingSetSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309022A2FBA3EC600C52238 /* WritingSetSelectionViewModel.swift */; };
+		E30902352FBA3EC600C52238 /* WritingGoalCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902252FBA3EC600C52238 /* WritingGoalCardView.swift */; };
+		E30902362FBA3EC600C52238 /* WritingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902272FBA3EC600C52238 /* WritingModels.swift */; };
+		E30902372FBA3EC600C52238 /* WriteWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902232FBA3EC600C52238 /* WriteWordsView.swift */; };
+		E30902382FBA3EC600C52238 /* WritingSetSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902292FBA3EC600C52238 /* WritingSetSelectionView.swift */; };
+		E30902392FBA3EC600C52238 /* WritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309022B2FBA3EC600C52238 /* WritingView.swift */; };
+		E309023B2FBA8BA700C52238 /* WriteWordsAnswerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309023A2FBA8B8700C52238 /* WriteWordsAnswerInputView.swift */; };
+		E309023D2FBAA11B00C52238 /* WriteWordsSettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309023C2FBAA0F800C52238 /* WriteWordsSettingsSheet.swift */; };
+		E30902412FBAB04600C52238 /* WriteWordsCountdownTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902402FBAB03600C52238 /* WriteWordsCountdownTimerView.swift */; };
+		E309024C2FBAB98700C52238 /* WriteWordsLoseScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309024B2FBAB97000C52238 /* WriteWordsLoseScreenView.swift */; };
+		E30902522FBAC9E500C52238 /* GrammarCheckService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902512FBAC9E500C52238 /* GrammarCheckService.swift */; };
+		E30902552FBAC9F500C52238 /* EssayTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902532FBAC9F500C52238 /* EssayTopic.swift */; };
+		E30902562FBAC9F500C52238 /* GrammarIssue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902542FBAC9F500C52238 /* GrammarIssue.swift */; };
+		E30902582FBACA0D00C52238 /* EssayPracticeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902572FBACA0D00C52238 /* EssayPracticeViewModel.swift */; };
+		E309025D2FBACA1C00C52238 /* EssayTopicCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309025B2FBACA1C00C52238 /* EssayTopicCardView.swift */; };
+		E309025E2FBACA1C00C52238 /* GrammarIssueCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309025C2FBACA1C00C52238 /* GrammarIssueCardView.swift */; };
+		E309025F2FBACA1C00C52238 /* EssayFeedbackSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902592FBACA1C00C52238 /* EssayFeedbackSectionView.swift */; };
+		E30902602FBACA1C00C52238 /* EssayPracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309025A2FBACA1C00C52238 /* EssayPracticeView.swift */; };
+		E30902622FBAE1A000C52238 /* EssayDifficulty.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902612FBAE18900C52238 /* EssayDifficulty.swift */; };
+		E30902642FBAE1B200C52238 /* GrammarLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902632FBAE1AB00C52238 /* GrammarLanguage.swift */; };
+		E30902662FBAE1C300C52238 /* EssayScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902652FBAE1BE00C52238 /* EssayScore.swift */; };
+		E30902692FBAE26400C52238 /* LanguageSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902682FBAE25900C52238 /* LanguageSelectorView.swift */; };
+		E309026B2FBAE27600C52238 /* DifficultySelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309026A2FBAE27400C52238 /* DifficultySelectorView.swift */; };
+		E309026F2FBAE6CA00C52238 /* EssayInputSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309026E2FBAE6C600C52238 /* EssayInputSectionView.swift */; };
+		E309029B2FBB6E8700C52238 /* EssayTopicMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309029A2FBB6E8000C52238 /* EssayTopicMode.swift */; };
+		E309029D2FBB6E9F00C52238 /* EssayAssistantItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309029C2FBB6E9600C52238 /* EssayAssistantItem.swift */; };
+		E309029F2FBB6EC700C52238 /* EssayScoringService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E309029E2FBB6EBF00C52238 /* EssayScoringService.swift */; };
+		E30902A12FBB6EE900C52238 /* EssayAssistanceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A02FBB6EE100C52238 /* EssayAssistanceService.swift */; };
+		E30902A52FBB724D00C52238 /* EssayHelperToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A42FBB724D00C52238 /* EssayHelperToolbarView.swift */; };
+		E30902A92FBB729300C52238 /* EssayAssistanceModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A72FBB729300C52238 /* EssayAssistanceModalView.swift */; };
+		E30902AA2FBB729300C52238 /* EssayScoreCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A82FBB729300C52238 /* EssayScoreCardView.swift */; };
+		E30902AB2FBB729300C52238 /* CustomEssayTopicInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902A62FBB729300C52238 /* CustomEssayTopicInputView.swift */; };
+		E30902AD2FBB754B00C52238 /* EssayHintItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902AC2FBB753C00C52238 /* EssayHintItem.swift */; };
+		E30902B42FBB96CB00C52238 /* EssayGeneratedHint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902B32FBB96B800C52238 /* EssayGeneratedHint.swift */; };
+		E30902B62FBB96E400C52238 /* EssayAIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902B52FBB96DD00C52238 /* EssayAIClient.swift */; };
+		E30902B82FBB96FA00C52238 /* EssayGenerationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902B72FBB96F200C52238 /* EssayGenerationService.swift */; };
+		E30902BA2FBB973D00C52238 /* GeminiEssayAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902B92FBB973600C52238 /* GeminiEssayAPIClient.swift */; };
+		E30902BC2FBB975100C52238 /* GeneratedEssayTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902BB2FBB974900C52238 /* GeneratedEssayTask.swift */; };
+		E30902C82FBC0FD000C52238 /* EssaysSetHintCardRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902C72FBC0FBB00C52238 /* EssaysSetHintCardRowView.swift */; };
+		E30902CA2FBC100900C52238 /* SetHintsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902C92FBC0FFE00C52238 /* SetHintsSelectionView.swift */; };
+		E30902F02FBC65CA00C52238 /* GrammarNoteTopicCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902ED2FBC65CA00C52238 /* GrammarNoteTopicCardView.swift */; };
+		E30902F12FBC65CA00C52238 /* GrammarNoteTopicService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902E52FBC65CA00C52238 /* GrammarNoteTopicService.swift */; };
+		E30902F22FBC65CA00C52238 /* CreateGrammarTopicSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902E92FBC65CA00C52238 /* CreateGrammarTopicSheet.swift */; };
+		E30902F32FBC65CA00C52238 /* GrammarNotesSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902EB2FBC65CA00C52238 /* GrammarNotesSettingsView.swift */; };
+		E30902F42FBC65CA00C52238 /* GrammarNotesHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902EA2FBC65CA00C52238 /* GrammarNotesHomeView.swift */; };
+		E30902F52FBC65CA00C52238 /* GrammarNotesHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902E72FBC65CA00C52238 /* GrammarNotesHomeViewModel.swift */; };
+		E30902F62FBC65CA00C52238 /* GrammarNoteTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902E32FBC65CA00C52238 /* GrammarNoteTopic.swift */; };
+		E30902F72FBC65CA00C52238 /* GrammarNotesTopicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30902EC2FBC65CA00C52238 /* GrammarNotesTopicView.swift */; };
 		E30A1CAA2F98010F00387BDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CA62F98010F00387BDC /* Assets.xcassets */; };
 		E30A1CAC2F98010F00387BDC /* WordAroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1CA82F98010F00387BDC /* WordAroundApp.swift */; };
 		E30A1CB32F9801B600387BDC /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E30A1CB22F9801AE00387BDC /* .gitignore */; };
@@ -101,6 +156,27 @@
 		E39E90902FA7E65300472437 /* FlashcardSetDetailAddButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E907D2FA7E65200472437 /* FlashcardSetDetailAddButton.swift */; };
 		E39E90912FA7E65300472437 /* FlashcardSetDetailBottomCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E907E2FA7E65200472437 /* FlashcardSetDetailBottomCover.swift */; };
 		E39E90922FA7E65300472437 /* FlashcardExpandedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39E90802FA7E65200472437 /* FlashcardExpandedView.swift */; };
+		E3820FC32FBC83D9007BDB57 /* GrammarNoteType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FC22FBC83D9007BDB57 /* GrammarNoteType.swift */; };
+		E3820FC42FBC83D9007BDB57 /* GrammarNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FC12FBC83D9007BDB57 /* GrammarNote.swift */; };
+		E3820FC72FBC83ED007BDB57 /* GrammarNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FC62FBC83ED007BDB57 /* GrammarNoteService.swift */; };
+		E3820FC92FBC8407007BDB57 /* GrammarNotesTopicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FC82FBC8407007BDB57 /* GrammarNotesTopicViewModel.swift */; };
+		E3820FCF2FBC8451007BDB57 /* CreateGrammarNoteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FCB2FBC8451007BDB57 /* CreateGrammarNoteSheet.swift */; };
+		E3820FD02FBC8451007BDB57 /* GrammarNoteCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FCC2FBC8451007BDB57 /* GrammarNoteCardView.swift */; };
+		E3820FD22FBC8451007BDB57 /* GrammarNoteEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FCD2FBC8451007BDB57 /* GrammarNoteEditorView.swift */; };
+		E3820FD42FBC8BD7007BDB57 /* GrammarNoteBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FD32FBC8BC5007BDB57 /* GrammarNoteBlock.swift */; };
+		E3820FD62FBC8BF6007BDB57 /* GrammarNoteBlockType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FD52FBC8BEB007BDB57 /* GrammarNoteBlockType.swift */; };
+		E3820FD92FBC8C1A007BDB57 /* GrammarNoteTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FD82FBC8C0E007BDB57 /* GrammarNoteTemplate.swift */; };
+		E3820FDB2FBC8C55007BDB57 /* GrammarNoteTemplateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FDA2FBC8C47007BDB57 /* GrammarNoteTemplateProvider.swift */; };
+		E3820FDE2FBC8C92007BDB57 /* GrammarNoteEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FDD2FBC8C7E007BDB57 /* GrammarNoteEditorViewModel.swift */; };
+		E3820FE02FBC8CDE007BDB57 /* AddGrammarNoteBlockSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FDF2FBC8CCE007BDB57 /* AddGrammarNoteBlockSheet.swift */; };
+		E3820FE22FBC8D1B007BDB57 /* GrammarNoteBlockEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FE12FBC8D07007BDB57 /* GrammarNoteBlockEditorView.swift */; };
+		E3820FE92FBE5A23007BDB57 /* GrammarNoteEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FE82FBE5A0D007BDB57 /* GrammarNoteEmptyStateView.swift */; };
+		E3820FEB2FBE5A51007BDB57 /* GrammarNotesFABMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FEA2FBE5A43007BDB57 /* GrammarNotesFABMenu.swift */; };
+		E3820FEF2FBE5A86007BDB57 /* QuickGrammarMistakeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FEE2FBE5A76007BDB57 /* QuickGrammarMistakeSheet.swift */; };
+		E3820FF12FBE5AA0007BDB57 /* QuickGrammarNoteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FF02FBE5A95007BDB57 /* QuickGrammarNoteSheet.swift */; };
+		E3820FF32FBED64A007BDB57 /* GrammarMistakeSaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FF22FBED641007BDB57 /* GrammarMistakeSaveService.swift */; };
+		E3820FF52FBED6CC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FF42FBED6AC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift */; };
+		E3CC00022FBC65CA00C52238 /* GrammarNotesSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3CC00012FBC65CA00C52238 /* GrammarNotesSettingsStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -110,6 +186,61 @@
 		E30901772FB9614C00C52238 /* SetsListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetsListHeaderView.swift; sourceTree = "<group>"; };
 		E30901782FB9614C00C52238 /* SetsListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetsListScreen.swift; sourceTree = "<group>"; };
 		E309017C2FB963CB00C52238 /* SetsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetsListViewModel.swift; sourceTree = "<group>"; };
+		E30902202FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsAnswerCellsView.swift; sourceTree = "<group>"; };
+		E30902212FBA3EC600C52238 /* WriteWordsExerciseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsExerciseCardView.swift; sourceTree = "<group>"; };
+		E30902222FBA3EC600C52238 /* WriteWordsProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsProgressView.swift; sourceTree = "<group>"; };
+		E30902232FBA3EC600C52238 /* WriteWordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsView.swift; sourceTree = "<group>"; };
+		E30902242FBA3EC600C52238 /* WriteWordsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsViewModel.swift; sourceTree = "<group>"; };
+		E30902252FBA3EC600C52238 /* WritingGoalCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingGoalCardView.swift; sourceTree = "<group>"; };
+		E30902262FBA3EC600C52238 /* WritingMenuCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingMenuCardView.swift; sourceTree = "<group>"; };
+		E30902272FBA3EC600C52238 /* WritingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingModels.swift; sourceTree = "<group>"; };
+		E30902282FBA3EC600C52238 /* WritingSetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingSetCardView.swift; sourceTree = "<group>"; };
+		E30902292FBA3EC600C52238 /* WritingSetSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingSetSelectionView.swift; sourceTree = "<group>"; };
+		E309022A2FBA3EC600C52238 /* WritingSetSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingSetSelectionViewModel.swift; sourceTree = "<group>"; };
+		E309022B2FBA3EC600C52238 /* WritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingView.swift; sourceTree = "<group>"; };
+		E309022C2FBA3EC600C52238 /* WritingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingViewModel.swift; sourceTree = "<group>"; };
+		E309023A2FBA8B8700C52238 /* WriteWordsAnswerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsAnswerInputView.swift; sourceTree = "<group>"; };
+		E309023C2FBAA0F800C52238 /* WriteWordsSettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsSettingsSheet.swift; sourceTree = "<group>"; };
+		E30902402FBAB03600C52238 /* WriteWordsCountdownTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsCountdownTimerView.swift; sourceTree = "<group>"; };
+		E309024B2FBAB97000C52238 /* WriteWordsLoseScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteWordsLoseScreenView.swift; sourceTree = "<group>"; };
+		E30902512FBAC9E500C52238 /* GrammarCheckService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarCheckService.swift; sourceTree = "<group>"; };
+		E30902532FBAC9F500C52238 /* EssayTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayTopic.swift; sourceTree = "<group>"; };
+		E30902542FBAC9F500C52238 /* GrammarIssue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarIssue.swift; sourceTree = "<group>"; };
+		E30902572FBACA0D00C52238 /* EssayPracticeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayPracticeViewModel.swift; sourceTree = "<group>"; };
+		E30902592FBACA1C00C52238 /* EssayFeedbackSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayFeedbackSectionView.swift; sourceTree = "<group>"; };
+		E309025A2FBACA1C00C52238 /* EssayPracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayPracticeView.swift; sourceTree = "<group>"; };
+		E309025B2FBACA1C00C52238 /* EssayTopicCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayTopicCardView.swift; sourceTree = "<group>"; };
+		E309025C2FBACA1C00C52238 /* GrammarIssueCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarIssueCardView.swift; sourceTree = "<group>"; };
+		E30902612FBAE18900C52238 /* EssayDifficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayDifficulty.swift; sourceTree = "<group>"; };
+		E30902632FBAE1AB00C52238 /* GrammarLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarLanguage.swift; sourceTree = "<group>"; };
+		E30902652FBAE1BE00C52238 /* EssayScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayScore.swift; sourceTree = "<group>"; };
+		E30902682FBAE25900C52238 /* LanguageSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectorView.swift; sourceTree = "<group>"; };
+		E309026A2FBAE27400C52238 /* DifficultySelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DifficultySelectorView.swift; sourceTree = "<group>"; };
+		E309026E2FBAE6C600C52238 /* EssayInputSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayInputSectionView.swift; sourceTree = "<group>"; };
+		E309029A2FBB6E8000C52238 /* EssayTopicMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayTopicMode.swift; sourceTree = "<group>"; };
+		E309029C2FBB6E9600C52238 /* EssayAssistantItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayAssistantItem.swift; sourceTree = "<group>"; };
+		E309029E2FBB6EBF00C52238 /* EssayScoringService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayScoringService.swift; sourceTree = "<group>"; };
+		E30902A02FBB6EE100C52238 /* EssayAssistanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayAssistanceService.swift; sourceTree = "<group>"; };
+		E30902A42FBB724D00C52238 /* EssayHelperToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayHelperToolbarView.swift; sourceTree = "<group>"; };
+		E30902A62FBB729300C52238 /* CustomEssayTopicInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEssayTopicInputView.swift; sourceTree = "<group>"; };
+		E30902A72FBB729300C52238 /* EssayAssistanceModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayAssistanceModalView.swift; sourceTree = "<group>"; };
+		E30902A82FBB729300C52238 /* EssayScoreCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayScoreCardView.swift; sourceTree = "<group>"; };
+		E30902AC2FBB753C00C52238 /* EssayHintItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayHintItem.swift; sourceTree = "<group>"; };
+		E30902B32FBB96B800C52238 /* EssayGeneratedHint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayGeneratedHint.swift; sourceTree = "<group>"; };
+		E30902B52FBB96DD00C52238 /* EssayAIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayAIClient.swift; sourceTree = "<group>"; };
+		E30902B72FBB96F200C52238 /* EssayGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayGenerationService.swift; sourceTree = "<group>"; };
+		E30902B92FBB973600C52238 /* GeminiEssayAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiEssayAPIClient.swift; sourceTree = "<group>"; };
+		E30902BB2FBB974900C52238 /* GeneratedEssayTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedEssayTask.swift; sourceTree = "<group>"; };
+		E30902C72FBC0FBB00C52238 /* EssaysSetHintCardRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssaysSetHintCardRowView.swift; sourceTree = "<group>"; };
+		E30902C92FBC0FFE00C52238 /* SetHintsSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetHintsSelectionView.swift; sourceTree = "<group>"; };
+		E30902E32FBC65CA00C52238 /* GrammarNoteTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteTopic.swift; sourceTree = "<group>"; };
+		E30902E52FBC65CA00C52238 /* GrammarNoteTopicService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteTopicService.swift; sourceTree = "<group>"; };
+		E30902E72FBC65CA00C52238 /* GrammarNotesHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesHomeViewModel.swift; sourceTree = "<group>"; };
+		E30902E92FBC65CA00C52238 /* CreateGrammarTopicSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGrammarTopicSheet.swift; sourceTree = "<group>"; };
+		E30902EA2FBC65CA00C52238 /* GrammarNotesHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesHomeView.swift; sourceTree = "<group>"; };
+		E30902EB2FBC65CA00C52238 /* GrammarNotesSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesSettingsView.swift; sourceTree = "<group>"; };
+		E30902EC2FBC65CA00C52238 /* GrammarNotesTopicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesTopicView.swift; sourceTree = "<group>"; };
+		E30902ED2FBC65CA00C52238 /* GrammarNoteTopicCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteTopicCardView.swift; sourceTree = "<group>"; };
 		E30A1C982F98003000387BDC /* WordAround.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordAround.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E30A1CA62F98010F00387BDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E30A1CA82F98010F00387BDC /* WordAroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordAroundApp.swift; sourceTree = "<group>"; };
@@ -194,6 +325,27 @@
 		E39E90812FA7E65200472437 /* FlashcardSetDetailCardFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailCardFilter.swift; sourceTree = "<group>"; };
 		E39E90822FA7E65200472437 /* FlashcardSetDetailControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailControlsView.swift; sourceTree = "<group>"; };
 		E39E90832FA7E65200472437 /* FlashcardSetDetailMainCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardSetDetailMainCardView.swift; sourceTree = "<group>"; };
+		E3820FC12FBC83D9007BDB57 /* GrammarNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNote.swift; sourceTree = "<group>"; };
+		E3820FC22FBC83D9007BDB57 /* GrammarNoteType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteType.swift; sourceTree = "<group>"; };
+		E3820FC62FBC83ED007BDB57 /* GrammarNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteService.swift; sourceTree = "<group>"; };
+		E3820FC82FBC8407007BDB57 /* GrammarNotesTopicViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesTopicViewModel.swift; sourceTree = "<group>"; };
+		E3820FCB2FBC8451007BDB57 /* CreateGrammarNoteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGrammarNoteSheet.swift; sourceTree = "<group>"; };
+		E3820FCC2FBC8451007BDB57 /* GrammarNoteCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteCardView.swift; sourceTree = "<group>"; };
+		E3820FCD2FBC8451007BDB57 /* GrammarNoteEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteEditorView.swift; sourceTree = "<group>"; };
+		E3820FD32FBC8BC5007BDB57 /* GrammarNoteBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteBlock.swift; sourceTree = "<group>"; };
+		E3820FD52FBC8BEB007BDB57 /* GrammarNoteBlockType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteBlockType.swift; sourceTree = "<group>"; };
+		E3820FD82FBC8C0E007BDB57 /* GrammarNoteTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteTemplate.swift; sourceTree = "<group>"; };
+		E3820FDA2FBC8C47007BDB57 /* GrammarNoteTemplateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteTemplateProvider.swift; sourceTree = "<group>"; };
+		E3820FDD2FBC8C7E007BDB57 /* GrammarNoteEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteEditorViewModel.swift; sourceTree = "<group>"; };
+		E3820FDF2FBC8CCE007BDB57 /* AddGrammarNoteBlockSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGrammarNoteBlockSheet.swift; sourceTree = "<group>"; };
+		E3820FE12FBC8D07007BDB57 /* GrammarNoteBlockEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteBlockEditorView.swift; sourceTree = "<group>"; };
+		E3820FE82FBE5A0D007BDB57 /* GrammarNoteEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteEmptyStateView.swift; sourceTree = "<group>"; };
+		E3820FEA2FBE5A43007BDB57 /* GrammarNotesFABMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesFABMenu.swift; sourceTree = "<group>"; };
+		E3820FEE2FBE5A76007BDB57 /* QuickGrammarMistakeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickGrammarMistakeSheet.swift; sourceTree = "<group>"; };
+		E3820FF02FBE5A95007BDB57 /* QuickGrammarNoteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickGrammarNoteSheet.swift; sourceTree = "<group>"; };
+		E3820FF22FBED641007BDB57 /* GrammarMistakeSaveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarMistakeSaveService.swift; sourceTree = "<group>"; };
+		E3820FF42FBED6AC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveGrammarMistakeConfirmationSheet.swift; sourceTree = "<group>"; };
+		E3CC00012FBC65CA00C52238 /* GrammarNotesSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesSettingsStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -223,6 +375,275 @@
 				E30901782FB9614C00C52238 /* SetsListScreen.swift */,
 			);
 			path = Sets;
+			sourceTree = "<group>";
+		};
+		E309021F2FBA3E5B00C52238 /* Writing */ = {
+			isa = PBXGroup;
+			children = (
+				E309024D2FBAC9AC00C52238 /* Essays */,
+				E30902472FBAB34D00C52238 /* SetSelection */,
+				E30902442FBAB26100C52238 /* Main */,
+				E309023E2FBAA56900C52238 /* Exercise */,
+				E30902EF2FBC65CA00C52238 /* GrammarNotes */,
+			);
+			path = Writing;
+			sourceTree = "<group>";
+		};
+		E309023E2FBAA56900C52238 /* Exercise */ = {
+			isa = PBXGroup;
+			children = (
+				E30902432FBAB21D00C52238 /* ViewModels */,
+				E30902422FBAB21500C52238 /* Views */,
+				E309023F2FBAB02B00C52238 /* Components */,
+			);
+			path = Exercise;
+			sourceTree = "<group>";
+		};
+		E309023F2FBAB02B00C52238 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E309024B2FBAB97000C52238 /* WriteWordsLoseScreenView.swift */,
+				E30902202FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift */,
+				E309023C2FBAA0F800C52238 /* WriteWordsSettingsSheet.swift */,
+				E309023A2FBA8B8700C52238 /* WriteWordsAnswerInputView.swift */,
+				E30902212FBA3EC600C52238 /* WriteWordsExerciseCardView.swift */,
+				E30902402FBAB03600C52238 /* WriteWordsCountdownTimerView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E30902422FBAB21500C52238 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30902232FBA3EC600C52238 /* WriteWordsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30902432FBAB21D00C52238 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E30902242FBA3EC600C52238 /* WriteWordsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E30902442FBAB26100C52238 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				E30902462FBAB28A00C52238 /* ViewModels */,
+				E30902452FBAB28300C52238 /* Views */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		E30902452FBAB28300C52238 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30902252FBA3EC600C52238 /* WritingGoalCardView.swift */,
+				E309022B2FBA3EC600C52238 /* WritingView.swift */,
+				E30902262FBA3EC600C52238 /* WritingMenuCardView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30902462FBAB28A00C52238 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E309022C2FBA3EC600C52238 /* WritingViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E30902472FBAB34D00C52238 /* SetSelection */ = {
+			isa = PBXGroup;
+			children = (
+				E30902492FBAB36700C52238 /* ViewModels */,
+				E30902482FBAB35F00C52238 /* Views */,
+			);
+			path = SetSelection;
+			sourceTree = "<group>";
+		};
+		E30902482FBAB35F00C52238 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30902222FBA3EC600C52238 /* WriteWordsProgressView.swift */,
+				E30902282FBA3EC600C52238 /* WritingSetCardView.swift */,
+				E30902292FBA3EC600C52238 /* WritingSetSelectionView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30902492FBAB36700C52238 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E309022A2FBA3EC600C52238 /* WritingSetSelectionViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E309024D2FBAC9AC00C52238 /* Essays */ = {
+			isa = PBXGroup;
+			children = (
+				E30902CD2FBC621700C52238 /* Models */,
+				E30902502FBAC9D800C52238 /* Services */,
+				E309024F2FBAC9C600C52238 /* ViewModels */,
+				E309024E2FBAC9BE00C52238 /* Views */,
+			);
+			path = Essays;
+			sourceTree = "<group>";
+		};
+		E309024E2FBAC9BE00C52238 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30902B12FBB8DE600C52238 /* Screens */,
+				E30902B02FBB8DAE00C52238 /* Modals */,
+				E30902AF2FBB8D9600C52238 /* Toolbars */,
+				E30902672FBAE24E00C52238 /* Selectors */,
+				E30902AE2FBB8D6500C52238 /* Cards */,
+				E30902B22FBB8E2C00C52238 /* Sections */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E309024F2FBAC9C600C52238 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E30902572FBACA0D00C52238 /* EssayPracticeViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E30902502FBAC9D800C52238 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E30902B92FBB973600C52238 /* GeminiEssayAPIClient.swift */,
+				E30902B72FBB96F200C52238 /* EssayGenerationService.swift */,
+				E30902A02FBB6EE100C52238 /* EssayAssistanceService.swift */,
+				E309029E2FBB6EBF00C52238 /* EssayScoringService.swift */,
+				E30902512FBAC9E500C52238 /* GrammarCheckService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E30902672FBAE24E00C52238 /* Selectors */ = {
+			isa = PBXGroup;
+			children = (
+				E30902C92FBC0FFE00C52238 /* SetHintsSelectionView.swift */,
+				E309026A2FBAE27400C52238 /* DifficultySelectorView.swift */,
+				E30902682FBAE25900C52238 /* LanguageSelectorView.swift */,
+			);
+			path = Selectors;
+			sourceTree = "<group>";
+		};
+		E30902AE2FBB8D6500C52238 /* Cards */ = {
+			isa = PBXGroup;
+			children = (
+				E30902A82FBB729300C52238 /* EssayScoreCardView.swift */,
+				E309025B2FBACA1C00C52238 /* EssayTopicCardView.swift */,
+				E309025C2FBACA1C00C52238 /* GrammarIssueCardView.swift */,
+			);
+			path = Cards;
+			sourceTree = "<group>";
+		};
+		E30902AF2FBB8D9600C52238 /* Toolbars */ = {
+			isa = PBXGroup;
+			children = (
+				E30902A42FBB724D00C52238 /* EssayHelperToolbarView.swift */,
+			);
+			path = Toolbars;
+			sourceTree = "<group>";
+		};
+		E30902B02FBB8DAE00C52238 /* Modals */ = {
+			isa = PBXGroup;
+			children = (
+				E30902A72FBB729300C52238 /* EssayAssistanceModalView.swift */,
+			);
+			path = Modals;
+			sourceTree = "<group>";
+		};
+		E30902B12FBB8DE600C52238 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				E309025A2FBACA1C00C52238 /* EssayPracticeView.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		E30902B22FBB8E2C00C52238 /* Sections */ = {
+			isa = PBXGroup;
+			children = (
+				E30902C72FBC0FBB00C52238 /* EssaysSetHintCardRowView.swift */,
+				E30902592FBACA1C00C52238 /* EssayFeedbackSectionView.swift */,
+				E309026E2FBAE6C600C52238 /* EssayInputSectionView.swift */,
+				E30902A62FBB729300C52238 /* CustomEssayTopicInputView.swift */,
+			);
+			path = Sections;
+			sourceTree = "<group>";
+		};
+		E30902CD2FBC621700C52238 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E30902B52FBB96DD00C52238 /* EssayAIClient.swift */,
+				E30902B32FBB96B800C52238 /* EssayGeneratedHint.swift */,
+				E30902AC2FBB753C00C52238 /* EssayHintItem.swift */,
+				E309029C2FBB6E9600C52238 /* EssayAssistantItem.swift */,
+				E309029A2FBB6E8000C52238 /* EssayTopicMode.swift */,
+				E30902652FBAE1BE00C52238 /* EssayScore.swift */,
+				E30902532FBAC9F500C52238 /* EssayTopic.swift */,
+				E30902612FBAE18900C52238 /* EssayDifficulty.swift */,
+				E30902BB2FBB974900C52238 /* GeneratedEssayTask.swift */,
+				E30902632FBAE1AB00C52238 /* GrammarLanguage.swift */,
+				E30902542FBAC9F500C52238 /* GrammarIssue.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E30902E42FBC65CA00C52238 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E30902E32FBC65CA00C52238 /* GrammarNoteTopic.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E30902E62FBC65CA00C52238 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E30902E52FBC65CA00C52238 /* GrammarNoteTopicService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E30902E82FBC65CA00C52238 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E30902E72FBC65CA00C52238 /* GrammarNotesHomeViewModel.swift */,
+				E3820FC82FBC8407007BDB57 /* GrammarNotesTopicViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E30902EE2FBC65CA00C52238 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E30902E92FBC65CA00C52238 /* CreateGrammarTopicSheet.swift */,
+				E30902EA2FBC65CA00C52238 /* GrammarNotesHomeView.swift */,
+				E30902EB2FBC65CA00C52238 /* GrammarNotesSettingsView.swift */,
+				E30902EC2FBC65CA00C52238 /* GrammarNotesTopicView.swift */,
+				E30902ED2FBC65CA00C52238 /* GrammarNoteTopicCardView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E30902EF2FBC65CA00C52238 /* GrammarNotes */ = {
+			isa = PBXGroup;
+			children = (
+				E3820FBF2FBC839C007BDB57 /* Notes */,
+				E3820FBE2FBC838B007BDB57 /* Topics */,
+				E3CC00032FBC65CA00C52238 /* Stores */,
+			);
+			path = GrammarNotes;
 			sourceTree = "<group>";
 		};
 		E30A1C8F2F98003000387BDC = {
@@ -287,6 +708,7 @@
 		E30A1CB92F9801E800387BDC /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				E309021F2FBA3E5B00C52238 /* Writing */,
 				E30A1DA72F9E07B800387BDC /* Folders */,
 				E30A1D582F9BEB3700387BDC /* Flashcards */,
 				E30A1CBD2F98078A00387BDC /* Onboarding */,
@@ -328,9 +750,9 @@
 		E30A1CD12F99447400387BDC /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				E30A1D742F9C0EF700387BDC /* FlashcardSetService.swift */,
 				E30A1DA52F9E079A00387BDC /* FolderService.swift */,
 				E30A1D822F9C2EE800387BDC /* LocalImageStorageService.swift */,
-				E30A1D742F9C0EF700387BDC /* FlashcardSetService.swift */,
 				E30A1CD22F99448400387BDC /* AuthService.swift */,
 			);
 			path = Services;
@@ -465,12 +887,13 @@
 			children = (
 				E30A1DA32F9E076200387BDC /* Folders.swift */,
 				E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */,
-				E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */,
 				E30A1D5C2F9BEB8200387BDC /* CreateSet.swift */,
 				E30A1D6E2F9C0E9200387BDC /* SetIconType.swift */,
-				E30A1D702F9C0ED000387BDC /* FlashCard.swift */,
 				E30A1D7B2F9C1D6900387BDC /* HomeSetPreviewItem.swift */,
+				E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */,
+				E30A1D702F9C0ED000387BDC /* FlashCard.swift */,
 				E30A1D7D2F9C236000387BDC /* CreateSetTheme.swift */,
+				E30902272FBA3EC600C52238 /* WritingModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -677,6 +1100,91 @@
 			path = StudyCard;
 			sourceTree = "<group>";
 		};
+		E3820FBE2FBC838B007BDB57 /* Topics */ = {
+			isa = PBXGroup;
+			children = (
+				E30902E42FBC65CA00C52238 /* Models */,
+				E30902E62FBC65CA00C52238 /* Services */,
+				E30902E82FBC65CA00C52238 /* ViewModels */,
+				E30902EE2FBC65CA00C52238 /* Views */,
+			);
+			path = Topics;
+			sourceTree = "<group>";
+		};
+		E3820FBF2FBC839C007BDB57 /* Notes */ = {
+			isa = PBXGroup;
+			children = (
+				E3820FE52FBDF216007BDB57 /* Editor */,
+			);
+			path = Notes;
+			sourceTree = "<group>";
+		};
+		E3820FC02FBC83CD007BDB57 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E3820FD82FBC8C0E007BDB57 /* GrammarNoteTemplate.swift */,
+				E3820FD52FBC8BEB007BDB57 /* GrammarNoteBlockType.swift */,
+				E3820FD32FBC8BC5007BDB57 /* GrammarNoteBlock.swift */,
+				E3820FC12FBC83D9007BDB57 /* GrammarNote.swift */,
+				E3820FC22FBC83D9007BDB57 /* GrammarNoteType.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E3820FC52FBC83E2007BDB57 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E3820FF22FBED641007BDB57 /* GrammarMistakeSaveService.swift */,
+				E3820FDA2FBC8C47007BDB57 /* GrammarNoteTemplateProvider.swift */,
+				E3820FC62FBC83ED007BDB57 /* GrammarNoteService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E3820FCA2FBC8440007BDB57 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E3820FF42FBED6AC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift */,
+				E3820FF02FBE5A95007BDB57 /* QuickGrammarNoteSheet.swift */,
+				E3820FEE2FBE5A76007BDB57 /* QuickGrammarMistakeSheet.swift */,
+				E3820FEA2FBE5A43007BDB57 /* GrammarNotesFABMenu.swift */,
+				E3820FE82FBE5A0D007BDB57 /* GrammarNoteEmptyStateView.swift */,
+				E3820FE12FBC8D07007BDB57 /* GrammarNoteBlockEditorView.swift */,
+				E3820FDF2FBC8CCE007BDB57 /* AddGrammarNoteBlockSheet.swift */,
+				E3820FCB2FBC8451007BDB57 /* CreateGrammarNoteSheet.swift */,
+				E3820FCC2FBC8451007BDB57 /* GrammarNoteCardView.swift */,
+				E3820FCD2FBC8451007BDB57 /* GrammarNoteEditorView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E3820FDC2FBC8C74007BDB57 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E3820FDD2FBC8C7E007BDB57 /* GrammarNoteEditorViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E3820FE52FBDF216007BDB57 /* Editor */ = {
+			isa = PBXGroup;
+			children = (
+				E3820FDC2FBC8C74007BDB57 /* ViewModels */,
+				E3820FCA2FBC8440007BDB57 /* Views */,
+				E3820FC52FBC83E2007BDB57 /* Services */,
+				E3820FC02FBC83CD007BDB57 /* Models */,
+			);
+			path = Editor;
+			sourceTree = "<group>";
+		};
+		E3CC00032FBC65CA00C52238 /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				E3CC00012FBC65CA00C52238 /* GrammarNotesSettingsStore.swift */,
+			);
+			path = Stores;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -765,24 +1273,95 @@
 				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,
 				E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */,
 				E30A1DB42F9E0C3D00387BDC /* FolderCardView.swift in Sources */,
+				E30902B42FBB96CB00C52238 /* EssayGeneratedHint.swift in Sources */,
 				E30A1DAE2F9E07F000387BDC /* CreateFolderViewModel.swift in Sources */,
 				E30A1CBC2F98023B00387BDC /* HomeView.swift in Sources */,
 				E30A1CC32F9819B100387BDC /* AuthView.swift in Sources */,
 				E30A1D0F2F9A618800387BDC /* HomeTab.swift in Sources */,
+				E3820FF12FBE5AA0007BDB57 /* QuickGrammarNoteSheet.swift in Sources */,
+				E30902BC2FBB975100C52238 /* GeneratedEssayTask.swift in Sources */,
+				E30902C82FBC0FD000C52238 /* EssaysSetHintCardRowView.swift in Sources */,
+				E30902B62FBB96E400C52238 /* EssayAIClient.swift in Sources */,
 				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
 				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
 				E30A1CD02F99445D00387BDC /* AuthViewModel.swift in Sources */,
 				E30901752FB95C8500C52238 /* SetsListView.swift in Sources */,
+				E3820FD42FBC8BD7007BDB57 /* GrammarNoteBlock.swift in Sources */,
+				E3820FF32FBED64A007BDB57 /* GrammarMistakeSaveService.swift in Sources */,
+				E30902412FBAB04600C52238 /* WriteWordsCountdownTimerView.swift in Sources */,
 				E30A1D832F9C2EF700387BDC /* LocalImageStorageService.swift in Sources */,
+				E309022D2FBA3EC600C52238 /* WriteWordsAnswerCellsView.swift in Sources */,
+				E309022E2FBA3EC600C52238 /* WritingMenuCardView.swift in Sources */,
+				E309022F2FBA3EC600C52238 /* WriteWordsViewModel.swift in Sources */,
+				E30902302FBA3EC600C52238 /* WritingViewModel.swift in Sources */,
+				E3820FF52FBED6CC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift in Sources */,
+				E30902312FBA3EC600C52238 /* WritingSetCardView.swift in Sources */,
+				E30902322FBA3EC600C52238 /* WriteWordsProgressView.swift in Sources */,
+				E30902332FBA3EC600C52238 /* WriteWordsExerciseCardView.swift in Sources */,
+				E30902342FBA3EC600C52238 /* WritingSetSelectionViewModel.swift in Sources */,
+				E309029D2FBB6E9F00C52238 /* EssayAssistantItem.swift in Sources */,
+				E30902352FBA3EC600C52238 /* WritingGoalCardView.swift in Sources */,
+				E30902AD2FBB754B00C52238 /* EssayHintItem.swift in Sources */,
+				E30902362FBA3EC600C52238 /* WritingModels.swift in Sources */,
+				E30902372FBA3EC600C52238 /* WriteWordsView.swift in Sources */,
+				E30902382FBA3EC600C52238 /* WritingSetSelectionView.swift in Sources */,
+				E30902392FBA3EC600C52238 /* WritingView.swift in Sources */,
+				E30902522FBAC9E500C52238 /* GrammarCheckService.swift in Sources */,
+				E3820FC72FBC83ED007BDB57 /* GrammarNoteService.swift in Sources */,
 				E30A1DA62F9E07A000387BDC /* FolderService.swift in Sources */,
 				E30A1D0B2F9A5FF400387BDC /* BottomNavigationBarView.swift in Sources */,
 				E30A1D7E2F9C236000387BDC /* CreateSetTheme.swift in Sources */,
 				E30A1DB22F9E099600387BDC /* FolderDetailView.swift in Sources */,
+				E3820FE02FBC8CDE007BDB57 /* AddGrammarNoteBlockSheet.swift in Sources */,
+				E30902582FBACA0D00C52238 /* EssayPracticeViewModel.swift in Sources */,
+				E30902F02FBC65CA00C52238 /* GrammarNoteTopicCardView.swift in Sources */,
+				E3820FC92FBC8407007BDB57 /* GrammarNotesTopicViewModel.swift in Sources */,
+				E30902F12FBC65CA00C52238 /* GrammarNoteTopicService.swift in Sources */,
+				E30902F22FBC65CA00C52238 /* CreateGrammarTopicSheet.swift in Sources */,
+				E30902F32FBC65CA00C52238 /* GrammarNotesSettingsView.swift in Sources */,
+				E30902F42FBC65CA00C52238 /* GrammarNotesHomeView.swift in Sources */,
+				E30902F52FBC65CA00C52238 /* GrammarNotesHomeViewModel.swift in Sources */,
+				E30902F62FBC65CA00C52238 /* GrammarNoteTopic.swift in Sources */,
+				E30902F72FBC65CA00C52238 /* GrammarNotesTopicView.swift in Sources */,
+				E3CC00022FBC65CA00C52238 /* GrammarNotesSettingsStore.swift in Sources */,
+				E30902552FBAC9F500C52238 /* EssayTopic.swift in Sources */,
+				E30902562FBAC9F500C52238 /* GrammarIssue.swift in Sources */,
+				E30902622FBAE1A000C52238 /* EssayDifficulty.swift in Sources */,
+				E30902A52FBB724D00C52238 /* EssayHelperToolbarView.swift in Sources */,
+				E309023B2FBA8BA700C52238 /* WriteWordsAnswerInputView.swift in Sources */,
+				E309023D2FBAA11B00C52238 /* WriteWordsSettingsSheet.swift in Sources */,
+				E30902692FBAE26400C52238 /* LanguageSelectorView.swift in Sources */,
+				E3820FE92FBE5A23007BDB57 /* GrammarNoteEmptyStateView.swift in Sources */,
+				E309029B2FBB6E8700C52238 /* EssayTopicMode.swift in Sources */,
+				E30902662FBAE1C300C52238 /* EssayScore.swift in Sources */,
+				E30902642FBAE1B200C52238 /* GrammarLanguage.swift in Sources */,
+				E309026B2FBAE27600C52238 /* DifficultySelectorView.swift in Sources */,
+				E30902CA2FBC100900C52238 /* SetHintsSelectionView.swift in Sources */,
+				E3820FDB2FBC8C55007BDB57 /* GrammarNoteTemplateProvider.swift in Sources */,
+				E3820FE22FBC8D1B007BDB57 /* GrammarNoteBlockEditorView.swift in Sources */,
 				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
+				E30902BA2FBB973D00C52238 /* GeminiEssayAPIClient.swift in Sources */,
+				E309025D2FBACA1C00C52238 /* EssayTopicCardView.swift in Sources */,
+				E309025E2FBACA1C00C52238 /* GrammarIssueCardView.swift in Sources */,
+				E3820FEB2FBE5A51007BDB57 /* GrammarNotesFABMenu.swift in Sources */,
+				E30902A92FBB729300C52238 /* EssayAssistanceModalView.swift in Sources */,
+				E30902AA2FBB729300C52238 /* EssayScoreCardView.swift in Sources */,
+				E3820FD92FBC8C1A007BDB57 /* GrammarNoteTemplate.swift in Sources */,
+				E30902AB2FBB729300C52238 /* CustomEssayTopicInputView.swift in Sources */,
+				E3820FC32FBC83D9007BDB57 /* GrammarNoteType.swift in Sources */,
+				E3820FC42FBC83D9007BDB57 /* GrammarNote.swift in Sources */,
+				E309026F2FBAE6CA00C52238 /* EssayInputSectionView.swift in Sources */,
+				E309025F2FBACA1C00C52238 /* EssayFeedbackSectionView.swift in Sources */,
+				E3820FD62FBC8BF6007BDB57 /* GrammarNoteBlockType.swift in Sources */,
+				E30902602FBACA1C00C52238 /* EssayPracticeView.swift in Sources */,
 				E30A1CC12F98079D00387BDC /* OnboardingView.swift in Sources */,
+				E3820FCF2FBC8451007BDB57 /* CreateGrammarNoteSheet.swift in Sources */,
+				E3820FD02FBC8451007BDB57 /* GrammarNoteCardView.swift in Sources */,
+				E3820FD22FBC8451007BDB57 /* GrammarNoteEditorView.swift in Sources */,
 				E30A1D5D2F9BEB8200387BDC /* CreateSet.swift in Sources */,
+				E30902A12FBB6EE900C52238 /* EssayAssistanceService.swift in Sources */,
 				E30A1DAC2F9E07E600387BDC /* CreateFolderView.swift in Sources */,
 				E30A1D7C2F9C1D6900387BDC /* HomeSetPreviewItem.swift in Sources */,
 				E30A1D072F9A5FC000387BDC /* HomeHeaderView.swift in Sources */,
@@ -808,6 +1387,7 @@
 				E39E90912FA7E65300472437 /* FlashcardSetDetailBottomCover.swift in Sources */,
 				E39E90922FA7E65300472437 /* FlashcardExpandedView.swift in Sources */,
 				E30A1CD32F99448B00387BDC /* AuthService.swift in Sources */,
+				E309024C2FBAB98700C52238 /* WriteWordsLoseScreenView.swift in Sources */,
 				E30A1D1D2F9AC1D500387BDC /* BaseCardView.swift in Sources */,
 				E30A1DB02F9E098700387BDC /* FolderDetailViewModel.swift in Sources */,
 				E30A1D6F2F9C0E9200387BDC /* SetIconType.swift in Sources */,
@@ -841,11 +1421,15 @@
 				E30A1DB82FA14BAA00387BDC /* FoldersListView.swift in Sources */,
 				E30A1D552F9BBD3D00387BDC /* HomeViewModel.swift in Sources */,
 				E30A1D752F9C0EF800387BDC /* FlashcardSetService.swift in Sources */,
+				E30902B82FBB96FA00C52238 /* EssayGenerationService.swift in Sources */,
+				E3820FDE2FBC8C92007BDB57 /* GrammarNoteEditorViewModel.swift in Sources */,
 				E30A1DA42F9E076500387BDC /* Folders.swift in Sources */,
 				E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */,
 				E30A1D4F2F9BB9D000387BDC /* AppColors.swift in Sources */,
+				E309029F2FBB6EC700C52238 /* EssayScoringService.swift in Sources */,
 				E30A1D0D2F9A616F00387BDC /* HomeCategory.swift in Sources */,
 				E30A1D092F9A5FDB00387BDC /* CategorySidebarView.swift in Sources */,
+				E3820FEF2FBE5A86007BDB57 /* QuickGrammarMistakeSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

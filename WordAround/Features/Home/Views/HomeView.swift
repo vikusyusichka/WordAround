@@ -11,8 +11,10 @@ struct HomeView: View {
     @State private var isCreateMenuPresented = false
     @State private var isCreateSetPresented = false
     @State private var isCreateFolderPresented = false
+    @State private var isWritingSetSelectionPresented = false
 
     @State private var selectedSetForDetails: FlashcardSet?
+    @State private var selectedSetForWriting: FlashcardSet?
     @State private var selectedFolderForDetails: Folder?
 
     var body: some View {
@@ -62,6 +64,14 @@ struct HomeView: View {
         .fullScreenCover(isPresented: $isCreateFolderPresented) {
             CreateFolderView()
         }
+        .fullScreenCover(isPresented: $isWritingSetSelectionPresented) {
+            WritingSetSelectionView(sets: viewModel.userSets.compactMap(\.sourceSet)) { set in
+                isWritingSetSelectionPresented = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    selectedSetForWriting = set
+                }
+            }
+        }
         .fullScreenCover(item: $selectedSetForDetails) { set in
             FlashcardSetDetailView(
                 set: set,
@@ -70,6 +80,9 @@ struct HomeView: View {
                     selectedSetForDetails = updatedSet
                 }
             )
+        }
+        .fullScreenCover(item: $selectedSetForWriting) { set in
+            WriteWordsView(set: set)
         }
         .fullScreenCover(item: $selectedFolderForDetails) { folder in
             FolderDetailView(folder: folder)
@@ -98,9 +111,22 @@ struct HomeView: View {
 
 private extension HomeView {
     var headerTitle: String {
-        switch selectedTab ?? .home {
-        case .home:
-            return "Flashcards"
+        if selectedTab == nil || selectedTab == .home {
+            switch selectedCategory {
+            case .speaking:
+                return "Speaking"
+            case .listening:
+                return "Listening"
+            case .reading:
+                return "Reading"
+            case .writing:
+                return "Writing"
+            case .none:
+                return "Flashcards"
+            }
+        }
+
+        switch selectedTab {
         case .folders:
             return "Folders"
         case .flashcards:
@@ -109,13 +135,28 @@ private extension HomeView {
             return "Create"
         case .profile:
             return "Profile"
+        case .home, .none:
+            return "Flashcards"
         }
     }
 
     var headerSubtitle: String {
-        switch selectedTab ?? .home {
-        case .home:
-            return "Pick a set to practice"
+        if selectedTab == nil || selectedTab == .home {
+            switch selectedCategory {
+            case .speaking:
+                return "Practice speaking skills."
+            case .listening:
+                return "Train listening comprehension."
+            case .reading:
+                return "Read and review language materials."
+            case .writing:
+                return "Practice your language actively."
+            case .none:
+                return "Pick a set to practice"
+            }
+        }
+
+        switch selectedTab {
         case .folders:
             return "Manage your folders"
         case .flashcards:
@@ -124,6 +165,8 @@ private extension HomeView {
             return "Build a new study set"
         case .profile:
             return sessionStore.currentEmail
+        case .home, .none:
+            return "Pick a set to practice"
         }
     }
 
@@ -179,7 +222,9 @@ private extension HomeView {
             VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                 switch selectedTab ?? .home {
                 case .home:
-                    if let selectedCategory {
+                    if selectedCategory == .writing {
+                        writingContent
+                    } else if let selectedCategory {
                         categoryPlaceholder(for: selectedCategory)
                     } else {
                         dashboardContent
@@ -240,6 +285,17 @@ private extension HomeView {
                     selectedSetForDetails = set.sourceSet
                 }
             )
+        }
+    }
+}
+
+
+// MARK: - Writing
+
+private extension HomeView {
+    var writingContent: some View {
+        WritingView {
+            isWritingSetSelectionPresented = true
         }
     }
 }

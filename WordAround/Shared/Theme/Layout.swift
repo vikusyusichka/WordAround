@@ -483,3 +483,638 @@ extension Layout {
     static let symbolPickerCircleSize: CGFloat = isPadLike ? 58 : 54
     static let symbolPickerIconSize: CGFloat = isPadLike ? 24 : 22
 }
+
+// MARK: - Adaptive Layout System
+
+struct ScreenMetrics {
+    let horizontalSizeClass: UserInterfaceSizeClass?
+    let verticalSizeClass: UserInterfaceSizeClass?
+    let containerWidth: CGFloat
+
+    var isCompact: Bool {
+        horizontalSizeClass == .compact || containerWidth < LayoutConstants.Breakpoints.regularMinWidth
+    }
+
+    var isRegular: Bool { !isCompact }
+    var isLandscapeCompact: Bool { horizontalSizeClass == .compact && verticalSizeClass == .compact }
+
+    static func current(
+        horizontal: UserInterfaceSizeClass?,
+        vertical: UserInterfaceSizeClass?,
+        containerWidth: CGFloat = UIScreen.main.bounds.width
+    ) -> ScreenMetrics {
+        ScreenMetrics(
+            horizontalSizeClass: horizontal,
+            verticalSizeClass: vertical,
+            containerWidth: containerWidth
+        )
+    }
+}
+
+// MARK: - Centralized Layout Constants
+
+enum LayoutConstants {
+    enum Breakpoints {
+        static let regularMinWidth: CGFloat = 700
+    }
+
+    enum Common {
+        static func screenHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 34 : 22 }
+        static func screenTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 16 }
+        static func screenBottomPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 40 : 28 }
+        static func contentMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 620 : .infinity }
+        static func narrowContentMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 520 : .infinity }
+        static func sectionSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 18 }
+        static func itemSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 12 }
+        static func smallSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 8 }
+        static let hairline: CGFloat = 1
+    }
+
+    enum Typography {
+        static func writingTitle(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 42 : 34 }
+        static func screenTitle(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 40 : 32 }
+        static func largeTitle(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 34 : 28 }
+        static func title(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 18 }
+        static func cardTitle(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 19 : 16 }
+        static func body(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 14 }
+        static func bodySmall(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 15 : 13 }
+        static func caption(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 14 : 12 }
+        static func captionSmall(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 13 : 11 }
+    }
+
+    enum Writing {
+        static func topPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 6 : 0 }
+        static func headerSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 8 }
+
+        static func contentMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { .infinity }
+
+        static func goalHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 144 : 118 }
+        static func goalCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 26 : 24 }
+        static func goalHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 28 : 20 }
+        static func goalVerticalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 20 }
+        static func goalBlobSize(_ metrics: ScreenMetrics) -> CGSize { CGSize(width: metrics.isRegular ? 160 : 132, height: metrics.isRegular ? 135 : 112) }
+        static func goalBlobOffset(_ metrics: ScreenMetrics) -> CGSize { CGSize(width: 30, height: 2) }
+        static func goalContentSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 18 }
+        static func goalTextSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 10 }
+        static func goalProgressWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 190 : 152 }
+        static func goalProgressHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 6 : 5 }
+        static func goalIconCircleSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 58 : 48 }
+        static func goalIconSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 19 }
+        static func goalNumberSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 32 : 27 }
+
+        static func menuIconBoxSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 62 : 50 }
+        static func menuIconCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 16 }
+        static func menuIconSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 25 : 21 }
+        static func menuHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 94 : 80 }
+        static func menuCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 22 }
+        static func menuHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 18 }
+        static func menuSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 14 }
+        static func menuChevronSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 14 }
+    }
+
+    enum WriteWords {
+        static func topBarTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 12 }
+        static func progressTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 14 }
+        static func cardTopSpacer(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 10 }
+        static func afterCardSpacer(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 10 }
+        static func bottomPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 10 }
+        static func topBarTitleSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 16 }
+        static func topBarIconSize(_ metrics: ScreenMetrics) -> CGFloat { 18 }
+        static func topBarButtonSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 40 : 38 }
+
+        static func exerciseHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 500 : 390 }
+        static func exerciseHeight(_ metrics: ScreenMetrics, availableHeight: CGFloat) -> CGFloat {
+            let usedHeight = topBarTopPadding(metrics)
+            + topBarButtonSize(metrics)
+            + progressTopPadding(metrics)
+            + progressHeight(metrics)
+            + cardTopSpacer(metrics)
+            + afterCardSpacer(metrics)
+            + modeBarHeight(metrics)
+            + bottomPadding(metrics)
+            + Common.smallSpacing(metrics)
+
+            let availableCardHeight = availableHeight - usedHeight
+            let minimumHeight: CGFloat = metrics.isRegular ? 430 : 340
+            let maximumHeight: CGFloat = metrics.isRegular ? 500 : 390
+            return min(max(availableCardHeight, minimumHeight), maximumHeight)
+        }
+        static func exerciseHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 26 : 16 }
+        static func exerciseSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 16 }
+        static func exerciseTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 32 : 20 }
+        static func exerciseHeaderSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 9 }
+        static func exerciseTitleSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 34 : 28 }
+        static func exerciseHintSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 17 : 15 }
+        static func exerciseCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 28 : 24 }
+        static func primaryButtonHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 54 : 48 }
+        static func primaryButtonCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 20 : 18 }
+        static func secondaryButtonHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 50 : 44 }
+        static func secondaryButtonCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 17 }
+        static func secondaryButtonSpacing(_ metrics: ScreenMetrics) -> CGFloat { 14 }
+        static func cardBottomPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 18 }
+        static func successHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 22 }
+        static func successVerticalPadding(_ metrics: ScreenMetrics) -> CGFloat { 12 }
+
+        static func answerCellSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 7 }
+        static func answerCellSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 42 : 34 }
+        static func answerCellCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 9 : 8 }
+        static func answerCellFontSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 15 }
+
+        static func answerInputHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 58 : 54 }
+        static func answerInputMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 420 : .infinity }
+        static func answerInputHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 18 }
+        static func answerInputCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 17 }
+        static func answerInputFontSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 22 : 19 }
+
+        static func progressSegmentCount(_ metrics: ScreenMetrics) -> Int { metrics.isRegular ? 10 : 9 }
+        static func progressSegmentSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 8 : 7 }
+        static func progressHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 6 : 5 }
+        static func progressTextWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 52 : 44 }
+        static func progressSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 14 }
+
+        static func modeBarHeight(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 54 : 48 }
+        static func modeBarHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 20 : 18 }
+        static func modeBarCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 17 }
+        static func modeIconSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 17 }
+        static func modeChevronSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 9 }
+        static func modeGapWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 22 }
+        static func modeInlineSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 6 : 5 }
+    }
+
+    enum WritingSetSelection {
+        static func listMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 620 : .infinity }
+        static func cardSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 12 }
+        static func topBarButtonSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 42 : 40 }
+        static func topBarIconSize(_ metrics: ScreenMetrics) -> CGFloat { 18 }
+        static func emptyPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 18 }
+        static func emptyCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 26 : 24 }
+
+        static func setCardSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 14 }
+        static func setCardPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 18 : 14 }
+        static func setCardCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 26 : 22 }
+        static func setIconSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 62 : 54 }
+        static func setIconCornerRadius(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 20 : 17 }
+        static func setIconSymbolSize(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 21 }
+        static func badgeHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { 10 }
+        static func badgeVerticalPadding(_ metrics: ScreenMetrics) -> CGFloat { 5 }
+    }
+}
+
+// MARK: - Reusable Adaptive Container
+
+struct AdaptiveContentContainer<Content: View>: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    let maxWidth: (ScreenMetrics) -> CGFloat
+    let alignment: Alignment
+    let content: (ScreenMetrics) -> Content
+
+    init(
+        maxWidth: @escaping (ScreenMetrics) -> CGFloat = LayoutConstants.Common.contentMaxWidth,
+        alignment: Alignment = .topLeading,
+        @ViewBuilder content: @escaping (ScreenMetrics) -> Content
+    ) {
+        self.maxWidth = maxWidth
+        self.alignment = alignment
+        self.content = content
+    }
+
+    var body: some View {
+        GeometryReader { proxy in
+            let metrics = ScreenMetrics.current(
+                horizontal: horizontalSizeClass,
+                vertical: verticalSizeClass,
+                containerWidth: proxy.size.width
+            )
+
+            content(metrics)
+                .frame(maxWidth: maxWidth(metrics), alignment: alignment)
+                .frame(maxWidth: .infinity, alignment: alignment)
+        }
+    }
+}
+
+// MARK: - Write Words Lose Screen
+
+extension Layout {
+    static let writeWordsLoseHorizontalPadding: CGFloat = isPadLike ? screenHorizontalPaddingPad : screenHorizontalPaddingPhone
+    static let writeWordsLoseSectionSpacing: CGFloat = isPadLike ? sectionSpacingPad : sectionSpacingPhone
+    static let writeWordsLoseLargeSpacing: CGFloat = isPadLike ? 40 : 32
+
+    static let writeWordsLoseCardHorizontalPadding: CGFloat = isPadLike ? 24 : 18
+    static let writeWordsLoseCardVerticalPadding: CGFloat = isPadLike ? sectionSpacingPad : sectionSpacingPhone
+    static let writeWordsLoseCardMaxWidth: CGFloat = isPadLike ? contentMaxWidthPad : .infinity
+    static let writeWordsLoseCardCornerRadius: CGFloat = cardCornerRadius
+    static let writeWordsLoseCardShadowRadius: CGFloat = cardCornerRadius + 2
+    static let writeWordsLoseCardShadowY: CGFloat = topPaddingPhone + 2
+
+    static let writeWordsLoseIconSize: CGFloat = isPadLike ? 82 : 68
+    static let writeWordsLoseIconSymbolSize: CGFloat = isPadLike ? 34 : 28
+
+    static let writeWordsLoseTitleSize: CGFloat = isPadLike ? 34 : 28
+    static let writeWordsLoseSubtitleSize: CGFloat = isPadLike ? 16 : 14
+    static let writeWordsLoseBodyTextSize: CGFloat = isPadLike ? 16 : 14
+    static let writeWordsLoseCaptionSize: CGFloat = isPadLike ? 15 : 13
+
+    static let writeWordsLoseStatsPadding: CGFloat = isPadLike ? sectionSpacingPad : sectionSpacingPhone
+    static let writeWordsLoseStatsSpacing: CGFloat = 8
+    static let writeWordsLoseStatsCornerRadius: CGFloat = isPadLike ? 20 : 18
+
+    static let writeWordsLoseActionsSpacing: CGFloat = 10
+    static let writeWordsLosePrimaryButtonHeight: CGFloat = isPadLike ? 54 : 50
+    static let writeWordsLoseSecondaryButtonHeight: CGFloat = isPadLike ? 52 : 48
+    static let writeWordsLoseButtonCornerRadius: CGFloat = isPadLike ? 18 : 16
+
+    static let writeWordsLoseHeaderSpacing: CGFloat = 8
+    static let writeWordsLoseDividerHeight: CGFloat = 1
+
+    static let writeWordsLoseBlobSize: CGFloat = isPadLike ? 360 : 260
+}
+
+// MARK: - Essay Practice Layout
+
+extension Layout {
+    static let essayContentMaxWidth: CGFloat = isPadLike ? 720 : .infinity
+    static let essayScreenHorizontalPadding: CGFloat = isPadLike ? 28 : 20
+    static let essayScreenVerticalPadding: CGFloat = isPadLike ? 28 : 20
+    static let essayMainSpacing: CGFloat = isPadLike ? 22 : 16
+
+    static let essayCardSpacing: CGFloat = isPadLike ? 18 : 14
+    static let essayCardPadding: CGFloat = isPadLike ? 22 : 18
+    static let essayCardCornerRadius: CGFloat = 24
+    static let essayCardShadowRadius: CGFloat = 18
+    static let essayCardShadowYOffset: CGFloat = 10
+
+    static let essayTopicTitleSize: CGFloat = isPadLike ? 22 : 19
+    static let essayTopicMetaSize: CGFloat = isPadLike ? 13 : 12
+    static let essayTopicBodySize: CGFloat = isPadLike ? 16 : 14
+    static let essayTopicSectionLabelSize: CGFloat = isPadLike ? 14 : 12
+    static let essayTopicLevelBadgeSize: CGFloat = isPadLike ? 13 : 11
+    static let essayTopicRefreshButtonSize: CGFloat = isPadLike ? 38 : 34
+    static let essayTopicRefreshIconSize: CGFloat = isPadLike ? 16 : 14
+    static let essayTipChipMinWidth: CGFloat = isPadLike ? 140 : 110
+    static let essayTipChipTextSize: CGFloat = isPadLike ? 13 : 11
+
+    static let essayWritingCardSpacing: CGFloat = isPadLike ? 14 : 12
+    static let essayWritingTitleSize: CGFloat = isPadLike ? 20 : 17
+    static let essayWordCountSize: CGFloat = isPadLike ? 13 : 12
+    static let essayEditorPlaceholderSize: CGFloat = isPadLike ? 16 : 15
+    static let essayEditorTextSize: CGFloat = isPadLike ? 17 : 15
+    static let essayEditorMinHeight: CGFloat = isPadLike ? 260 : 220
+    static let essayEditorCornerRadius: CGFloat = 20
+    static let essayEditorScaleFocused: CGFloat = 1.01
+    static let essayValidationTextSize: CGFloat = isPadLike ? 13 : 12
+    static let essayButtonTextSize: CGFloat = isPadLike ? 15 : 14
+    static let essayButtonVerticalPadding: CGFloat = isPadLike ? 14 : 13
+    static let essayButtonCornerRadius: CGFloat = 16
+
+    // MARK: - Essay Setup Section
+
+    static let essaySetupSpacing: CGFloat = isPadLike ? 12 : 10
+    static let essaySetupHeaderSpacing: CGFloat = 8
+    static let essaySetupIconSize: CGFloat = isPadLike ? 15 : 13
+    static let essaySetupTitleSize: CGFloat = isPadLike ? 16 : 15
+    static let essayHintsBadgeTextSize: CGFloat = isPadLike ? 12 : 11
+    static let essayHintsBadgeHorizontalPadding: CGFloat = 10
+    static let essayHintsBadgeVerticalPadding: CGFloat = 6
+    static let essaySetupSelectorColumnsSpacing: CGFloat = 12
+    static let essaySetupSelectorStackSpacing: CGFloat = 10
+    static let essayPrivacyNoticeTextSize: CGFloat = isPadLike ? 12 : 11
+    static let essayPrivacyNoticeLineSpacing: CGFloat = 3
+    static let essayPrivacyNoticeTopPadding: CGFloat = 2
+    static let essaySetupCardOpacity: CGFloat = 0.58
+    static let essaySetupShadowOpacity: CGFloat = 0.035
+    static let essaySetupShadowRadius: CGFloat = 14
+    static let essaySetupShadowYOffset: CGFloat = 8
+
+    // MARK: - Essay Selectors
+
+    static let essaySelectorOuterSpacing: CGFloat = 8
+    static let essaySelectorButtonContentSpacing: CGFloat = 9
+    static let essaySelectorIconSize: CGFloat = isPadLike ? 15 : 13
+    static let essaySelectorLabelSpacing: CGFloat = 2
+    static let essaySelectorLabelSize: CGFloat = isPadLike ? 11 : 10
+    static let essaySelectorTitleSize: CGFloat = isPadLike ? 14 : 13
+    static let essaySelectorBadgeTextSize: CGFloat = isPadLike ? 12 : 11
+    static let essaySelectorBadgeHorizontalPadding: CGFloat = 8
+    static let essaySelectorBadgeVerticalPadding: CGFloat = 5
+    static let essaySelectorChevronSize: CGFloat = 11
+    static let essaySelectorHorizontalPadding: CGFloat = isPadLike ? 16 : 14
+    static let essaySelectorVerticalPadding: CGFloat = isPadLike ? 13 : 12
+    static let essaySelectorCornerRadius: CGFloat = 18
+    static let essaySelectorBorderWidth: CGFloat = 1
+    static let essaySelectorShadowOpacity: CGFloat = 0.035
+    static let essaySelectorShadowRadius: CGFloat = 12
+    static let essaySelectorShadowYOffset: CGFloat = 7
+    static let essaySelectorAnimationDuration: Double = 0.22
+
+    static let essaySelectorOptionsSpacing: CGFloat = 6
+    static let essaySelectorOptionsPadding: CGFloat = 8
+    static let essaySelectorOptionContentSpacing: CGFloat = 10
+    static let essaySelectorOptionHorizontalPadding: CGFloat = 12
+    static let essaySelectorOptionVerticalPadding: CGFloat = 10
+    static let essaySelectorOptionCornerRadius: CGFloat = 14
+    static let essaySelectorOptionCodeWidth: CGFloat = 34
+    static let essaySelectorOptionLevelWidth: CGFloat = 46
+    static let essaySelectorOptionBadgeHeight: CGFloat = 26
+    static let essaySelectorOptionBadgeTextSize: CGFloat = 11
+    static let essaySelectorOptionTitleSize: CGFloat = isPadLike ? 14 : 13
+    static let essaySelectorOptionSubtitleSize: CGFloat = isPadLike ? 12 : 11
+    static let essaySelectorCheckmarkSize: CGFloat = 15
+    static let essaySelectorOptionsShadowOpacity: CGFloat = 0.05
+    static let essaySelectorOptionsShadowRadius: CGFloat = 14
+    static let essaySelectorOptionsShadowYOffset: CGFloat = 8
+
+
+    // MARK: - Essay Topic Mode
+
+    static let essayTopicModeSpacing: CGFloat = isPadLike ? 14 : 10
+    static let essayTopicModeButtonSpacing: CGFloat = 8
+    static let essayTopicModeTextSize: CGFloat = isPadLike ? 14 : 13
+    static let essayTopicModeButtonVerticalPadding: CGFloat = isPadLike ? 12 : 10
+    static let essayTopicModeButtonCornerRadius: CGFloat = 16
+    static let essayTopicModePickerPadding: CGFloat = 6
+    static let essayTopicModePickerCornerRadius: CGFloat = 20
+
+    // MARK: - Essay Helper Toolbar
+
+    static let essayHelperToolbarSpacing: CGFloat = isPadLike ? 10 : 8
+    static let essayHelperToolbarButtonSpacing: CGFloat = isPadLike ? 10 : 7
+    static let essayHelperButtonInnerSpacing: CGFloat = isPadLike ? 6 : 4
+    static let essayHelperButtonIconSize: CGFloat = isPadLike ? 18 : 15
+    static let essayHelperButtonTitleSize: CGFloat = isPadLike ? 13 : 11
+    static let essayHelperButtonSubtitleSize: CGFloat = isPadLike ? 11 : 9
+    static let essayHelperButtonVerticalPadding: CGFloat = isPadLike ? 13 : 10
+    static let essayHelperButtonCornerRadius: CGFloat = isPadLike ? 18 : 15
+    static let essayHelperUsageTextSize: CGFloat = isPadLike ? 12 : 11
+
+    // MARK: - Essay Hints
+
+    static let essayHintListSpacing: CGFloat = isPadLike ? 10 : 8
+    static let essayHintWordSize: CGFloat = isPadLike ? 15 : 14
+    static let essayHintTranslationSize: CGFloat = isPadLike ? 12 : 11
+    static let essayHintExampleSize: CGFloat = isPadLike ? 13 : 12
+    static let essayHintItemPadding: CGFloat = isPadLike ? 14 : 12
+    static let essayHintItemCornerRadius: CGFloat = 16
+
+    // MARK: - Essay Custom Topic
+
+    static let essayCustomTopicSpacing: CGFloat = isPadLike ? 12 : 10
+    static let essayCustomTopicIconSize: CGFloat = isPadLike ? 16 : 14
+    static let essayCustomTopicTitleSize: CGFloat = isPadLike ? 18 : 16
+    static let essayCustomTopicTextSize: CGFloat = isPadLike ? 16 : 14
+    static let essayCustomTopicMinHeight: CGFloat = isPadLike ? 92 : 76
+    static let essayCustomTopicInnerPadding: CGFloat = isPadLike ? 16 : 14
+    static let essayCustomTopicCornerRadius: CGFloat = 18
+
+    // MARK: - Essay Assistance Modal
+
+    static let essayModalDimOpacity: CGFloat = 0.22
+    static let essayModalSpacing: CGFloat = isPadLike ? 18 : 14
+    static let essayModalPadding: CGFloat = isPadLike ? 24 : 18
+    static let essayModalMaxWidth: CGFloat = isPadLike ? 520 : .infinity
+    static let essayModalCornerRadius: CGFloat = isPadLike ? 28 : 24
+    static let essayModalIconBoxSize: CGFloat = isPadLike ? 48 : 42
+    static let essayModalIconCornerRadius: CGFloat = 15
+    static let essayModalIconSize: CGFloat = isPadLike ? 20 : 17
+    static let essayModalTitleSize: CGFloat = isPadLike ? 22 : 19
+    static let essayModalSubtitleSize: CGFloat = isPadLike ? 12 : 11
+    static let essayModalCloseButtonSize: CGFloat = isPadLike ? 36 : 32
+    static let essayModalCloseIconSize: CGFloat = isPadLike ? 13 : 11
+    static let essayModalInputTextSize: CGFloat = isPadLike ? 16 : 14
+    static let essayModalInputHorizontalPadding: CGFloat = isPadLike ? 16 : 14
+    static let essayModalInputVerticalPadding: CGFloat = isPadLike ? 14 : 12
+    static let essayModalInputCornerRadius: CGFloat = 17
+    static let essayModalMessageTextSize: CGFloat = isPadLike ? 14 : 13
+    static let essayModalResultPadding: CGFloat = isPadLike ? 14 : 12
+    static let essayModalResultSpacing: CGFloat = 8
+    static let essayModalResultCornerRadius: CGFloat = 16
+    static let essayModalResultTitleSize: CGFloat = isPadLike ? 16 : 14
+    static let essayModalResultDetailSize: CGFloat = isPadLike ? 13 : 12
+    static let essayModalDefaultMaxWidthPhone: CGFloat = 420
+    static let essayModalDefaultMaxWidthPad: CGFloat = 560
+    static let essayModalSynonymMaxWidthPhone: CGFloat = 430
+    static let essayModalSynonymMaxWidthPad: CGFloat = 640
+
+    static let essayModalHeaderSpacing: CGFloat = 12
+    static let essayModalTitleSpacing: CGFloat = 3
+    static let essayModalUsageTextLineLimit: Int = 2
+    static let essayModalUsageTextScale: CGFloat = 0.8
+
+    static let essayModalInputBorderWidth: CGFloat = 1
+    static let essayModalInputMinHeight: CGFloat = 58
+    static let essayModalInputMinLines: Int = 1
+    static let essayModalInputMaxLines: Int = 3
+
+    static let essayModalResultAnimationDuration: Double = 0.16
+    static let essayModalResultListVerticalPadding: CGFloat = 1
+    static let essayModalResultRowSpacing: CGFloat = 4
+    static let essayModalResultTitleLineLimit: Int = 2
+    static let essayModalResultTitleScale: CGFloat = 0.85
+    static let essayModalResultDetailLineSpacing: CGFloat = 3
+
+    static let essayModalLoadingSpacing: CGFloat = 12
+    static let essayModalLoadingCircleTrimStart: CGFloat = 0.14
+    static let essayModalLoadingCircleTrimEnd: CGFloat = 0.86
+    static let essayModalLoadingCircleLineWidth: CGFloat = 3
+    static let essayModalLoadingCircleSize: CGFloat = 22
+    static let essayModalLoadingCircleDuration: Double = 0.72
+
+    static let essayModalActionsSpacing: CGFloat = 10
+    static let essayModalLanguagePickerSpacing: CGFloat = 10
+    static let essayModalLanguageArrowWidth: CGFloat = 18
+    static let essayModalLanguageArrowSize: CGFloat = 13
+
+    static let essayModalLanguagePillSpacing: CGFloat = 6
+    static let essayModalLanguagePillTextSpacing: CGFloat = 2
+    static let essayModalLanguagePillSpacerMinLength: CGFloat = 2
+    static let essayModalLanguagePillTitleSize: CGFloat = 10
+    static let essayModalLanguagePillTextSize: CGFloat = 13
+    static let essayModalLanguagePillCodeSize: CGFloat = 12
+    static let essayModalLanguagePillChevronSize: CGFloat = 11
+    static let essayModalLanguagePillHorizontalPadding: CGFloat = 12
+    static let essayModalLanguagePillVerticalPadding: CGFloat = 10
+    static let essayModalLanguagePillMinHeight: CGFloat = 76
+    static let essayModalLanguagePillCornerRadius: CGFloat = 18
+    static let essayModalLanguagePillCodeHorizontalPadding: CGFloat = 8
+    static let essayModalLanguagePillCodeVerticalPadding: CGFloat = 6
+    static let essayModalLanguageTextScale: CGFloat = 0.62
+
+    static let essayModalTranslateResultsMaxHeight: CGFloat = 120
+    static let essayModalHintResultsMaxHeight: CGFloat = 160
+    static let essayModalSynonymResultsMaxHeightPhone: CGFloat = 110
+    static let essayModalSynonymResultsMaxHeightPad: CGFloat = 280
+
+    // MARK: - Essay Feedback / Score
+
+    static let essayFeedbackSectionSpacing: CGFloat = isPadLike ? 14 : 12
+    static let essayFeedbackTitleSize: CGFloat = isPadLike ? 20 : 17
+    static let essayFeedbackCardSpacing: CGFloat = isPadLike ? 12 : 10
+    static let essayFeedbackCardPadding: CGFloat = isPadLike ? 18 : 16
+    static let essayFeedbackCardCornerRadius: CGFloat = 20
+    static let essayFeedbackIconBoxSize: CGFloat = isPadLike ? 42 : 38
+    static let essayFeedbackIconSize: CGFloat = isPadLike ? 18 : 16
+    static let essayFeedbackEmptyTitleSize: CGFloat = isPadLike ? 16 : 15
+    static let essayFeedbackBodySize: CGFloat = isPadLike ? 14 : 13
+    static let essayFeedbackScoreMiniValueSize: CGFloat = isPadLike ? 18 : 16
+    static let essayFeedbackScoreMiniLabelSize: CGFloat = isPadLike ? 11 : 10
+
+    static let essayScoreCardSpacing: CGFloat = isPadLike ? 16 : 13
+    static let essayScoreCardPadding: CGFloat = isPadLike ? 20 : 16
+    static let essayScoreCardCornerRadius: CGFloat = 22
+    static let essayScoreHeaderSpacing: CGFloat = 12
+    static let essayScoreTitleSize: CGFloat = isPadLike ? 18 : 16
+    static let essayScoreQualitySize: CGFloat = isPadLike ? 14 : 12
+    static let essayScoreValueSize: CGFloat = isPadLike ? 36 : 30
+    static let essayScoreLevelSize: CGFloat = isPadLike ? 13 : 11
+    static let essayScoreBreakdownSpacing: CGFloat = isPadLike ? 11 : 9
+    static let essayScoreRowTitleSize: CGFloat = isPadLike ? 13 : 12
+    static let essayScoreRowValueSize: CGFloat = isPadLike ? 13 : 12
+    static let essayScoreProgressHeight: CGFloat = isPadLike ? 8 : 6
+    static let essayScoreStatMinWidth: CGFloat = isPadLike ? 116 : 92
+    static let essayScoreStatValueSize: CGFloat = isPadLike ? 16 : 14
+    static let essayScoreStatTitleSize: CGFloat = isPadLike ? 11 : 10
+    static let essayScoreStatVerticalPadding: CGFloat = isPadLike ? 10 : 8
+    static let essayScoreStatCornerRadius: CGFloat = 14
+
+}
+
+
+// MARK: - Generic pad/phone picker
+
+extension Layout {
+    /// Returns `pad` when on iPad/wide screen, `phone` otherwise.
+    /// Replaces the old DeviceLayout.value(pad:phone:) helper.
+    @inlinable
+    static func value<T>(pad: T, phone: T) -> T {
+        isPadLike ? pad : phone
+    }
+}
+
+// MARK: - Grammar Note Editor
+
+extension Layout {
+    static let grammarNoteHorizontalPadding: CGFloat      = isPadLike ? 28 : 20
+    static let grammarNoteTopPadding: CGFloat              = isPadLike ? 20 : 14
+    static let grammarNoteBlockSpacing: CGFloat            = isPadLike ? 16 : 13
+    static let grammarNoteBlockPadding: CGFloat            = isPadLike ? 16 : 14
+    static let grammarNoteBlockCornerRadius: CGFloat       = isPadLike ? 24 : 21
+
+    static let grammarNoteHeadingSize: CGFloat             = isPadLike ? 26 : 22
+    static let grammarNoteSubheadingSize: CGFloat          = isPadLike ? 20 : 18
+
+    static let grammarNoteCardCornerRadius: CGFloat        = isPadLike ? 25 : 22
+    static let grammarNoteCardHorizontalPadding: CGFloat   = isPadLike ? 18 : 15
+    static let grammarNoteCardVerticalPadding: CGFloat     = isPadLike ? 17 : 15
+    static let grammarNoteCardIconSize: CGFloat            = isPadLike ? 52 : 46
+    static let grammarNoteCardIconImageSize: CGFloat       = isPadLike ? 21 : 18
+    static let grammarNoteCardTitleSize: CGFloat           = isPadLike ? 17 : 15
+    static let grammarNoteCardPreviewSize: CGFloat         = isPadLike ? 14 : 12
+    static let grammarNoteCardChevronSize: CGFloat         = isPadLike ? 15 : 13
+
+    static let grammarNoteCreateSpacing: CGFloat           = isPadLike ? 18 : 14
+    static let grammarNoteCreatePadding: CGFloat           = isPadLike ? 28 : 20
+    static let grammarNoteCreateTitleSize: CGFloat         = isPadLike ? 28 : 24
+    static let grammarNoteCreateSubtitleSize: CGFloat      = isPadLike ? 15 : 13
+    static let grammarNoteCreateFieldHeight: CGFloat       = isPadLike ? 58 : 52
+    static let grammarNoteCreateFieldFontSize: CGFloat     = isPadLike ? 16 : 14
+    static let grammarNoteCreatePreviewMinHeight: CGFloat  = isPadLike ? 112 : 96
+    static let grammarNoteCreateTypeMinWidth: CGFloat      = isPadLike ? 150 : 126
+    
+    // MARK: - Grammar Notes FAB
+    static let grammarNotesFABSize: CGFloat = isPadLike ? 70 : 58
+    static let grammarNotesFABIconSize: CGFloat = isPadLike ? 30 : 25
+    static let grammarNotesFABTrailingPadding: CGFloat = isPadLike ? 34 : 22
+    static let grammarNotesFABBottomPadding: CGFloat = isPadLike ? 38 : 26
+    static let grammarNotesFABDimOpacity: CGFloat = 0.10
+    static let grammarNotesFABMenuSpacing: CGFloat = isPadLike ? 14 : 11
+    static let grammarNotesFABMenuItemSpacing: CGFloat = isPadLike ? 10 : 8
+    static let grammarNotesFABMenuPadding: CGFloat = isPadLike ? 13 : 11
+    static let grammarNotesFABMenuWidth: CGFloat = isPadLike ? 250 : 218
+    static let grammarNotesFABMenuCornerRadius: CGFloat = isPadLike ? 28 : 24
+    static let grammarNotesFABMenuRowHeight: CGFloat = isPadLike ? 56 : 50
+    static let grammarNotesFABMenuRowCornerRadius: CGFloat = isPadLike ? 20 : 17
+    static let grammarNotesFABMenuIconBox: CGFloat = isPadLike ? 36 : 32
+    static let grammarNotesFABMenuIconSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarNotesFABMenuTitleSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarNotesFABItemDelay: Double = 0.035
+    static let grammarNotesFABSpring: Animation = .spring(response: 0.34, dampingFraction: 0.86)
+
+    // MARK: - Quick Grammar Sheets
+    static let grammarQuickSheetMaxWidth: CGFloat = isPadLike ? 620 : .infinity
+    static let grammarQuickSheetPadding: CGFloat = isPadLike ? 24 : 18
+    static let grammarQuickSheetSectionSpacing: CGFloat = isPadLike ? 15 : 12
+    static let grammarQuickMiniSectionSpacing: CGFloat = isPadLike ? 12 : 10
+    static let grammarQuickSheetAnimation: Animation = .easeInOut(duration: 0.22)
+    static let grammarQuickNoteSheetHeight: CGFloat = isPadLike ? 720 : 660
+    static let grammarQuickMistakeSheetHeight: CGFloat = isPadLike ? 780 : 720
+
+    static let grammarQuickHeaderIconBox: CGFloat = isPadLike ? 52 : 46
+    static let grammarQuickHeaderIconSize: CGFloat = isPadLike ? 21 : 18
+    static let grammarQuickTitleSize: CGFloat = isPadLike ? 28 : 23
+    static let grammarQuickSubtitleSize: CGFloat = isPadLike ? 14 : 12
+
+    static let grammarQuickSectionCornerRadius: CGFloat = isPadLike ? 24 : 21
+    static let grammarQuickSectionTitleSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarQuickHelperSize: CGFloat = isPadLike ? 12 : 11
+    static let grammarQuickFieldCornerRadius: CGFloat = isPadLike ? 19 : 17
+    static let grammarQuickTitleFieldHeight: CGFloat = isPadLike ? 56 : 50
+    static let grammarQuickTitleFieldSize: CGFloat = isPadLike ? 18 : 16
+    static let grammarQuickEditorTextSize: CGFloat = isPadLike ? 15 : 14
+    static let grammarQuickNoteEditorMinHeight: CGFloat = isPadLike ? 128 : 112
+    static let grammarQuickMistakeExplanationHeight: CGFloat = isPadLike ? 106 : 92
+    static let grammarQuickTypeMinWidth: CGFloat = isPadLike ? 135 : 112
+    static let grammarQuickActionHeight: CGFloat = isPadLike ? 54 : 50
+    static let grammarQuickActionCornerRadius: CGFloat = isPadLike ? 19 : 17
+
+    // MARK: - Grammar Empty States
+    static let grammarEmptyStateSpacing: CGFloat = isPadLike ? 18 : 15
+    static let grammarEmptyStatePadding: CGFloat = isPadLike ? 28 : 22
+    static let grammarEmptyStateCornerRadius: CGFloat = isPadLike ? 30 : 26
+    static let grammarEmptyStateOuterIconSize: CGFloat = isPadLike ? 116 : 96
+    static let grammarEmptyStateInnerIconSize: CGFloat = isPadLike ? 82 : 70
+    static let grammarEmptyStateIconSize: CGFloat = isPadLike ? 34 : 28
+    static let grammarEmptyStateSparkleSize: CGFloat = isPadLike ? 18 : 15
+    static let grammarEmptyStateTitleSize: CGFloat = isPadLike ? 27 : 22
+    static let grammarEmptyStateMessageSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarEmptyStateTextMaxWidth: CGFloat = isPadLike ? 430 : 310
+    static let grammarEmptyStateButtonTextSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarEmptyStateButtonHorizontalPadding: CGFloat = isPadLike ? 22 : 18
+    static let grammarEmptyStateButtonHeight: CGFloat = isPadLike ? 52 : 47
+    static let grammarEmptyStateButtonCornerRadius: CGFloat = isPadLike ? 18 : 16
+    static let grammarEmptyStateBlobWidth: CGFloat = isPadLike ? 170 : 130
+    static let grammarEmptyStateBlobHeight: CGFloat = isPadLike ? 135 : 102
+    static let grammarEmptyStateBlobOffsetX: CGFloat = isPadLike ? 58 : 44
+    static let grammarEmptyStateBlobOffsetY: CGFloat = isPadLike ? -42 : -34
+
+    // MARK: - Grammar Settings
+    static let grammarSettingsContentMaxWidth: CGFloat = isPadLike ? 690 : .infinity
+    static let grammarSettingsHorizontalPadding: CGFloat = isPadLike ? 32 : 18
+    static let grammarSettingsTopPadding: CGFloat = isPadLike ? 26 : 16
+    static let grammarSettingsBottomPadding: CGFloat = isPadLike ? 42 : 30
+    static let grammarSettingsSectionSpacing: CGFloat = isPadLike ? 18 : 14
+    static let grammarSettingsBackButtonSize: CGFloat = isPadLike ? 48 : 42
+    static let grammarSettingsBackIconSize: CGFloat = isPadLike ? 17 : 15
+    static let grammarSettingsTitleSize: CGFloat = isPadLike ? 32 : 26
+    static let grammarSettingsSubtitleSize: CGFloat = isPadLike ? 15 : 13
+
+    static let grammarSettingsCardPadding: CGFloat = isPadLike ? 20 : 16
+    static let grammarSettingsCardCornerRadius: CGFloat = isPadLike ? 28 : 24
+    static let grammarSettingsCardInnerSpacing: CGFloat = isPadLike ? 15 : 12
+    static let grammarSettingsSectionIconBox: CGFloat = isPadLike ? 46 : 40
+    static let grammarSettingsSectionIconSize: CGFloat = isPadLike ? 18 : 16
+    static let grammarSettingsSectionTitleSize: CGFloat = isPadLike ? 18 : 16
+    static let grammarSettingsSectionSubtitleSize: CGFloat = isPadLike ? 13 : 12
+
+    static let grammarSettingsRowPadding: CGFloat = isPadLike ? 14 : 12
+    static let grammarSettingsRowCornerRadius: CGFloat = isPadLike ? 20 : 18
+    static let grammarSettingsRowIconBox: CGFloat = isPadLike ? 38 : 34
+    static let grammarSettingsRowTitleSize: CGFloat = isPadLike ? 15 : 13
+    static let grammarSettingsRowSubtitleSize: CGFloat = isPadLike ? 12 : 11
+    static let grammarSettingsTypeMinWidth: CGFloat = isPadLike ? 130 : 104
+    static let grammarSettingsTypeButtonHeight: CGFloat = isPadLike ? 92 : 82
+}
+
+
+
