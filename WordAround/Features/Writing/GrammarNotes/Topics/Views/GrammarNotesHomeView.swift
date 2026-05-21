@@ -14,9 +14,8 @@ struct GrammarNotesHomeView: View {
 
     private let theme: CreateSetTheme = .blue
 
-    private var isPadLike: Bool {
+    private let isPadLike: Bool =
         UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
 
     init(ownerUID: String? = Auth.auth().currentUser?.uid) {
         _viewModel = StateObject(

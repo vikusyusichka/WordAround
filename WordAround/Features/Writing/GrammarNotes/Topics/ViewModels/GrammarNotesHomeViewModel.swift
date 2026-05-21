@@ -5,6 +5,10 @@ import Combine
 @MainActor
 final class GrammarNotesHomeViewModel: ObservableObject {
     @Published private(set) var topics: [GrammarNoteTopic] = []
+    @Published private(set) var filteredTopics: [GrammarNoteTopic] = []
+    @Published private(set) var topicOptions: [GrammarQuickTopicOption] = []
+    @Published private(set) var regularTopicOptions: [GrammarQuickTopicOption] = []
+    @Published private(set) var mistakesTopicOption: GrammarQuickTopicOption?
     @Published private(set) var isLoading = false
     @Published private(set) var isCreatingTopic = false
     @Published private(set) var isCreatingQuickNote = false
@@ -18,36 +22,12 @@ final class GrammarNotesHomeViewModel: ObservableObject {
     private let service: GrammarNoteTopicServicing
     private let noteService: GrammarNoteServicing
     private var isEnsuringDefaultTopic = false
+    private var cancellables = Set<AnyCancellable>()
 
-    // MARK: - Computed
-
-    var filteredTopics: [GrammarNoteTopic] {
-        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        guard !query.isEmpty else { return topics }
-        return topics.filter { topic in
-            topic.title.lowercased().contains(query)
-            || topic.description.lowercased().contains(query)
-            || topic.languageName.lowercased().contains(query)
-        }
-    }
+    private static let whitespaceRegex = try! NSRegularExpression(pattern: "\\s+")
 
     var hasOnlyMistakesTopic: Bool {
         topics.filter { !$0.isMistakesTopic }.isEmpty
-    }
-
-    /// All topics as picker-friendly options (for quick note / quick mistake sheets).
-    var topicOptions: [GrammarQuickTopicOption] {
-        topics.map { topicOption(for: $0) }
-    }
-
-    /// Only regular (non-mistakes) topics for quick note picker.
-    var regularTopicOptions: [GrammarQuickTopicOption] {
-        topics.filter { !$0.isMistakesTopic }.map { topicOption(for: $0) }
-    }
-
-    /// The Common Mistakes topic as a picker option, if it exists.
-    var mistakesTopicOption: GrammarQuickTopicOption? {
-        topics.first(where: { $0.isMistakesTopic }).map { topicOption(for: $0) }
     }
 
     // MARK: - Init
@@ -61,7 +41,8 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         self.ownerUID = ownerUID
         self.service = service
         self.noteService = noteService
-        self.topics = previewTopics
+        updateTopics(previewTopics)
+        bindSearch()
     }
 
     // MARK: - Topic loading
@@ -76,7 +57,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         if topics.isEmpty {
             if let cached = try? await service.fetchTopics(for: ownerUID, source: .cache),
                !cached.isEmpty {
-                topics = sortTopics(cached)
+                updateTopics(sortTopics(cached))
             }
         }
 
@@ -89,7 +70,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         do {
             var loadedTopics = try await service.fetchTopics(for: ownerUID)
             loadedTopics = try await ensureCommonMistakesTopicExists(in: loadedTopics)
-            topics = sortTopics(loadedTopics)
+            updateTopics(sortTopics(loadedTopics))
         } catch {
             if topics.isEmpty {
                 errorMessage = readableMessage(for: error)
@@ -152,7 +133,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
 
         do {
             try await service.createTopic(topic)
-            topics = sortTopics(topics + [topic])
+            updateTopics(sortTopics(topics + [topic]))
             return true
         } catch {
             errorMessage = readableMessage(for: error)
@@ -164,7 +145,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         guard !topic.isMistakesTopic else { return }
         do {
             try await service.deleteTopic(id: topic.id, ownerUID: ownerUID)
-            topics.removeAll { $0.id == topic.id }
+            updateTopics(topics.filter { $0.id != topic.id })
             errorMessage = nil
         } catch {
             errorMessage = readableMessage(for: error)
@@ -227,9 +208,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
 
         do {
             let saved = try await noteService.createAndReturnNote(note)
-            if let idx = topics.firstIndex(where: { $0.id == matchedTopic.id }) {
-                topics[idx].notesCount += 1
-            }
+            incrementNotesCount(for: matchedTopic.id)
             return saved
         } catch {
             quickNoteError = readableMessage(for: error)
@@ -335,9 +314,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
 
         do {
             let saved = try await noteService.createAndReturnNote(note)
-            if let idx = topics.firstIndex(where: { $0.id == targetTopic.id }) {
-                topics[idx].notesCount += 1
-            }
+            incrementNotesCount(for: targetTopic.id)
             return saved
         } catch {
             quickMistakeError = readableMessage(for: error)
@@ -352,7 +329,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         do {
             let topic = try await service.ensureDefaultMistakesTopic(ownerUID: ownerUID)
             if !topics.contains(where: { $0.id == topic.id }) {
-                topics = sortTopics(topics + [topic])
+                updateTopics(sortTopics(topics + [topic]))
             }
             return topic
         } catch {
@@ -370,7 +347,58 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         return loadedTopics.contains(where: { $0.id == mistakesTopic.id }) ? loadedTopics : loadedTopics + [mistakesTopic]
     }
 
-    private func topicOption(for topic: GrammarNoteTopic) -> GrammarQuickTopicOption {
+    private func bindSearch() {
+        $searchText
+            .sink { [weak self] _ in
+                self?.refreshFilteredTopics()
+            }
+            .store(in: &cancellables)
+    }
+
+    private func updateTopics(_ newTopics: [GrammarNoteTopic]) {
+        guard newTopics != topics else {
+            refreshFilteredTopics()
+            refreshTopicOptions()
+            return
+        }
+        topics = newTopics
+        refreshFilteredTopics()
+        refreshTopicOptions()
+    }
+
+    private func refreshFilteredTopics() {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !query.isEmpty else {
+            filteredTopics = topics
+            return
+        }
+        filteredTopics = topics.filter { topic in
+            topic.title.lowercased().contains(query)
+            || topic.description.lowercased().contains(query)
+            || topic.languageName.lowercased().contains(query)
+        }
+    }
+
+    private func refreshTopicOptions() {
+        let mapped = topics.map { Self.topicOption(for: $0) }
+        topicOptions = mapped
+        regularTopicOptions = mapped.filter { option in
+            topics.first(where: { $0.id == option.id })?.isMistakesTopic == false
+        }
+        mistakesTopicOption = mapped.first { option in
+            topics.first(where: { $0.id == option.id })?.isMistakesTopic == true
+        }
+    }
+
+    private func incrementNotesCount(for topicID: String) {
+        guard let index = topics.firstIndex(where: { $0.id == topicID }) else { return }
+        var updatedTopics = topics
+        updatedTopics[index].notesCount += 1
+        updatedTopics[index].updatedAt = Date()
+        updateTopics(sortTopics(updatedTopics))
+    }
+
+    private static func topicOption(for topic: GrammarNoteTopic) -> GrammarQuickTopicOption {
         let tint = CreateSetTheme.theme(forHex: topic.colorHex).accent
         return GrammarQuickTopicOption(
             id: topic.id,
@@ -416,10 +444,16 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         explanation: String,
         languageCode: String
     ) -> String {
-        [languageCode, original, corrected, explanation]
+        let joined = [languageCode, original, corrected, explanation]
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
             .joined(separator: "|")
-            .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
+
+        let range = NSRange(joined.startIndex..., in: joined)
+        return whitespaceRegex.stringByReplacingMatches(
+            in: joined,
+            range: range,
+            withTemplate: " "
+        )
     }
 
     // Non-static wrapper so it can call buildMistakeBlocks

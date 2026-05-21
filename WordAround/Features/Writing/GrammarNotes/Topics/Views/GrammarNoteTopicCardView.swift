@@ -3,12 +3,14 @@ import SwiftUI
 struct GrammarNoteTopicCardView: View {
     let topic: GrammarNoteTopic
 
-    private var isPadLike: Bool {
+    private let isPadLike: Bool =
         UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
 
-    private var theme: CreateSetTheme {
-        CreateSetTheme.theme(forHex: topic.colorHex)
+    private let theme: CreateSetTheme
+
+    init(topic: GrammarNoteTopic) {
+        self.topic = topic
+        self.theme = CreateSetTheme.theme(forHex: topic.colorHex)
     }
 
     var body: some View {

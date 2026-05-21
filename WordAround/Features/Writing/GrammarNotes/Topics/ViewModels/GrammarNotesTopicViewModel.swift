@@ -16,10 +16,15 @@ final class GrammarNotesTopicViewModel: ObservableObject {
 
     @Published private(set) var topic: GrammarNoteTopic
     @Published private(set) var notes: [GrammarNote] = []
+    @Published private(set) var filteredNotes: [GrammarNote] = []
+    @Published private(set) var pinnedNotes: [GrammarNote] = []
+    @Published private(set) var regularNotes: [GrammarNote] = []
+    @Published private(set) var topicOption: GrammarQuickTopicOption
     @Published private(set) var isLoading = false
     @Published private(set) var isCreatingNote = false
     @Published private(set) var isCreatingQuickNote = false
     @Published private(set) var isCreatingQuickMistake = false
+    @Published private(set) var didLoadNotes = false
     @Published var searchText = ""
     @Published var selectedFilter: Filter = .all
     @Published var errorMessage: String?
@@ -29,45 +34,13 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     private let ownerUID: String
     private let noteService: GrammarNoteServicing
     private let topicService: GrammarNoteTopicServicing
+    private var cancellables = Set<AnyCancellable>()
+    private var isRefreshingFromCache = false
 
-    // MARK: - Computed
+    private static let whitespaceRegex = try! NSRegularExpression(pattern: "\\s+")
 
-    var filteredNotes: [GrammarNote] {
-        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        return notes.filter { note in
-            let matchesFilter: Bool
-            switch selectedFilter {
-            case .all:       matchesFilter = true
-            case .pinned:    matchesFilter = note.isPinned
-            case .favorites: matchesFilter = note.isFavorite
-            case .mistakes:  matchesFilter = note.isMistakeNote
-            case .quizzes:   matchesFilter = note.hasQuiz
-            }
-            guard matchesFilter else { return false }
-            guard !query.isEmpty else { return true }
-            return note.title.lowercased().contains(query)
-                || note.previewText.lowercased().contains(query)
-                || note.tags.contains { $0.lowercased().contains(query) }
-                || note.noteType.title.lowercased().contains(query)
-        }
-    }
-
-    var pinnedNotes: [GrammarNote]  { filteredNotes.filter {  $0.isPinned } }
-    var regularNotes: [GrammarNote] { filteredNotes.filter { !$0.isPinned } }
     var hasNoNotes: Bool            { notes.isEmpty && !isLoading && errorMessage == nil }
     var hasNoMatchingNotes: Bool    { !notes.isEmpty && filteredNotes.isEmpty && !isLoading && errorMessage == nil }
-
-    /// This topic as a picker-friendly option.
-    var topicOption: GrammarQuickTopicOption {
-        let tint = CreateSetTheme.theme(forHex: topic.colorHex).accent
-        return GrammarQuickTopicOption(
-            id: topic.id,
-            title: topic.title,
-            subtitle: "\(topic.notesCount) notes",
-            tint: tint,
-            systemImage: topic.icon
-        )
-    }
 
     // MARK: - Init
 
@@ -82,12 +55,34 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         self.ownerUID = ownerUID
         self.noteService = noteService
         self.topicService = topicService
+        self.topicOption = Self.makeTopicOption(from: topic)
         self.notes = Self.sortNotes(previewNotes)
+        self.didLoadNotes = !previewNotes.isEmpty
+        bindFiltering()
+        refreshFiltered()
+    }
+
+    // MARK: - Bindings
+
+    private func bindFiltering() {
+        $searchText
+            .combineLatest($selectedFilter)
+            .sink { [weak self] _, _ in
+                self?.refreshFiltered()
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - Notes loading
 
+    func loadNotesIfNeeded() async {
+        guard !didLoadNotes else { return }
+        await loadNotes()
+    }
+
     func loadNotes() async {
+        guard !isLoading else { return }
+        guard !didLoadNotes else { return }
         guard !ownerUID.isEmpty else {
             errorMessage = "User session is not available. Please sign in again."
             return
@@ -98,8 +93,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
             if let cached = try? await noteService.fetchNotePreviews(
                 ownerUID: ownerUID, topicId: topic.id, source: .cache
             ), !cached.isEmpty {
-                notes = Self.sortNotes(cached)
-                topic.notesCount = notes.count
+                updateNotes(Self.sortNotes(cached))
             }
         }
 
@@ -114,8 +108,8 @@ final class GrammarNotesTopicViewModel: ObservableObject {
                 ownerUID: ownerUID,
                 topicId: topic.id
             )
-            notes = Self.sortNotes(loadedNotes)
-            topic.notesCount = notes.count
+            updateNotes(Self.sortNotes(loadedNotes))
+            didLoadNotes = true
         } catch {
             if notes.isEmpty {
                 errorMessage = readableMessage(for: error)
@@ -124,15 +118,27 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     }
 
     /// Silent cache refresh — called on re-appear to pick up edits made in the editor.
+    func refreshFromCacheIfNeeded() async {
+        guard !isRefreshingFromCache else { return }
+        await refreshFromCache()
+    }
+
     func refreshFromCache() async {
+        guard !isRefreshingFromCache else { return }
+        isRefreshingFromCache = true
+        defer { isRefreshingFromCache = false }
+
         guard let cached = try? await noteService.fetchNotePreviews(
             ownerUID: ownerUID, topicId: topic.id, source: .cache
         ), !cached.isEmpty else { return }
-        notes = Self.sortNotes(cached)
-        topic.notesCount = notes.count
+
+        updateNotes(Self.sortNotes(cached))
     }
 
-    func retryLoading() async { await loadNotes() }
+    func retryLoading() async {
+        didLoadNotes = false
+        await loadNotes()
+    }
 
     // MARK: - Full note creation (from CreateGrammarNoteSheet)
 
@@ -203,8 +209,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
 
         do {
             try await noteService.createNote(note)
-            notes = Self.sortNotes(notes + [note])
-            topic.notesCount = notes.count
+            updateNotes(Self.sortNotes(notes + [note]))
             return true
         } catch {
             errorMessage = readableMessage(for: error)
@@ -263,8 +268,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
 
         do {
             let saved = try await noteService.createAndReturnNote(note)
-            notes = Self.sortNotes(notes + [saved])
-            topic.notesCount = notes.count
+            updateNotes(Self.sortNotes(notes + [saved]))
             return saved
         } catch {
             quickNoteError = readableMessage(for: error)
@@ -385,8 +389,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     func deleteNote(_ note: GrammarNote) async {
         do {
             try await noteService.deleteNote(id: note.id, ownerUID: ownerUID, topicId: topic.id)
-            notes.removeAll { $0.id == note.id }
-            topic.notesCount = notes.count
+            updateNotes(notes.filter { $0.id != note.id })
             errorMessage = nil
         } catch {
             errorMessage = readableMessage(for: error)
@@ -464,18 +467,82 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         explanation: String,
         languageCode: String
     ) -> String {
-        [languageCode, original, corrected, explanation]
+        let joined = [languageCode, original, corrected, explanation]
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
             .joined(separator: "|")
-            .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
+
+        let range = NSRange(joined.startIndex..., in: joined)
+        return whitespaceRegex.stringByReplacingMatches(
+            in: joined,
+            range: range,
+            withTemplate: " "
+        )
+    }
+
+    private func refreshFiltered() {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let filtered = notes.filter { note in
+            let matchesFilter: Bool
+            switch selectedFilter {
+            case .all:       matchesFilter = true
+            case .pinned:    matchesFilter = note.isPinned
+            case .favorites: matchesFilter = note.isFavorite
+            case .mistakes:  matchesFilter = note.isMistakeNote
+            case .quizzes:   matchesFilter = note.hasQuiz
+            }
+            guard matchesFilter else { return false }
+            guard !query.isEmpty else { return true }
+            return note.title.lowercased().contains(query)
+                || note.previewText.lowercased().contains(query)
+                || note.tags.contains { $0.lowercased().contains(query) }
+                || note.noteType.title.lowercased().contains(query)
+        }
+
+        filteredNotes = filtered
+        pinnedNotes = filtered.filter { $0.isPinned }
+        regularNotes = filtered.filter { !$0.isPinned }
+    }
+
+    private func updateNotes(_ newNotes: [GrammarNote]) {
+        guard newNotes != notes else {
+            updateTopicNotesCountIfNeeded(newNotes.count)
+            return
+        }
+        notes = newNotes
+        updateTopicNotesCountIfNeeded(newNotes.count)
+        refreshFiltered()
+    }
+
+    private func updateTopicNotesCountIfNeeded(_ count: Int) {
+        guard topic.notesCount != count else { return }
+        topic.notesCount = count
+        refreshTopicOption()
+    }
+
+    private func refreshTopicOption() {
+        let option = Self.makeTopicOption(from: topic)
+        guard option != topicOption else { return }
+        topicOption = option
+    }
+
+    private static func makeTopicOption(from topic: GrammarNoteTopic) -> GrammarQuickTopicOption {
+        let tint = CreateSetTheme.theme(forHex: topic.colorHex).accent
+        return GrammarQuickTopicOption(
+            id: topic.id,
+            title: topic.title,
+            subtitle: "\(topic.notesCount) notes",
+            tint: tint,
+            systemImage: topic.icon
+        )
     }
 
     private func replace(_ note: GrammarNote, mutate: (inout GrammarNote) -> Void) {
         guard let index = notes.firstIndex(where: { $0.id == note.id }) else { return }
         var updatedNote = notes[index]
         mutate(&updatedNote)
-        notes[index] = updatedNote
-        notes = Self.sortNotes(notes)
+        var updatedNotes = notes
+        updatedNotes[index] = updatedNote
+        updateNotes(Self.sortNotes(updatedNotes))
     }
 
     private func makeBlocks(from template: GrammarNoteTemplate?, date: Date) -> [GrammarNoteBlock] {

@@ -12,9 +12,8 @@ struct GrammarNotesTopicView: View {
 
     private let theme: CreateSetTheme
 
-    private var isPadLike: Bool {
+    private let isPadLike: Bool =
         UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
-    }
 
     init(
         topic: GrammarNoteTopic,
@@ -128,16 +127,12 @@ struct GrammarNotesTopicView: View {
             )
         }
         .task {
-            if viewModel.notes.isEmpty {
-                await viewModel.loadNotes()
-            }
+            await viewModel.loadNotesIfNeeded()
         }
         .onAppear {
             // Re-appear from editor: refresh previews from cache so edited
-            // titles/previewText are reflected without a server round-trip
-            if !viewModel.notes.isEmpty {
-                Task { await viewModel.refreshFromCache() }
-            }
+            // titles/previewText are reflected without a server round-trip.
+            Task { await viewModel.refreshFromCacheIfNeeded() }
         }
     }
 
