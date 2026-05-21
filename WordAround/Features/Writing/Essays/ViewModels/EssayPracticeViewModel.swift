@@ -143,17 +143,18 @@ final class EssayPracticeViewModel: ObservableObject {
     // MARK: - Init
 
     init(
-        topics: [EssayTopic] = EssayTopic.predefined,
-        grammarService: GrammarChecking = GrammarCheckService(),
-        generationService: EssayGenerationServicing = EssayGenerationService(),
+        topics: [EssayTopic]? = nil,
+        grammarService: GrammarChecking? = nil,
+        generationService: EssayGenerationServicing? = nil,
         availableSets: [FlashcardSet] = [],
         selectedLanguage: GrammarLanguage = .english,
         selectedDifficulty: EssayDifficulty = .b1
     ) {
-        self.topics = topics.isEmpty ? [.fallback] : topics
-        self.currentTopic = topics.randomElement() ?? .fallback
-        self.grammarService = grammarService
-        self.generationService = generationService
+        let resolvedTopics = topics ?? EssayTopic.predefined
+        self.topics = resolvedTopics.isEmpty ? [.fallback] : resolvedTopics
+        self.currentTopic = resolvedTopics.randomElement() ?? .fallback
+        self.grammarService = grammarService ?? GrammarCheckService()
+        self.generationService = generationService ?? EssayGenerationService()
         self.availableSets = availableSets.filter { !$0.cards.isEmpty }
         self.selectedLanguage = selectedLanguage
         self.selectedDifficulty = selectedDifficulty

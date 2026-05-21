@@ -10,6 +10,7 @@ struct WriteWordsView: View {
         ScreenMetrics.current(horizontal: horizontalSizeClass, vertical: verticalSizeClass)
     }
 
+    @MainActor
     init(set: FlashcardSet? = nil) {
         _viewModel = StateObject(wrappedValue: WriteWordsViewModel(set: set))
     }
@@ -95,12 +96,12 @@ struct WriteWordsView: View {
         .onDisappear {
             viewModel.stopTimerIfNeeded()
         }
-        .onChange(of: viewModel.navigationState) { state in
+        .onChange(of: viewModel.navigationState) { _, state in
             if state == .lose {
                 hideKeyboard()
             }
         }
-        .onChange(of: viewModel.isRoundCompleted) { isCompleted in
+        .onChange(of: viewModel.isRoundCompleted) { _, isCompleted in
             if isCompleted {
                 hideKeyboard()
             }
@@ -238,6 +239,7 @@ struct WriteWordsView: View {
 
     // MARK: - Helpers
 
+    @MainActor
     private func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }

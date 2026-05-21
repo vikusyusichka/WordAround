@@ -7,6 +7,7 @@ struct FolderDetailView: View {
     @State private var selectedSetForDetails: FlashcardSet?
     @State private var isShowingEditFolderSheet = false
 
+    @MainActor
     init(folder: Folder) {
         _viewModel = StateObject(wrappedValue: FolderDetailViewModel(folder: folder))
     }

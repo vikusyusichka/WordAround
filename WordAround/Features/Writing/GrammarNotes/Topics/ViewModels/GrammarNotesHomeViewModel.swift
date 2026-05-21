@@ -34,13 +34,13 @@ final class GrammarNotesHomeViewModel: ObservableObject {
 
     init(
         ownerUID: String,
-        service: GrammarNoteTopicServicing = GrammarNoteTopicService(),
-        noteService: GrammarNoteServicing = GrammarNoteService(),
+        service: GrammarNoteTopicServicing? = nil,
+        noteService: GrammarNoteServicing? = nil,
         previewTopics: [GrammarNoteTopic] = []
     ) {
         self.ownerUID = ownerUID
-        self.service = service
-        self.noteService = noteService
+        self.service = service ?? GrammarNoteTopicService()
+        self.noteService = noteService ?? GrammarNoteService()
         updateTopics(previewTopics)
         bindSearch()
     }

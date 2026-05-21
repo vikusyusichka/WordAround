@@ -11,7 +11,7 @@ protocol AuthServiceProtocol {
     func signUp(email: String, password: String) async throws
     func signOut() throws
 
-    func signInWithGoogle() async throws
+    @MainActor func signInWithGoogle() async throws
     func sendEmailVerification() async throws
     func reloadCurrentUser() async throws
     func sendPasswordReset(to email: String) async throws
@@ -52,6 +52,7 @@ final class AuthService: AuthServiceProtocol {
         try await Auth.auth().sendPasswordReset(withEmail: cleanEmail)
     }
 
+    @MainActor
     func signInWithGoogle() async throws {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
             throw NSError(

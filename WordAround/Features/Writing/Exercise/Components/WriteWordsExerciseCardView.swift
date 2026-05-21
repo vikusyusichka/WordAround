@@ -47,7 +47,7 @@ struct WriteWordsExerciseCardView: View {
                 hintOverlay: viewModel.hintOverlayText,
                 isDisabled: viewModel.isInteractionLocked
             )
-            .onChange(of: viewModel.typedAnswer) { _ in
+            .onChange(of: viewModel.typedAnswer) { _, _ in
                 viewModel.validateAnswer()
             }
 

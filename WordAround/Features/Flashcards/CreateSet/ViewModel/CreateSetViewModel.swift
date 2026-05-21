@@ -33,11 +33,11 @@ final class CreateSetViewModel: ObservableObject {
     ]
 
     init(
-        createSetUseCase: CreateSetSavingUseCase = CreateSetSavingUseCase(),
-        folderService: FolderService = FolderService()
+        createSetUseCase: CreateSetSavingUseCase? = nil,
+        folderService: FolderService? = nil
     ) {
-        self.createSetUseCase = createSetUseCase
-        self.folderService = folderService
+        self.createSetUseCase = createSetUseCase ?? CreateSetSavingUseCase()
+        self.folderService = folderService ?? FolderService()
     }
 
     func addCard() {

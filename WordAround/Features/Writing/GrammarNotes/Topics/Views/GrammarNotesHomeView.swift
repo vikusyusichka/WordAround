@@ -14,15 +14,18 @@ struct GrammarNotesHomeView: View {
 
     private let theme: CreateSetTheme = .blue
 
-    private let isPadLike: Bool =
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+    private var isPadLike: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad
+    }
 
+    @MainActor
     init(ownerUID: String? = Auth.auth().currentUser?.uid) {
         _viewModel = StateObject(
             wrappedValue: GrammarNotesHomeViewModel(ownerUID: ownerUID ?? "")
         )
     }
 
+    @MainActor
     init(viewModel: GrammarNotesHomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }

@@ -6,6 +6,8 @@ struct GrammarNotesSettingsView: View {
 
     @State private var selectedDefaultType: GrammarNoteType = .standard
 
+    @MainActor init() {}
+
     var body: some View {
         ZStack {
             AppColors.appBackground

@@ -10,7 +10,7 @@ struct FlashcardRoundFinishView: View {
     let onClose: () -> Void
 
     private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+        UIDevice.current.userInterfaceIdiom == .pad
     }
 
     private var hasUnknownWords: Bool {

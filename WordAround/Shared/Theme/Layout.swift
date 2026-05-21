@@ -1,12 +1,8 @@
 import SwiftUI
 
 enum Layout {
-    // MARK: - Cached device checks (computed once, not on every body call)
-    private static let _screenWidth = UIScreen.main.bounds.width
-    private static let _isPad = UIDevice.current.userInterfaceIdiom == .pad
-
-    static let isPadLike: Bool = _isPad || _screenWidth >= 700
-    static let isCompactPhone: Bool = !isPadLike && _screenWidth < 390
+    static let isPadLike: Bool = UIDevice.current.userInterfaceIdiom == .pad
+    static let isCompactPhone: Bool = false
 
     static let screenHorizontalPaddingPhone: CGFloat = 16
     static let screenHorizontalPaddingPad: CGFloat = 28
@@ -487,25 +483,25 @@ extension Layout {
 // MARK: - Adaptive Layout System
 
 struct ScreenMetrics {
-    let horizontalSizeClass: UserInterfaceSizeClass?
-    let verticalSizeClass: UserInterfaceSizeClass?
+    let isHorizontalCompact: Bool
+    let isVerticalCompact: Bool
     let containerWidth: CGFloat
 
     var isCompact: Bool {
-        horizontalSizeClass == .compact || containerWidth < LayoutConstants.Breakpoints.regularMinWidth
+        isHorizontalCompact || containerWidth < LayoutConstants.Breakpoints.regularMinWidth
     }
 
     var isRegular: Bool { !isCompact }
-    var isLandscapeCompact: Bool { horizontalSizeClass == .compact && verticalSizeClass == .compact }
+    var isLandscapeCompact: Bool { isHorizontalCompact && isVerticalCompact }
 
     static func current(
         horizontal: UserInterfaceSizeClass?,
         vertical: UserInterfaceSizeClass?,
-        containerWidth: CGFloat = UIScreen.main.bounds.width
+        containerWidth: CGFloat = 0
     ) -> ScreenMetrics {
         ScreenMetrics(
-            horizontalSizeClass: horizontal,
-            verticalSizeClass: vertical,
+            isHorizontalCompact: horizontal == .compact,
+            isVerticalCompact: vertical == .compact,
             containerWidth: containerWidth
         )
     }

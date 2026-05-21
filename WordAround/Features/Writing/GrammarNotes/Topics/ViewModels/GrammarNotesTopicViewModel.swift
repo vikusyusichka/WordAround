@@ -47,14 +47,14 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     init(
         topic: GrammarNoteTopic,
         ownerUID: String,
-        noteService: GrammarNoteServicing = GrammarNoteService(),
-        topicService: GrammarNoteTopicServicing = GrammarNoteTopicService(),
+        noteService: GrammarNoteServicing? = nil,
+        topicService: GrammarNoteTopicServicing? = nil,
         previewNotes: [GrammarNote] = []
     ) {
         self.topic = topic
         self.ownerUID = ownerUID
-        self.noteService = noteService
-        self.topicService = topicService
+        self.noteService = noteService ?? GrammarNoteService()
+        self.topicService = topicService ?? GrammarNoteTopicService()
         self.topicOption = Self.makeTopicOption(from: topic)
         self.notes = Self.sortNotes(previewNotes)
         self.didLoadNotes = !previewNotes.isEmpty

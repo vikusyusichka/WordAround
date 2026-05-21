@@ -12,13 +12,15 @@ struct GrammarNotesTopicView: View {
 
     private let theme: CreateSetTheme
 
-    private let isPadLike: Bool =
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+    private var isPadLike: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad
+    }
 
+    @MainActor
     init(
         topic: GrammarNoteTopic,
         ownerUID: String? = nil,
-        noteService: GrammarNoteServicing = GrammarNoteService(),
+        noteService: GrammarNoteServicing? = nil,
         previewNotes: [GrammarNote] = []
     ) {
         let resolvedOwnerUID = ownerUID ?? topic.ownerUID

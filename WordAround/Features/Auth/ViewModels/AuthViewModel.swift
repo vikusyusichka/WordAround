@@ -14,10 +14,10 @@ final class AuthViewModel: ObservableObject {
     private weak var sessionStore: SessionStore?
 
     init(
-        authService: AuthServiceProtocol = AuthService(),
+        authService: AuthServiceProtocol? = nil,
         sessionStore: SessionStore? = nil
     ) {
-        self.authService = authService
+        self.authService = authService ?? AuthService()
         self.sessionStore = sessionStore
     }
 

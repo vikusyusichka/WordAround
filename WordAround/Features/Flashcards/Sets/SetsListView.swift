@@ -48,7 +48,7 @@ struct SetsListView: View {
         .onAppear {
             syncVisibleSets()
         }
-        .onChange(of: sets.map(\.id)) { _ in
+        .onChange(of: sets.map(\.id)) { _, _ in
             syncVisibleSets()
         }
     }

@@ -26,7 +26,7 @@ struct CreateGrammarTopicSheet: View {
     }
 
     private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+        UIDevice.current.userInterfaceIdiom == .pad
     }
 
     private var trimmedTitle: String {
@@ -140,7 +140,7 @@ struct CreateGrammarTopicSheet: View {
                     .textInputAutocapitalization(.words)
                     .autocorrectionDisabled()
                     .submitLabel(.next)
-                    .onChange(of: title) { newValue in
+                    .onChange(of: title) { _, newValue in
                         if newValue.count > 40 {
                             title = String(newValue.prefix(40))
                         }
@@ -181,7 +181,7 @@ struct CreateGrammarTopicSheet: View {
                         .padding(.top, 12)
                         .padding(.horizontal, 14)
                         .padding(.bottom, 28)
-                        .onChange(of: description) { newValue in
+                        .onChange(of: description) { _, newValue in
                             if newValue.count > 120 {
                                 description = String(newValue.prefix(120))
                             }

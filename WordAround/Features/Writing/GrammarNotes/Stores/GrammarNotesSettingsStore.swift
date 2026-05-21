@@ -15,6 +15,7 @@ private func boolSetting(_ key: String, default def: Bool) -> Bool {
 /// Views observe it via `@StateObject`; ViewModels read it at save-time.
 /// Uses @Published + UserDefaults so ObservableObject conformance works
 /// correctly in Swift 6 (unlike @AppStorage inside a class).
+@MainActor
 final class GrammarNotesSettingsStore: ObservableObject {
 
     // MARK: - Quick capture

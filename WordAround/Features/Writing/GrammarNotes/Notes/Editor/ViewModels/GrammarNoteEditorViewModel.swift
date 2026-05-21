@@ -44,12 +44,12 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         note: GrammarNote,
         ownerUID: String,
         topicId: String,
-        noteService: GrammarNoteServicing = GrammarNoteService()
+        noteService: GrammarNoteServicing? = nil
     ) {
         self.note = note
         self.ownerUID = ownerUID
         self.topicId = topicId
-        self.noteService = noteService
+        self.noteService = noteService ?? GrammarNoteService()
         self.title = note.title
         self.blocks = note.contentBlocks.sorted { $0.order < $1.order }
         self.saveState = .saved

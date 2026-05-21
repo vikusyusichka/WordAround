@@ -6,7 +6,7 @@ struct GrammarIssueCardView: View {
     var onSave: (() -> Void)? = nil
 
     private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+        UIDevice.current.userInterfaceIdiom == .pad
     }
 
     var body: some View {

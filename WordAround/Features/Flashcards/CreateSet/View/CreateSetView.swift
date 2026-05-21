@@ -26,7 +26,7 @@ struct CreateSetView: View {
             .scrollDismissesKeyboard(.interactively)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        .onChange(of: viewModel.didCreateSet) { didCreate in
+        .onChange(of: viewModel.didCreateSet) { _, didCreate in
             if didCreate { dismiss() }
         }
         .task {

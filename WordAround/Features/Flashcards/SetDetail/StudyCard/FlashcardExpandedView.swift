@@ -9,7 +9,7 @@ struct FlashcardExpandedView: View {
     @State private var isFlipped = false
 
     private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+        UIDevice.current.userInterfaceIdiom == .pad
     }
 
     private var totalCards: Int {

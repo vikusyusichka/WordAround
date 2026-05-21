@@ -11,8 +11,8 @@ final class SetsListViewModel: ObservableObject {
 
     private let setService: FlashcardSetService
 
-    init(setService: FlashcardSetService = FlashcardSetService()) {
-        self.setService = setService
+    init(setService: FlashcardSetService? = nil) {
+        self.setService = setService ?? FlashcardSetService()
 
         Task {
             await loadUserSets()

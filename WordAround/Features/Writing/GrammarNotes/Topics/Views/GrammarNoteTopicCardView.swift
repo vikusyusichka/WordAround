@@ -3,8 +3,9 @@ import SwiftUI
 struct GrammarNoteTopicCardView: View {
     let topic: GrammarNoteTopic
 
-    private let isPadLike: Bool =
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+    private var isPadLike: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad
+    }
 
     private let theme: CreateSetTheme
 

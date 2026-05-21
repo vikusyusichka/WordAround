@@ -22,7 +22,7 @@ struct CreateFolderView: View {
             }
         }
         .tint(viewModel.theme.accent)
-        .onChange(of: viewModel.didCreateFolder) { created in
+        .onChange(of: viewModel.didCreateFolder) { _, created in
             if created {
                 dismiss()
             }

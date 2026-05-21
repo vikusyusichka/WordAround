@@ -8,9 +8,10 @@ struct EssayPracticeView: View {
     @FocusState private var isEditorFocused: Bool
 
     private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+        UIDevice.current.userInterfaceIdiom == .pad
     }
 
+    @MainActor
     init(availableSets: [FlashcardSet] = []) {
         _viewModel = StateObject(
             wrappedValue: EssayPracticeViewModel(

@@ -57,7 +57,7 @@ struct WriteWordsAnswerInputView: View {
                 }
             }
         }
-        .onChange(of: isDisabled) { disabled in
+        .onChange(of: isDisabled) { _, disabled in
             if disabled {
                 isFocused = false
             }

@@ -7,9 +7,10 @@ struct WritingSetSelectionView: View {
     let onSelect: (FlashcardSet) -> Void
 
     private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.bounds.width >= 700
+        UIDevice.current.userInterfaceIdiom == .pad
     }
 
+    @MainActor
     init(sets: [FlashcardSet], onSelect: @escaping (FlashcardSet) -> Void) {
         _viewModel = StateObject(wrappedValue: WritingSetSelectionViewModel(sets: sets))
         self.onSelect = onSelect

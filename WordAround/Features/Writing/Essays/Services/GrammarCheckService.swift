@@ -46,7 +46,7 @@ final class GrammarCheckService: GrammarChecking {
         self.timeoutInterval = timeoutInterval
     }
 
-    func check(text: String, language: String = GrammarLanguage.english.languageToolCode) async throws -> [GrammarIssue] {
+    func check(text: String, language: String = "en-US") async throws -> [GrammarIssue] {
         let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !trimmedText.isEmpty else {

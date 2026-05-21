@@ -90,14 +90,14 @@ struct HomeView: View {
         .task {
             await refreshData()
         }
-        .onChange(of: isCreateSetPresented) { isPresented in
+        .onChange(of: isCreateSetPresented) { _, isPresented in
             if !isPresented {
                 Task {
                     await refreshData()
                 }
             }
         }
-        .onChange(of: isCreateFolderPresented) { isPresented in
+        .onChange(of: isCreateFolderPresented) { _, isPresented in
             if !isPresented {
                 Task {
                     await refreshData()
