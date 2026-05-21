@@ -18,16 +18,7 @@ struct WritingView: View {
             VStack(spacing: isPadLike ? 16 : 12) {
                 ForEach(viewModel.menuItems) { item in
                     Button {
-                        switch item.action {
-                        case .writeFromSets:
-                            onOpenWriteSets()
-
-                        case .essays:
-                            openEssays = true
-
-                        case .grammarNotes:
-                            openGrammarNotes = true
-                        }
+                        handleMenuAction(item.action)
                     } label: {
                         WritingMenuCardView(item: item)
                     }
@@ -41,6 +32,17 @@ struct WritingView: View {
         }
         .navigationDestination(isPresented: $openGrammarNotes) {
             GrammarNotesHomeView()
+        }
+    }
+
+    private func handleMenuAction(_ action: WritingMenuAction) {
+        switch action {
+        case .writeFromSets:
+            onOpenWriteSets()
+        case .essays:
+            openEssays = true
+        case .grammarNotes:
+            openGrammarNotes = true
         }
     }
 }

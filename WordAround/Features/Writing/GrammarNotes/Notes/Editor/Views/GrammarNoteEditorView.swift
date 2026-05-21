@@ -71,9 +71,7 @@ struct GrammarNoteEditorView: View {
             templateSheet
         }
         .onDisappear {
-            // Only save if there are unsaved changes; avoids a redundant Firestore write
-            guard viewModel.saveState != .saved else { return }
-            Task { await viewModel.saveNow() }
+            Task { await viewModel.saveIfDirty() }
         }
     }
 

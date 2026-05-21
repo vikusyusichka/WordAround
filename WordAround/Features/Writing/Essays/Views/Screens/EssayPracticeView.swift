@@ -119,86 +119,109 @@ struct EssayPracticeView: View {
                 isEditorFocused = false
             }
             .sheet(isPresented: $viewModel.isSetSelectionPresented) {
-                if viewModel.isLoadingSets {
-                    VStack(spacing: 14) {
-                        ProgressView()
-                            .tint(AppColors.primaryBlue)
-
-                        Text("Loading sets")
-                            .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
-                            .foregroundColor(AppColors.primaryBlueDark)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(AppColors.appBackground.ignoresSafeArea())
-                } else {
-                    WritingSetSelectionView(
-                        sets: viewModel.availableSets,
-                        onSelect: { set in
-                            viewModel.selectHintSet(set)
-                        }
-                    )
-                    .id(viewModel.availableSets.map(\.id).joined(separator: "-"))
-                }
+                setSelectionSheet
             }
             .sheet(isPresented: $viewModel.isSetHintsPresented) {
-                if let selectedHintSet = viewModel.selectedHintSet {
-                    EssaySetHintsSelectionView(
-                        set: selectedHintSet,
-                        items: viewModel.selectedSetHintItems,
-                        selectedItems: viewModel.selectedEssaySetHints,
-                        onToggle: { item in
-                            viewModel.toggleEssaySetHint(item)
-                        },
-                        onDone: {
-                            viewModel.isSetHintsPresented = false
-                        }
-                    )
-                }
+                setHintsSheet
             }
 
-            if let modal = viewModel.activeAssistanceModal {
-                EssayAssistanceModalView(
-                    type: modal,
-                    inputText: $viewModel.assistanceInputText,
-                    selectedTargetLanguage: viewModel.selectedLanguage,
-                    selectedSourceLanguage: modal == .translate
-                        ? viewModel.translationSourceLanguage
-                        : viewModel.assistanceSourceLanguage,
-                    sourceLanguages: modal == .translate
-                        ? viewModel.availableTranslationSourceLanguages
-                        : viewModel.availableAssistanceSourceLanguages,
-                    resultItems: viewModel.assistanceResultItems,
-                    resultMessage: viewModel.assistanceResultMessage,
-                    usageText: viewModel.assistanceUsageText,
-                    isLoading: viewModel.isAssistanceLoading,
-                    onSelectSourceLanguage: { language in
-                        switch modal {
-                        case .hint:
-                            break
-                        case .translate:
-                            viewModel.selectTranslationSourceLanguage(language)
-                        case .synonym:
-                            viewModel.selectAssistanceSourceLanguage(language)
-                        }
-                    },
-                    onSubmit: {
-                        switch modal {
-                        case .hint:
-                            break
-                        case .translate:
-                            viewModel.performTranslation()
-                        case .synonym:
-                            viewModel.performSynonymSearch()
-                        }
-                    },
-                    onClose: {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            viewModel.closeAssistanceModal()
-                        }
-                    }
-                )
-                .zIndex(10)
+            assistanceModalOverlay
+        }
+    }
+
+    @ViewBuilder
+    private var setSelectionSheet: some View {
+        if viewModel.isLoadingSets {
+            VStack(spacing: 14) {
+                ProgressView()
+                    .tint(AppColors.primaryBlue)
+
+                Text("Loading sets")
+                    .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
+                    .foregroundColor(AppColors.primaryBlueDark)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(AppColors.appBackground.ignoresSafeArea())
+        } else {
+            WritingSetSelectionView(
+                sets: viewModel.availableSets,
+                onSelect: { set in
+                    viewModel.selectHintSet(set)
+                }
+            )
+            .id(viewModel.availableSets.map(\.id).joined(separator: "-"))
+        }
+    }
+
+    @ViewBuilder
+    private var setHintsSheet: some View {
+        if let selectedHintSet = viewModel.selectedHintSet {
+            EssaySetHintsSelectionView(
+                set: selectedHintSet,
+                items: viewModel.selectedSetHintItems,
+                selectedItems: viewModel.selectedEssaySetHints,
+                onToggle: { item in
+                    viewModel.toggleEssaySetHint(item)
+                },
+                onDone: {
+                    viewModel.isSetHintsPresented = false
+                }
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var assistanceModalOverlay: some View {
+        if let modal = viewModel.activeAssistanceModal {
+            EssayAssistanceModalView(
+                type: modal,
+                inputText: $viewModel.assistanceInputText,
+                selectedTargetLanguage: viewModel.selectedLanguage,
+                selectedSourceLanguage: modal == .translate
+                    ? viewModel.translationSourceLanguage
+                    : viewModel.assistanceSourceLanguage,
+                sourceLanguages: modal == .translate
+                    ? viewModel.availableTranslationSourceLanguages
+                    : viewModel.availableAssistanceSourceLanguages,
+                resultItems: viewModel.assistanceResultItems,
+                resultMessage: viewModel.assistanceResultMessage,
+                usageText: viewModel.assistanceUsageText,
+                isLoading: viewModel.isAssistanceLoading,
+                onSelectSourceLanguage: { language in
+                    handleAssistanceLanguageSelection(modal: modal, language: language)
+                },
+                onSubmit: {
+                    handleAssistanceSubmit(modal: modal)
+                },
+                onClose: {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        viewModel.closeAssistanceModal()
+                    }
+                }
+            )
+            .zIndex(10)
+        }
+    }
+
+    private func handleAssistanceLanguageSelection(modal: EssayAssistanceModalType, language: GrammarLanguage) {
+        switch modal {
+        case .hint:
+            break
+        case .translate:
+            viewModel.selectTranslationSourceLanguage(language)
+        case .synonym:
+            viewModel.selectAssistanceSourceLanguage(language)
+        }
+    }
+
+    private func handleAssistanceSubmit(modal: EssayAssistanceModalType) {
+        switch modal {
+        case .hint:
+            break
+        case .translate:
+            viewModel.performTranslation()
+        case .synonym:
+            viewModel.performSynonymSearch()
         }
     }
 

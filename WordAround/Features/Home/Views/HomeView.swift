@@ -65,12 +65,7 @@ struct HomeView: View {
             CreateFolderView()
         }
         .fullScreenCover(isPresented: $isWritingSetSelectionPresented) {
-            WritingSetSelectionView(sets: setsViewModel.userSets.compactMap(\.sourceSet)) { set in
-                isWritingSetSelectionPresented = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                    selectedSetForWriting = set
-                }
-            }
+            writingSetSelectionCover
         }
         .fullScreenCover(item: $selectedSetForDetails) { set in
             FlashcardSetDetailView(
@@ -91,18 +86,10 @@ struct HomeView: View {
             await refreshData()
         }
         .onChange(of: isCreateSetPresented) { _, isPresented in
-            if !isPresented {
-                Task {
-                    await refreshData()
-                }
-            }
+            refreshIfDismissed(isPresented)
         }
         .onChange(of: isCreateFolderPresented) { _, isPresented in
-            if !isPresented {
-                Task {
-                    await refreshData()
-                }
-            }
+            refreshIfDismissed(isPresented)
         }
     }
 }
@@ -476,6 +463,22 @@ private extension HomeView {
     func refreshData() async {
         await viewModel.refresh()
         await setsViewModel.refresh()
+    }
+
+    func refreshIfDismissed(_ isPresented: Bool) {
+        guard !isPresented else { return }
+        Task { await refreshData() }
+    }
+
+    var writingSetSelectionCover: some View {
+        WritingSetSelectionView(sets: setsViewModel.userSets.compactMap(\.sourceSet)) { set in
+            isWritingSetSelectionPresented = false
+            // Small delay lets the dismiss animation finish before the next
+            // fullScreenCover presents, preventing a visual jump on iOS.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                selectedSetForWriting = set
+            }
+        }
     }
 }
 

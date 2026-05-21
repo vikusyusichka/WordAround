@@ -793,11 +793,7 @@ final class EssayPracticeViewModel: ObservableObject {
 
         // Reset feedback if the essay changed after a grammar check
         if !grammarIssues.isEmpty || errorState != nil || score != nil {
-            grammarIssues = []
-            grammarIssueSaveStates = [:]
-            errorState = nil
-            feedbackState = .idle
-            score = nil
+            clearFeedback()
         }
     }
 

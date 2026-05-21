@@ -3,7 +3,7 @@ import Combine
 
 @MainActor
 final class WritingViewModel: ObservableObject {
-    @Published var goal = WritingGoal(title: "Today's writing goal", currentWords: 120, targetWords: 200)
+    let goal = WritingGoal(title: "Today's writing goal", currentWords: 120, targetWords: 200)
 
     let menuItems: [WritingMenuItem] = [
         WritingMenuItem(

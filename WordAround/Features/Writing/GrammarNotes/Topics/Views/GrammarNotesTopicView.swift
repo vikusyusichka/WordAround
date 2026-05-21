@@ -69,64 +69,13 @@ struct GrammarNotesTopicView: View {
             )
         }
         .sheet(isPresented: $isCreateSheetPresented) {
-            CreateGrammarNoteSheet(
-                topic: viewModel.topic,
-                isCreating: viewModel.isCreatingNote,
-                onCancel: { isCreateSheetPresented = false },
-                onCreate: { title, previewText, noteType, tags, hasQuiz, template in
-                    Task {
-                        let didCreate = await viewModel.createNote(
-                            title: title,
-                            previewText: previewText,
-                            noteType: noteType,
-                            tags: tags,
-                            hasQuiz: hasQuiz,
-                            template: template
-                        )
-                        if didCreate { isCreateSheetPresented = false }
-                    }
-                }
-            )
+            createNoteSheet
         }
         .sheet(isPresented: $isQuickNoteSheetPresented) {
-            QuickGrammarNoteSheet(
-                topics: [viewModel.topicOption],
-                isCreating: viewModel.isCreatingQuickNote,
-                errorMessage: viewModel.quickNoteError,
-                showsTopicPicker: false,
-                onCancel: { isQuickNoteSheetPresented = false },
-                onSave: { draft in
-                    Task {
-                        let saved = await viewModel.createQuickNote(draft: draft)
-                        if let saved {
-                            isQuickNoteSheetPresented = false
-                            if draft.opensEditorAfterSaving {
-                                editorNote = saved
-                            }
-                        }
-                    }
-                }
-            )
+            quickNoteSheet
         }
         .sheet(isPresented: $isQuickMistakeSheetPresented) {
-            QuickGrammarMistakeSheet(
-                topics: [viewModel.topicOption],
-                isCreating: viewModel.isCreatingQuickMistake,
-                errorMessage: viewModel.quickMistakeError,
-                showsTopicPicker: settings.groupMistakesByTopic,
-                onCancel: { isQuickMistakeSheetPresented = false },
-                onSave: { draft in
-                    Task {
-                        let saved = await viewModel.createQuickMistake(draft: draft, settings: settings)
-                        if let saved {
-                            isQuickMistakeSheetPresented = false
-                            if draft.opensEditorAfterSaving {
-                                editorNote = saved
-                            }
-                        }
-                    }
-                }
-            )
+            quickMistakeSheet
         }
         .task {
             await viewModel.loadNotesIfNeeded()
@@ -136,6 +85,69 @@ struct GrammarNotesTopicView: View {
             // titles/previewText are reflected without a server round-trip.
             Task { await viewModel.refreshFromCacheIfNeeded() }
         }
+    }
+
+    private var createNoteSheet: some View {
+        CreateGrammarNoteSheet(
+            topic: viewModel.topic,
+            isCreating: viewModel.isCreatingNote,
+            onCancel: { isCreateSheetPresented = false },
+            onCreate: { title, previewText, noteType, tags, hasQuiz, template in
+                Task {
+                    let didCreate = await viewModel.createNote(
+                        title: title,
+                        previewText: previewText,
+                        noteType: noteType,
+                        tags: tags,
+                        hasQuiz: hasQuiz,
+                        template: template
+                    )
+                    if didCreate { isCreateSheetPresented = false }
+                }
+            }
+        )
+    }
+
+    private var quickNoteSheet: some View {
+        QuickGrammarNoteSheet(
+            topics: [viewModel.topicOption],
+            isCreating: viewModel.isCreatingQuickNote,
+            errorMessage: viewModel.quickNoteError,
+            showsTopicPicker: false,
+            onCancel: { isQuickNoteSheetPresented = false },
+            onSave: { draft in
+                Task {
+                    let saved = await viewModel.createQuickNote(draft: draft)
+                    if let saved {
+                        isQuickNoteSheetPresented = false
+                        if draft.opensEditorAfterSaving {
+                            editorNote = saved
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    private var quickMistakeSheet: some View {
+        QuickGrammarMistakeSheet(
+            topics: [viewModel.topicOption],
+            isCreating: viewModel.isCreatingQuickMistake,
+            errorMessage: viewModel.quickMistakeError,
+            showsTopicPicker: settings.groupMistakesByTopic,
+            onCancel: { isQuickMistakeSheetPresented = false },
+            onSave: { draft in
+                Task {
+                    let saved = await viewModel.createQuickMistake(draft: draft, settings: settings)
+                    if let saved {
+                        isQuickMistakeSheetPresented = false
+                        if draft.opensEditorAfterSaving {
+                            editorNote = saved
+                        }
+                    }
+                }
+            }
+        )
     }
 
     private func handleFABSelection(_ item: GrammarNotesFABMenuItem) {

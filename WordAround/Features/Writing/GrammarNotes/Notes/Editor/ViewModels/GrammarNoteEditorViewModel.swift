@@ -142,6 +142,13 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         await performSave()
     }
 
+    /// Saves only if there are unsaved changes; called on editor dismissal to
+    /// avoid a redundant Firestore write when state is already `.saved`.
+    func saveIfDirty() async {
+        guard saveState != .saved else { return }
+        await saveNow()
+    }
+
     func scheduleAutosave() {
         autosaveTask?.cancel()
         saveState = .saving

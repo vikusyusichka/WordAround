@@ -245,7 +245,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         let trimmedCorrected    = draft.correctedSentence.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedExplanation  = draft.explanation.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        let blocks = buildMistakeBlocks(
+        let blocks = Self.buildMistakeBlocks(
             original: trimmedOriginal,
             corrected: trimmedCorrected,
             explanation: trimmedExplanation,
@@ -453,23 +453,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             in: joined,
             range: range,
             withTemplate: " "
-        )
-    }
-
-    // Non-static wrapper so it can call buildMistakeBlocks
-    private func buildMistakeBlocks(
-        original: String,
-        corrected: String,
-        explanation: String,
-        settings: GrammarNotesSettingsStore,
-        date: Date
-    ) -> [GrammarNoteBlock] {
-        Self.buildMistakeBlocks(
-            original: original,
-            corrected: corrected,
-            explanation: explanation,
-            settings: settings,
-            date: date
         )
     }
 

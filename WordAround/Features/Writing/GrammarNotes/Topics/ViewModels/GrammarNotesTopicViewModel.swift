@@ -374,8 +374,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         do {
             let saved = try await noteService.createAndReturnNote(note)
             if targetTopic.id == topic.id {
-                notes = Self.sortNotes(notes + [saved])
-                topic.notesCount = notes.count
+                updateNotes(Self.sortNotes(notes + [saved]))
             }
             return saved
         } catch {

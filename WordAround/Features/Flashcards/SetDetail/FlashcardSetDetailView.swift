@@ -71,10 +71,7 @@ struct FlashcardSetDetailView: View {
 
                     FlashcardSetDetailFilterTabsView(
                         theme: theme,
-                        selectedFilter: Binding(
-                            get: { mapFilter(viewModel.selectedFilter) },
-                            set: { viewModel.selectFilter(mapBack($0)) }
-                        ),
+                        selectedFilter: filterBinding,
                         count: { filter in viewModel.count(for: mapBack(filter)) }
                     )
                     .padding(.top, 8)
@@ -156,6 +153,13 @@ private extension FlashcardSetDetailView {
 // MARK: - Filter Mapping
 
 private extension FlashcardSetDetailView {
+    var filterBinding: Binding<FlashcardSetDetailCardFilter> {
+        Binding(
+            get: { mapFilter(viewModel.selectedFilter) },
+            set: { viewModel.selectFilter(mapBack($0)) }
+        )
+    }
+
     func mapFilter(_ filter: FlashcardSetDetailViewModel.CardFilter) -> FlashcardSetDetailCardFilter {
         switch filter {
         case .all:       return .all
