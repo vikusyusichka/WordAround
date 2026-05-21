@@ -65,7 +65,7 @@ struct HomeView: View {
             CreateFolderView()
         }
         .fullScreenCover(isPresented: $isWritingSetSelectionPresented) {
-            WritingSetSelectionView(sets: viewModel.userSets.compactMap(\.sourceSet)) { set in
+            WritingSetSelectionView(sets: setsViewModel.userSets.compactMap(\.sourceSet)) { set in
                 isWritingSetSelectionPresented = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                     selectedSetForWriting = set
