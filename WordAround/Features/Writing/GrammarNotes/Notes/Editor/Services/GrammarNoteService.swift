@@ -13,7 +13,6 @@ protocol GrammarNoteServicing {
     /// Creates a note and returns it (useful when the caller needs the saved note for navigation).
     func createAndReturnNote(_ note: GrammarNote) async throws -> GrammarNote
     func updateNote(_ note: GrammarNote) async throws
-    func updateNoteContent(_ note: GrammarNote) async throws
     func uploadNoteImage(data: Data, ownerUID: String, topicId: String, noteId: String) async throws -> String
     func deleteNote(id: String, ownerUID: String, topicId: String) async throws
     func togglePinned(note: GrammarNote) async throws
@@ -78,11 +77,6 @@ final class GrammarNoteService: GrammarNoteServicing {
         var stamped = note
         stamped.updatedAt = Date()
         try await writeNote(stamped)
-    }
-
-    /// Alias kept for backwards compatibility; delegates to `updateNote`.
-    func updateNoteContent(_ note: GrammarNote) async throws {
-        try await updateNote(note)
     }
 
     // MARK: Image upload (stub)
@@ -340,7 +334,6 @@ struct MockGrammarNoteService: GrammarNoteServicing {
     func createNote(_ note: GrammarNote)                                   async throws {}
     func createAndReturnNote(_ note: GrammarNote)                          async throws -> GrammarNote { note }
     func updateNote(_ note: GrammarNote)                                   async throws {}
-    func updateNoteContent(_ note: GrammarNote)                            async throws {}
     func uploadNoteImage(data: Data, ownerUID: String, topicId: String, noteId: String) async throws -> String { "" }
     func deleteNote(id: String, ownerUID: String, topicId: String)         async throws {}
     func togglePinned(note: GrammarNote)                                   async throws {}

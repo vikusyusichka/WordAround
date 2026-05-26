@@ -19,9 +19,8 @@ extension GrammarNoteTopicServicing {
 final class GrammarNoteTopicService: GrammarNoteTopicServicing {
     private let db = Firestore.firestore()
 
-    func fetchTopics(for ownerUID: String) async throws -> [GrammarNoteTopic] {
-        try await fetchTopics(for: ownerUID, source: .default)
-    }
+    // `fetchTopics(for:)` is provided by the protocol extension default,
+    // which forwards to `fetchTopics(for:source: .default)` below.
 
     func fetchTopics(for ownerUID: String, source: FirestoreSource) async throws -> [GrammarNoteTopic] {
         let snapshot = try await topicsCollection(ownerUID: ownerUID).getDocuments(source: source)
@@ -139,7 +138,6 @@ final class GrammarNoteTopicService: GrammarNoteTopicServicing {
 struct MockGrammarNoteTopicService: GrammarNoteTopicServicing {
     var topics: [GrammarNoteTopic] = []
 
-    func fetchTopics(for ownerUID: String) async throws -> [GrammarNoteTopic] { topics }
     func fetchTopics(for ownerUID: String, source: FirestoreSource) async throws -> [GrammarNoteTopic] { topics }
     func createTopic(_ topic: GrammarNoteTopic) async throws {}
     func ensureDefaultMistakesTopic(ownerUID: String) async throws -> GrammarNoteTopic {

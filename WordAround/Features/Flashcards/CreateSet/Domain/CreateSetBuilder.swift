@@ -58,8 +58,4 @@ struct CreateSetBuilder {
     }
 }
 
-private extension String {
-    var trimmed: String {
-        trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-}
+// `String.trimmed` is defined in `CreateSetValidator.swift` and reused here.

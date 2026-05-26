@@ -5,10 +5,7 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @StateObject private var setsViewModel = SetsListViewModel()
 
-    @State private var selectedCategory: HomeCategory? = nil
-    @State private var selectedTab: HomeTab? = nil
-
-    @State private var isCreateMenuPresented = false
+    // Sheet/cover flags are transient view-local UI state — kept as @State.
     @State private var isCreateSetPresented = false
     @State private var isCreateFolderPresented = false
     @State private var isWritingSetSelectionPresented = false
@@ -24,14 +21,14 @@ struct HomeView: View {
 
             VStack(spacing: 0) {
                 HomeHeaderView(
-                    title: headerTitle,
-                    subtitle: headerSubtitle
+                    title: viewModel.headerTitle,
+                    subtitle: viewModel.headerSubtitle(currentEmail: sessionStore.currentEmail)
                 )
                 .padding(.top, Layout.homeTopSpacing)
                 .padding(.horizontal, Layout.homeHorizontalPadding)
 
                 HStack(alignment: .top, spacing: Layout.homeHeaderSidebarSpacing) {
-                    CategorySidebarView(selectedCategory: $selectedCategory)
+                    CategorySidebarView(selectedCategory: $viewModel.selectedCategory)
                         .frame(width: Layout.homeSidebarWidth)
 
                     mainContent
@@ -42,16 +39,15 @@ struct HomeView: View {
                 Spacer(minLength: Layout.homeBottomSafeSpacing)
             }
 
-            if isCreateMenuPresented {
+            if viewModel.isCreateMenuPresented {
                 createMenuOverlay
                     .transition(.opacity)
                     .zIndex(1)
             }
 
             BottomNavigationBar(
-                selectedTab: $selectedTab,
-                selectedCategory: $selectedCategory,
-                isCreateMenuPresented: $isCreateMenuPresented
+                selectedTab: $viewModel.selectedTab,
+                isCreateMenuPresented: $viewModel.isCreateMenuPresented
             )
             .padding(.horizontal, Layout.homeBottomBarHorizontalPadding)
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
@@ -91,71 +87,23 @@ struct HomeView: View {
         .onChange(of: isCreateFolderPresented) { _, isPresented in
             refreshIfDismissed(isPresented)
         }
+        // Category-clearing rules live in the VM (`clearSelectedCategory()`);
+        // these handlers are the only place HomeView wires nav state changes
+        // to that rule. Spring curve matches the bar's tab/create animations.
+        .onChange(of: viewModel.selectedTab) { _, newTab in
+            if newTab == .home { viewModel.clearSelectedCategory() }
+        }
+        .onChange(of: viewModel.isCreateMenuPresented) { _, _ in
+            viewModel.clearSelectedCategory()
+        }
     }
 }
 
 // MARK: - Main Content
 
 private extension HomeView {
-    var headerTitle: String {
-        if selectedTab == nil || selectedTab == .home {
-            switch selectedCategory {
-            case .speaking:
-                return "Speaking"
-            case .listening:
-                return "Listening"
-            case .reading:
-                return "Reading"
-            case .writing:
-                return "Writing"
-            case .none:
-                return "Flashcards"
-            }
-        }
-
-        switch selectedTab {
-        case .folders:
-            return "Folders"
-        case .flashcards:
-            return "Sets"
-        case .create:
-            return "Create"
-        case .profile:
-            return "Profile"
-        case .home, .none:
-            return "Flashcards"
-        }
-    }
-
-    var headerSubtitle: String {
-        if selectedTab == nil || selectedTab == .home {
-            switch selectedCategory {
-            case .speaking:
-                return "Practice speaking skills."
-            case .listening:
-                return "Train listening comprehension."
-            case .reading:
-                return "Read and review language materials."
-            case .writing:
-                return "Practice your language actively."
-            case .none:
-                return "Pick a set to practice"
-            }
-        }
-
-        switch selectedTab {
-        case .folders:
-            return "Manage your folders"
-        case .flashcards:
-            return "Manage your flashcard sets"
-        case .create:
-            return "Build a new study set"
-        case .profile:
-            return sessionStore.currentEmail
-        case .home, .none:
-            return "Pick a set to practice"
-        }
-    }
+    // `headerTitle` / `headerSubtitle(currentEmail:)` live on HomeViewModel —
+    // they derive purely from navigation state which is also VM-owned.
 
     var backgroundLayer: some View {
         ZStack {
@@ -207,12 +155,12 @@ private extension HomeView {
     var mainContent: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-                switch selectedTab ?? .home {
+                switch viewModel.selectedTab ?? .home {
                 case .home:
-                    if selectedCategory == .writing {
+                    if viewModel.selectedCategory == .writing {
                         writingContent
-                    } else if let selectedCategory {
-                        categoryPlaceholder(for: selectedCategory)
+                    } else if let category = viewModel.selectedCategory {
+                        categoryPlaceholder(for: category)
                     } else {
                         dashboardContent
                     }
@@ -265,8 +213,8 @@ private extension HomeView {
                 errorMessage: nil,
                 showsEditButton: false,
                 onAction: {
-                    selectedTab = .flashcards
-                    selectedCategory = nil
+                    viewModel.selectedTab = .flashcards
+                    viewModel.selectedCategory = nil
                 },
                 onSelect: { set in
                     selectedSetForDetails = set.sourceSet
@@ -406,32 +354,6 @@ private extension HomeView {
             .padding(.top, Layout.homeSectionTitleTopPadding)
     }
 
-    func sectionHeader(title: String, actionTitle: String) -> some View {
-        HStack(alignment: .center) {
-            Text(title)
-                .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
-                .foregroundColor(AppColors.primaryBlueDark)
-
-            Spacer()
-
-            Button {
-                if actionTitle == "Create" {
-                    isCreateSetPresented = true
-                } else if actionTitle == "Create Folder" {
-                    isCreateFolderPresented = true
-                } else if actionTitle == "View all" {
-                    selectedTab = .flashcards
-                    selectedCategory = nil
-                }
-            } label: {
-                Text(actionTitle)
-                    .font(.system(size: Layout.homeSectionActionSize, weight: .medium, design: .rounded))
-                    .foregroundColor(AppColors.primaryBlue)
-            }
-            .buttonStyle(.plain)
-        }
-    }
-
     func categoryPlaceholder(for category: HomeCategory) -> some View {
         placeholderCard(
             title: category.title.capitalized,
@@ -492,7 +414,7 @@ private extension HomeView {
                 .ignoresSafeArea()
                 .onTapGesture {
                     withAnimation(.spring(response: 0.36, dampingFraction: 0.82)) {
-                        isCreateMenuPresented = false
+                        viewModel.isCreateMenuPresented = false
                     }
                 }
 
@@ -560,7 +482,7 @@ private extension HomeView {
     ) -> some View {
         Button {
             withAnimation(.spring(response: 0.55, dampingFraction: 0.86)) {
-                isCreateMenuPresented = false
+                viewModel.isCreateMenuPresented = false
             }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
@@ -598,11 +520,11 @@ private extension HomeView {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .scaleEffect(isCreateMenuPresented ? 1.0 : 0.2)
-        .opacity(isCreateMenuPresented ? 1.0 : 0.0)
+        .scaleEffect(viewModel.isCreateMenuPresented ? 1.0 : 0.2)
+        .opacity(viewModel.isCreateMenuPresented ? 1.0 : 0.0)
         .offset(
-            x: isCreateMenuPresented ? xOffset : 0,
-            y: isCreateMenuPresented ? yOffset : 0
+            x: viewModel.isCreateMenuPresented ? xOffset : 0,
+            y: viewModel.isCreateMenuPresented ? yOffset : 0
         )
         .animation(
             .interpolatingSpring(
@@ -612,7 +534,7 @@ private extension HomeView {
                 initialVelocity: 0
             )
             .delay(delay),
-            value: isCreateMenuPresented
+            value: viewModel.isCreateMenuPresented
         )
     }
 }

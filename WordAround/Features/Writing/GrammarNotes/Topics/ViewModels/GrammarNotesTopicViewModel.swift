@@ -34,10 +34,11 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     private let ownerUID: String
     private let noteService: GrammarNoteServicing
     private let topicService: GrammarNoteTopicServicing
+    private let createNoteUseCase: CreateGrammarNoteUseCase
+    private let createQuickNoteUseCase: CreateQuickGrammarNoteUseCase
+    private let saveQuickMistakeUseCase: SaveQuickGrammarMistakeUseCase
     private var cancellables = Set<AnyCancellable>()
     private var isRefreshingFromCache = false
-
-    private static let whitespaceRegex = try! NSRegularExpression(pattern: "\\s+")
 
     var hasNoNotes: Bool            { notes.isEmpty && !isLoading && errorMessage == nil }
     var hasNoMatchingNotes: Bool    { !notes.isEmpty && filteredNotes.isEmpty && !isLoading && errorMessage == nil }
@@ -53,8 +54,13 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     ) {
         self.topic = topic
         self.ownerUID = ownerUID
-        self.noteService = noteService ?? GrammarNoteService()
-        self.topicService = topicService ?? GrammarNoteTopicService()
+        let resolvedNoteService = noteService ?? GrammarNoteService()
+        let resolvedTopicService = topicService ?? GrammarNoteTopicService()
+        self.noteService = resolvedNoteService
+        self.topicService = resolvedTopicService
+        self.createNoteUseCase = CreateGrammarNoteUseCase(noteService: resolvedNoteService)
+        self.createQuickNoteUseCase = CreateQuickGrammarNoteUseCase(noteService: resolvedNoteService)
+        self.saveQuickMistakeUseCase = SaveQuickGrammarMistakeUseCase(noteService: resolvedNoteService)
         self.topicOption = Self.makeTopicOption(from: topic)
         self.notes = Self.sortNotes(previewNotes)
         self.didLoadNotes = !previewNotes.isEmpty
@@ -164,52 +170,24 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         guard trimmedTitle.count <= 60 else { errorMessage = "Note title must be under 60 characters."; return false }
         guard trimmedPreview.count <= 180 else { errorMessage = "Preview must be under 180 characters."; return false }
 
-        let now = Date()
-        let templateBlocks: [GrammarNoteBlock] = makeBlocks(from: template, date: now)
-        let generatedPlainText = makePlainText(from: templateBlocks)
-
-        let generatedPreview: String
-        if !trimmedPreview.isEmpty {
-            generatedPreview = trimmedPreview
-        } else if let desc = template?.description, !desc.isEmpty {
-            generatedPreview = desc
-        } else {
-            generatedPreview = makePreviewText(from: templateBlocks)
-        }
-
-        let note = GrammarNote(
-            id: UUID().uuidString,
-            ownerUID: ownerUID,
-            topicId: topic.id,
-            title: trimmedTitle,
-            previewText: generatedPreview,
-            languageCode: topic.languageCode,
-            languageName: topic.languageName,
-            noteType: noteType,
-            tags: cleanedTags,
-            imageURLs: [],
-            isPinned: false,
-            isFavorite: false,
-            isMistakeNote: noteType == .mistake || topic.isMistakesTopic,
-            savedIssueKey: nil,
-            hasQuiz: hasQuiz || templateBlocks.contains { $0.type == GrammarNoteBlockType.quiz },
-            contentBlocks: templateBlocks,
-            plainTextContent: generatedPlainText,
-            coverImageURL: nil,
-            localImagePaths: [],
-            templateId: template?.id,
-            createdAt: now,
-            updatedAt: now,
-            lastEditedAt: now
-        )
-
         isCreatingNote = true
         errorMessage = nil
         defer { isCreatingNote = false }
 
         do {
-            try await noteService.createNote(note)
-            updateNotes(Self.sortNotes(notes + [note]))
+            let saved = try await createNoteUseCase.execute(
+                CreateGrammarNoteUseCase.Input(
+                    ownerUID: ownerUID,
+                    topic: topic,
+                    title: trimmedTitle,
+                    previewText: trimmedPreview,
+                    noteType: noteType,
+                    tags: cleanedTags,
+                    hasQuiz: hasQuiz,
+                    template: template
+                )
+            )
+            updateNotes(Self.sortNotes(notes + [saved]))
             return true
         } catch {
             errorMessage = readableMessage(for: error)
@@ -225,49 +203,12 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         quickNoteError = nil
         defer { isCreatingQuickNote = false }
 
-        let now = Date()
-        let trimmedTitle = draft.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedText  = draft.text.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        var contentBlocks: [GrammarNoteBlock] = []
-        if !trimmedText.isEmpty {
-            contentBlocks = [GrammarNoteBlock(
-                type: .paragraph,
-                text: trimmedText,
-                order: 0,
-                createdAt: now,
-                updatedAt: now
-            )]
-        }
-
-        let note = GrammarNote(
-            id: UUID().uuidString,
-            ownerUID: ownerUID,
-            topicId: topic.id,
-            title: trimmedTitle.isEmpty ? "Untitled quick note" : trimmedTitle,
-            previewText: String(trimmedText.prefix(180)),
-            languageCode: topic.languageCode,
-            languageName: topic.languageName,
-            noteType: draft.noteType,
-            tags: [],
-            imageURLs: [],
-            isPinned: false,
-            isFavorite: false,
-            isMistakeNote: false,
-            savedIssueKey: nil,
-            hasQuiz: false,
-            contentBlocks: contentBlocks,
-            plainTextContent: trimmedText,
-            coverImageURL: nil,
-            localImagePaths: [],
-            templateId: nil,
-            createdAt: now,
-            updatedAt: now,
-            lastEditedAt: now
-        )
-
         do {
-            let saved = try await noteService.createAndReturnNote(note)
+            let saved = try await createQuickNoteUseCase.execute(
+                ownerUID: ownerUID,
+                topic: topic,
+                draft: draft
+            )
             updateNotes(Self.sortNotes(notes + [saved]))
             return saved
         } catch {
@@ -299,84 +240,24 @@ final class GrammarNotesTopicViewModel: ObservableObject {
             targetTopic = mistakes
         }
 
-        let now = Date()
-        let trimmedOriginal    = draft.originalSentence.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedCorrected   = draft.correctedSentence.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedExplanation = draft.explanation.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        let blocks = buildMistakeBlocks(
-            original: trimmedOriginal,
-            corrected: trimmedCorrected,
-            explanation: trimmedExplanation,
-            settings: settings,
-            date: now
-        )
-
-        let rawTitle = !trimmedOriginal.isEmpty ? trimmedOriginal : trimmedCorrected
-        let title    = String(rawTitle.prefix(50))
-
-        let previewText: String
-        if settings.includeCorrectedSentence && !trimmedCorrected.isEmpty {
-            previewText = String(trimmedCorrected.prefix(180))
-        } else if !trimmedExplanation.isEmpty {
-            previewText = String(trimmedExplanation.prefix(180))
-        } else {
-            previewText = String(trimmedOriginal.prefix(180))
-        }
-
-        let savedIssueKey = Self.makeSavedIssueKey(
-            original: trimmedOriginal,
-            corrected: trimmedCorrected,
-            explanation: trimmedExplanation,
-            languageCode: draft.language.rawValue
-        )
-
         do {
-            if let duplicate = try await noteService.fetchNoteBySavedIssueKey(
+            let outcome = try await saveQuickMistakeUseCase.execute(
                 ownerUID: ownerUID,
-                topicId: targetTopic.id,
-                savedIssueKey: savedIssueKey
-            ) {
+                targetTopic: targetTopic,
+                draft: draft,
+                settings: settings
+            )
+
+            switch outcome {
+            case .duplicate(let duplicate):
                 quickMistakeError = nil
                 return duplicate
+            case .created(let saved):
+                if targetTopic.id == topic.id {
+                    updateNotes(Self.sortNotes(notes + [saved]))
+                }
+                return saved
             }
-        } catch {
-            quickMistakeError = readableMessage(for: error)
-            return nil
-        }
-
-        let note = GrammarNote(
-            id: UUID().uuidString,
-            ownerUID: ownerUID,
-            topicId: targetTopic.id,
-            title: title,
-            previewText: previewText,
-            languageCode: draft.language.rawValue,
-            languageName: draft.language.title,
-            noteType: .mistake,
-            tags: ["mistake", draft.language.title],
-            imageURLs: [],
-            isPinned: false,
-            isFavorite: false,
-            isMistakeNote: true,
-            savedIssueKey: savedIssueKey,
-            hasQuiz: false,
-            contentBlocks: blocks,
-            plainTextContent: GrammarNoteEditorViewModel.makePlainText(from: blocks),
-            coverImageURL: nil,
-            localImagePaths: [],
-            templateId: nil,
-            createdAt: now,
-            updatedAt: now,
-            lastEditedAt: now
-        )
-
-        do {
-            let saved = try await noteService.createAndReturnNote(note)
-            if targetTopic.id == topic.id {
-                updateNotes(Self.sortNotes(notes + [saved]))
-            }
-            return saved
         } catch {
             quickMistakeError = readableMessage(for: error)
             return nil
@@ -430,52 +311,6 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         } catch {
             return nil
         }
-    }
-
-    private func buildMistakeBlocks(
-        original: String,
-        corrected: String,
-        explanation: String,
-        settings: GrammarNotesSettingsStore,
-        date: Date
-    ) -> [GrammarNoteBlock] {
-        var blocks: [GrammarNoteBlock] = []
-        var order = 0
-
-        blocks.append(GrammarNoteBlock(type: .heading, text: "Mistake", order: order, createdAt: date, updatedAt: date))
-        order += 1
-
-        if settings.includeOriginalSentence && !original.isEmpty {
-            blocks.append(GrammarNoteBlock(type: .quote, text: original, order: order, createdAt: date, updatedAt: date))
-            order += 1
-        }
-        if settings.includeCorrectedSentence && !corrected.isEmpty {
-            blocks.append(GrammarNoteBlock(type: .example, text: corrected, order: order, createdAt: date, updatedAt: date))
-            order += 1
-        }
-        if settings.createMistakeNotesWithExplanation && !explanation.isEmpty {
-            blocks.append(GrammarNoteBlock(type: .paragraph, text: explanation, order: order, createdAt: date, updatedAt: date))
-            order += 1
-        }
-        return blocks
-    }
-
-    private static func makeSavedIssueKey(
-        original: String,
-        corrected: String,
-        explanation: String,
-        languageCode: String
-    ) -> String {
-        let joined = [languageCode, original, corrected, explanation]
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
-            .joined(separator: "|")
-
-        let range = NSRange(joined.startIndex..., in: joined)
-        return whitespaceRegex.stringByReplacingMatches(
-            in: joined,
-            range: range,
-            withTemplate: " "
-        )
     }
 
     private func refreshFiltered() {
@@ -542,41 +377,6 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         var updatedNotes = notes
         updatedNotes[index] = updatedNote
         updateNotes(Self.sortNotes(updatedNotes))
-    }
-
-    private func makeBlocks(from template: GrammarNoteTemplate?, date: Date) -> [GrammarNoteBlock] {
-        guard let template else { return [] }
-        return template.blocks.enumerated().map { index, block in
-            GrammarNoteBlock(
-                id: UUID().uuidString,
-                type: block.type,
-                text: block.text,
-                secondaryText: block.secondaryText,
-                imageURL: block.imageURL,
-                imageCaption: block.imageCaption,
-                items: block.items,
-                order: index,
-                createdAt: date,
-                updatedAt: date
-            )
-        }
-    }
-
-    private func makePlainText(from blocks: [GrammarNoteBlock]) -> String {
-        blocks.flatMap { block -> [String] in
-            var parts: [String] = []
-            if !block.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { parts.append(block.text) }
-            if let secondary = block.secondaryText,
-               !secondary.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { parts.append(secondary) }
-            parts.append(contentsOf: block.items.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty })
-            return parts
-        }
-        .joined(separator: "\n")
-    }
-
-    private func makePreviewText(from blocks: [GrammarNoteBlock]) -> String {
-        let text = makePlainText(from: blocks).trimmingCharacters(in: .whitespacesAndNewlines)
-        return text.isEmpty ? "No preview yet" : String(text.prefix(180))
     }
 
     private static func sortNotes(_ notes: [GrammarNote]) -> [GrammarNote] {

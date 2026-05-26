@@ -611,20 +611,6 @@ final class EssayPracticeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Legacy usage tracking (kept for compatibility)
-
-    func registerHintUsage() {
-        guard canUseHint else { return }
-        usedHints += 1
-        recalculateScoreIfNeeded()
-    }
-
-    func registerTranslationUsage() {
-        guard canUseTranslation else { return }
-        usedTranslations += 1
-        recalculateScoreIfNeeded()
-    }
-
     func resetAssistanceUsage() {
         usedHints = 0
         usedTranslations = 0

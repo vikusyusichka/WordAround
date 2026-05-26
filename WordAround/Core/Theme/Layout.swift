@@ -514,16 +514,19 @@ enum LayoutConstants {
         static let regularMinWidth: CGFloat = 700
     }
 
+    // Pure value functions over `ScreenMetrics` — explicitly `nonisolated` so
+    // that function references (e.g. used as default-arg values for escaping
+    // closures) work under `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`.
     enum Common {
-        static func screenHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 34 : 22 }
-        static func screenTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 16 }
-        static func screenBottomPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 40 : 28 }
-        static func contentMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 620 : .infinity }
-        static func narrowContentMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 520 : .infinity }
-        static func sectionSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 18 }
-        static func itemSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 12 }
-        static func smallSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 8 }
-        static let hairline: CGFloat = 1
+        nonisolated static func screenHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 34 : 22 }
+        nonisolated static func screenTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 16 }
+        nonisolated static func screenBottomPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 40 : 28 }
+        nonisolated static func contentMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 620 : .infinity }
+        nonisolated static func narrowContentMaxWidth(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 520 : .infinity }
+        nonisolated static func sectionSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 18 }
+        nonisolated static func itemSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 16 : 12 }
+        nonisolated static func smallSpacing(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 10 : 8 }
+        nonisolated static let hairline: CGFloat = 1
     }
 
     enum Typography {

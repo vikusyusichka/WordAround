@@ -56,7 +56,11 @@ struct CreateSetValidator {
     }
 }
 
-private extension String {
+/// Shared whitespace trim used across the CreateSet Domain layer
+/// (`CreateSetValidator`, `CreateSetBuilder`). Kept here rather than in a
+/// separate file to avoid scattering single-line helpers; intentionally
+/// internal so the Builder can reuse it without redefining the same logic.
+extension String {
     var trimmed: String {
         trimmingCharacters(in: .whitespacesAndNewlines)
     }

@@ -2,7 +2,6 @@ import SwiftUI
 
 struct BottomNavigationBar: View {
     @Binding var selectedTab: HomeTab?
-    @Binding var selectedCategory: HomeCategory?
     @Binding var isCreateMenuPresented: Bool
 
     @State private var pressedTab: HomeTab?
@@ -17,7 +16,6 @@ struct BottomNavigationBar: View {
                         onTap: {
                             withAnimation(.spring(response: 0.38, dampingFraction: 0.78)) {
                                 isCreateMenuPresented.toggle()
-                                selectedCategory = nil
                             }
                         },
                         onPressChange: { pressing in
@@ -35,7 +33,6 @@ struct BottomNavigationBar: View {
                             withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
                                 selectedTab = tab
                                 isCreateMenuPresented = false
-                                if tab == .home { selectedCategory = nil }
                             }
                         },
                         onPressChange: { pressing in
@@ -186,7 +183,6 @@ private struct CreateTabButton: View, Equatable {
 
             BottomNavigationBar(
                 selectedTab: .constant(.home),
-                selectedCategory: .constant(nil),
                 isCreateMenuPresented: .constant(false)
             )
             .padding()

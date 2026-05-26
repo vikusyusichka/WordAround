@@ -149,7 +149,7 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         await saveNow()
     }
 
-    func scheduleAutosave() {
+    private func scheduleAutosave() {
         autosaveTask?.cancel()
         saveState = .saving
         autosaveTask = Task { [weak self] in
@@ -180,7 +180,7 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         updatedNote.lastEditedAt = now
 
         do {
-            try await noteService.updateNoteContent(updatedNote)
+            try await noteService.updateNote(updatedNote)
             note = updatedNote
             blocks = cleanedBlocks
             saveState = .saved

@@ -4,13 +4,31 @@ import FirebaseAuth
 
 @MainActor
 final class HomeViewModel: ObservableObject {
+
+    // MARK: - Stats (static placeholders until a real stats backend exists)
+
     @Published var todayGoal: HomeSetPreviewItem
     @Published var statCards: [StatCardItem] = []
+
+    // MARK: - Folders
+
     @Published var folders: [Folder] = []
     @Published var isLoadingFolders = false
     @Published var errorMessage: String?
 
-    private let folderService = FolderService()
+    // MARK: - Navigation state (single source of truth — observed by the
+    // sidebar, the bottom bar, and HomeView's main content switch)
+
+    @Published var selectedTab: HomeTab? = nil
+    @Published var selectedCategory: HomeCategory? = nil
+    @Published var isCreateMenuPresented: Bool = false
+
+    // MARK: - Dependencies
+
+    private let folderService: FolderService
+    private let authService: AuthServiceProtocol
+
+    // MARK: - Static placeholders
 
     private static let staticStatCards: [StatCardItem] = [
         StatCardItem(
@@ -70,21 +88,105 @@ final class HomeViewModel: ObservableObject {
         blobColor: Color(red: 0.82, green: 0.86, blue: 0.98)
     )
 
-    init() {
-        todayGoal = Self.staticTodayGoal
-        statCards = Self.staticStatCards
+    // MARK: - Init
+
+    init(
+        folderService: FolderService? = nil,
+        authService: AuthServiceProtocol? = nil
+    ) {
+        self.folderService = folderService ?? FolderService()
+        self.authService = authService ?? AuthService()
+        self.todayGoal = Self.staticTodayGoal
+        self.statCards = Self.staticStatCards
 
         Task {
             await loadFolders()
         }
     }
 
+    // MARK: - Header copy (derived from navigation state)
+
+    var headerTitle: String {
+        if selectedTab == nil || selectedTab == .home {
+            switch selectedCategory {
+            case .speaking:
+                return "Speaking"
+            case .listening:
+                return "Listening"
+            case .reading:
+                return "Reading"
+            case .writing:
+                return "Writing"
+            case .none:
+                return "Flashcards"
+            }
+        }
+
+        switch selectedTab {
+        case .folders:
+            return "Folders"
+        case .flashcards:
+            return "Sets"
+        case .create:
+            return "Create"
+        case .profile:
+            return "Profile"
+        case .home, .none:
+            return "Flashcards"
+        }
+    }
+
+    /// Subtitle uses the signed-in email when the profile tab is active, so
+    /// the caller must pass it in (the VM does not own session state).
+    func headerSubtitle(currentEmail: String) -> String {
+        if selectedTab == nil || selectedTab == .home {
+            switch selectedCategory {
+            case .speaking:
+                return "Practice speaking skills."
+            case .listening:
+                return "Train listening comprehension."
+            case .reading:
+                return "Read and review language materials."
+            case .writing:
+                return "Practice your language actively."
+            case .none:
+                return "Pick a set to practice"
+            }
+        }
+
+        switch selectedTab {
+        case .folders:
+            return "Manage your folders"
+        case .flashcards:
+            return "Manage your flashcard sets"
+        case .create:
+            return "Build a new study set"
+        case .profile:
+            return currentEmail
+        case .home, .none:
+            return "Pick a set to practice"
+        }
+    }
+
+    // MARK: - Navigation actions
+
+    /// Clears the selected category with the same spring curve the bottom bar
+    /// uses for tab transitions. Idempotent: no-op when no category is set.
+    func clearSelectedCategory() {
+        guard selectedCategory != nil else { return }
+        withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
+            selectedCategory = nil
+        }
+    }
+
+    // MARK: - Folders
+
     func refresh() async {
         await loadFolders()
     }
 
     func loadFolders() async {
-        guard let user = Auth.auth().currentUser else {
+        guard let user = authService.currentUser else {
             folders = []
             errorMessage = "User is not signed in."
             return
