@@ -215,38 +215,12 @@ struct GrammarNotesHomeView: View {
     }
 
     private var searchBar: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "magnifyingglass")
-                .font(.system(size: isPadLike ? 17 : 15, weight: .semibold))
-                .foregroundStyle(theme.mutedTextColor)
-
-            TextField("Search topics", text: $viewModel.searchText)
-                .font(.system(size: isPadLike ? 17 : 15, weight: .semibold, design: .rounded))
-                .foregroundStyle(theme.textColor)
-                .tint(theme.accent)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-
-            if !viewModel.searchText.isEmpty {
-                Button {
-                    viewModel.searchText = ""
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(theme.mutedTextColor.opacity(0.78))
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(.horizontal, isPadLike ? 18 : 14)
-        .frame(height: isPadLike ? 64 : 56)
-        .background(theme.fieldBackground)
-        .clipShape(RoundedRectangle(cornerRadius: isPadLike ? 22 : 18, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: isPadLike ? 22 : 18, style: .continuous)
-                .stroke(theme.softBorderColor, lineWidth: 1)
+        GrammarSearchBar(
+            placeholder: "Search topics",
+            text: $viewModel.searchText,
+            theme: theme,
+            isPadLike: isPadLike
         )
-        .shadow(color: theme.shadowColor, radius: 14, x: 0, y: 8)
     }
 
     private var sectionHeader: some View {
@@ -322,8 +296,7 @@ struct GrammarNotesHomeView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, isPadLike ? 36 : 30)
         .background(sectionBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-        .shadow(color: theme.shadowColor, radius: 14, x: 0, y: 8)
+        .grammarSectionCardChrome(theme: theme)
     }
 
     private func errorCard(message: String) -> some View {
@@ -357,8 +330,7 @@ struct GrammarNotesHomeView: View {
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(sectionBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-        .shadow(color: theme.shadowColor, radius: 14, x: 0, y: 8)
+        .grammarSectionCardChrome(theme: theme)
     }
 
     private var emptyState: some View {
@@ -399,8 +371,7 @@ struct GrammarNotesHomeView: View {
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(sectionBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-        .shadow(color: theme.shadowColor, radius: 14, x: 0, y: 8)
+        .grammarSectionCardChrome(theme: theme)
     }
 
     private var sectionBackground: some View {

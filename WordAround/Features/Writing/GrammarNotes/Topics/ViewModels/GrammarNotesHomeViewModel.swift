@@ -325,11 +325,9 @@ final class GrammarNotesHomeViewModel: ObservableObject {
     }
 
     private func readableMessage(for error: Error) -> String {
-        let nsError = error as NSError
-        if nsError.domain == FirestoreErrorDomain,
-           nsError.code == FirestoreErrorCode.permissionDenied.rawValue {
-            return "Missing Firestore permission for grammar note topics. Update Firestore rules for users/{uid}/grammarNoteTopics."
-        }
-        return error.localizedDescription
+        GrammarNotesErrorMessages.readable(
+            for: error,
+            firestorePermission: "Missing Firestore permission for grammar note topics. Update Firestore rules for users/{uid}/grammarNoteTopics."
+        )
     }
 }
