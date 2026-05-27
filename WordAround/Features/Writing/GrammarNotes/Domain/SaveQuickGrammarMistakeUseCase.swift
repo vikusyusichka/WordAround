@@ -71,6 +71,9 @@ struct SaveQuickGrammarMistakeUseCase {
             return .duplicate(duplicate)
         }
 
+        let mistakeTags = ["mistake", draft.language.title]
+        let plainText = GrammarNoteEditorViewModel.makePlainText(from: blocks)
+
         let note = GrammarNote(
             id: UUID().uuidString,
             ownerUID: ownerUID,
@@ -80,7 +83,7 @@ struct SaveQuickGrammarMistakeUseCase {
             languageCode: draft.language.rawValue,
             languageName: draft.language.title,
             noteType: .mistake,
-            tags: ["mistake", draft.language.title],
+            tags: mistakeTags,
             imageURLs: [],
             isPinned: false,
             isFavorite: false,
@@ -88,13 +91,21 @@ struct SaveQuickGrammarMistakeUseCase {
             savedIssueKey: savedIssueKey,
             hasQuiz: false,
             contentBlocks: blocks,
-            plainTextContent: GrammarNoteEditorViewModel.makePlainText(from: blocks),
+            plainTextContent: plainText,
             coverImageURL: nil,
             localImagePaths: [],
             templateId: nil,
             createdAt: now,
             updatedAt: now,
-            lastEditedAt: now
+            lastEditedAt: now,
+            searchableText: GrammarNoteSearchIndexer.makeSearchableText(
+                title: title,
+                previewText: previewText,
+                tags: mistakeTags,
+                noteType: .mistake,
+                blocks: blocks,
+                plainTextContent: plainText
+            )
         )
 
         let saved = try await noteService.createAndReturnNote(note)

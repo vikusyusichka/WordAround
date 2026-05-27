@@ -24,10 +24,29 @@ struct GrammarNote: Identifiable, Codable, Equatable {
     var createdAt: Date
     var updatedAt: Date
     var lastEditedAt: Date
+    /// Denormalized search blob populated by `GrammarNoteSearchIndexer`.
+    /// Defaulted to empty so legacy in-memory constructions and older
+    /// Firestore documents stay compatible — the topic VM falls back to
+    /// rebuilding it locally when this is empty.
+    var searchableText: String = ""
 }
 
 extension GrammarNote: Hashable {
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
+extension GrammarNote {
+    /// Matches the Mistakes filter chip — covers legacy docs where only
+    /// `noteType` was set and `isMistakeNote` was never backfilled.
+    var matchesMistakesFilter: Bool {
+        isMistakeNote || noteType == .mistake
+    }
+
+    /// Matches the Quizzes filter chip — prefers `hasQuiz`, with a fallback
+    /// for in-memory notes that still carry block data.
+    var matchesQuizzesFilter: Bool {
+        hasQuiz || contentBlocks.contains { $0.type == .quiz }
+    }
 }
 
 extension GrammarNote {

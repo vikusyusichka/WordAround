@@ -275,7 +275,15 @@ final class GrammarNotesHomeViewModel: ObservableObject {
                 templateId: noteTemplate.id,
                 createdAt: now,
                 updatedAt: now,
-                lastEditedAt: now
+                lastEditedAt: now,
+                searchableText: GrammarNoteSearchIndexer.makeSearchableText(
+                    title: noteTemplate.title,
+                    previewText: previewText,
+                    tags: noteTemplate.tags,
+                    noteType: noteTemplate.noteType,
+                    blocks: blocks,
+                    plainTextContent: plainText
+                )
             )
 
             do {

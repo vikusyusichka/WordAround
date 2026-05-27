@@ -62,6 +62,46 @@ enum GrammarQuizAIPromptBuilder {
                 .nonEmptyOrNil
         )
     }
+
+    /// Collapses a `GrammarQuizAIRequest` into a single prompt string that
+    /// the Cloudflare Worker forwards verbatim to Gemini.
+    ///
+    /// The prompt always ends with `responseContract`, so Gemini knows the
+    /// exact JSON shape to emit. iOS then decodes that JSON back into
+    /// `GrammarQuizAIResponseDTO` — no Gemini-specific wire types leak
+    /// through to the rest of the app.
+    static func buildPrompt(from request: GrammarQuizAIRequest) -> String {
+        var lines: [String] = []
+        lines.append("You are a grammar quiz generator for a language-learning app.")
+        lines.append("Stick strictly to the provided note content; never invent grammar unrelated to it.")
+        lines.append("")
+        lines.append("Note title: \(request.noteTitle)")
+        if let lang = request.noteLanguageName, !lang.isEmpty {
+            lines.append("Target language: \(lang)")
+        }
+        if let type = request.noteType, !type.isEmpty {
+            lines.append("Note type: \(type)")
+        }
+        if let focus = request.focusInstructions, !focus.isEmpty {
+            lines.append("Focus: \(focus)")
+        }
+        lines.append("Generate exactly \(request.questionCount) questions using only these types: \(request.allowedTypes.joined(separator: ", ")).")
+        lines.append("")
+        lines.append("Note content blocks:")
+        for block in request.blocks {
+            var entry = "- [\(block.type)] \(block.text)"
+            if let secondary = block.secondaryText, !secondary.isEmpty {
+                entry += " — alt: \(secondary)"
+            }
+            if !block.items.isEmpty {
+                entry += " — items: \(block.items.joined(separator: " / "))"
+            }
+            lines.append(entry)
+        }
+        lines.append("")
+        lines.append(responseContract)
+        return lines.joined(separator: "\n")
+    }
 }
 
 // MARK: - File-private string helper

@@ -1,8 +1,14 @@
 import Foundation
 
+/// User-facing errors produced by the Essay AI client.
+///
+/// Note: this file is named `GeminiEssayAPIClient` for historical reasons —
+/// the iOS app NO LONGER calls Gemini directly. All traffic now flows
+/// through the Cloudflare Worker proxy and the Gemini key lives ONLY as
+/// a Wrangler secret. The class name is kept stable to minimize diff
+/// surface across the rest of the codebase.
 enum GeminiEssayAIClientError: LocalizedError {
-    case missingAPIKey
-    case invalidURL
+    case workerNotConfigured
     case invalidResponse
     case serverError(Int, String)
     case emptyResponse
@@ -10,42 +16,63 @@ enum GeminiEssayAIClientError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .missingAPIKey:
-            return "Gemini API key is missing. Add GEMINI_API_KEY to Info.plist, xcconfig, or the app environment."
-        case .invalidURL:
-            return "Could not build the Gemini request URL."
+        case .workerNotConfigured:
+            return "AI proxy is not configured. Set GrammarQuizAIConfiguration.endpointURL."
         case .invalidResponse:
-            return "Gemini returned an unexpected response."
+            return "AI returned an unexpected response."
         case .serverError(let code, let message):
             if message.isEmpty {
-                return "Gemini request failed with status code \(code)."
+                return "AI request failed with status code \(code)."
             }
-            return "Gemini request failed with status code \(code): \(message)"
+            return "AI request failed with status code \(code): \(message)"
         case .emptyResponse:
-            return "Gemini returned an empty response."
+            return "AI returned an empty response."
         case .malformedJSON(let rawText):
-            return "Gemini returned data that could not be decoded as JSON: \(rawText)"
+            return "AI returned data that could not be decoded: \(rawText)"
         }
     }
 }
 
+/// `EssayAIClient` implementation that POSTs prompts to the Cloudflare
+/// Worker proxy. Reuses the same Worker URL as the Grammar Notes quiz
+/// client so the iOS app only has ONE Gemini-facing endpoint to manage.
+///
+/// Wire contract (matches the Worker exactly):
+///   Request  → `{ "prompt": "<full prompt>", "responseMimeType": "application/json" }`
+///   Response → `{ "text": "<model output>" }`
+///
+/// All parsing flows through `AIResponseTextCleaner` so Markdown fences,
+/// double-encoded JSON strings, and stray prose around the JSON do not
+/// break the feature.
 final class GeminiEssayAIClient: EssayAIClient {
+
     private let session: URLSession
-    private let apiKey: String?
-    private let model: String
+    private let endpointURL: URL?
     private let timeoutInterval: TimeInterval
 
     init(
         session: URLSession = .shared,
-        apiKey: String? = GeminiEssayAIClient.loadAPIKey(),
-        model: String = "gemini-3.1-flash-lite",
+        endpointURL: URL? = GrammarQuizAIConfiguration.endpointURL,
         timeoutInterval: TimeInterval = 30
     ) {
         self.session = session
-        self.apiKey = apiKey
-        self.model = model
+        self.endpointURL = endpointURL
         self.timeoutInterval = timeoutInterval
     }
+
+    // MARK: - Wire DTOs
+
+    private struct WorkerRequest: Encodable {
+        let prompt: String
+        let responseMimeType: String?
+    }
+
+    private struct WorkerResponse: Decodable {
+        let text: String?
+        let error: String?
+    }
+
+    // MARK: - Public API
 
     func generateSuggestedTask(
         language: GrammarLanguage,
@@ -82,7 +109,7 @@ final class GeminiEssayAIClient: EssayAIClient {
         }
         """
 
-        return try await request(prompt: prompt, responseType: GeneratedEssayTask.self)
+        return try await requestJSON(prompt: prompt, responseType: GeneratedEssayTask.self)
     }
 
     func generateTaskFromCustomTopic(
@@ -119,7 +146,7 @@ final class GeminiEssayAIClient: EssayAIClient {
         }
         """
 
-        return try await request(prompt: prompt, responseType: GeneratedEssayTask.self)
+        return try await requestJSON(prompt: prompt, responseType: GeneratedEssayTask.self)
     }
 
     func generateHint(
@@ -158,48 +185,43 @@ final class GeminiEssayAIClient: EssayAIClient {
         }
         """
 
-        return try await request(prompt: prompt, responseType: EssayGeneratedHint.self)
+        return try await requestJSON(prompt: prompt, responseType: EssayGeneratedHint.self)
     }
 
-    private func request<T: Decodable>(
+    // MARK: - Transport
+
+    /// Sends the prompt to the Worker, asks for JSON-shaped output, and
+    /// decodes the embedded `text` into `T`. Uses `AIResponseTextCleaner`
+    /// to survive Markdown fences, double-encoded strings, and prose
+    /// around the JSON.
+    private func requestJSON<T: Decodable>(
         prompt: String,
         responseType: T.Type
     ) async throws -> T {
-        guard let apiKey, !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw GeminiEssayAIClientError.missingAPIKey
+        guard let endpointURL else {
+            throw GeminiEssayAIClientError.workerNotConfigured
         }
 
-        var components = URLComponents(
-            string: "https://generativelanguage.googleapis.com/v1beta/models/\(model):generateContent"
-        )
-        components?.queryItems = [
-            URLQueryItem(name: "key", value: apiKey.trimmingCharacters(in: .whitespacesAndNewlines))
-        ]
+        var urlRequest = URLRequest(url: endpointURL, timeoutInterval: timeoutInterval)
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        guard let url = components?.url else {
-            throw GeminiEssayAIClientError.invalidURL
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.timeoutInterval = timeoutInterval
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(
-            GeminiRequest(
-                contents: [
-                    GeminiContent(
-                        role: "user",
-                        parts: [GeminiPart(text: prompt)]
-                    )
-                ],
-                generationConfig: GeminiGenerationConfig(
-                    responseMimeType: "application/json",
-                    temperature: 0.8
-                )
+        do {
+            urlRequest.httpBody = try JSONEncoder().encode(
+                WorkerRequest(prompt: prompt, responseMimeType: "application/json")
             )
-        )
+        } catch {
+            throw GeminiEssayAIClientError.invalidResponse
+        }
 
-        let (data, response) = try await session.data(for: request)
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await session.data(for: urlRequest)
+        } catch {
+            throw GeminiEssayAIClientError.serverError(0, error.localizedDescription)
+        }
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw GeminiEssayAIClientError.invalidResponse
@@ -208,73 +230,58 @@ final class GeminiEssayAIClient: EssayAIClient {
         guard (200...299).contains(httpResponse.statusCode) else {
             throw GeminiEssayAIClientError.serverError(
                 httpResponse.statusCode,
-                Self.extractServerMessage(from: data)
+                Self.workerErrorMessage(from: data)
             )
         }
 
-        let decoded = try JSONDecoder().decode(GeminiResponse.self, from: data)
-        let text = decoded.candidates
-            .flatMap { $0.content.parts }
-            .compactMap { $0.text }
-            .joined(separator: "\n")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let envelope: WorkerResponse
+        do {
+            envelope = try JSONDecoder().decode(WorkerResponse.self, from: data)
+        } catch {
+            #if DEBUG
+            print("[EssayAI] envelope decode failed:", error)
+            #endif
+            throw GeminiEssayAIClientError.invalidResponse
+        }
 
-        guard !text.isEmpty else {
+        if let workerError = envelope.error, !workerError.isEmpty {
+            throw GeminiEssayAIClientError.serverError(httpResponse.statusCode, workerError)
+        }
+
+        guard let rawText = envelope.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !rawText.isEmpty else {
             throw GeminiEssayAIClientError.emptyResponse
         }
 
-        let jsonString = Self.extractJSONString(from: text)
-
+        let jsonString = AIResponseTextCleaner.normalizedJSON(from: rawText)
         guard let jsonData = jsonString.data(using: .utf8) else {
-            throw GeminiEssayAIClientError.malformedJSON(Self.safePreview(text))
+            throw GeminiEssayAIClientError.malformedJSON(Self.safePreview(rawText))
         }
 
         do {
             return try JSONDecoder().decode(T.self, from: jsonData)
         } catch {
+            #if DEBUG
+            print("[EssayAI] raw text:", rawText)
+            print("[EssayAI] cleaned text:", jsonString)
+            print("[EssayAI] decode error:", error)
+            #endif
             throw GeminiEssayAIClientError.malformedJSON(Self.safePreview(jsonString))
         }
     }
 
-    private static func loadAPIKey() -> String? {
-        if let key = Bundle.main.object(forInfoDictionaryKey: "GEMINI_API_KEY") as? String {
-            let cleaned = key.trimmingCharacters(in: .whitespacesAndNewlines)
-            if !cleaned.isEmpty {
-                return cleaned
-            }
-        }
+    // MARK: - Helpers
 
-        let environmentKey = ProcessInfo.processInfo.environment["GEMINI_API_KEY"]?
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-
-        if let environmentKey, !environmentKey.isEmpty {
-            return environmentKey
-        }
-
-        return nil
-    }
-
-    private static func extractJSONString(from text: String) -> String {
-        var cleaned = text
-            .replacingOccurrences(of: "```json", with: "")
-            .replacingOccurrences(of: "```JSON", with: "")
-            .replacingOccurrences(of: "```", with: "")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-
-        if let start = cleaned.firstIndex(of: "{"),
-           let end = cleaned.lastIndex(of: "}"),
-           start <= end {
-            cleaned = String(cleaned[start...end])
-        }
-
-        return cleaned
-    }
-
-    private static func extractServerMessage(from data: Data) -> String {
+    /// Picks the friendliest error message we can from a non-2xx Worker
+    /// response: the Worker's `{ "error": "..." }` field if present,
+    /// otherwise the raw body as text.
+    private static func workerErrorMessage(from data: Data) -> String {
         guard !data.isEmpty else { return "" }
 
-        if let apiError = try? JSONDecoder().decode(GeminiAPIErrorResponse.self, from: data) {
-            return apiError.error.message
+        struct ErrorEnvelope: Decodable { let error: String? }
+        if let env = try? JSONDecoder().decode(ErrorEnvelope.self, from: data),
+           let message = env.error, !message.isEmpty {
+            return message
         }
 
         return String(data: data, encoding: .utf8) ?? ""
@@ -284,56 +291,6 @@ final class GeminiEssayAIClient: EssayAIClient {
         let compact = text
             .replacingOccurrences(of: "\n", with: " ")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-
         return String(compact.prefix(220))
     }
-}
-
-private struct GeminiRequest: Encodable {
-    let contents: [GeminiContent]
-    let generationConfig: GeminiGenerationConfig
-}
-
-private struct GeminiGenerationConfig: Encodable {
-    let responseMimeType: String
-    let temperature: Double
-
-    enum CodingKeys: String, CodingKey {
-        case responseMimeType = "response_mime_type"
-        case temperature
-    }
-}
-
-private struct GeminiContent: Codable {
-    let role: String?
-    let parts: [GeminiPart]
-
-    init(role: String? = nil, parts: [GeminiPart]) {
-        self.role = role
-        self.parts = parts
-    }
-}
-
-private struct GeminiPart: Codable {
-    let text: String?
-
-    init(text: String?) {
-        self.text = text
-    }
-}
-
-private struct GeminiResponse: Decodable {
-    let candidates: [GeminiCandidate]
-}
-
-private struct GeminiCandidate: Decodable {
-    let content: GeminiContent
-}
-
-private struct GeminiAPIErrorResponse: Decodable {
-    let error: GeminiAPIError
-}
-
-private struct GeminiAPIError: Decodable {
-    let message: String
 }

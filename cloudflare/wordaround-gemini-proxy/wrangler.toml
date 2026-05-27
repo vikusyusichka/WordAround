@@ -1,0 +1,14 @@
+# WordAround — Gemini proxy Cloudflare Worker.
+#
+# Deploy with:
+#   wrangler deploy
+#
+# Set the Gemini API key as a secret (NEVER commit it to this file):
+#   wrangler secret put GEMINI_API_KEY
+
+name = "wordaround-gemini-proxy"
+main = "src/index.js"
+compatibility_date = "2025-09-23"
+
+# Keep the worker free-tier friendly: no Durable Objects, no R2, no D1.
+# The only resource is the inbound fetch route handled inside `src/index.js`.

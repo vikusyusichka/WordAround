@@ -1,0 +1,15 @@
+{
+  "name": "wordaround-gemini-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare Worker that proxies WordAround iOS requests to the Gemini API. The Gemini key lives only as a Wrangler secret; the iOS app stores only this Worker's URL.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^3.78.0"
+  }
+}

@@ -4,16 +4,6 @@ import Combine
 
 @MainActor
 final class GrammarNotesTopicViewModel: ObservableObject {
-    enum Filter: String, CaseIterable, Identifiable {
-        case all = "All"
-        case pinned = "Pinned"
-        case favorites = "Favorites"
-        case mistakes = "Mistakes"
-        case quizzes = "Quizzes"
-
-        var id: String { rawValue }
-    }
-
     @Published private(set) var topic: GrammarNoteTopic
     @Published private(set) var notes: [GrammarNote] = []
     @Published private(set) var filteredNotes: [GrammarNote] = []
@@ -26,10 +16,14 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     @Published private(set) var isCreatingQuickMistake = false
     @Published private(set) var didLoadNotes = false
     @Published var searchText = ""
-    @Published var selectedFilter: Filter = .all
+    @Published var selectedFilter: GrammarNoteFilter = .all
     @Published var errorMessage: String?
     @Published private(set) var quickNoteError: String?
     @Published private(set) var quickMistakeError: String?
+    /// Per-note short snippet derived from the current search query.
+    /// Empty when the search bar is empty. Mutated only by
+    /// `refreshFiltered()`.
+    @Published private(set) var searchSnippets: [String: String] = [:]
 
     private let ownerUID: String
     private let noteService: GrammarNoteServicing
@@ -39,9 +33,31 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     private let saveQuickMistakeUseCase: SaveQuickGrammarMistakeUseCase
     private var cancellables = Set<AnyCancellable>()
     private var isRefreshingFromCache = false
+    /// One-shot guard so the searchableText backfill never re-runs in the
+    /// same VM lifetime. Without it, every state mutation could re-trigger
+    /// the catch-up Firestore writes.
+    private var didAttemptSearchBackfill = false
 
     var hasNoNotes: Bool            { notes.isEmpty && !isLoading && errorMessage == nil }
     var hasNoMatchingNotes: Bool    { !notes.isEmpty && filteredNotes.isEmpty && !isLoading && errorMessage == nil }
+
+    var isSearchActive: Bool {
+        !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var emptyStateTitle: String {
+        if hasNoNotes { return GrammarNoteFilter.all.emptyStateTitle }
+        if isSearchActive { return "No matching notes" }
+        return selectedFilter.emptyStateTitle
+    }
+
+    var emptyStateSubtitle: String {
+        if hasNoNotes { return GrammarNoteFilter.all.emptyStateSubtitle }
+        if isSearchActive { return "Try another keyword." }
+        return selectedFilter.emptyStateSubtitle
+    }
+
+    var showsEmptyStateAction: Bool { hasNoNotes && selectedFilter == .all }
 
     // MARK: - Init
 
@@ -71,9 +87,8 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     // MARK: - Bindings
 
     private func bindFiltering() {
-        $searchText
-            .combineLatest($selectedFilter)
-            .sink { [weak self] _, _ in
+        Publishers.CombineLatest3($searchText, $selectedFilter, $notes)
+            .sink { [weak self] _, _, _ in
                 self?.refreshFiltered()
             }
             .store(in: &cancellables)
@@ -116,6 +131,8 @@ final class GrammarNotesTopicViewModel: ObservableObject {
             )
             updateNotes(Self.sortNotes(loadedNotes))
             didLoadNotes = true
+            // Detached fire-and-forget — never blocks list rendering.
+            backfillSearchableTextForLoadedNotesIfNeeded()
         } catch {
             if notes.isEmpty {
                 errorMessage = readableMessage(for: error)
@@ -144,6 +161,66 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     func retryLoading() async {
         didLoadNotes = false
         await loadNotes()
+    }
+
+    // MARK: - Searchable text backfill
+
+    /// Patches up legacy notes that were created before the search index
+    /// existed. Runs at most once per VM lifetime. Each candidate gets:
+    ///   1. Its `searchableText` rebuilt locally (cheap).
+    ///   2. A single targeted Firestore field update (no list reload).
+    ///
+    /// The whole operation is fire-and-forget — failures are silent in
+    /// release builds; we never block the topic UI or retry in a loop.
+    private func backfillSearchableTextForLoadedNotesIfNeeded() {
+        guard !didAttemptSearchBackfill else { return }
+        didAttemptSearchBackfill = true
+
+        // Snapshot the IDs / data we need so the Task does not capture
+        // mutable VM state across `await` boundaries.
+        let candidates: [(id: String, indexed: String)] = notes.compactMap { note in
+            guard note.searchableText.isEmpty else { return nil }
+            let rebuilt = GrammarNoteSearchIndexer.makeSearchableText(for: note)
+            guard !rebuilt.isEmpty else { return nil }
+            return (note.id, rebuilt)
+        }
+        guard !candidates.isEmpty else { return }
+
+        let owner = ownerUID
+        let topicId = topic.id
+        let service = noteService
+
+        Task.detached(priority: .utility) {
+            for candidate in candidates {
+                do {
+                    try await service.setSearchableText(
+                        id: candidate.id,
+                        ownerUID: owner,
+                        topicId: topicId,
+                        searchableText: candidate.indexed
+                    )
+                } catch {
+                    #if DEBUG
+                    print("[SearchBackfill] failed for \(candidate.id):", error)
+                    #endif
+                    // Keep going — a single doc failure shouldn't stall the rest.
+                }
+            }
+        }
+
+        // Mirror the rebuilt index into local previews so search hits work
+        // immediately without waiting for the next list reload.
+        let updates = Dictionary(uniqueKeysWithValues: candidates.map { ($0.id, $0.indexed) })
+        let patched = notes.map { note -> GrammarNote in
+            guard let indexed = updates[note.id] else { return note }
+            var copy = note
+            copy.searchableText = indexed
+            return copy
+        }
+        if patched != notes {
+            notes = patched
+            refreshFiltered()
+        }
     }
 
     // MARK: - Full note creation (from CreateGrammarNoteSheet)
@@ -391,27 +468,50 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     }
 
     private func refreshFiltered() {
-        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let rawQuery = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         let filtered = notes.filter { note in
             let matchesFilter: Bool
             switch selectedFilter {
             case .all:       matchesFilter = true
             case .pinned:    matchesFilter = note.isPinned
             case .favorites: matchesFilter = note.isFavorite
-            case .mistakes:  matchesFilter = note.isMistakeNote
-            case .quizzes:   matchesFilter = note.hasQuiz
+            case .mistakes:  matchesFilter = note.matchesMistakesFilter
+            case .quizzes:   matchesFilter = note.matchesQuizzesFilter
             }
             guard matchesFilter else { return false }
-            guard !query.isEmpty else { return true }
-            return note.title.lowercased().contains(query)
-                || note.previewText.lowercased().contains(query)
-                || note.tags.contains { $0.lowercased().contains(query) }
-                || note.noteType.title.lowercased().contains(query)
+            guard !rawQuery.isEmpty else { return true }
+
+            // Primary path: indexed `searchableText` — matches across title,
+            // tags, type, preview, plain text content and every block field.
+            // Falls back to rebuilding the index in-memory for legacy notes
+            // saved before this feature so search never crashes on old docs.
+            return GrammarNoteSearchIndexer.matchesFallback(query: rawQuery, note: note)
         }
 
         filteredNotes = filtered
         pinnedNotes = filtered.filter { $0.isPinned }
         regularNotes = filtered.filter { !$0.isPinned }
+
+        // Recompute snippets only when a query is active. The map is keyed
+        // by note id and replaced wholesale so it never grows unbounded.
+        if rawQuery.isEmpty {
+            searchSnippets = [:]
+        } else {
+            var next: [String: String] = [:]
+            for note in filtered {
+                if let snippet = GrammarNoteSearchIndexer.snippet(for: note, query: rawQuery) {
+                    next[note.id] = snippet
+                }
+            }
+            searchSnippets = next
+        }
+    }
+
+    /// Returns a short matched snippet for a note while a search is active.
+    /// `nil` when there is no query or no usable match. Used by
+    /// `GrammarNoteCardView` to render a contextual line under the preview.
+    func searchSnippet(for note: GrammarNote) -> String? {
+        searchSnippets[note.id]
     }
 
     private func updateNotes(_ newNotes: [GrammarNote]) {

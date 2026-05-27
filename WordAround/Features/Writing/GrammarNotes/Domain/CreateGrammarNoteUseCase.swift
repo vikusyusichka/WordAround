@@ -66,7 +66,15 @@ struct CreateGrammarNoteUseCase {
             templateId: input.template?.id,
             createdAt: now,
             updatedAt: now,
-            lastEditedAt: now
+            lastEditedAt: now,
+            searchableText: GrammarNoteSearchIndexer.makeSearchableText(
+                title: input.title,
+                previewText: generatedPreview,
+                tags: input.tags,
+                noteType: input.noteType,
+                blocks: templateBlocks,
+                plainTextContent: generatedPlainText
+            )
         )
 
         try await noteService.createNote(note)

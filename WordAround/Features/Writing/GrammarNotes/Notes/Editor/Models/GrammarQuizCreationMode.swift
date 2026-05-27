@@ -30,9 +30,9 @@ enum GrammarQuizCreationMode: String, CaseIterable, Identifiable, Codable, Equat
 
     var subtitle: String {
         switch self {
-        case .manual:      return "Create your own questions"
-        case .smartLocal:  return "Generate from note content using local rules"
-        case .aiGenerated: return "Generate richer questions with AI"
+        case .manual:      return "Write your own questions."
+        case .smartLocal:  return "Generate questions from note content locally."
+        case .aiGenerated: return "Generate richer contextual questions using AI."
         }
     }
 
@@ -45,11 +45,13 @@ enum GrammarQuizCreationMode: String, CaseIterable, Identifiable, Codable, Equat
     }
 
     /// CTA button title in `CreateGrammarQuizSheet` save button.
+    /// The mode itself already tells the user how questions are produced —
+    /// so the button just states the user-facing action.
     var ctaTitle: String {
         switch self {
         case .manual:      return "Create Quiz"
-        case .smartLocal:  return "Generate Quiz"
-        case .aiGenerated: return "Generate with AI"
+        case .smartLocal:  return "Save Quiz"
+        case .aiGenerated: return "Generate Quiz"
         }
     }
 }

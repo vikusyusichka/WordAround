@@ -267,11 +267,11 @@ struct GrammarNotesTopicView: View {
     private var filtersRow: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 9) {
-                ForEach(GrammarNotesTopicViewModel.Filter.allCases) { filter in
+                ForEach(GrammarNoteFilter.allCases) { filter in
                     Button {
                         viewModel.selectedFilter = filter
                     } label: {
-                        Text(filter.rawValue)
+                        Text(filter.title)
                             .font(.system(size: isPadLike ? 13 : 12, weight: .bold, design: .rounded))
                             .foregroundStyle(viewModel.selectedFilter == filter ? Color.white : theme.accent)
                             .padding(.horizontal, 14)
@@ -296,28 +296,36 @@ struct GrammarNotesTopicView: View {
             loadingCard
         } else if let errorMessage = viewModel.errorMessage {
             errorCard(message: errorMessage)
-        } else if viewModel.hasNoNotes {
-            emptyState(title: "No notes yet", subtitle: "Create your first grammar note for this topic.", showsButton: true)
-        } else if viewModel.hasNoMatchingNotes {
-            emptyState(title: "No matching notes", subtitle: "Try another keyword.", showsButton: false)
-        } else {
+        } else if viewModel.hasNoNotes || viewModel.hasNoMatchingNotes {
+            emptyState(
+                title: viewModel.emptyStateTitle,
+                subtitle: viewModel.emptyStateSubtitle,
+                showsButton: viewModel.showsEmptyStateAction
+            )
+        } else if viewModel.selectedFilter == .all {
             VStack(alignment: .leading, spacing: isPadLike ? 18 : 14) {
                 if !viewModel.pinnedNotes.isEmpty {
                     notesSection(title: "PINNED", notes: viewModel.pinnedNotes, isCompact: true)
                 }
 
-                notesSection(title: "All Notes", notes: viewModel.regularNotes, isCompact: false)
+                if !viewModel.regularNotes.isEmpty {
+                    notesSection(title: "All Notes", notes: viewModel.regularNotes, isCompact: false)
+                }
             }
+        } else {
+            notesSection(title: nil, notes: viewModel.filteredNotes, isCompact: false)
         }
     }
 
-    private func notesSection(title: String, notes: [GrammarNote], isCompact: Bool) -> some View {
+    private func notesSection(title: String?, notes: [GrammarNote], isCompact: Bool) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title)
-                .font(.system(size: isPadLike ? 16 : 13, weight: .black, design: .rounded))
-                .foregroundStyle(theme.mutedTextColor)
-                .textCase(.uppercase)
-                .tracking(0.8)
+            if let title {
+                Text(title)
+                    .font(.system(size: isPadLike ? 16 : 13, weight: .black, design: .rounded))
+                    .foregroundStyle(theme.mutedTextColor)
+                    .textCase(.uppercase)
+                    .tracking(0.8)
+            }
 
             VStack(spacing: isPadLike ? 13 : 11) {
                 ForEach(notes) { note in
@@ -332,7 +340,8 @@ struct GrammarNotesTopicView: View {
                         GrammarNoteCardView(
                             note: note,
                             isCompact: isCompact,
-                            onQuizTap: note.hasQuiz ? { quizNote = note } : nil
+                            onQuizTap: note.hasQuiz ? { quizNote = note } : nil,
+                            searchSnippet: viewModel.searchSnippet(for: note)
                         )
                     }
                     .buttonStyle(.plain)

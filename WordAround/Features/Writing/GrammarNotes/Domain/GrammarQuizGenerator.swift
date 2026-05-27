@@ -8,9 +8,9 @@ enum GrammarQuizGeneratorError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .notEnoughContent:
-            return "Add more note content before creating a quiz."
+            return "Add more note content before creating a quiz. A quiz needs at least two usable blocks (rule, example, comparison, warning, exercise, paragraph or quote)."
         case .noMatchingQuestionTypes:
-            return "The selected question types don't match the note content. Try different types or add more content."
+            return "Not enough matching content was found for the selected question types. Try enabling more question types or add more note content."
         }
     }
 }

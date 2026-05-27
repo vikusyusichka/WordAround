@@ -1,0 +1,16 @@
+# Dependencies — re-installable from package.json.
+node_modules/
+
+# Wrangler local state and any secret material that could land on disk.
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+
+# Build / runtime caches.
+dist/
+.cache/
+
+# OS noise.
+.DS_Store

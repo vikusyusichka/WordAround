@@ -37,12 +37,15 @@ struct CreateQuickGrammarNoteUseCase {
             )]
         }
 
+        let finalTitle = trimmedTitle.isEmpty ? "Untitled quick note" : trimmedTitle
+        let finalPreview = String(trimmedText.prefix(180))
+
         let note = GrammarNote(
             id: UUID().uuidString,
             ownerUID: ownerUID,
             topicId: topic.id,
-            title: trimmedTitle.isEmpty ? "Untitled quick note" : trimmedTitle,
-            previewText: String(trimmedText.prefix(180)),
+            title: finalTitle,
+            previewText: finalPreview,
             languageCode: topic.languageCode,
             languageName: topic.languageName,
             noteType: draft.noteType,
@@ -60,7 +63,15 @@ struct CreateQuickGrammarNoteUseCase {
             templateId: nil,
             createdAt: now,
             updatedAt: now,
-            lastEditedAt: now
+            lastEditedAt: now,
+            searchableText: GrammarNoteSearchIndexer.makeSearchableText(
+                title: finalTitle,
+                previewText: finalPreview,
+                tags: [],
+                noteType: draft.noteType,
+                blocks: contentBlocks,
+                plainTextContent: trimmedText
+            )
         )
 
         return try await noteService.createAndReturnNote(note)

@@ -83,6 +83,7 @@ final class GrammarNoteQuizViewModel: ObservableObject {
     let topicId: String
     let noteId: String
     private let service: GrammarNoteQuizServicing
+    private let reviewService: GrammarReviewServicing
 
     // MARK: - Init
 
@@ -90,12 +91,14 @@ final class GrammarNoteQuizViewModel: ObservableObject {
         ownerUID: String,
         topicId: String,
         noteId: String,
-        service: GrammarNoteQuizServicing = GrammarNoteQuizService()
+        service: GrammarNoteQuizServicing = GrammarNoteQuizService(),
+        reviewService: GrammarReviewServicing = GrammarReviewService()
     ) {
         self.ownerUID = ownerUID
         self.topicId = topicId
         self.noteId = noteId
         self.service = service
+        self.reviewService = reviewService
     }
 
     // MARK: - Load
@@ -132,8 +135,8 @@ final class GrammarNoteQuizViewModel: ObservableObject {
         allowedTypes: [GrammarQuizQuestionType],
         manualQuestions: [GrammarQuizQuestion],
         focusInstructions: String?,
-        localGenerator: GrammarQuizQuestionGenerating = LocalGrammarQuizQuestionGenerator(),
-        aiGenerator: GrammarQuizQuestionGenerating = AIGrammarQuizQuestionGenerator()
+        localGenerator: GrammarQuizQuestionGenerating? = nil,
+        aiGenerator: GrammarQuizQuestionGenerating? = nil
     ) async -> GrammarNoteQuiz? {
 
         let cleanTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -141,6 +144,13 @@ final class GrammarNoteQuizViewModel: ObservableObject {
             createState = .failed("Quiz title is required.")
             return nil
         }
+
+        // Resolve generators on the main actor (this method's isolation).
+        // The defaults can't be evaluated at the call site because some of
+        // them (Apple Intelligence client) require `@MainActor`. Building
+        // them here keeps Swift 6 strict concurrency happy.
+        let local = localGenerator ?? LocalGrammarQuizQuestionGenerator()
+        let ai    = aiGenerator    ?? AIGrammarQuizQuestionGenerator()
 
         // 1. Produce raw questions per mode.
         let rawQuestions: [GrammarQuizQuestion]
@@ -150,7 +160,7 @@ final class GrammarNoteQuizViewModel: ObservableObject {
                 rawQuestions = manualQuestions
             case .smartLocal:
                 createState = .generating
-                rawQuestions = try await localGenerator.generateQuestions(
+                rawQuestions = try await local.generateQuestions(
                     from: note,
                     questionCount: questionCount,
                     allowedTypes: allowedTypes,
@@ -158,7 +168,7 @@ final class GrammarNoteQuizViewModel: ObservableObject {
                 )
             case .aiGenerated:
                 createState = .generating
-                rawQuestions = try await aiGenerator.generateQuestions(
+                rawQuestions = try await ai.generateQuestions(
                     from: note,
                     questionCount: questionCount,
                     allowedTypes: allowedTypes,
@@ -241,6 +251,47 @@ final class GrammarNoteQuizViewModel: ObservableObject {
 
     func finishQuiz() {
         sessionFinished = true
+        // Low-score quizzes become high-priority review items so the user
+        // sees them again on Review Today. Idempotent via deterministic id.
+        // Failures are swallowed — the result screen MUST show regardless.
+        if let quiz = activeQuiz, scorePercentage < 70 {
+            // Build the review item on the current MainActor isolation so
+            // the detached Task only ships a Sendable value across. With
+            // `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, constructing
+            // the struct inside the detached closure would be MainActor
+            // and trigger Swift 6 strict-concurrency errors.
+            let title = quiz.title.isEmpty ? "Quiz" : quiz.title
+            let preview = quiz.sourceNoteTitle.isEmpty
+                ? "Scored \(scorePercentage)% — revisit this quiz."
+                : "From \(quiz.sourceNoteTitle) — scored \(scorePercentage)%."
+            let now = Date()
+            let item = GrammarReviewItem(
+                id: GrammarReviewItem.id(forQuizTopicId: topicId, noteId: noteId, quizId: quiz.id),
+                ownerUID: ownerUID,
+                sourceType: .quiz,
+                topicId: topicId,
+                noteId: noteId,
+                quizId: quiz.id,
+                title: title,
+                previewText: preview,
+                languageCode: "",
+                languageName: "",
+                priority: .high,
+                dueAt: now.addingTimeInterval(60 * 60),
+                createdAt: now,
+                updatedAt: now
+            )
+            let service = reviewService
+            Task.detached(priority: .utility) { [service, item] in
+                do {
+                    try await service.createOrUpdateReviewItem(item)
+                } catch {
+                    #if DEBUG
+                    print("[Review] quiz low-score auto-create failed:", error)
+                    #endif
+                }
+            }
+        }
     }
 
     func resetSession() {

@@ -22,6 +22,7 @@ struct CreateGrammarQuizSheet: View {
     @State private var previewQuestions: [GrammarQuizQuestion] = []
     @State private var hasPreviewed = false
     @State private var previewError: String?
+    @State private var isPreviewing = false
 
     // Manual-mode state
     @State private var manualQuestions: [GrammarQuizQuestion] = []
@@ -32,19 +33,27 @@ struct CreateGrammarQuizSheet: View {
 
     // MARK: - Init
 
+    /// `@MainActor` because the `aiConfigured` default reads from
+    /// `GrammarQuizAIConfiguration.isConfigured`, which is MainActor
+    /// (it pokes Apple Intelligence availability). SwiftUI Views are
+    /// already MainActor in practice — the annotation just makes it
+    /// explicit for Swift 6 strict concurrency.
+    @MainActor
     init(
         note: GrammarNote,
         blocks: [GrammarNoteBlock],
         onCreated: @escaping () -> Void,
         onCancel: @escaping () -> Void,
         service: GrammarNoteQuizServicing = GrammarNoteQuizService(),
-        aiConfigured: Bool = GrammarQuizAIConfiguration.isConfigured
+        aiConfigured: Bool? = nil
     ) {
         self.note = note
         self.blocks = blocks
         self.onCreated = onCreated
         self.onCancel = onCancel
-        self.aiConfigured = aiConfigured
+        self.aiConfigured = aiConfigured ?? MainActor.assumeIsolated {
+            GrammarQuizAIConfiguration.isConfigured
+        }
         _quizVM = StateObject(
             wrappedValue: GrammarNoteQuizViewModel(
                 ownerUID: note.ownerUID,
@@ -66,7 +75,9 @@ struct CreateGrammarQuizSheet: View {
         if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return false }
         switch mode {
         case .manual:      return !manualQuestions.isEmpty
-        case .smartLocal:  return !selectedTypes.isEmpty
+        // Require a generated preview before save so the user always sees
+        // the exact questions that will be persisted (Preview → Save flow).
+        case .smartLocal:  return !selectedTypes.isEmpty && hasPreviewed && !previewQuestions.isEmpty
         case .aiGenerated: return !selectedTypes.isEmpty
         }
     }
@@ -308,16 +319,22 @@ struct CreateGrammarQuizSheet: View {
         VStack(alignment: .leading, spacing: 12) {
             questionCountField
             questionTypesField
-            Text("Questions are generated locally from this note's content blocks. No network is used.")
+            Text("Questions are generated locally from this note's content blocks. If the note is too short, AI fills in the gaps automatically.")
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
 
             Button {
-                generateLocalPreview()
+                Task { await generatePreview() }
             } label: {
                 HStack(spacing: 8) {
-                    Image(systemName: "wand.and.stars")
+                    if isPreviewing {
+                        ProgressView()
+                            .tint(AppColors.primaryBlue)
+                            .scaleEffect(0.85)
+                    } else {
+                        Image(systemName: "wand.and.stars")
+                    }
                     Text(hasPreviewed ? "Regenerate Preview" : "Preview Questions")
                 }
                 .font(.system(size: 14, weight: .bold, design: .rounded))
@@ -329,7 +346,7 @@ struct CreateGrammarQuizSheet: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
             .buttonStyle(QuizScaleButtonStyle())
-            .disabled(selectedTypes.isEmpty)
+            .disabled(selectedTypes.isEmpty || isPreviewing)
 
             if hasPreviewed && !previewQuestions.isEmpty {
                 previewQuestionsList
@@ -356,17 +373,19 @@ struct CreateGrammarQuizSheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
 
-            HStack(alignment: .top, spacing: 8) {
-                Image(systemName: aiConfigured ? "checkmark.seal.fill" : "exclamationmark.triangle.fill")
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(aiConfigured ? AppColors.primaryBlue : CreateSetTheme.red.accent)
-                Text(aiConfigured
-                     ? "AI generation will send your note content to your backend endpoint."
-                     : "AI generation requires a configured backend. Tap Generate to see status.")
+            // Subtle, low-key status hint — never the loudest element on the
+            // screen. Pulls its copy from `GrammarQuizAIConfiguration` so the
+            // backend-vs-on-device wording stays consistent across the app.
+            HStack(alignment: .center, spacing: 6) {
+                Image(systemName: aiConfigured ? "sparkles" : "info.circle")
+                    .font(.system(size: 10, weight: .bold))
+                Text(GrammarQuizAIConfiguration.statusDescription)
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
-                    .foregroundStyle(AppColors.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
             }
+            .foregroundStyle(AppColors.textSecondary)
+            .padding(.top, 2)
         }
     }
 
@@ -642,35 +661,85 @@ struct CreateGrammarQuizSheet: View {
 
     // MARK: - Actions
 
-    /// Local-only preview generation. Does NOT save and does NOT touch
-    /// Firestore — purely to let the user see what Smart Local will
-    /// produce before they tap "Generate Quiz".
-    private func generateLocalPreview() {
+    /// Two-step preview generator. Does NOT save and does NOT touch
+    /// Firestore. The user always sees a single "Generate Quiz" button —
+    /// behind it we try the deterministic local generator first (zero
+    /// network), and if it can't produce enough questions we silently
+    /// fall back to the AI generator. Either way the user just sees a
+    /// preview they can then save.
+    private func generatePreview() async {
+        guard !isPreviewing else { return }
         previewError = nil
         previewQuestions = []
         hasPreviewed = true
+        isPreviewing = true
+        defer { isPreviewing = false }
         quizVM.resetCreateState()
+
+        // Step 1 — local first. Deterministic, fast, no network.
         do {
             previewQuestions = try GrammarQuizGenerator.generate(
                 from: blocks,
                 count: questionCount,
                 types: selectedTypes
             )
+            if !previewQuestions.isEmpty { return }
         } catch {
-            previewError = error.localizedDescription
+            #if DEBUG
+            print("[QuizPreview] local failed, trying AI:", error)
+            #endif
+            // Fall through to AI fallback below.
+        }
+
+        // Step 2 — AI fallback. Triggered when the note has too little
+        // content for the deterministic rules to produce a usable quiz.
+        // We don't expose the mode switch to the user; this is silent.
+        let aiGen = AIGrammarQuizQuestionGenerator()
+        do {
+            let aiQuestions = try await aiGen.generateQuestions(
+                from: note,
+                questionCount: questionCount,
+                allowedTypes: allowedTypesArray,
+                focusInstructions: focusInstructions
+            )
+            if aiQuestions.isEmpty {
+                previewError = "Couldn't build a quiz from this note. Add more content (rules, examples, or a comparison)."
+            } else {
+                previewQuestions = aiQuestions
+            }
+        } catch {
+            // Both generators failed — surface a single friendly error.
+            // The local generator's message is more actionable so prefer it.
+            previewError = "Couldn't build a quiz from this note. Add a rule, an example, or a few more sentences and try again."
+            #if DEBUG
+            print("[QuizPreview] AI fallback also failed:", error)
+            #endif
         }
     }
 
     private func submit() {
         previewError = nil
+        // Smart Local now persists exactly what the user saw in the preview.
+        // We pass the previewed questions through the `manualQuestions` path
+        // so the VM skips the generator and validates/saves the same array.
+        let effectiveMode: GrammarQuizCreationMode
+        let effectiveManualQuestions: [GrammarQuizQuestion]
+        if mode == .smartLocal, hasPreviewed, !previewQuestions.isEmpty {
+            effectiveMode = .manual
+            effectiveManualQuestions = previewQuestions
+        } else {
+            effectiveMode = mode
+            effectiveManualQuestions = manualQuestions
+        }
+
         Task {
             let savedQuiz = await quizVM.createQuiz(
                 title: title,
                 note: note,
-                mode: mode,
+                mode: effectiveMode,
                 questionCount: questionCount,
                 allowedTypes: allowedTypesArray,
-                manualQuestions: manualQuestions,
+                manualQuestions: effectiveManualQuestions,
                 focusInstructions: focusInstructions
             )
             if savedQuiz != nil {
@@ -719,10 +788,52 @@ private struct AddManualQuizQuestionSheet: View {
     @State private var correctAnswer = ""
     @State private var explanation = ""
     @State private var tfAnswer = "True"
+    @State private var didAttemptSubmit = false
+    @FocusState private var focusedField: ManualQuestionField?
 
-    private var canAdd: Bool {
-        !questionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        && !effectiveCorrectAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    private enum ManualQuestionField: Hashable {
+        case question, option(Int), correctAnswer, explanation
+    }
+
+    private var canAdd: Bool { validationError == nil }
+
+    /// Inline validation message tailored to the current question type.
+    /// `nil` means the form is valid. Only surfaces after the user taps Add.
+    private var validationError: String? {
+        let trimmedQuestion = questionText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedQuestion.isEmpty { return "Question text is required." }
+
+        switch type {
+        case .multipleChoice:
+            let opts = [option1, option2, option3, option4]
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+            if opts.count < 2 {
+                return "Multiple choice needs at least 2 options."
+            }
+            let trimmedAnswer = correctAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmedAnswer.isEmpty {
+                return "Pick the correct answer."
+            }
+            if !opts.contains(where: { $0.caseInsensitiveCompare(trimmedAnswer) == .orderedSame }) {
+                return "Correct answer must match one of the options."
+            }
+        case .trueFalse:
+            // tfAnswer always carries True / False, never empty.
+            break
+        case .fillGap:
+            if !trimmedQuestion.contains("_") {
+                return "Add a blank (e.g. _____) inside the question."
+            }
+            if correctAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return "Enter the missing word."
+            }
+        case .shortAnswer:
+            if correctAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return "Enter the correct answer."
+            }
+        }
+        return nil
     }
 
     private var effectiveCorrectAnswer: String {
@@ -757,11 +868,20 @@ private struct AddManualQuizQuestionSheet: View {
                         if type == .trueFalse { tfPicker }
                         if type != .trueFalse { correctAnswerField }
                         explanationField
+                        if didAttemptSubmit, let message = validationError {
+                            validationBanner(message)
+                                .transition(.opacity.combined(with: .move(edge: .top)))
+                        }
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 8)
                     .padding(.bottom, 24)
+                    .animation(.easeInOut(duration: 0.18), value: didAttemptSubmit)
+                    .animation(.easeInOut(duration: 0.18), value: type)
                 }
+                // Interactive keyboard dismissal stops the suggestion bar
+                // from floating over inputs while the user scrolls the form.
+                .scrollDismissesKeyboard(.interactively)
             }
             .safeAreaInset(edge: .top) {
                 manualQuestionHeader
@@ -770,8 +890,41 @@ private struct AddManualQuizQuestionSheet: View {
                     .padding(.bottom, 6)
                     .background(AppColors.appBackground)
             }
+            // Keyboard accessory: gives the user a one-tap way to dismiss
+            // the keyboard so the autocomplete strip never blocks the
+            // explanation field at the bottom of the form.
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { focusedField = nil }
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                }
+            }
         }
         .presentationDetents([.large])
+        .onChange(of: type) { _, _ in
+            // Switching type retires the previous validation surface so the
+            // user is not shown stale "missing option" errors after they
+            // moved to e.g. short-answer mode.
+            didAttemptSubmit = false
+        }
+    }
+
+    private func validationBanner(_ message: String) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "exclamationmark.circle.fill")
+                .font(.system(size: 12, weight: .bold))
+            Text(message)
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .foregroundStyle(CreateSetTheme.red.accent)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(CreateSetTheme.red.accent.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
 
@@ -797,6 +950,8 @@ private struct AddManualQuizQuestionSheet: View {
             Spacer()
 
             Button {
+                didAttemptSubmit = true
+                guard validationError == nil else { return }
                 let q = GrammarQuizQuestion(
                     type: type,
                     questionText: questionText.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -812,11 +967,10 @@ private struct AddManualQuizQuestionSheet: View {
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 24)
                     .frame(height: 42)
-                    .background(canAdd ? AppColors.primaryBlue : AppColors.primaryBlue.opacity(0.45))
+                    .background(AppColors.primaryBlue)
                     .clipShape(Capsule())
             }
             .buttonStyle(.plain)
-            .disabled(!canAdd)
         }
     }
 
@@ -843,16 +997,22 @@ private struct AddManualQuizQuestionSheet: View {
     }
 
     private var questionTextField: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
             label("Question")
             TextField(placeholderFor(type), text: $questionText, axis: .vertical)
+                .focused($focusedField, equals: .question)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
                 .tint(AppColors.primaryBlue)
-                .lineLimit(4)
+                .lineLimit(3...6)
                 .padding(12)
                 .background(Color.white.opacity(0.92))
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            if type == .fillGap {
+                Text("Use ___ inside the sentence to mark the blank.")
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .foregroundStyle(AppColors.textSecondary)
+            }
         }
     }
 
@@ -864,6 +1024,7 @@ private struct AddManualQuizQuestionSheet: View {
                     $option1, $option2, $option3, $option4
                 ][i]
                 TextField("Option \(i + 1)", text: binding)
+                    .focused($focusedField, equals: .option(i))
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
                     .tint(AppColors.primaryBlue)
@@ -897,8 +1058,9 @@ private struct AddManualQuizQuestionSheet: View {
 
     private var correctAnswerField: some View {
         VStack(alignment: .leading, spacing: 8) {
-            label("Correct Answer")
-            TextField("Enter the correct answer", text: $correctAnswer)
+            label(correctAnswerLabel)
+            TextField(correctAnswerPlaceholder, text: $correctAnswer)
+                .focused($focusedField, equals: .correctAnswer)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
                 .tint(AppColors.primaryBlue)
@@ -909,14 +1071,33 @@ private struct AddManualQuizQuestionSheet: View {
         }
     }
 
+    private var correctAnswerLabel: String {
+        switch type {
+        case .multipleChoice: return "Correct Option"
+        case .fillGap:        return "Missing Word"
+        case .shortAnswer:    return "Correct Answer"
+        case .trueFalse:      return "Correct Answer"
+        }
+    }
+
+    private var correctAnswerPlaceholder: String {
+        switch type {
+        case .multipleChoice: return "Must match one of the options"
+        case .fillGap:        return "The word that fills the blank"
+        case .shortAnswer:    return "Enter the correct answer"
+        case .trueFalse:      return "True / False"
+        }
+    }
+
     private var explanationField: some View {
         VStack(alignment: .leading, spacing: 8) {
             label("Explanation (optional)")
             TextField("Why is this the correct answer?", text: $explanation, axis: .vertical)
+                .focused($focusedField, equals: .explanation)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
                 .tint(AppColors.primaryBlue)
-                .lineLimit(3)
+                .lineLimit(2...4)
                 .padding(12)
                 .background(Color.white.opacity(0.92))
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))

@@ -5,11 +5,14 @@ struct GrammarNotesHomeView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: GrammarNotesHomeViewModel
     @StateObject private var settings = GrammarNotesSettingsStore()
+    /// Shared review VM — powers both the summary card and the session sheet.
+    @StateObject private var reviewVM: GrammarReviewViewModel
     @State private var isCreateSheetPresented = false
     @State private var isSettingsPresented = false
     @State private var isFABExpanded = false
     @State private var isQuickNoteSheetPresented = false
     @State private var isQuickMistakeSheetPresented = false
+    @State private var isReviewSessionPresented = false
     @State private var editorNote: GrammarNote?
 
     private let theme: CreateSetTheme = .blue
@@ -20,14 +23,21 @@ struct GrammarNotesHomeView: View {
 
     @MainActor
     init(ownerUID: String? = Auth.auth().currentUser?.uid) {
+        let uid = ownerUID ?? ""
         _viewModel = StateObject(
-            wrappedValue: GrammarNotesHomeViewModel(ownerUID: ownerUID ?? "")
+            wrappedValue: GrammarNotesHomeViewModel(ownerUID: uid)
+        )
+        _reviewVM = StateObject(
+            wrappedValue: GrammarReviewViewModel(ownerUID: uid)
         )
     }
 
     @MainActor
     init(viewModel: GrammarNotesHomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        _reviewVM = StateObject(
+            wrappedValue: GrammarReviewViewModel(ownerUID: "")
+        )
     }
 
     var body: some View {
@@ -39,6 +49,9 @@ struct GrammarNotesHomeView: View {
                 VStack(alignment: .leading, spacing: isPadLike ? 22 : 18) {
                     headerView
                     searchBar
+                    reviewSummaryCard
+                    mistakesToFixSection
+                    weakQuizAreasSection
                     sectionHeader
                     contentView
                 }
@@ -76,10 +89,161 @@ struct GrammarNotesHomeView: View {
         .sheet(isPresented: $isQuickMistakeSheetPresented) {
             quickMistakeSheet
         }
+        .sheet(isPresented: $isReviewSessionPresented, onDismiss: {
+            // Session may have rated items; refresh both the summary card
+            // and the highlight strips so counts/cards reflect the new
+            // schedule without a manual pull.
+            Task {
+                await reviewVM.loadSummary(force: true)
+                await reviewVM.loadHighlights()
+            }
+            reviewVM.resetSession()
+        }) {
+            GrammarReviewSessionView(
+                viewModel: reviewVM,
+                onDismiss: { isReviewSessionPresented = false }
+            )
+        }
         .task {
             if viewModel.topics.isEmpty {
                 await viewModel.loadTopics()
             }
+            await reviewVM.loadSummary()
+            await reviewVM.loadHighlights()
+        }
+    }
+
+    // MARK: - Mistakes to Fix
+
+    /// Compact horizontal scroll of recent mistakes the user has saved.
+    /// Hidden when empty so the home screen stays calm for new users.
+    @ViewBuilder
+    private var mistakesToFixSection: some View {
+        if !reviewVM.mistakeHighlights.isEmpty {
+            highlightsSection(
+                title: "Mistakes to Fix",
+                subtitle: "Recent corrections waiting for review.",
+                accent: CreateSetTheme.red.accent,
+                items: reviewVM.mistakeHighlights
+            )
+        }
+    }
+
+    // MARK: - Weak Quiz Areas
+
+    /// Quizzes the user scored low on. Powered by the same review queue —
+    /// items are created automatically when a quiz attempt scores < 70%.
+    @ViewBuilder
+    private var weakQuizAreasSection: some View {
+        if !reviewVM.quizHighlights.isEmpty {
+            highlightsSection(
+                title: "Weak Quiz Areas",
+                subtitle: "Quizzes worth re-taking soon.",
+                accent: CreateSetTheme.purple.accent,
+                items: reviewVM.quizHighlights
+            )
+        }
+    }
+
+    // MARK: - Shared highlights renderer
+
+    /// One reusable horizontal strip. Tapping a card opens the Review
+    /// session focused on that item via the shared `GrammarReviewViewModel`.
+    private func highlightsSection(
+        title: String,
+        subtitle: String,
+        accent: Color,
+        items: [GrammarReviewItem]
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.system(size: isPadLike ? 17 : 15, weight: .black, design: .rounded))
+                    .foregroundStyle(theme.titleColor)
+                Text(subtitle)
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(theme.mutedTextColor)
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(items) { item in
+                        highlightCard(item, accent: accent)
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+        }
+    }
+
+    private func highlightCard(_ item: GrammarReviewItem, accent: Color) -> some View {
+        Button {
+            // Single-item review session — reuse the shared session sheet
+            // by injecting just this item. The session's "Done" returns
+            // home automatically.
+            Task {
+                await reviewVM.startSession()
+                isReviewSessionPresented = true
+            }
+        } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 6) {
+                    Image(systemName: item.sourceType.systemImage)
+                        .font(.system(size: 10, weight: .bold))
+                    Text(item.sourceType.title)
+                        .font(.system(size: 10, weight: .black, design: .rounded))
+                        .textCase(.uppercase)
+                        .tracking(0.5)
+                }
+                .foregroundStyle(accent)
+
+                Text(item.title.isEmpty ? "Untitled" : item.title)
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(theme.titleColor)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if !item.previewText.isEmpty {
+                    Text(item.previewText)
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .foregroundStyle(theme.mutedTextColor)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .padding(12)
+            .frame(width: 220, alignment: .leading)
+            .background(Color.white.opacity(0.92))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(accent.opacity(0.18), lineWidth: 1)
+            )
+            .shadow(color: Color.black.opacity(0.04), radius: 10, x: 0, y: 5)
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Lightweight summary card. Hidden when there's nothing due AND no
+    /// load error — keeps the home screen calm for new users.
+    @ViewBuilder
+    private var reviewSummaryCard: some View {
+        if reviewVM.summary.dueTotal > 0
+            || reviewVM.isLoadingSummary
+            || reviewVM.summaryError != nil {
+            GrammarReviewSummaryView(
+                summary: reviewVM.summary,
+                isLoading: reviewVM.isLoadingSummary,
+                errorMessage: reviewVM.summaryError,
+                onStart: {
+                    Task {
+                        await reviewVM.startSession()
+                        isReviewSessionPresented = true
+                    }
+                }
+            )
         }
     }
 

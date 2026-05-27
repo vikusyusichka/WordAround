@@ -25,3 +25,9 @@ fastlane/test_output/
 
 # Archives
 *.xcarchive
+
+# Environment / secrets
+.env
+.env.*
+**/.env
+**/.env.*

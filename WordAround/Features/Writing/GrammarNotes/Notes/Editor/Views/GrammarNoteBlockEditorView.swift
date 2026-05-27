@@ -83,21 +83,21 @@ struct GrammarNoteBlockEditorView: View {
                 .textFieldStyle(.plain)
 
         case .paragraph:
-            editor(text: $draft.text, minHeight: 120)
+            editor(text: $draft.text, minHeight: 96, placeholder: draft.type.placeholder)
 
         case .bulletList, .numberedList, .checklist:
             listEditor
 
         case .quote:
-            editor(text: $draft.text, minHeight: 86)
+            editor(text: $draft.text, minHeight: 64, placeholder: draft.type.placeholder)
                 .padding(.leading, 12)
                 .overlay(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 3).fill(tint).frame(width: 4)
                 }
 
         case .rule, .example, .warning, .exercise, .quiz:
-            VStack(spacing: 10) {
-                editor(text: $draft.text, minHeight: 82)
+            VStack(spacing: 8) {
+                editor(text: $draft.text, minHeight: 56, placeholder: draft.type.placeholder)
                 TextField(
                     "Extra explanation",
                     text: Binding(
@@ -108,20 +108,24 @@ struct GrammarNoteBlockEditorView: View {
                 )
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
-                .padding(12)
+                .tint(tint)
+                .lineLimit(1...4)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
                 .background(Color.white.opacity(0.72))
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
 
         case .comparison:
             HStack(spacing: 10) {
-                editor(text: $draft.text, minHeight: 120)
+                editor(text: $draft.text, minHeight: 96, placeholder: draft.type.placeholder)
                 editor(
                     text: Binding(
                         get: { draft.secondaryText ?? "" },
                         set: { draft.secondaryText = $0 }
                     ),
-                    minHeight: 120
+                    minHeight: 96,
+                    placeholder: "Second side"
                 )
             }
 
@@ -241,16 +245,35 @@ struct GrammarNoteBlockEditorView: View {
     }
 
     // MARK: - Shared text editor
-    private func editor(text: Binding<String>, minHeight: CGFloat) -> some View {
-        TextEditor(text: text)
-            .font(.system(size: 14, weight: .semibold, design: .rounded))
-            .foregroundStyle(AppColors.primaryBlueDark)
-            .tint(tint)
-            .frame(minHeight: minHeight)
-            .scrollContentBackground(.hidden)
-            .padding(8)
-            .background(Color.white.opacity(0.76))
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    /// `TextEditor` has no native placeholder support, so we layer a light
+    /// hint behind the editor that disappears as soon as the user types.
+    /// Heights are tuned to the block role — short for warnings / rules,
+    /// taller for paragraphs / comparisons.
+    private func editor(
+        text: Binding<String>,
+        minHeight: CGFloat,
+        placeholder: String? = nil
+    ) -> some View {
+        ZStack(alignment: .topLeading) {
+            if let placeholder, text.wrappedValue.isEmpty {
+                Text(placeholder)
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .foregroundStyle(AppColors.textSecondary.opacity(0.55))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 14)
+                    .allowsHitTesting(false)
+            }
+            TextEditor(text: text)
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundStyle(AppColors.primaryBlueDark)
+                .tint(tint)
+                .frame(minHeight: minHeight)
+                .scrollContentBackground(.hidden)
+                .padding(.horizontal, 4)
+                .padding(.vertical, 6)
+        }
+        .background(Color.white.opacity(0.76))
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     // MARK: - Styling

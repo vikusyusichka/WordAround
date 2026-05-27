@@ -63,6 +63,32 @@ struct GrammarNoteEditorView: View {
                     .padding(.bottom, 34)
                 }
             }
+
+            // Inline confirmation for "Add to Review". Lives at the bottom
+            // so it never overlaps the title field. Auto-dismisses via the
+            // VM, but the user can also keep typing — it's non-blocking.
+            if let toast = viewModel.reviewToast {
+                VStack {
+                    Spacer()
+                    HStack(spacing: 10) {
+                        Image(systemName: "brain.head.profile")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(Color.white)
+                        Text(toast)
+                            .font(.system(size: 13, weight: .bold, design: .rounded))
+                            .foregroundStyle(Color.white)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 11)
+                    .background(AppColors.primaryBlueDark.opacity(0.95))
+                    .clipShape(Capsule())
+                    .shadow(color: Color.black.opacity(0.18), radius: 14, x: 0, y: 6)
+                    .padding(.bottom, 28)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+                .animation(.spring(response: 0.32, dampingFraction: 0.86), value: viewModel.reviewToast)
+                .allowsHitTesting(false)
+            }
         }
         .navigationBarBackButtonHidden(true)
         .task { await viewModel.loadBlocks() }
@@ -174,6 +200,11 @@ struct GrammarNoteEditorView: View {
             Menu {
                 Button("Save now")     { Task { await viewModel.saveNow() } }
                 Button("Use template") { isTemplateSheetPresented = true }
+                Button {
+                    viewModel.addToReview()
+                } label: {
+                    Label("Add to Review", systemImage: "brain.head.profile")
+                }
                 if allowsQuiz {
                     Divider()
                     if viewModel.note.hasQuiz {

@@ -487,14 +487,18 @@ struct ScreenMetrics {
     let isVerticalCompact: Bool
     let containerWidth: CGFloat
 
-    var isCompact: Bool {
+    // Pure value computations — explicitly `nonisolated` so that the
+    // project-wide `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` setting
+    // does not infer @MainActor here. None of these touch UIKit or any
+    // main-actor-only state.
+    nonisolated var isCompact: Bool {
         isHorizontalCompact || containerWidth < LayoutConstants.Breakpoints.regularMinWidth
     }
 
-    var isRegular: Bool { !isCompact }
-    var isLandscapeCompact: Bool { isHorizontalCompact && isVerticalCompact }
+    nonisolated var isRegular: Bool { !isCompact }
+    nonisolated var isLandscapeCompact: Bool { isHorizontalCompact && isVerticalCompact }
 
-    static func current(
+    nonisolated static func current(
         horizontal: UserInterfaceSizeClass?,
         vertical: UserInterfaceSizeClass?,
         containerWidth: CGFloat = 0

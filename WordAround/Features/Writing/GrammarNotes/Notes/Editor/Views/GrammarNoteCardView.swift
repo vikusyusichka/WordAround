@@ -4,6 +4,10 @@ struct GrammarNoteCardView: View {
     let note: GrammarNote
     var isCompact: Bool = false
     var onQuizTap: (() -> Void)? = nil
+    /// Optional contextual snippet shown when the parent screen has an
+    /// active search query and this note matched on inner content (not just
+    /// the title/preview). Trimmed to ~120 chars by the indexer.
+    var searchSnippet: String? = nil
 
     var body: some View {
         HStack(spacing: Layout.value(pad: 16, phone: 13)) {
@@ -12,6 +16,9 @@ struct GrammarNoteCardView: View {
             VStack(alignment: .leading, spacing: isCompact ? 6 : 8) {
                 titleRow
                 previewRow
+                if let searchSnippet, !searchSnippet.isEmpty {
+                    snippetRow(searchSnippet)
+                }
                 metaRow
             }
 
@@ -72,6 +79,30 @@ struct GrammarNoteCardView: View {
                 .lineLimit(isCompact ? 1 : 2)
                 .lineSpacing(2)
         }
+    }
+
+    /// Matched-content snippet shown under the preview when the parent
+    /// screen has an active search query. Uses a soft accented background
+    /// so the match is visible at-a-glance without overpowering the card.
+    private func snippetRow(_ snippet: String) -> some View {
+        HStack(alignment: .top, spacing: 6) {
+            Image(systemName: "text.magnifyingglass")
+                .font(.system(size: 10, weight: .bold))
+                .foregroundStyle(AppColors.primaryBlue)
+                .padding(.top, 1)
+            Text(snippet)
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .foregroundStyle(AppColors.primaryBlueDark)
+                .lineLimit(2)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 9)
+        .padding(.vertical, 7)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppColors.primaryBlue.opacity(0.07))
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
     private var metaRow: some View {
@@ -144,10 +175,27 @@ struct GrammarNoteCardView: View {
     }
 }
 
-#Preview {
+#Preview("Default") {
     VStack(spacing: 12) {
         GrammarNoteCardView(note: .preview(isPinned: true, isFavorite: true, hasQuiz: true), onQuizTap: {})
         GrammarNoteCardView(note: .preview(hasQuiz: false))
+    }
+    .padding()
+    .background(AppColors.appBackground)
+}
+
+#Preview("With search snippet") {
+    VStack(spacing: 12) {
+        GrammarNoteCardView(
+            note: .preview(),
+            onQuizTap: nil,
+            searchSnippet: "…Use ser for identity and estar for temporary state…"
+        )
+        GrammarNoteCardView(
+            note: .preview(title: "Por vs Para", isFavorite: true, hasQuiz: false),
+            onQuizTap: nil,
+            searchSnippet: "…Use 'por' for cause and 'para' for purpose…"
+        )
     }
     .padding()
     .background(AppColors.appBackground)

@@ -36,13 +36,16 @@ enum GrammarMistakeSaveResult: Equatable {
 final class GrammarMistakeSaveService {
     private let noteService: GrammarNoteServicing
     private let topicService: GrammarNoteTopicServicing
+    private let reviewService: GrammarReviewServicing
 
     init(
         noteService: GrammarNoteServicing = GrammarNoteService(),
-        topicService: GrammarNoteTopicServicing = GrammarNoteTopicService()
+        topicService: GrammarNoteTopicServicing = GrammarNoteTopicService(),
+        reviewService: GrammarReviewServicing = GrammarReviewService()
     ) {
         self.noteService = noteService
         self.topicService = topicService
+        self.reviewService = reviewService
     }
 
     @MainActor
@@ -80,6 +83,7 @@ final class GrammarMistakeSaveService {
         let original = payload.originalSentence.trimmingCharacters(in: .whitespacesAndNewlines)
         let corrected = payload.correctedSentence.trimmingCharacters(in: .whitespacesAndNewlines)
         let explanation = payload.explanation.trimmingCharacters(in: .whitespacesAndNewlines)
+
         let blocks = Self.makeBlocks(
             original: original,
             corrected: corrected,
@@ -90,6 +94,7 @@ final class GrammarMistakeSaveService {
 
         let titleSource = original.isEmpty ? corrected : original
         let previewSource: String
+
         if settings.includeCorrectedSentence, !corrected.isEmpty {
             previewSource = corrected
         } else if !explanation.isEmpty {
@@ -98,16 +103,21 @@ final class GrammarMistakeSaveService {
             previewSource = original
         }
 
+        let mistakeTitle = String(titleSource.prefix(50))
+        let mistakePreview = String(previewSource.prefix(180))
+        let mistakeTags = Self.makeTags(payload: payload)
+        let plainText = Self.makePlainText(from: blocks)
+
         let note = GrammarNote(
             id: UUID().uuidString,
             ownerUID: ownerUID,
             topicId: targetTopic.id,
-            title: String(titleSource.prefix(50)),
-            previewText: String(previewSource.prefix(180)),
+            title: mistakeTitle,
+            previewText: mistakePreview,
             languageCode: payload.languageCode,
             languageName: payload.languageName,
             noteType: .mistake,
-            tags: Self.makeTags(payload: payload),
+            tags: mistakeTags,
             imageURLs: [],
             isPinned: false,
             isFavorite: false,
@@ -115,16 +125,52 @@ final class GrammarMistakeSaveService {
             savedIssueKey: savedIssueKey,
             hasQuiz: false,
             contentBlocks: blocks,
-            plainTextContent: Self.makePlainText(from: blocks),
+            plainTextContent: plainText,
             coverImageURL: nil,
             localImagePaths: [],
             templateId: nil,
             createdAt: now,
             updatedAt: now,
-            lastEditedAt: now
+            lastEditedAt: now,
+            searchableText: GrammarNoteSearchIndexer.makeSearchableText(
+                title: mistakeTitle,
+                previewText: mistakePreview,
+                tags: mistakeTags,
+                noteType: .mistake,
+                blocks: blocks,
+                plainTextContent: plainText
+            )
         )
 
         let saved = try await noteService.createAndReturnNote(note)
+
+        let reviewItem = GrammarReviewItem(
+            id: GrammarReviewItem.id(forMistakeTopicId: saved.topicId, noteId: saved.id),
+            ownerUID: saved.ownerUID,
+            sourceType: .mistake,
+            topicId: saved.topicId,
+            noteId: saved.id,
+            quizId: nil,
+            title: saved.title,
+            previewText: saved.previewText,
+            languageCode: saved.languageCode,
+            languageName: saved.languageName,
+            priority: .high,
+            dueAt: now.addingTimeInterval(60 * 60),
+            createdAt: now,
+            updatedAt: now
+        )
+
+        Task.detached(priority: .utility) { [reviewService, reviewItem] in
+            do {
+                try await reviewService.createOrUpdateReviewItem(reviewItem)
+            } catch {
+                #if DEBUG
+                print("[Review] mistake auto-create failed:", error)
+                #endif
+            }
+        }
+
         return .saved(saved)
     }
 
@@ -168,21 +214,53 @@ final class GrammarMistakeSaveService {
         var blocks: [GrammarNoteBlock] = []
         var order = 0
 
-        blocks.append(GrammarNoteBlock(type: .heading, text: "Mistake", order: order, createdAt: date, updatedAt: date))
+        blocks.append(
+            GrammarNoteBlock(
+                type: .heading,
+                text: "Mistake",
+                order: order,
+                createdAt: date,
+                updatedAt: date
+            )
+        )
         order += 1
 
         if settings.includeOriginalSentence, !original.isEmpty {
-            blocks.append(GrammarNoteBlock(type: .quote, text: original, order: order, createdAt: date, updatedAt: date))
+            blocks.append(
+                GrammarNoteBlock(
+                    type: .quote,
+                    text: original,
+                    order: order,
+                    createdAt: date,
+                    updatedAt: date
+                )
+            )
             order += 1
         }
 
         if settings.includeCorrectedSentence, !corrected.isEmpty {
-            blocks.append(GrammarNoteBlock(type: .example, text: corrected, order: order, createdAt: date, updatedAt: date))
+            blocks.append(
+                GrammarNoteBlock(
+                    type: .example,
+                    text: corrected,
+                    order: order,
+                    createdAt: date,
+                    updatedAt: date
+                )
+            )
             order += 1
         }
 
         if settings.createMistakeNotesWithExplanation, !explanation.isEmpty {
-            blocks.append(GrammarNoteBlock(type: .paragraph, text: explanation, order: order, createdAt: date, updatedAt: date))
+            blocks.append(
+                GrammarNoteBlock(
+                    type: .paragraph,
+                    text: explanation,
+                    order: order,
+                    createdAt: date,
+                    updatedAt: date
+                )
+            )
         }
 
         return blocks
@@ -191,12 +269,22 @@ final class GrammarMistakeSaveService {
     private static func makePlainText(from blocks: [GrammarNoteBlock]) -> String {
         blocks.flatMap { block -> [String] in
             var parts: [String] = []
-            if !block.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { parts.append(block.text) }
+
+            if !block.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                parts.append(block.text)
+            }
+
             if let secondary = block.secondaryText,
                !secondary.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 parts.append(secondary)
             }
-            parts.append(contentsOf: block.items.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty })
+
+            parts.append(
+                contentsOf: block.items.filter {
+                    !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                }
+            )
+
             return parts
         }
         .joined(separator: "\n")
@@ -204,8 +292,15 @@ final class GrammarMistakeSaveService {
 
     private static func makeTags(payload: GrammarMistakeSavePayload) -> [String] {
         var tags = ["mistake", payload.languageName]
-        if let ruleId = payload.ruleId, !ruleId.isEmpty { tags.append(ruleId) }
-        if let sourceIssueId = payload.sourceIssueId, !sourceIssueId.isEmpty { tags.append(sourceIssueId) }
+
+        if let ruleId = payload.ruleId, !ruleId.isEmpty {
+            tags.append(ruleId)
+        }
+
+        if let sourceIssueId = payload.sourceIssueId, !sourceIssueId.isEmpty {
+            tags.append(sourceIssueId)
+        }
+
         return tags
     }
 }

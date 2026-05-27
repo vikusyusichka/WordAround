@@ -20,6 +20,11 @@ protocol GrammarNoteServicing {
     /// Targeted single-field update — avoids writing the full document.
     func setNotePinned(id: String, ownerUID: String, topicId: String, isPinned: Bool) async throws
     func setNoteFavorite(id: String, ownerUID: String, topicId: String, isFavorite: Bool) async throws
+    /// Targeted update for the denormalized search blob. Used for the
+    /// one-shot backfill on old notes that were saved before the search
+    /// indexer existed. Does NOT touch `updatedAt` so backfill writes
+    /// stay invisible in lists sorted by recency.
+    func setSearchableText(id: String, ownerUID: String, topicId: String, searchableText: String) async throws
 }
 
 extension GrammarNoteServicing {
@@ -131,6 +136,14 @@ final class GrammarNoteService: GrammarNoteServicing {
         ])
     }
 
+    func setSearchableText(id: String, ownerUID: String, topicId: String, searchableText: String) async throws {
+        // Single-field write — keeps backfills cheap and avoids touching
+        // any other note metadata.
+        try await notesCollection(ownerUID: ownerUID, topicId: topicId).document(id).updateData([
+            "searchableText": searchableText
+        ])
+    }
+
     // MARK: - Private write helpers
     private func writeNote(_ note: GrammarNote) async throws {
         try await notesCollection(ownerUID: note.ownerUID, topicId: note.topicId)
@@ -228,7 +241,8 @@ final class GrammarNoteService: GrammarNoteServicing {
             templateId:       data["templateId"]       as? String,
             createdAt:        dateValue(data["createdAt"])    ?? updatedAt,
             updatedAt:        updatedAt,
-            lastEditedAt:     dateValue(data["lastEditedAt"]) ?? updatedAt
+            lastEditedAt:     dateValue(data["lastEditedAt"]) ?? updatedAt,
+            searchableText:   data["searchableText"]   as? String ?? ""
         )
     }
 
@@ -272,11 +286,20 @@ final class GrammarNoteService: GrammarNoteServicing {
             templateId:       nil,
             createdAt:        dateValue(data["createdAt"])    ?? updatedAt,
             updatedAt:        updatedAt,
-            lastEditedAt:     dateValue(data["lastEditedAt"]) ?? updatedAt
+            lastEditedAt:     dateValue(data["lastEditedAt"]) ?? updatedAt,
+            // Preview docs persist `searchableText` so list search works
+            // without ever fetching `contentBlocks` from Firestore.
+            searchableText:   data["searchableText"] as? String ?? ""
         )
     }
 
     private func dictionary(from note: GrammarNote) -> [String: Any] {
+        // If callers forgot to populate `searchableText`, build it now so we
+        // never persist an empty index when the note has real content.
+        let searchable = note.searchableText.isEmpty
+            ? GrammarNoteSearchIndexer.makeSearchableText(for: note)
+            : note.searchableText
+
         var data: [String: Any] = [
             "ownerUID":        note.ownerUID,
             "topicId":         note.topicId,
@@ -293,6 +316,7 @@ final class GrammarNoteService: GrammarNoteServicing {
             "hasQuiz":         note.hasQuiz,
             "contentBlocks":   note.contentBlocks.map { dictionary(from: $0) },
             "plainTextContent": note.plainTextContent,
+            "searchableText":  searchable,
             "localImagePaths": note.localImagePaths,
             "createdAt":       Timestamp(date: note.createdAt),
             "updatedAt":       Timestamp(date: note.updatedAt),
@@ -376,4 +400,5 @@ struct MockGrammarNoteService: GrammarNoteServicing {
     func toggleFavorite(note: GrammarNote)                                 async throws {}
     func setNotePinned(id: String, ownerUID: String, topicId: String, isPinned: Bool)   async throws {}
     func setNoteFavorite(id: String, ownerUID: String, topicId: String, isFavorite: Bool) async throws {}
+    func setSearchableText(id: String, ownerUID: String, topicId: String, searchableText: String) async throws {}
 }
