@@ -9,6 +9,13 @@ struct EssayFeedbackSectionView: View {
     let usedTranslations: Int
     let usedSynonyms: Int
     let onRetry: () async -> Void
+    /// Closure providing the current save-to-Grammar-Notes state for a given
+    /// issue. Defaults to `.idle` so existing callers that don't pass it keep
+    /// the old "no save button" behavior.
+    var saveStateProvider: (GrammarIssue) -> SaveGrammarMistakeConfirmationSheet.SaveState = { _ in .idle }
+    /// Tap handler for the save button. Defaults to `nil` so the button stays
+    /// hidden unless the parent opts in.
+    var onSaveIssue: ((GrammarIssue) -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.essayFeedbackSectionSpacing) {
@@ -67,8 +74,12 @@ struct EssayFeedbackSectionView: View {
         case .success:
             VStack(spacing: Layout.essayFeedbackCardSpacing) {
                 ForEach(issues) { issue in
-                    GrammarIssueCardView(issue: issue)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    GrammarIssueCardView(
+                        issue: issue,
+                        saveState: saveStateProvider(issue),
+                        onSave: onSaveIssue.map { handler in { handler(issue) } }
+                    )
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
             }
 

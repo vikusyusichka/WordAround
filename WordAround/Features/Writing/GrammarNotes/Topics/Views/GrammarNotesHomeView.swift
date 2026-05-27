@@ -86,6 +86,7 @@ struct GrammarNotesHomeView: View {
     private var createTopicSheet: some View {
         CreateGrammarTopicSheet(
             isCreating: viewModel.isCreatingTopic,
+            errorMessage: viewModel.errorMessage,
             onCancel: { isCreateSheetPresented = false },
             onCreate: { title, description, languageCode, languageName, icon, colorHex in
                 Task {
@@ -98,6 +99,12 @@ struct GrammarNotesHomeView: View {
                         colorHex: colorHex
                     )
                     if didCreate { isCreateSheetPresented = false }
+                }
+            },
+            onUseTemplate: { template in
+                Task {
+                    let created = await viewModel.createTopicFromTemplate(template, settings: settings)
+                    if created != nil { isCreateSheetPresented = false }
                 }
             }
         )

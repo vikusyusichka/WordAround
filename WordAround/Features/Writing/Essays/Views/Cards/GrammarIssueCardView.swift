@@ -134,7 +134,7 @@ struct GrammarIssueCardView: View {
     }
 }
 
-#Preview {
+#Preview("Idle (no save)") {
     GrammarIssueCardView(
         issue: GrammarIssue(
             message: "Use the past tense form here.",
@@ -143,6 +143,86 @@ struct GrammarIssueCardView: View {
             offset: 0,
             length: 2
         )
+    )
+    .padding()
+    .background(AppColors.appBackground)
+}
+
+#Preview("Idle (with save button)") {
+    GrammarIssueCardView(
+        issue: GrammarIssue(
+            message: "Use the past tense form here.",
+            incorrectText: "go",
+            suggestedCorrection: "went",
+            offset: 0,
+            length: 2
+        ),
+        saveState: .idle,
+        onSave: {}
+    )
+    .padding()
+    .background(AppColors.appBackground)
+}
+
+#Preview("Saving") {
+    GrammarIssueCardView(
+        issue: GrammarIssue(
+            message: "Use the past tense form here.",
+            incorrectText: "go",
+            suggestedCorrection: "went",
+            offset: 0,
+            length: 2
+        ),
+        saveState: .saving,
+        onSave: {}
+    )
+    .padding()
+    .background(AppColors.appBackground)
+}
+
+#Preview("Saved") {
+    GrammarIssueCardView(
+        issue: GrammarIssue(
+            message: "Use the past tense form here.",
+            incorrectText: "go",
+            suggestedCorrection: "went",
+            offset: 0,
+            length: 2
+        ),
+        saveState: .saved,
+        onSave: {}
+    )
+    .padding()
+    .background(AppColors.appBackground)
+}
+
+#Preview("Already saved") {
+    GrammarIssueCardView(
+        issue: GrammarIssue(
+            message: "Use the past tense form here.",
+            incorrectText: "go",
+            suggestedCorrection: "went",
+            offset: 0,
+            length: 2
+        ),
+        saveState: .duplicate,
+        onSave: {}
+    )
+    .padding()
+    .background(AppColors.appBackground)
+}
+
+#Preview("Failed") {
+    GrammarIssueCardView(
+        issue: GrammarIssue(
+            message: "Use the past tense form here.",
+            incorrectText: "go",
+            suggestedCorrection: "went",
+            offset: 0,
+            length: 2
+        ),
+        saveState: .failed("Network error"),
+        onSave: {}
     )
     .padding()
     .background(AppColors.appBackground)

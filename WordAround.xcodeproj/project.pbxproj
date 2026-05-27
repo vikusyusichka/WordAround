@@ -185,6 +185,29 @@
 		E3DA1A1C2FFFFFFF0000001C /* GrammarSectionCardChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DA1A1B2FFFFFFF0000001B /* GrammarSectionCardChrome.swift */; };
 		E3820FF32FBED64A007BDB57 /* GrammarMistakeSaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FF22FBED641007BDB57 /* GrammarMistakeSaveService.swift */; };
 		E3820FF52FBED6CC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FF42FBED6AC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift */; };
+		6793CDFE5BED16F3A2BFA114 /* GrammarNoteQuiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7BBF2C5D6CBA4A4051172EE /* GrammarNoteQuiz.swift */; };
+		D17A56B479C03F7454B882DA /* GrammarQuizQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0F8E86C8B23FA26DE505A8 /* GrammarQuizQuestion.swift */; };
+		1C33E788FA1BB8F26EADF260 /* GrammarQuizQuestionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188F3A79CF4EDED5CEC6F9E5 /* GrammarQuizQuestionType.swift */; };
+		EDB2530B1851C2B7F08B45DB /* GrammarNoteQuizService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172320C07831EB1E6B3D615D /* GrammarNoteQuizService.swift */; };
+		564D5C4322F53B82865C60F0 /* GrammarQuizGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF800A257883A0C1C61ADBB6 /* GrammarQuizGenerator.swift */; };
+		4E67A409BE10E62F5E2870F0 /* GrammarNoteQuizViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB014679B38A62F5830249F /* GrammarNoteQuizViewModel.swift */; };
+		B50BD5B06987CEFA945BDB1B /* CreateGrammarQuizSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B83E7B1998E2F3DF0DFD794 /* CreateGrammarQuizSheet.swift */; };
+		F914AC0DFE25F325EEF765E5 /* GrammarNoteQuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D941CDA266930D8D7E97195 /* GrammarNoteQuizView.swift */; };
+		8518418799A6DC70AF6E71E9 /* GrammarNoteQuizResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD861E8725CF7DF44E06BA7 /* GrammarNoteQuizResultView.swift */; };
+		647C6051C16DF4E0C0B9B26E /* GrammarNoteQuizListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEEFB04438E681F82BE2AFF /* GrammarNoteQuizListView.swift */; };
+		A652D6CA195B6B7FB9A62DCF /* GrammarTopicTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F489257667566ECF6D490023 /* GrammarTopicTemplate.swift */; };
+		F1B5819548296F657B819FC8 /* GrammarTemplateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCF3DFB5EBE7A2DEB1A1F89 /* GrammarTemplateProvider.swift */; };
+		45F25915242D55B353ADA5B9 /* GrammarTemplateCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C06D5A178E84BF7A274231 /* GrammarTemplateCardView.swift */; };
+		B6702D9F9E5108A8CABE54FE /* GrammarTemplatePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0F2DD88D8846C4A41FD0192 /* GrammarTemplatePreviewView.swift */; };
+		308C7170BA1C915D8D068643 /* GrammarTemplateLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3757026A47A26A6A03C1416A /* GrammarTemplateLibraryView.swift */; };
+		B7906651C47CDF024F3FE190 /* GrammarQuizCreationMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CEA723F5AE62122579BCAE /* GrammarQuizCreationMode.swift */; };
+		825DAB58E30AA0C4EA726487 /* GrammarQuizAIResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307D531F707F4D9BFE888C0B /* GrammarQuizAIResponseDTO.swift */; };
+		C28D24FDED62FD01A5841B56 /* GrammarQuizQuestionGenerating.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A8765FC329B3B99E67B042 /* GrammarQuizQuestionGenerating.swift */; };
+		2D0C6A6D0C43D45E39B927D0 /* LocalGrammarQuizQuestionGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E598DD47C28FC3FE163E34 /* LocalGrammarQuizQuestionGenerator.swift */; };
+		BACE972D6C1C8644CB5C95D5 /* GrammarQuizAIPromptBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAA93C3F0C5729C51244D15 /* GrammarQuizAIPromptBuilder.swift */; };
+		8A7D669202603C6FA2E27A93 /* GrammarQuizAIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87EE1E9BCEF77953DA7901A6 /* GrammarQuizAIClient.swift */; };
+		9DA751B20A9CABEF25855D16 /* GrammarQuizAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E226DE20B3C1BD3B6E9F7AA /* GrammarQuizAIService.swift */; };
+		AC186B43EB6F9EF197A501DF /* GrammarQuizQuestionValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E7DB956AFD320ABC3FE2C2 /* GrammarQuizQuestionValidator.swift */; };
 		E3CC00022FBC65CA00C52238 /* GrammarNotesSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3CC00012FBC65CA00C52238 /* GrammarNotesSettingsStore.swift */; };
 /* End PBXBuildFile section */
 
@@ -363,6 +386,29 @@
 		E3DA1A1B2FFFFFFF0000001B /* GrammarSectionCardChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarSectionCardChrome.swift; sourceTree = "<group>"; };
 		E3820FF22FBED641007BDB57 /* GrammarMistakeSaveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarMistakeSaveService.swift; sourceTree = "<group>"; };
 		E3820FF42FBED6AC007BDB57 /* SaveGrammarMistakeConfirmationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveGrammarMistakeConfirmationSheet.swift; sourceTree = "<group>"; };
+		B7BBF2C5D6CBA4A4051172EE /* GrammarNoteQuiz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteQuiz.swift; sourceTree = "<group>"; };
+		EE0F8E86C8B23FA26DE505A8 /* GrammarQuizQuestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizQuestion.swift; sourceTree = "<group>"; };
+		188F3A79CF4EDED5CEC6F9E5 /* GrammarQuizQuestionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizQuestionType.swift; sourceTree = "<group>"; };
+		172320C07831EB1E6B3D615D /* GrammarNoteQuizService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteQuizService.swift; sourceTree = "<group>"; };
+		EF800A257883A0C1C61ADBB6 /* GrammarQuizGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizGenerator.swift; sourceTree = "<group>"; };
+		BCB014679B38A62F5830249F /* GrammarNoteQuizViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteQuizViewModel.swift; sourceTree = "<group>"; };
+		7B83E7B1998E2F3DF0DFD794 /* CreateGrammarQuizSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGrammarQuizSheet.swift; sourceTree = "<group>"; };
+		2D941CDA266930D8D7E97195 /* GrammarNoteQuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteQuizView.swift; sourceTree = "<group>"; };
+		9FD861E8725CF7DF44E06BA7 /* GrammarNoteQuizResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteQuizResultView.swift; sourceTree = "<group>"; };
+		8EEEFB04438E681F82BE2AFF /* GrammarNoteQuizListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteQuizListView.swift; sourceTree = "<group>"; };
+		F489257667566ECF6D490023 /* GrammarTopicTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarTopicTemplate.swift; sourceTree = "<group>"; };
+		9CCF3DFB5EBE7A2DEB1A1F89 /* GrammarTemplateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarTemplateProvider.swift; sourceTree = "<group>"; };
+		36C06D5A178E84BF7A274231 /* GrammarTemplateCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarTemplateCardView.swift; sourceTree = "<group>"; };
+		F0F2DD88D8846C4A41FD0192 /* GrammarTemplatePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarTemplatePreviewView.swift; sourceTree = "<group>"; };
+		3757026A47A26A6A03C1416A /* GrammarTemplateLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarTemplateLibraryView.swift; sourceTree = "<group>"; };
+		B6CEA723F5AE62122579BCAE /* GrammarQuizCreationMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizCreationMode.swift; sourceTree = "<group>"; };
+		307D531F707F4D9BFE888C0B /* GrammarQuizAIResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizAIResponseDTO.swift; sourceTree = "<group>"; };
+		E8A8765FC329B3B99E67B042 /* GrammarQuizQuestionGenerating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizQuestionGenerating.swift; sourceTree = "<group>"; };
+		11E598DD47C28FC3FE163E34 /* LocalGrammarQuizQuestionGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalGrammarQuizQuestionGenerator.swift; sourceTree = "<group>"; };
+		1CAA93C3F0C5729C51244D15 /* GrammarQuizAIPromptBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizAIPromptBuilder.swift; sourceTree = "<group>"; };
+		87EE1E9BCEF77953DA7901A6 /* GrammarQuizAIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizAIClient.swift; sourceTree = "<group>"; };
+		9E226DE20B3C1BD3B6E9F7AA /* GrammarQuizAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizAIService.swift; sourceTree = "<group>"; };
+		34E7DB956AFD320ABC3FE2C2 /* GrammarQuizQuestionValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizQuestionValidator.swift; sourceTree = "<group>"; };
 		E3CC00012FBC65CA00C52238 /* GrammarNotesSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesSettingsStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -692,6 +738,7 @@
 				E3DA1A062FFFFFFF00000006 /* CreateGrammarNoteUseCase.swift */,
 				E3DA1A012FFFFFFF00000001 /* CreateQuickGrammarNoteUseCase.swift */,
 				E3DA1A032FFFFFFF00000003 /* SaveQuickGrammarMistakeUseCase.swift */,
+				EF800A257883A0C1C61ADBB6 /* GrammarQuizGenerator.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -1225,6 +1272,12 @@
 				E3820FD32FBC8BC5007BDB57 /* GrammarNoteBlock.swift */,
 				E3820FC12FBC83D9007BDB57 /* GrammarNote.swift */,
 				E3820FC22FBC83D9007BDB57 /* GrammarNoteType.swift */,
+				F489257667566ECF6D490023 /* GrammarTopicTemplate.swift */,
+				B6CEA723F5AE62122579BCAE /* GrammarQuizCreationMode.swift */,
+				307D531F707F4D9BFE888C0B /* GrammarQuizAIResponseDTO.swift */,
+				B7BBF2C5D6CBA4A4051172EE /* GrammarNoteQuiz.swift */,
+				EE0F8E86C8B23FA26DE505A8 /* GrammarQuizQuestion.swift */,
+				188F3A79CF4EDED5CEC6F9E5 /* GrammarQuizQuestionType.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1235,6 +1288,14 @@
 				E3820FF22FBED641007BDB57 /* GrammarMistakeSaveService.swift */,
 				E3820FDA2FBC8C47007BDB57 /* GrammarNoteTemplateProvider.swift */,
 				E3820FC62FBC83ED007BDB57 /* GrammarNoteService.swift */,
+				9CCF3DFB5EBE7A2DEB1A1F89 /* GrammarTemplateProvider.swift */,
+				E8A8765FC329B3B99E67B042 /* GrammarQuizQuestionGenerating.swift */,
+				11E598DD47C28FC3FE163E34 /* LocalGrammarQuizQuestionGenerator.swift */,
+				1CAA93C3F0C5729C51244D15 /* GrammarQuizAIPromptBuilder.swift */,
+				87EE1E9BCEF77953DA7901A6 /* GrammarQuizAIClient.swift */,
+				9E226DE20B3C1BD3B6E9F7AA /* GrammarQuizAIService.swift */,
+				34E7DB956AFD320ABC3FE2C2 /* GrammarQuizQuestionValidator.swift */,
+				172320C07831EB1E6B3D615D /* GrammarNoteQuizService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1253,6 +1314,13 @@
 				E3820FCB2FBC8451007BDB57 /* CreateGrammarNoteSheet.swift */,
 				E3820FCC2FBC8451007BDB57 /* GrammarNoteCardView.swift */,
 				E3820FCD2FBC8451007BDB57 /* GrammarNoteEditorView.swift */,
+				36C06D5A178E84BF7A274231 /* GrammarTemplateCardView.swift */,
+				F0F2DD88D8846C4A41FD0192 /* GrammarTemplatePreviewView.swift */,
+				3757026A47A26A6A03C1416A /* GrammarTemplateLibraryView.swift */,
+				7B83E7B1998E2F3DF0DFD794 /* CreateGrammarQuizSheet.swift */,
+				2D941CDA266930D8D7E97195 /* GrammarNoteQuizView.swift */,
+				9FD861E8725CF7DF44E06BA7 /* GrammarNoteQuizResultView.swift */,
+				8EEEFB04438E681F82BE2AFF /* GrammarNoteQuizListView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1261,6 +1329,7 @@
 			isa = PBXGroup;
 			children = (
 				E3820FDD2FBC8C7E007BDB57 /* GrammarNoteEditorViewModel.swift */,
+				BCB014679B38A62F5830249F /* GrammarNoteQuizViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1530,6 +1599,29 @@
 				E30A1D752F9C0EF800387BDC /* FlashcardSetService.swift in Sources */,
 				E30902B82FBB96FA00C52238 /* EssayGenerationService.swift in Sources */,
 				E3820FDE2FBC8C92007BDB57 /* GrammarNoteEditorViewModel.swift in Sources */,
+				6793CDFE5BED16F3A2BFA114 /* GrammarNoteQuiz.swift in Sources */,
+				D17A56B479C03F7454B882DA /* GrammarQuizQuestion.swift in Sources */,
+				1C33E788FA1BB8F26EADF260 /* GrammarQuizQuestionType.swift in Sources */,
+				EDB2530B1851C2B7F08B45DB /* GrammarNoteQuizService.swift in Sources */,
+				564D5C4322F53B82865C60F0 /* GrammarQuizGenerator.swift in Sources */,
+				4E67A409BE10E62F5E2870F0 /* GrammarNoteQuizViewModel.swift in Sources */,
+				B50BD5B06987CEFA945BDB1B /* CreateGrammarQuizSheet.swift in Sources */,
+				F914AC0DFE25F325EEF765E5 /* GrammarNoteQuizView.swift in Sources */,
+				8518418799A6DC70AF6E71E9 /* GrammarNoteQuizResultView.swift in Sources */,
+				647C6051C16DF4E0C0B9B26E /* GrammarNoteQuizListView.swift in Sources */,
+				A652D6CA195B6B7FB9A62DCF /* GrammarTopicTemplate.swift in Sources */,
+				F1B5819548296F657B819FC8 /* GrammarTemplateProvider.swift in Sources */,
+				45F25915242D55B353ADA5B9 /* GrammarTemplateCardView.swift in Sources */,
+				B6702D9F9E5108A8CABE54FE /* GrammarTemplatePreviewView.swift in Sources */,
+				308C7170BA1C915D8D068643 /* GrammarTemplateLibraryView.swift in Sources */,
+				B7906651C47CDF024F3FE190 /* GrammarQuizCreationMode.swift in Sources */,
+				825DAB58E30AA0C4EA726487 /* GrammarQuizAIResponseDTO.swift in Sources */,
+				C28D24FDED62FD01A5841B56 /* GrammarQuizQuestionGenerating.swift in Sources */,
+				2D0C6A6D0C43D45E39B927D0 /* LocalGrammarQuizQuestionGenerator.swift in Sources */,
+				BACE972D6C1C8644CB5C95D5 /* GrammarQuizAIPromptBuilder.swift in Sources */,
+				8A7D669202603C6FA2E27A93 /* GrammarQuizAIClient.swift in Sources */,
+				9DA751B20A9CABEF25855D16 /* GrammarQuizAIService.swift in Sources */,
+				AC186B43EB6F9EF197A501DF /* GrammarQuizQuestionValidator.swift in Sources */,
 				E30A1DA42F9E076500387BDC /* Folders.swift in Sources */,
 				E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */,
 				E30A1D4F2F9BB9D000387BDC /* AppColors.swift in Sources */,

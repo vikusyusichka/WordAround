@@ -148,6 +148,10 @@ final class GrammarNotesTopicViewModel: ObservableObject {
 
     // MARK: - Full note creation (from CreateGrammarNoteSheet)
 
+    /// Creates a full note (from `CreateGrammarNoteSheet`) and returns the
+    /// saved instance so the caller can navigate the user straight into the
+    /// rich editor (`GrammarNoteEditorView`) — restoring the "full create"
+    /// flow where adding metadata is just the first step.
     func createNote(
         title: String,
         previewText: String,
@@ -155,24 +159,38 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         tags: [String],
         hasQuiz: Bool,
         template: GrammarNoteTemplate? = nil
-    ) async -> Bool {
-        guard !isCreatingNote else { return false }
+    ) async -> GrammarNote? {
+        guard !isCreatingNote else { return nil }
+
+        // Set the loading flag FIRST so the sheet's spinner can never get
+        // stuck. Without this, an early `return nil` from any guard below
+        // would never publish a state change and the user could perceive the
+        // button as frozen.
+        isCreatingNote = true
+        errorMessage = nil
+        defer { isCreatingNote = false }
+
+        await Task.yield()
+
         guard !ownerUID.isEmpty else {
             errorMessage = "User session is not available. Please sign in again."
-            return false
+            #if DEBUG
+            print("[CreateNote] failed: ownerUID is empty")
+            #endif
+            return nil
         }
 
         let trimmedTitle   = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedPreview = previewText.trimmingCharacters(in: .whitespacesAndNewlines)
         let cleanedTags    = tags.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
 
-        guard !trimmedTitle.isEmpty else { errorMessage = "Note title is required."; return false }
-        guard trimmedTitle.count <= 60 else { errorMessage = "Note title must be under 60 characters."; return false }
-        guard trimmedPreview.count <= 180 else { errorMessage = "Preview must be under 180 characters."; return false }
+        guard !trimmedTitle.isEmpty else { errorMessage = "Note title is required.";                    return nil }
+        guard trimmedTitle.count <= 60 else { errorMessage = "Note title must be under 60 characters.";    return nil }
+        guard trimmedPreview.count <= 180 else { errorMessage = "Preview must be under 180 characters.";   return nil }
 
-        isCreatingNote = true
-        errorMessage = nil
-        defer { isCreatingNote = false }
+        #if DEBUG
+        print("[CreateNote] saving to users/\(ownerUID)/grammarNoteTopics/\(topic.id)/notes")
+        #endif
 
         do {
             let saved = try await createNoteUseCase.execute(
@@ -188,10 +206,16 @@ final class GrammarNotesTopicViewModel: ObservableObject {
                 )
             )
             updateNotes(Self.sortNotes(notes + [saved]))
-            return true
+            #if DEBUG
+            print("[CreateNote] saved id=\(saved.id)")
+            #endif
+            return saved
         } catch {
             errorMessage = readableMessage(for: error)
-            return false
+            #if DEBUG
+            print("[CreateNote] failed:", error)
+            #endif
+            return nil
         }
     }
 
@@ -199,9 +223,27 @@ final class GrammarNotesTopicViewModel: ObservableObject {
 
     func createQuickNote(draft: QuickGrammarNoteDraft) async -> GrammarNote? {
         guard !isCreatingQuickNote else { return nil }
+
+        // Flip the loading flag FIRST so the sheet always observes the
+        // true → false transition and clears its local `didSubmitSave` lock,
+        // even when we bail out early below.
         isCreatingQuickNote = true
         quickNoteError = nil
         defer { isCreatingQuickNote = false }
+
+        await Task.yield()
+
+        guard !ownerUID.isEmpty else {
+            quickNoteError = "User session is not available. Please sign in again."
+            #if DEBUG
+            print("[QuickNote/Topic] save failed: ownerUID is empty")
+            #endif
+            return nil
+        }
+
+        #if DEBUG
+        print("[QuickNote/Topic] saving to users/\(ownerUID)/grammarNoteTopics/\(topic.id)/notes")
+        #endif
 
         do {
             let saved = try await createQuickNoteUseCase.execute(
@@ -210,9 +252,15 @@ final class GrammarNotesTopicViewModel: ObservableObject {
                 draft: draft
             )
             updateNotes(Self.sortNotes(notes + [saved]))
+            #if DEBUG
+            print("[QuickNote/Topic] saved id=\(saved.id)")
+            #endif
             return saved
         } catch {
             quickNoteError = readableMessage(for: error)
+            #if DEBUG
+            print("[QuickNote/Topic] save failed:", error)
+            #endif
             return nil
         }
     }
@@ -224,9 +272,22 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         settings: GrammarNotesSettingsStore
     ) async -> GrammarNote? {
         guard !isCreatingQuickMistake else { return nil }
+
+        // Set the loading flag immediately so the sheet always observes the
+        // true → false transition, even on early validation bail-out.
         isCreatingQuickMistake = true
         quickMistakeError = nil
         defer { isCreatingQuickMistake = false }
+
+        await Task.yield()
+
+        guard !ownerUID.isEmpty else {
+            quickMistakeError = "User session is not available. Please sign in again."
+            #if DEBUG
+            print("[QuickMistake/Topic] save failed: ownerUID is empty")
+            #endif
+            return nil
+        }
 
         // Resolve target topic: respect groupMistakesByTopic setting
         let targetTopic: GrammarNoteTopic
@@ -235,10 +296,17 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         } else {
             guard let mistakes = await getOrCreateMistakesTopic() else {
                 quickMistakeError = "Could not find or create Common Mistakes topic."
+                #if DEBUG
+                print("[QuickMistake/Topic] save failed: could not resolve mistakes topic")
+                #endif
                 return nil
             }
             targetTopic = mistakes
         }
+
+        #if DEBUG
+        print("[QuickMistake/Topic] saving to users/\(ownerUID)/grammarNoteTopics/\(targetTopic.id)/notes")
+        #endif
 
         do {
             let outcome = try await saveQuickMistakeUseCase.execute(
@@ -251,15 +319,24 @@ final class GrammarNotesTopicViewModel: ObservableObject {
             switch outcome {
             case .duplicate(let duplicate):
                 quickMistakeError = nil
+                #if DEBUG
+                print("[QuickMistake/Topic] duplicate id=\(duplicate.id)")
+                #endif
                 return duplicate
             case .created(let saved):
                 if targetTopic.id == topic.id {
                     updateNotes(Self.sortNotes(notes + [saved]))
                 }
+                #if DEBUG
+                print("[QuickMistake/Topic] saved id=\(saved.id)")
+                #endif
                 return saved
             }
         } catch {
             quickMistakeError = readableMessage(for: error)
+            #if DEBUG
+            print("[QuickMistake/Topic] save failed:", error)
+            #endif
             return nil
         }
     }

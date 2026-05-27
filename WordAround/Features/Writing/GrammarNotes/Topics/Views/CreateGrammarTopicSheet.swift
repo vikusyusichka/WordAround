@@ -2,14 +2,36 @@ import SwiftUI
 
 struct CreateGrammarTopicSheet: View {
     let isCreating: Bool
+    let errorMessage: String?
     let onCancel: () -> Void
     let onCreate: (_ title: String, _ description: String, _ languageCode: String, _ languageName: String, _ icon: String, _ colorHex: String) -> Void
+    /// Optional handler invoked when the user picks a topic template from the
+    /// library. The owner (HomeView/HomeViewModel) is responsible for the
+    /// batch Firestore writes. Defaults to `nil` so existing callers that
+    /// only support blank creation keep working unchanged.
+    let onUseTemplate: ((GrammarTopicTemplate) -> Void)?
 
     @State private var title = ""
     @State private var description = ""
     @State private var selectedLanguage = GrammarTopicLanguage.english
     @State private var selectedIcon = "book.fill"
     @State private var selectedColor: SetColor = .blue
+    @State private var didSubmit = false
+    @State private var isTemplateLibraryPresented = false
+
+    init(
+        isCreating: Bool,
+        errorMessage: String? = nil,
+        onCancel: @escaping () -> Void,
+        onCreate: @escaping (_ title: String, _ description: String, _ languageCode: String, _ languageName: String, _ icon: String, _ colorHex: String) -> Void,
+        onUseTemplate: ((GrammarTopicTemplate) -> Void)? = nil
+    ) {
+        self.isCreating = isCreating
+        self.errorMessage = errorMessage
+        self.onCancel = onCancel
+        self.onCreate = onCreate
+        self.onUseTemplate = onUseTemplate
+    }
 
     private let icons = [
         "book.fill",
@@ -49,11 +71,17 @@ struct CreateGrammarTopicSheet: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: isPadLike ? 18 : 14) {
                     headerView
+                    if onUseTemplate != nil {
+                        templateBanner
+                    }
                     infoSection
                     languageSection
                     iconSection
                     colorSection
                     previewSection
+                    if let errorMessage, !errorMessage.isEmpty {
+                        errorBanner(errorMessage)
+                    }
                     actionButtons
                 }
                 .padding(.horizontal, isPadLike ? 28 : 20)
@@ -64,6 +92,98 @@ struct CreateGrammarTopicSheet: View {
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
+        .sheet(isPresented: $isTemplateLibraryPresented) {
+            GrammarTemplateLibraryView(
+                kind: .topic,
+                onSelectTopic: { template in
+                    isTemplateLibraryPresented = false
+                    onUseTemplate?(template)
+                },
+                onSelectNote: nil,
+                onCancel: { isTemplateLibraryPresented = false }
+            )
+        }
+        // Reset the local submit lock as soon as the parent finishes the
+        // attempt (isCreating goes back to false) OR the parent surfaces
+        // an error message — whichever comes first.
+        .onChange(of: isCreating) { _, creating in
+            if !creating { didSubmit = false }
+        }
+        .onChange(of: errorMessage) { _, message in
+            // Only reset on a new error appearing — not on clearing during a
+            // fresh attempt. The VM always toggles isCreating true→false now,
+            // so the .onChange(of: isCreating) handler covers the success path.
+            guard message != nil else { return }
+            didSubmit = false
+        }
+        // Safety net — see comment in QuickGrammarNoteSheet. Force-clear
+        // after 12 s so the user is never trapped in an infinite spinner
+        // even if a race or hang prevents the normal reset paths from firing.
+        .task(id: didSubmit) {
+            guard didSubmit else { return }
+            try? await Task.sleep(nanoseconds: 12_000_000_000)
+            if didSubmit { didSubmit = false }
+        }
+    }
+
+    /// "Use template" banner shown above the blank-create form. Tapping it
+    /// opens `GrammarTemplateLibraryView` in topic mode. Disabled while a
+    /// blank creation is in flight to avoid double-create races.
+    private var templateBanner: some View {
+        Button {
+            isTemplateLibraryPresented = true
+        } label: {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle().fill(theme.softAccent)
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(theme.accent)
+                }
+                .frame(width: 38, height: 38)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Use a template")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundStyle(theme.titleColor)
+                    Text("Start from a curated topic with ready notes inside.")
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .foregroundStyle(theme.mutedTextColor)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(theme.accent)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(theme.fieldBackground)
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(theme.softBorderColor, lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .disabled(effectiveIsCreating)
+    }
+
+    private func errorBanner(_ message: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(CreateSetTheme.red.accent)
+            Text(message)
+                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .foregroundStyle(theme.textColor)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(CreateSetTheme.red.accent.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var headerView: some View {
@@ -351,9 +471,18 @@ struct CreateGrammarTopicSheet: View {
         .grammarCreateSetSection(theme: theme, padding: isPadLike ? 20 : 16)
     }
 
+    private var effectiveIsCreating: Bool {
+        isCreating || didSubmit
+    }
+
     private var actionButtons: some View {
         HStack(spacing: 12) {
-            Button("Cancel", action: onCancel)
+            Button {
+                didSubmit = false
+                onCancel()
+            } label: {
+                Text("Cancel")
+            }
                 .font(.system(size: isPadLike ? 16 : 15, weight: .bold, design: .rounded))
                 .foregroundStyle(theme.accent)
                 .frame(maxWidth: .infinity)
@@ -364,12 +493,15 @@ struct CreateGrammarTopicSheet: View {
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
                         .stroke(theme.softBorderColor, lineWidth: 1)
                 )
+                .disabled(effectiveIsCreating)
 
             Button {
+                guard !effectiveIsCreating else { return }
+                didSubmit = true
                 onCreate(trimmedTitle, trimmedDescription, selectedLanguage.code, selectedLanguage.name, selectedIcon, selectedColor.hex)
             } label: {
                 HStack(spacing: 8) {
-                    if isCreating {
+                    if effectiveIsCreating {
                         ProgressView()
                             .tint(Color.white)
                             .scaleEffect(0.85)
@@ -380,10 +512,10 @@ struct CreateGrammarTopicSheet: View {
                 }
                 .frame(maxWidth: .infinity)
                 .frame(height: isPadLike ? 58 : 52)
-                .background(canCreate && !isCreating ? theme.accent : theme.accent.opacity(0.35))
+                .background(canCreate && !effectiveIsCreating ? theme.accent : theme.accent.opacity(0.35))
                 .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             }
-            .disabled(!canCreate || isCreating)
+            .disabled(!canCreate || effectiveIsCreating)
         }
     }
 
@@ -449,6 +581,16 @@ private extension View {
     }
 }
 
-#Preview {
-    CreateGrammarTopicSheet(isCreating: false, onCancel: {}, onCreate: { _, _, _, _, _, _ in })
+#Preview("Blank only") {
+    CreateGrammarTopicSheet(isCreating: false, errorMessage: nil, onCancel: {}, onCreate: { _, _, _, _, _, _ in })
+}
+
+#Preview("With template mode") {
+    CreateGrammarTopicSheet(
+        isCreating: false,
+        errorMessage: nil,
+        onCancel: {},
+        onCreate: { _, _, _, _, _, _ in },
+        onUseTemplate: { _ in }
+    )
 }

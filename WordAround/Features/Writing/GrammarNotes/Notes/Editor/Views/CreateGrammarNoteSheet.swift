@@ -3,6 +3,7 @@ import SwiftUI
 struct CreateGrammarNoteSheet: View {
     let topic: GrammarNoteTopic
     let isCreating: Bool
+    let errorMessage: String?
     let onCancel: () -> Void
     let onCreate: (String, String, GrammarNoteType, [String], Bool, GrammarNoteTemplate?) -> Void
 
@@ -14,8 +15,25 @@ struct CreateGrammarNoteSheet: View {
     @State private var usesTemplate = false
     @State private var selectedTemplate: GrammarNoteTemplate?
     @State private var validationMessage: String?
+    @State private var didSubmit = false
 
     private let templates = GrammarNoteTemplateProvider.shared.templates
+
+    init(
+        topic: GrammarNoteTopic,
+        isCreating: Bool,
+        errorMessage: String? = nil,
+        onCancel: @escaping () -> Void,
+        onCreate: @escaping (String, String, GrammarNoteType, [String], Bool, GrammarNoteTemplate?) -> Void
+    ) {
+        self.topic = topic
+        self.isCreating = isCreating
+        self.errorMessage = errorMessage
+        self.onCancel = onCancel
+        self.onCreate = onCreate
+    }
+
+    private var effectiveIsCreating: Bool { isCreating || didSubmit }
 
     var body: some View {
         NavigationStack {
@@ -45,6 +63,23 @@ struct CreateGrammarNoteSheet: View {
                                 .padding(.horizontal, 2)
                         }
 
+                        if let errorMessage, !errorMessage.isEmpty {
+                            HStack(alignment: .top, spacing: 10) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundStyle(CreateSetTheme.red.accent)
+                                Text(errorMessage)
+                                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                    .foregroundStyle(AppColors.primaryBlueDark)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(CreateSetTheme.red.accent.opacity(0.08))
+                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                        }
+
                         actionButtons
                     }
                     .padding(Layout.grammarNoteCreatePadding)
@@ -61,6 +96,24 @@ struct CreateGrammarNoteSheet: View {
             if previewText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 previewText = template.description
             }
+        }
+        .onChange(of: isCreating) { _, creating in
+            if !creating { didSubmit = false }
+        }
+        .onChange(of: errorMessage) { _, message in
+            // Only reset on a new error appearing — not on clearing during a
+            // fresh attempt. The VM always toggles isCreating true→false now,
+            // so the .onChange(of: isCreating) handler covers the success path.
+            guard message != nil else { return }
+            didSubmit = false
+        }
+        // Safety watchdog — guarantees the spinner clears even if the
+        // parent's Task never publishes a state change (cancelled,
+        // synchronous return, or coalesced @Published update).
+        .task(id: didSubmit) {
+            guard didSubmit else { return }
+            try? await Task.sleep(nanoseconds: 12_000_000_000)
+            if didSubmit { didSubmit = false }
         }
     }
 
@@ -273,7 +326,10 @@ struct CreateGrammarNoteSheet: View {
     // MARK: - Action buttons
     private var actionButtons: some View {
         HStack(spacing: 12) {
-            Button(action: onCancel) {
+            Button {
+                didSubmit = false
+                onCancel()
+            } label: {
                 Text("Cancel")
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
@@ -283,10 +339,11 @@ struct CreateGrammarNoteSheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             }
             .buttonStyle(.plain)
+            .disabled(effectiveIsCreating)
 
             Button(action: validateAndCreate) {
                 HStack(spacing: 8) {
-                    if isCreating { ProgressView().tint(Color.white) }
+                    if effectiveIsCreating { ProgressView().tint(Color.white) }
                     Text("Create").font(.system(size: 14, weight: .bold, design: .rounded))
                 }
                 .foregroundStyle(Color.white)
@@ -296,13 +353,15 @@ struct CreateGrammarNoteSheet: View {
                 .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             }
             .buttonStyle(.plain)
-            .disabled(isCreating)
+            .disabled(effectiveIsCreating)
         }
         .padding(.top, 4)
     }
 
     // MARK: - Validation
     private func validateAndCreate() {
+        guard !effectiveIsCreating else { return }
+
         let cleanTitle   = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let cleanPreview = previewText.trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -313,6 +372,7 @@ struct CreateGrammarNoteSheet: View {
                                            else { validationMessage = "Choose a template or start blank.";     return }
 
         validationMessage = nil
+        didSubmit = true
         onCreate(cleanTitle, cleanPreview, selectedType, parsedTags(from: tagsText), hasQuiz, usesTemplate ? selectedTemplate : nil)
     }
 
@@ -327,6 +387,7 @@ struct CreateGrammarNoteSheet: View {
     CreateGrammarNoteSheet(
         topic: .commonMistakes(ownerUID: "preview"),
         isCreating: false,
+        errorMessage: nil,
         onCancel: {},
         onCreate: { _, _, _, _, _, _ in }
     )

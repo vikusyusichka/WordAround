@@ -3,6 +3,7 @@ import SwiftUI
 struct GrammarNoteCardView: View {
     let note: GrammarNote
     var isCompact: Bool = false
+    var onQuizTap: (() -> Void)? = nil
 
     var body: some View {
         HStack(spacing: Layout.value(pad: 16, phone: 13)) {
@@ -78,7 +79,14 @@ struct GrammarNoteCardView: View {
             metaPill(note.noteType.title, systemImage: note.noteType.systemImage)
 
             if note.hasQuiz {
-                metaPill("Quiz", systemImage: "questionmark.circle.fill")
+                if let onQuizTap {
+                    Button(action: onQuizTap) {
+                        metaPill("Quiz", systemImage: "questionmark.circle.fill")
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    metaPill("Quiz", systemImage: "questionmark.circle.fill")
+                }
             }
 
             ForEach(note.tags.prefix(isCompact ? 1 : 2), id: \.self) { tag in
@@ -137,7 +145,10 @@ struct GrammarNoteCardView: View {
 }
 
 #Preview {
-    GrammarNoteCardView(note: .preview(isPinned: true, isFavorite: true, hasQuiz: true))
-        .padding()
-        .background(AppColors.appBackground)
+    VStack(spacing: 12) {
+        GrammarNoteCardView(note: .preview(isPinned: true, isFavorite: true, hasQuiz: true), onQuizTap: {})
+        GrammarNoteCardView(note: .preview(hasQuiz: false))
+    }
+    .padding()
+    .background(AppColors.appBackground)
 }

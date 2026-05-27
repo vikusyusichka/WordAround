@@ -72,17 +72,64 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         scheduleAutosave()
     }
 
+    /// Mode used when applying a template to an existing note.
+    enum TemplateApplyMode {
+        /// Replace all current blocks with the template's blocks.
+        case replace
+        /// Append the template's blocks after the current ones.
+        case append
+    }
+
+    /// Default `replace` mode preserved for existing callers.
     func applyTemplate(_ template: GrammarNoteTemplate) {
-        blocks = template.blocks.enumerated().map { index, block in
-            var copy = block
-            copy.id = UUID().uuidString
-            copy.order = index
-            copy.createdAt = Date()
-            copy.updatedAt = Date()
-            return copy
+        applyTemplate(template, mode: .replace, allowsQuiz: true)
+    }
+
+    /// Applies a note template either by replacing or appending its blocks.
+    /// Quiz blocks are filtered out when `allowsQuiz == false` so the
+    /// `allowQuickQuizzes` setting is honored consistently.
+    ///
+    /// Autosave is triggered once after the in-memory mutation — there is
+    /// no parallel save path or duplicate write.
+    func applyTemplate(
+        _ template: GrammarNoteTemplate,
+        mode: TemplateApplyMode,
+        allowsQuiz: Bool
+    ) {
+        let now = Date()
+        let templateSource = allowsQuiz ? template : template.withoutQuizBlocks()
+
+        switch mode {
+        case .replace:
+            blocks = templateSource.blocks.enumerated().map { index, block in
+                var copy = block
+                copy.id = UUID().uuidString
+                copy.order = index
+                copy.createdAt = now
+                copy.updatedAt = now
+                return copy
+            }
+            note.templateId = template.id
+            note.noteType = template.noteType
+
+        case .append:
+            let baseOrder = blocks.count
+            let appended = templateSource.blocks.enumerated().map { index, block -> GrammarNoteBlock in
+                var copy = block
+                copy.id = UUID().uuidString
+                copy.order = baseOrder + index
+                copy.createdAt = now
+                copy.updatedAt = now
+                return copy
+            }
+            blocks.append(contentsOf: appended)
+            // Keep the user's existing noteType/templateId; appending is
+            // additive and should not silently rewrite top-level metadata.
         }
-        note.templateId = template.id
-        note.noteType = template.noteType
+
+        if templateSource.hasQuizBlock {
+            note.hasQuiz = true
+        }
         scheduleAutosave()
     }
 
@@ -112,6 +159,10 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         guard title != newTitle else { return }
         title = newTitle
         scheduleAutosave()
+    }
+
+    func markHasQuiz(_ value: Bool) {
+        note.hasQuiz = value
     }
 
     // MARK: - Block loading (lazy — called when the note was opened from a list preview)

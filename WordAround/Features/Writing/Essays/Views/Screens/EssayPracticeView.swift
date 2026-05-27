@@ -98,7 +98,9 @@ struct EssayPracticeView: View {
                         usedSynonyms: viewModel.usedSynonyms,
                         onRetry: {
                             await viewModel.retryGrammarCheck()
-                        }
+                        },
+                        saveStateProvider: { viewModel.saveState(for: $0) },
+                        onSaveIssue: { viewModel.requestSaveGrammarIssue($0) }
                     )
                 }
                 .frame(maxWidth: Layout.essayContentMaxWidth)
@@ -123,6 +125,18 @@ struct EssayPracticeView: View {
             }
             .sheet(isPresented: $viewModel.isSetHintsPresented) {
                 setHintsSheet
+            }
+            .sheet(item: $viewModel.pendingMistakeIssue) { issue in
+                SaveGrammarMistakeConfirmationSheet(
+                    originalSentence: issue.incorrectText,
+                    correctedSentence: issue.suggestedCorrection ?? "",
+                    explanation: issue.message,
+                    state: viewModel.saveState(for: issue),
+                    onCancel: { viewModel.dismissPendingMistakeIssue() },
+                    onSave: {
+                        Task { await viewModel.confirmSavePendingIssue() }
+                    }
+                )
             }
 
             assistanceModalOverlay

@@ -64,7 +64,16 @@ final class GrammarNoteService: GrammarNoteServicing {
     // MARK: Create / Update
     func createNote(_ note: GrammarNote) async throws {
         try await writeNote(note)
-        try await updateTopicNotesCount(ownerUID: note.ownerUID, topicId: note.topicId, delta: 1)
+        // Best-effort: the topic count is denormalized metadata. If the
+        // counter update fails (e.g. topic doc missing, permission edge case,
+        // transient error), the note is still saved correctly — we MUST NOT
+        // rethrow here, or the caller will see "save failed" and retry,
+        // creating a duplicate note. The list view auto-corrects the count
+        // from the actual notes collection on next load.
+        await bestEffortIncrementTopicNotesCount(
+            ownerUID: note.ownerUID,
+            topicId: note.topicId
+        )
     }
 
     func createAndReturnNote(_ note: GrammarNote) async throws -> GrammarNote {
@@ -92,7 +101,11 @@ final class GrammarNoteService: GrammarNoteServicing {
     // MARK: Delete
     func deleteNote(id: String, ownerUID: String, topicId: String) async throws {
         try await notesCollection(ownerUID: ownerUID, topicId: topicId).document(id).delete()
-        try await updateTopicNotesCount(ownerUID: ownerUID, topicId: topicId, delta: -1)
+        // Best-effort decrement — see comment in `createNote`.
+        await bestEffortDecrementTopicNotesCount(
+            ownerUID: ownerUID,
+            topicId: topicId
+        )
     }
 
     // MARK: Toggle helpers (now use targeted field updates)
@@ -146,6 +159,29 @@ final class GrammarNoteService: GrammarNoteServicing {
             "notesCount": FieldValue.increment(delta),
             "updatedAt": Timestamp(date: Date())
         ])
+    }
+
+    /// Best-effort topic counter update — swallows errors so a denormalized
+    /// counter cannot fail an otherwise-successful note write. Errors are
+    /// logged in DEBUG so the developer can still investigate.
+    private func bestEffortIncrementTopicNotesCount(ownerUID: String, topicId: String) async {
+        do {
+            try await updateTopicNotesCount(ownerUID: ownerUID, topicId: topicId, delta: 1)
+        } catch {
+            #if DEBUG
+            print("[GrammarNoteService] topic count increment failed for \(topicId):", error)
+            #endif
+        }
+    }
+
+    private func bestEffortDecrementTopicNotesCount(ownerUID: String, topicId: String) async {
+        do {
+            try await updateTopicNotesCount(ownerUID: ownerUID, topicId: topicId, delta: -1)
+        } catch {
+            #if DEBUG
+            print("[GrammarNoteService] topic count decrement failed for \(topicId):", error)
+            #endif
+        }
     }
 
     // MARK: - Firestore ↔ Model mapping

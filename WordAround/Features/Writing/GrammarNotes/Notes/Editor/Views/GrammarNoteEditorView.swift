@@ -5,6 +5,13 @@ struct GrammarNoteEditorView: View {
     @StateObject private var viewModel: GrammarNoteEditorViewModel
     @State private var isAddBlockSheetPresented = false
     @State private var isTemplateSheetPresented = false
+    @State private var isCreateQuizSheetPresented = false
+    @State private var isQuizListSheetPresented = false
+    /// When non-nil, prompts the user to decide whether the chosen template
+    /// should replace or be appended to the existing note content. Only
+    /// surfaces when the note already has blocks; for empty notes we apply
+    /// directly without a confirmation dialog.
+    @State private var pendingTemplate: GrammarNoteTemplate? = nil
 
     private let allowsQuiz: Bool
 
@@ -70,6 +77,51 @@ struct GrammarNoteEditorView: View {
         .sheet(isPresented: $isTemplateSheetPresented) {
             templateSheet
         }
+        .sheet(isPresented: $isCreateQuizSheetPresented) {
+            CreateGrammarQuizSheet(
+                note: viewModel.note,
+                blocks: viewModel.blocks,
+                onCreated: {
+                    viewModel.markHasQuiz(true)
+                    isCreateQuizSheetPresented = false
+                },
+                onCancel: { isCreateQuizSheetPresented = false }
+            )
+        }
+        .sheet(isPresented: $isQuizListSheetPresented) {
+            GrammarNoteQuizListView(
+                note: viewModel.note,
+                ownerUID: viewModel.ownerUID,
+                allowsCreation: allowsQuiz,
+                onAllDeleted: { viewModel.markHasQuiz(false) },
+                onDismiss: { isQuizListSheetPresented = false }
+            )
+        }
+        // Asks the user how to apply a template when the note already has
+        // blocks — prevents silent overwrites.
+        .confirmationDialog(
+            pendingTemplate.map { "Apply \"\($0.title)\"?" } ?? "Apply template?",
+            isPresented: Binding(
+                get: { pendingTemplate != nil },
+                set: { if !$0 { pendingTemplate = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: pendingTemplate
+        ) { template in
+            Button("Replace current content", role: .destructive) {
+                viewModel.applyTemplate(template, mode: .replace, allowsQuiz: allowsQuiz)
+                pendingTemplate = nil
+            }
+            Button("Append template blocks") {
+                viewModel.applyTemplate(template, mode: .append, allowsQuiz: allowsQuiz)
+                pendingTemplate = nil
+            }
+            Button("Cancel", role: .cancel) {
+                pendingTemplate = nil
+            }
+        } message: { _ in
+            Text("This note already has content. Choose how to apply the template.")
+        }
         .onDisappear {
             Task { await viewModel.saveIfDirty() }
         }
@@ -122,6 +174,22 @@ struct GrammarNoteEditorView: View {
             Menu {
                 Button("Save now")     { Task { await viewModel.saveNow() } }
                 Button("Use template") { isTemplateSheetPresented = true }
+                if allowsQuiz {
+                    Divider()
+                    if viewModel.note.hasQuiz {
+                        Button {
+                            isQuizListSheetPresented = true
+                        } label: {
+                            Label("Practice Quiz", systemImage: "play.circle.fill")
+                        }
+                    } else {
+                        Button {
+                            isCreateQuizSheetPresented = true
+                        } label: {
+                            Label("Create Quiz", systemImage: "plus.circle.fill")
+                        }
+                    }
+                }
             } label: {
                 Image(systemName: "ellipsis")
                     .font(.system(size: 17, weight: .bold))
@@ -244,59 +312,29 @@ struct GrammarNoteEditorView: View {
     }
 
     // MARK: - Template sheet
+    /// Hosts `GrammarTemplateLibraryView` in note mode. When a template is
+    /// picked we either apply it immediately (empty note) or stash it into
+    /// `pendingTemplate` to ask the user whether to replace or append.
     private var templateSheet: some View {
-        NavigationStack {
-            ZStack {
-                AppColors.appBackground.ignoresSafeArea()
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 12) {
-                        ForEach(GrammarNoteTemplateProvider.shared.templates) { template in
-                            Button {
-                                viewModel.applyTemplate(template)
-                                isTemplateSheetPresented = false
-                            } label: {
-                                templateRow(template)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(20)
-                }
-            }
-            .navigationTitle("Templates")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close") { isTemplateSheetPresented = false }
-                }
-            }
-        }
-        .presentationDetents([.medium, .large])
+        GrammarTemplateLibraryView(
+            kind: .note,
+            onSelectTopic: nil,
+            onSelectNote: { template in
+                isTemplateSheetPresented = false
+                handleTemplateSelection(template)
+            },
+            onCancel: { isTemplateSheetPresented = false }
+        )
     }
 
-    private func templateRow(_ template: GrammarNoteTemplate) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: template.noteType.systemImage)
-                .font(.system(size: 19, weight: .bold))
-                .foregroundStyle(template.noteType.tintColor)
-                .frame(width: 46, height: 46)
-                .background(template.noteType.tintColor.opacity(0.12))
-                .clipShape(Circle())
-
-            VStack(alignment: .leading, spacing: 5) {
-                Text(template.title)
-                    .font(.system(size: 15, weight: .bold, design: .rounded))
-                    .foregroundStyle(AppColors.primaryBlueDark)
-                Text(template.description)
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(AppColors.textSecondary)
-                    .lineLimit(2)
-            }
-            Spacer()
+    private func handleTemplateSelection(_ template: GrammarNoteTemplate) {
+        // Empty note → just apply (replace mode is a no-op for empty arrays).
+        if viewModel.blocks.isEmpty {
+            viewModel.applyTemplate(template, mode: .replace, allowsQuiz: allowsQuiz)
+        } else {
+            // Non-empty → ask user before mutating their existing content.
+            pendingTemplate = template
         }
-        .padding(15)
-        .background(Color.white.opacity(0.92))
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 
     // MARK: - Helpers

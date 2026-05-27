@@ -98,6 +98,11 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published private(set) var score: EssayScore?
     @Published private(set) var grammarIssueSaveStates: [String: SaveGrammarMistakeConfirmationSheet.SaveState] = [:]
 
+    /// Drives the optional `SaveGrammarMistakeConfirmationSheet` via
+    /// `.sheet(item:)`. Set when the user taps Save and the global setting
+    /// `askBeforeSavingMistakes` is on. Cleared by `dismissPendingMistakeIssue()`.
+    @Published var pendingMistakeIssue: GrammarIssue? = nil
+
     // MARK: - Assistance usage
 
     @Published private(set) var usedHints: Int = 0
@@ -135,7 +140,9 @@ final class EssayPracticeViewModel: ObservableObject {
     private let grammarMistakeSaveService = GrammarMistakeSaveService()
     private let grammarNotesSettingsStore = GrammarNotesSettingsStore()
 
-    private static let autoSaveEssayMistakesKey = "grammarNotes.autoSaveEssayMistakes"
+    /// Guards against re-running auto-save on the same grammar check result.
+    /// Reset at the start of every new `checkGrammar` and on `clearFeedback`.
+    private var didAutoSaveCurrentCheck = false
 
     /// Stored so it can be cancelled when the modal closes or a new request starts.
     private var assistanceTask: Task<Void, Never>?
@@ -505,6 +512,8 @@ final class EssayPracticeViewModel: ObservableObject {
     func clearFeedback() {
         grammarIssues = []
         grammarIssueSaveStates = [:]
+        pendingMistakeIssue = nil
+        didAutoSaveCurrentCheck = false
         errorState = nil
         feedbackState = .idle
         score = nil
@@ -527,6 +536,9 @@ final class EssayPracticeViewModel: ObservableObject {
         isLoading = true
         errorState = nil
         feedbackState = .loading
+        // New grammar check → reset the auto-save guard so it can run once for
+        // the upcoming result set.
+        didAutoSaveCurrentCheck = false
 
         do {
             let issues = try await grammarService.check(
@@ -538,7 +550,11 @@ final class EssayPracticeViewModel: ObservableObject {
             grammarIssueSaveStates = [:]
             feedbackState = issues.isEmpty ? .emptyResult : .success
             calculateScoreAfterGrammarCheck()
-            await saveAllGrammarIssuesIfAutoSaveEnabled()
+            // Fire-and-forget auto-save so feedback shows immediately while
+            // Firestore writes happen in the background. The guard inside
+            // `saveAllGrammarIssuesIfAutoSaveEnabled` ensures it runs once per
+            // check result set.
+            triggerAutoSaveIfEnabled()
         } catch {
             let message = (error as? LocalizedError)?.errorDescription ?? "Grammar check failed. Try again."
             errorState = message
@@ -546,6 +562,21 @@ final class EssayPracticeViewModel: ObservableObject {
         }
 
         isLoading = false
+    }
+
+    /// Spawns a non-blocking task that auto-saves all issues if the global
+    /// setting is enabled. Safe to call multiple times — the per-call guard
+    /// (`didAutoSaveCurrentCheck`) ensures we never run twice for the same
+    /// grammar check result set, and per-issue state guards prevent duplicate
+    /// Firestore writes.
+    private func triggerAutoSaveIfEnabled() {
+        guard !didAutoSaveCurrentCheck else { return }
+        guard grammarNotesSettingsStore.saveGrammarMistakesAutomatically else { return }
+        guard !grammarIssues.isEmpty else { return }
+        didAutoSaveCurrentCheck = true
+        Task { [weak self] in
+            await self?.saveAllGrammarIssuesIfAutoSaveEnabled()
+        }
     }
 
     func calculateScoreAfterGrammarCheck() {
@@ -569,13 +600,42 @@ final class EssayPracticeViewModel: ObservableObject {
         grammarIssueSaveStates[issueSaveStateKey(issue)] ?? .idle
     }
 
+    /// Entry point from `GrammarIssueCardView`. Decides whether to show the
+    /// confirmation sheet (driven by the global setting) or save directly.
+    /// Never blocks the UI; the actual Firestore write happens in a Task.
+    func requestSaveGrammarIssue(_ issue: GrammarIssue) {
+        let state = saveState(for: issue)
+        guard state != .saving, state != .saved, state != .duplicate else { return }
+
+        if grammarNotesSettingsStore.askBeforeSavingMistakes {
+            pendingMistakeIssue = issue
+        } else {
+            Task { [weak self] in await self?.saveGrammarIssueToNotes(issue) }
+        }
+    }
+
+    /// Confirms the pending save initiated from `SaveGrammarMistakeConfirmationSheet`.
+    /// The sheet stays presented so the user sees the success/duplicate/failure
+    /// state; they dismiss it manually.
+    func confirmSavePendingIssue() async {
+        guard let issue = pendingMistakeIssue else { return }
+        await saveGrammarIssueToNotes(issue)
+    }
+
+    func dismissPendingMistakeIssue() {
+        pendingMistakeIssue = nil
+    }
+
     func saveGrammarIssueToNotes(_ issue: GrammarIssue) async {
         let key = issueSaveStateKey(issue)
         guard saveState(for: issue) != .saving else { return }
         guard saveState(for: issue) != .saved, saveState(for: issue) != .duplicate else { return }
 
-        guard let ownerUID = Auth.auth().currentUser?.uid else {
+        guard let ownerUID = Auth.auth().currentUser?.uid, !ownerUID.isEmpty else {
             grammarIssueSaveStates[key] = .failed("Sign in to save this mistake.")
+            #if DEBUG
+            print("[SaveMistake] failed: ownerUID missing")
+            #endif
             return
         }
 
@@ -592,17 +652,29 @@ final class EssayPracticeViewModel: ObservableObject {
             switch result {
             case .saved:
                 grammarIssueSaveStates[key] = .saved
+                #if DEBUG
+                print("[SaveMistake] saved key=\(key)")
+                #endif
             case .duplicate:
                 grammarIssueSaveStates[key] = .duplicate
+                #if DEBUG
+                print("[SaveMistake] duplicate key=\(key)")
+                #endif
             }
         } catch {
             let message = (error as? LocalizedError)?.errorDescription ?? "Could not save this mistake."
             grammarIssueSaveStates[key] = .failed(message)
+            #if DEBUG
+            print("[SaveMistake] failed:", error)
+            #endif
         }
     }
 
+    /// Auto-save path. Reads from `GrammarNotesSettingsStore` (single source
+    /// of truth) — NOT a stray UserDefaults key. The per-issue state guard
+    /// prevents duplicate writes if this is somehow re-entered.
     func saveAllGrammarIssuesIfAutoSaveEnabled() async {
-        guard UserDefaults.standard.bool(forKey: Self.autoSaveEssayMistakesKey) else { return }
+        guard grammarNotesSettingsStore.saveGrammarMistakesAutomatically else { return }
 
         for issue in grammarIssues {
             let state = saveState(for: issue)

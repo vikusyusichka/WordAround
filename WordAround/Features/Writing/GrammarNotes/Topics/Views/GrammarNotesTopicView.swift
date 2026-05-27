@@ -9,6 +9,7 @@ struct GrammarNotesTopicView: View {
     @State private var isQuickNoteSheetPresented = false
     @State private var isQuickMistakeSheetPresented = false
     @State private var editorNote: GrammarNote?
+    @State private var quizNote: GrammarNote?
 
     private let theme: CreateSetTheme
 
@@ -65,7 +66,7 @@ struct GrammarNotesTopicView: View {
                 note: note,
                 ownerUID: note.ownerUID,
                 topicId: note.topicId,
-                allowsQuiz: true
+                allowsQuiz: settings.allowQuickQuizzes
             )
         }
         .sheet(isPresented: $isCreateSheetPresented) {
@@ -76,6 +77,17 @@ struct GrammarNotesTopicView: View {
         }
         .sheet(isPresented: $isQuickMistakeSheetPresented) {
             quickMistakeSheet
+        }
+        .sheet(item: $quizNote) { note in
+            // Note opened from badge has empty contentBlocks (preview-load).
+            // Creation is available from the full editor (where blocks are loaded).
+            GrammarNoteQuizListView(
+                note: note,
+                ownerUID: viewModel.topic.ownerUID,
+                allowsCreation: false,
+                onAllDeleted: {},
+                onDismiss: { quizNote = nil }
+            )
         }
         .task {
             await viewModel.loadNotesIfNeeded()
@@ -91,10 +103,11 @@ struct GrammarNotesTopicView: View {
         CreateGrammarNoteSheet(
             topic: viewModel.topic,
             isCreating: viewModel.isCreatingNote,
+            errorMessage: viewModel.errorMessage,
             onCancel: { isCreateSheetPresented = false },
             onCreate: { title, previewText, noteType, tags, hasQuiz, template in
                 Task {
-                    let didCreate = await viewModel.createNote(
+                    let saved = await viewModel.createNote(
                         title: title,
                         previewText: previewText,
                         noteType: noteType,
@@ -102,7 +115,14 @@ struct GrammarNotesTopicView: View {
                         hasQuiz: hasQuiz,
                         template: template
                     )
-                    if didCreate { isCreateSheetPresented = false }
+                    if let saved {
+                        isCreateSheetPresented = false
+                        // Restore the full "New Note" flow: after metadata is
+                        // saved, jump straight into the rich editor so the user
+                        // can add blocks (rules, examples, images, etc.) without
+                        // an extra tap on the new card.
+                        editorNote = saved
+                    }
                 }
             }
         )
@@ -302,9 +322,18 @@ struct GrammarNotesTopicView: View {
             VStack(spacing: isPadLike ? 13 : 11) {
                 ForEach(notes) { note in
                     NavigationLink {
-                        GrammarNoteEditorView(note: note, ownerUID: viewModel.topic.ownerUID, topicId: viewModel.topic.id, allowsQuiz: true)
+                        GrammarNoteEditorView(
+                            note: note,
+                            ownerUID: viewModel.topic.ownerUID,
+                            topicId: viewModel.topic.id,
+                            allowsQuiz: settings.allowQuickQuizzes
+                        )
                     } label: {
-                        GrammarNoteCardView(note: note, isCompact: isCompact)
+                        GrammarNoteCardView(
+                            note: note,
+                            isCompact: isCompact,
+                            onQuizTap: note.hasQuiz ? { quizNote = note } : nil
+                        )
                     }
                     .buttonStyle(.plain)
                     .swipeActions(edge: .leading, allowsFullSwipe: false) {
