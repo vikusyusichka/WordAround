@@ -2,72 +2,170 @@ import SwiftUI
 
 struct WritingSetCardView: View {
     let item: WritingSetSelectionItem
+    let metrics: ScreenMetrics
 
-    private var theme: CreateSetTheme {
-        item.theme
+    private var accent: Color {
+        Self.color(from: item.sourceSet.colorHex)
+    }
+
+    private var softAccent: Color {
+        accent.opacity(0.12)
+    }
+
+    init(item: WritingSetSelectionItem, metrics: ScreenMetrics? = nil) {
+        self.item = item
+        self.metrics = metrics ?? ScreenMetrics.current(horizontal: nil, vertical: nil, containerWidth: 0)
     }
 
     var body: some View {
-        HStack(spacing: Layout.setItemContentSpacing) {
+        HStack(spacing: LayoutConstants.WritingSetSelection.rowContentSpacing(metrics)) {
             iconView
 
-            VStack(alignment: .leading, spacing: Layout.setItemTextStackSpacing) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(item.title)
-                    .font(.system(size: Layout.setItemTitleSize, weight: .bold, design: .rounded))
-                    .foregroundColor(theme.titleColor)
+                    .font(.system(
+                        size: LayoutConstants.WritingSetSelection.titleTextSize(metrics),
+                        weight: .bold,
+                        design: .rounded
+                    ))
+                    .foregroundColor(accent)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.82)
 
-                Text(item.subtitle)
-                    .font(.system(size: Layout.setItemSubtitleSize, weight: .semibold, design: .rounded))
-                    .foregroundColor(theme.mutedTextColor)
+                Text(wordsText)
+                    .font(.system(
+                        size: LayoutConstants.WritingSetSelection.subtitleTextSize(metrics),
+                        weight: .semibold,
+                        design: .rounded
+                    ))
+                    .foregroundColor(AppColors.textSecondary)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.82)
             }
 
-            Spacer(minLength: Layout.setItemContentSpacing)
+            Spacer(minLength: LayoutConstants.WritingSetSelection.rowContentSpacing(metrics))
 
             HStack(spacing: 6) {
                 Text("Review")
-                    .font(.system(size: Layout.setItemTrailingTextSize, weight: .bold, design: .rounded))
-                    .foregroundColor(theme.accent.opacity(0.78))
+                    .font(.system(
+                        size: LayoutConstants.WritingSetSelection.reviewTextSize(metrics),
+                        weight: .bold,
+                        design: .rounded
+                    ))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: Layout.setItemArrowSize, weight: .bold))
-                    .foregroundColor(theme.accent.opacity(0.78))
+                    .font(.system(
+                        size: LayoutConstants.WritingSetSelection.reviewArrowSize(metrics),
+                        weight: .bold
+                    ))
             }
-            .padding(.trailing, Layout.setItemHorizontalPadding)
+            .foregroundColor(accent)
+            .padding(.horizontal, LayoutConstants.WritingSetSelection.reviewHorizontalPadding(metrics))
+            .padding(.vertical, LayoutConstants.WritingSetSelection.reviewVerticalPadding(metrics))
+            .background(
+                Capsule()
+                    .fill(softAccent)
+            )
         }
-        .padding(.leading, Layout.setItemHorizontalPadding)
-        .padding(.vertical, Layout.setItemVerticalPadding)
-        .frame(maxWidth: .infinity, minHeight: Layout.setItemHeight, alignment: .leading)
-        .background(cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: Layout.setItemCornerRadius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: Layout.setItemCornerRadius, style: .continuous)
-                .stroke(Color.white.opacity(0.72), lineWidth: 1)
+        .padding(.horizontal, LayoutConstants.WritingSetSelection.rowHorizontalPadding(metrics))
+        .padding(.vertical, LayoutConstants.WritingSetSelection.rowVerticalPadding(metrics))
+        .frame(
+            maxWidth: .infinity,
+            minHeight: LayoutConstants.WritingSetSelection.rowHeight(metrics),
+            alignment: .leading
         )
-        .shadow(color: theme.shadowColor.opacity(0.68), radius: 18, x: 0, y: 10)
+        .background(cardBackground)
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: LayoutConstants.WritingSetSelection.rowCornerRadius(metrics),
+                style: .continuous
+            )
+        )
+        .overlay(
+            RoundedRectangle(
+                cornerRadius: LayoutConstants.WritingSetSelection.rowCornerRadius(metrics),
+                style: .continuous
+            )
+            .stroke(Color.white.opacity(0.74), lineWidth: 1)
+        )
+        .shadow(color: accent.opacity(0.09), radius: 16, x: 0, y: 9)
     }
 
     private var iconView: some View {
         ZStack {
             Circle()
-                .fill(theme.accent)
-                .frame(width: Layout.setItemIconCircleSize, height: Layout.setItemIconCircleSize)
+                .fill(accent)
+                .frame(
+                    width: LayoutConstants.WritingSetSelection.iconCircleSize(metrics),
+                    height: LayoutConstants.WritingSetSelection.iconCircleSize(metrics)
+                )
 
             Image(systemName: item.iconSystemName)
-                .font(.system(size: Layout.setItemIconSize, weight: .bold))
+                .font(.system(
+                    size: LayoutConstants.WritingSetSelection.iconSize(metrics),
+                    weight: .bold
+                ))
                 .foregroundColor(.white)
         }
     }
 
     private var cardBackground: some View {
         ZStack(alignment: .trailing) {
-            theme.sectionBackground
+            Color.white.opacity(0.90)
 
             BlobShape()
-                .fill(theme.softAccent.opacity(0.78))
-                .frame(width: Layout.setItemBlobSize.width, height: Layout.setItemBlobSize.height)
-                .offset(x: Layout.setItemBlobOffset.width, y: Layout.setItemBlobOffset.height)
+                .fill(softAccent)
+                .frame(
+                    width: LayoutConstants.WritingSetSelection.blobSize(metrics).width,
+                    height: LayoutConstants.WritingSetSelection.blobSize(metrics).height
+                )
+                .offset(
+                    x: LayoutConstants.WritingSetSelection.blobOffset(metrics).width,
+                    y: LayoutConstants.WritingSetSelection.blobOffset(metrics).height
+                )
+        }
+    }
+
+    private var wordsText: String {
+        let count = item.sourceSet.cards.count
+        return count == 1 ? "1 word" : "\(count) words"
+    }
+
+    private static func color(from hex: String) -> Color {
+        let trimmed = hex
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "#", with: "")
+
+        guard trimmed.count == 6,
+              let value = UInt64(trimmed, radix: 16) else {
+            return Color(hexNameFallback: hex)
+        }
+
+        let red = Double((value >> 16) & 0xFF) / 255.0
+        let green = Double((value >> 8) & 0xFF) / 255.0
+        let blue = Double(value & 0xFF) / 255.0
+
+        return Color(red: red, green: green, blue: blue)
+    }
+}
+
+private extension Color {
+    init(hexNameFallback value: String) {
+        switch value.lowercased() {
+        case "red":
+            self = .red
+        case "purple":
+            self = .purple
+        case "green":
+            self = .green
+        case "yellow", "orange":
+            self = .orange
+        case "cyan":
+            self = .cyan
+        default:
+            self = AppColors.primaryBlue
         }
     }
 }
@@ -81,7 +179,7 @@ struct WritingSetCardView: View {
         description: "Basic daily words",
         privacy: "private",
         folderName: nil,
-        colorHex: SetColor.purple.hex,
+        colorHex: "#B66AF2",
         icon: .systemName("star.fill"),
         cards: [
             Flashcard(id: UUID().uuidString, word: "manzana", translation: "яблуко", example: "apple", imageURL: nil)
@@ -96,7 +194,7 @@ struct WritingSetCardView: View {
             sourceSet: set,
             title: set.title,
             subtitle: "Basic daily words",
-            wordsCountText: "1 words",
+            wordsCountText: "1 word",
             iconSystemName: "star.fill",
             theme: .purple
         )

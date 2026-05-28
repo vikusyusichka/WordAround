@@ -2,13 +2,12 @@ import SwiftUI
 
 struct WritingSetSelectionView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
     @StateObject private var viewModel: WritingSetSelectionViewModel
 
     let onSelect: (FlashcardSet) -> Void
-
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad
-    }
 
     @MainActor
     init(sets: [FlashcardSet], onSelect: @escaping (FlashcardSet) -> Void) {
@@ -17,84 +16,119 @@ struct WritingSetSelectionView: View {
     }
 
     var body: some View {
-        ZStack {
-            AppColors.appBackground.ignoresSafeArea()
+        GeometryReader { proxy in
+            let metrics = ScreenMetrics.current(
+                horizontal: horizontalSizeClass,
+                vertical: verticalSizeClass,
+                containerWidth: proxy.size.width
+            )
 
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-                    topBar
-                        .padding(.bottom, isPadLike ? 10 : 4)
+            ZStack {
+                AppColors.appBackground
+                    .ignoresSafeArea()
 
-                    if viewModel.isEmpty {
-                        emptyState
-                    } else {
-                        LazyVStack(spacing: Layout.homeSetsListSpacing) {
-                            ForEach(viewModel.items) { item in
-                                Button {
-                                    onSelect(item.sourceSet)
-                                } label: {
-                                    WritingSetCardView(item: item)
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        topBar(metrics)
+                            .padding(.bottom, LayoutConstants.WritingSetSelection.headerBottomPadding(metrics))
+
+                        if viewModel.isEmpty {
+                            emptyState(metrics)
+                        } else {
+                            LazyVStack(spacing: LayoutConstants.WritingSetSelection.listSpacing(metrics)) {
+                                ForEach(viewModel.items) { item in
+                                    Button {
+                                        onSelect(item.sourceSet)
+                                        dismiss()
+                                    } label: {
+                                        WritingSetCardView(item: item, metrics: metrics)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    .frame(
+                        maxWidth: LayoutConstants.WritingSetSelection.contentMaxWidth(metrics),
+                        alignment: .topLeading
+                    )
+                    .frame(maxWidth: .infinity, alignment: .top)
+                    .padding(.horizontal, LayoutConstants.WritingSetSelection.horizontalPadding(metrics))
+                    .padding(.top, LayoutConstants.WritingSetSelection.topPadding(metrics))
+                    .padding(.bottom, LayoutConstants.WritingSetSelection.bottomPadding(metrics))
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, Layout.homeHorizontalPadding)
-                .padding(.top, Layout.homeTopSpacing)
-                .padding(.bottom, Layout.homeBottomSafeSpacing)
+            }
+        }
+        .presentationDetents([.fraction(0.68), .large])
+        .presentationDragIndicator(.hidden)
+    }
+
+    private func topBar(_ metrics: ScreenMetrics) -> some View {
+        ZStack {
+            Text("Choose set")
+                .font(.system(
+                    size: LayoutConstants.WritingSetSelection.titleSize(metrics),
+                    weight: .bold,
+                    design: .rounded
+                ))
+                .foregroundColor(AppColors.primaryBlueDark)
+                .lineLimit(1)
+                .minimumScaleFactor(0.82)
+                .frame(maxWidth: .infinity)
+
+            HStack {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(
+                            size: LayoutConstants.WritingSetSelection.topBarIconSize(metrics),
+                            weight: .bold
+                        ))
+                        .foregroundColor(AppColors.primaryBlueDark)
+                        .frame(
+                            width: LayoutConstants.WritingSetSelection.topBarButtonSize(metrics),
+                            height: LayoutConstants.WritingSetSelection.topBarButtonSize(metrics)
+                        )
+                        .background(Color.white.opacity(0.86))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+
+                Spacer(minLength: 0)
             }
         }
     }
 
-    private var topBar: some View {
-        ZStack {
-            Text("Choose set")
+    private func emptyState(_ metrics: ScreenMetrics) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("No sets with words")
                 .font(.system(
-                    size: Layout.homePlaceholderTitleSize - 4,
+                    size: LayoutConstants.WritingSetSelection.emptyTitleSize(metrics),
                     weight: .bold,
                     design: .rounded
                 ))
                 .foregroundColor(AppColors.primaryBlueDark)
 
-            HStack {
-                Button { dismiss() } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(
-                            size: Layout.flashcardDetailTopButtonIconSize,
-                            weight: .bold
-                        ))
-                        .foregroundColor(AppColors.primaryBlueDark)
-                        .frame(
-                            width: Layout.flashcardDetailTopButtonSize,
-                            height: Layout.flashcardDetailTopButtonSize
-                        )
-                        .background(Color.white.opacity(0.82))
-                        .clipShape(Circle())
-                }
-                .buttonStyle(.plain)
-
-                Spacer()
-            }
-        }
-    }
-
-    private var emptyState: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("No sets with words")
-                .font(.system(size: Layout.homeEmptySetTitleSize, weight: .bold, design: .rounded))
-                .foregroundColor(AppColors.primaryBlueDark)
-
             Text("Create a set with at least one card before starting writing practice.")
-                .font(.system(size: Layout.homePlaceholderSubtitleSize, weight: .medium, design: .rounded))
+                .font(.system(
+                    size: LayoutConstants.WritingSetSelection.emptySubtitleSize(metrics),
+                    weight: .medium,
+                    design: .rounded
+                ))
                 .foregroundColor(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(Layout.homePlaceholderPadding)
+        .padding(LayoutConstants.WritingSetSelection.emptyPadding(metrics))
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.white.opacity(0.92))
-        .clipShape(RoundedRectangle(cornerRadius: Layout.setItemCornerRadius, style: .continuous))
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: LayoutConstants.WritingSetSelection.emptyCornerRadius(metrics),
+                style: .continuous
+            )
+        )
         .shadow(color: Color.black.opacity(0.05), radius: 16, x: 0, y: 8)
     }
 }
