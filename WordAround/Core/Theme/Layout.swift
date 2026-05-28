@@ -1015,6 +1015,104 @@ extension Layout {
 }
 
 
+// MARK: - Speaking
+
+extension Layout {
+    static let speakingModeGridSpacing: CGFloat = isPadLike ? 14 : 10
+    static let speakingModeCardCornerRadius: CGFloat = isPadLike ? 26 : 20
+    static let speakingModeCardPadding: CGFloat = isPadLike ? 18 : 14
+    static let speakingModeCardMinHeight: CGFloat = isPadLike ? 170 : 148
+    static let speakingModeIconCircleSize: CGFloat = isPadLike ? 56 : 46
+    static let speakingModeIconSize: CGFloat = isPadLike ? 24 : 20
+    static let speakingModeTitleSize: CGFloat = isPadLike ? 18 : 15
+    static let speakingModeSubtitleSize: CGFloat = isPadLike ? 14 : 12
+    static let speakingModeArrowCircleSize: CGFloat = isPadLike ? 32 : 26
+    static let speakingModeArrowIconSize: CGFloat = isPadLike ? 14 : 11
+    static let speakingModeBlobSize: CGSize = CGSize(width: isPadLike ? 92 : 72, height: isPadLike ? 76 : 60)
+    static let speakingModeBlobOffsetX: CGFloat = isPadLike ? 18 : 14
+    static let speakingModeBlobOffsetY: CGFloat = isPadLike ? 14 : 10
+}
+
+// MARK: - AI Conversation
+
+extension Layout {
+    // Scenario card
+    static let convScenarioCornerRadius: CGFloat       = isPadLike ? 26 : 22
+    static let convScenarioPadding: CGFloat            = isPadLike ? 22 : 18
+    static let convScenarioHeaderSpacing: CGFloat      = isPadLike ? 8 : 6
+    static let convScenarioContentSpacing: CGFloat     = isPadLike ? 14 : 12
+    static let convScenarioTitleSize: CGFloat          = isPadLike ? 22 : 19
+    static let convScenarioDescriptionSize: CGFloat    = isPadLike ? 16 : 14
+    static let convScenarioChipTextSize: CGFloat       = isPadLike ? 13 : 11
+    static let convScenarioFooterTextSize: CGFloat     = isPadLike ? 13 : 12
+    static let convScenarioChangeButtonTextSize: CGFloat = isPadLike ? 14 : 13
+    static let convScenarioChangeButtonIconSize: CGFloat = isPadLike ? 14 : 12
+    static let convScenarioChangeButtonHorizontalPadding: CGFloat = isPadLike ? 14 : 12
+    static let convScenarioChangeButtonVerticalPadding: CGFloat = isPadLike ? 9 : 8
+    static let convScenarioChangeButtonMinHeight: CGFloat = 36
+    static let convScenarioFooterIconSize: CGFloat     = isPadLike ? 13 : 12
+    static let convScenarioChevronSize: CGFloat        = isPadLike ? 14 : 12
+    static let convScenarioBlobSize: CGSize            = CGSize(width: isPadLike ? 120 : 96, height: isPadLike ? 108 : 86)
+    static let convScenarioDecorIconCircleSize: CGFloat = isPadLike ? 44 : 38
+    static let convScenarioDecorIconSize: CGFloat      = isPadLike ? 18 : 15
+    static let convScenarioDividerOpacity: CGFloat     = 0.35
+
+    // Chat bubbles
+    static let convBubbleCornerRadius: CGFloat         = isPadLike ? 20 : 18
+    static let convBubbleInnerPadding: CGFloat         = isPadLike ? 14 : 12
+    static let convBubbleTextSize: CGFloat             = isPadLike ? 16 : 15
+    static let convBubbleTimeSize: CGFloat             = isPadLike ? 12 : 11
+    static let convBubbleAvatarSize: CGFloat           = isPadLike ? 32 : 28
+    static let convBubbleSpacing: CGFloat              = isPadLike ? 10 : 8
+    static let convMessageGroupSpacing: CGFloat        = isPadLike ? 16 : 12
+
+    // Mic bar
+    static let convMicBarHeight: CGFloat               = isPadLike ? 110 : 96
+    static let convMicBarCornerRadius: CGFloat         = isPadLike ? 34 : 26
+    static let convMicCircleSize: CGFloat              = isPadLike ? 72 : 60
+    static let convMicIconSize: CGFloat                = isPadLike ? 32 : 26
+    static let convMicSideButtonSize: CGFloat          = isPadLike ? 50 : 42
+    static let convMicSideIconSize: CGFloat            = isPadLike ? 20 : 17
+    static let convMicBarHorizontalPadding: CGFloat    = isPadLike ? 36 : 26
+    static let convMicBarBottomPadding: CGFloat        = isPadLike ? 20 : 10
+
+    // Result screen
+    static let convResultScoreCircleSize: CGFloat      = isPadLike ? 150 : 122
+    static let convResultScoreStrokeWidth: CGFloat     = isPadLike ? 13 : 10
+    static let convResultScoreValueSize: CGFloat       = isPadLike ? 50 : 40
+    static let convResultScoreLabelSize: CGFloat       = isPadLike ? 15 : 13
+    static let convResultMetricCornerRadius: CGFloat   = isPadLike ? 22 : 18
+    static let convResultMetricPadding: CGFloat        = isPadLike ? 16 : 14
+    static let convResultMetricIconCircleSize: CGFloat = isPadLike ? 50 : 42
+    static let convResultMetricIconSize: CGFloat       = isPadLike ? 20 : 17
+    static let convResultMetricTitleSize: CGFloat      = isPadLike ? 16 : 14
+    static let convResultMetricRatingSize: CGFloat     = isPadLike ? 13 : 12
+    static let convResultActionHeight: CGFloat         = isPadLike ? 56 : 50
+    static let convResultActionCornerRadius: CGFloat   = isPadLike ? 20 : 17
+    static let convResultActionTextSize: CGFloat       = isPadLike ? 17 : 15
+
+    // Shared
+    static let convContentMaxWidth: CGFloat            = isPadLike ? 720 : .infinity
+}
+
+// MARK: - AI Conversation Setup
+
+extension Layout {
+    static let convSetupScenarioCardCornerRadius: CGFloat = isPadLike ? 22 : 18
+    static let convSetupScenarioCardPadding: CGFloat      = isPadLike ? 16 : 13
+    static let convSetupScenarioCardMinHeight: CGFloat    = isPadLike ? 158 : 136
+    static let convSetupScenarioIconCircleSize: CGFloat   = isPadLike ? 50 : 42
+    static let convSetupScenarioIconSize: CGFloat         = isPadLike ? 22 : 18
+    static let convSetupScenarioTitleSize: CGFloat        = isPadLike ? 16 : 14
+    static let convSetupScenarioDescriptionSize: CGFloat  = isPadLike ? 14 : 12
+    static let convSetupGridSpacing: CGFloat              = isPadLike ? 12 : 10
+    static let convSetupDurationChipHeight: CGFloat       = isPadLike ? 50 : 44
+    static let convSetupDurationChipTextSize: CGFloat     = isPadLike ? 16 : 14
+    static let convSetupStartButtonHeight: CGFloat        = isPadLike ? 58 : 52
+    static let convSetupStartButtonCornerRadius: CGFloat  = isPadLike ? 22 : 18
+    static let convSetupStartButtonTextSize: CGFloat      = isPadLike ? 18 : 16
+}
+
 // MARK: - Generic pad/phone picker
 
 extension Layout {

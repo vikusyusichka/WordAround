@@ -1,10 +1,15 @@
-# WordAround — Gemini proxy Cloudflare Worker.
+# WordAround — Cloudflare Worker.
+#
+# This single Worker serves two routes:
+#   POST /                     → Gemini text proxy (essay / quiz / hints)
+#   POST /api/speaking/topic   → Groq-backed speaking-topic generator
 #
 # Deploy with:
 #   wrangler deploy
 #
-# Set the Gemini API key as a secret (NEVER commit it to this file):
+# Set the provider secrets (NEVER commit them to this file):
 #   wrangler secret put GEMINI_API_KEY
+#   wrangler secret put GROQ_API_KEY
 
 name = "wordaround-gemini-proxy"
 main = "src/index.js"

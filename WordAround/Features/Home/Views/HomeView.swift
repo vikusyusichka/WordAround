@@ -159,6 +159,8 @@ private extension HomeView {
                 case .home:
                     if viewModel.selectedCategory == .writing {
                         writingContent
+                    } else if viewModel.selectedCategory == .speaking {
+                        SpeakingView()
                     } else if let category = viewModel.selectedCategory {
                         categoryPlaceholder(for: category)
                     } else {
