@@ -533,6 +533,11 @@ final class EssayPracticeViewModel: ObservableObject {
             return
         }
 
+        guard selectedLanguage.supportsGrammarCheck else {
+            feedbackState = .error("Grammar checking is currently unavailable for this language.")
+            return
+        }
+
         isLoading = true
         errorState = nil
         feedbackState = .loading
@@ -936,10 +941,11 @@ final class EssayPracticeViewModel: ObservableObject {
         }
     }
 
+    /// Picks a sensible "From" language for translation/synonym lookups.
+    /// English is the lingua franca for both MyMemory and Datamuse, so we
+    /// default to English whenever the user is writing in any other
+    /// language; English itself falls back to Spanish.
     private static func defaultSourceLanguage(for targetLanguage: GrammarLanguage) -> GrammarLanguage {
-        switch targetLanguage {
-        case .english:            return .spanish
-        case .spanish, .french, .german: return .english
-        }
+        targetLanguage == .english ? .spanish : .english
     }
 }

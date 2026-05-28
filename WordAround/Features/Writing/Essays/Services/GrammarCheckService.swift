@@ -11,6 +11,7 @@ enum GrammarCheckServiceError: LocalizedError {
     case decodingFailed
     case emptyText
     case textTooLong(Int)
+    case unsupportedLanguage
 
     var errorDescription: String? {
         switch self {
@@ -26,6 +27,8 @@ enum GrammarCheckServiceError: LocalizedError {
             return "Write something before checking grammar."
         case .textTooLong(let limit):
             return "Try to keep your essay under \(limit) characters."
+        case .unsupportedLanguage:
+            return "Grammar checking is currently unavailable for this language."
         }
     }
 }

@@ -332,12 +332,10 @@ private struct DatamuseWord: Decodable {
 // MARK: - GrammarLanguage API code
 
 private extension GrammarLanguage {
+    /// ISO 639-1 code used by MyMemory + Datamuse. Derived from
+    /// `shortTitle` (which is the ISO code, uppercased) so adding a new
+    /// language case auto-propagates without touching this file.
     var apiCode: String {
-        switch self {
-        case .english: return "en"
-        case .spanish: return "es"
-        case .french:  return "fr"
-        case .german:  return "de"
-        }
+        shortTitle.lowercased()
     }
 }
