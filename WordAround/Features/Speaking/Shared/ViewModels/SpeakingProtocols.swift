@@ -2,7 +2,6 @@ import Foundation
 
 // MARK: - Topic Picker
 
-/// Minimum interface ConversationTopicPickerSheetView needs from a speaking ViewModel.
 protocol SpeakingTopicPickable: ObservableObject {
     var isGeneratingTopic: Bool { get }
     var generatedTopic: GeneratedConversationTopic? { get }
@@ -17,7 +16,6 @@ protocol SpeakingTopicPickable: ObservableObject {
 
 // MARK: - Result View
 
-/// Minimum interface ConversationResultView needs from a speaking ViewModel.
 protocol SpeakingResultProvidable: ObservableObject {
     var conversationFeedback: SpeakingConversationFeedback? { get }
     var isGeneratingFeedback: Bool { get }

@@ -85,6 +85,7 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
         return ConversationMetric(
             title: metric.title,
             rating: metric.rating,
+            score: metric.score,
             icon: metric.iconName,
             accentColor: accent,
             blobColor: blob

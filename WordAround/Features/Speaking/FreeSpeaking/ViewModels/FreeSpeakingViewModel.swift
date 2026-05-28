@@ -460,10 +460,13 @@ final class FreeSpeakingViewModel: ObservableObject {
         let snapshotLevel = setup.level
         let snapshotContext = context
         let snapshotMessages = messages
+        let snapshotChunks = transcriptChunks
         let service = feedbackService
 
+        let totalChars = snapshotChunks.reduce(0) { $0 + $1.count }
+
         #if DEBUG
-        print("[FreeSpeakingVM] beginFeedbackGeneration userMessages=\(snapshotMessages.count)")
+        print("[FreeSpeakingVM] beginFeedbackGeneration userMessages=\(snapshotMessages.count) transcriptChunks=\(snapshotChunks.count) transcriptChars=\(totalChars)")
         #endif
 
         isGeneratingFeedback = true
@@ -471,7 +474,7 @@ final class FreeSpeakingViewModel: ObservableObject {
 
         feedbackTask?.cancel()
         feedbackTask = Task.detached(priority: .utility) { [weak self] in
-            let feedback = await service.generateFeedback(
+            let result = await service.generateFeedback(
                 language: snapshotLanguage,
                 level: snapshotLevel,
                 context: snapshotContext,
@@ -480,11 +483,16 @@ final class FreeSpeakingViewModel: ObservableObject {
             if Task.isCancelled { return }
             await MainActor.run {
                 guard let self else { return }
-                self.conversationFeedback = feedback
+                self.conversationFeedback = result.feedback
                 self.isGeneratingFeedback = false
-                self.feedbackError = feedback.isFallback
-                    ? "AI feedback unavailable. Showing basic feedback."
-                    : nil
+                self.feedbackError = result.fallbackReason
+                #if DEBUG
+                if let reason = result.fallbackReason {
+                    print("[FreeSpeakingVM] feedback fallback reason='\(reason)'")
+                } else {
+                    print("[FreeSpeakingVM] feedback AI succeeded overall=\(result.feedback.overallScore)")
+                }
+                #endif
             }
         }
     }

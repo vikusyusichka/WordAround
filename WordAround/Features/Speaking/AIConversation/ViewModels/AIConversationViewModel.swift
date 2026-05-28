@@ -643,7 +643,7 @@ final class AIConversationViewModel: ObservableObject {
 
         feedbackTask?.cancel()
         feedbackTask = Task.detached(priority: .utility) { [weak self] in
-            let feedback = await service.generateFeedback(
+            let result = await service.generateFeedback(
                 language: snapshotLanguage,
                 level: snapshotLevel,
                 context: snapshotContext,
@@ -652,11 +652,9 @@ final class AIConversationViewModel: ObservableObject {
             if Task.isCancelled { return }
             await MainActor.run {
                 guard let self else { return }
-                self.conversationFeedback = feedback
+                self.conversationFeedback = result.feedback
                 self.isGeneratingFeedback = false
-                self.feedbackError = feedback.isFallback
-                    ? "AI feedback unavailable. Showing basic feedback."
-                    : nil
+                self.feedbackError = result.fallbackReason
             }
         }
     }

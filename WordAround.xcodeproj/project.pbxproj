@@ -1522,20 +1522,12 @@
 		015CA36C7CE9B82B92EB404E /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				DDAFF0DF4645DF7ABD6A2E33 /* ConversationScenarioCardView.swift */,
-				DEE458D5ABF4FF5A42A9CEB4 /* ConversationMessageBubbleView.swift */,
-				C39350FADDDC4388A58DCC68 /* ConversationMicBarView.swift */,
 				FE4502ED9B29DB0C45C82ED4 /* ConversationScoreCardView.swift */,
 				CB1E4DE014D48713E74BA121 /* ConversationMetricCardView.swift */,
 				BD5AFE8CC0D9947681D2A7C9 /* ConversationCorrectionCardView.swift */,
 				5BDB6C4459B026506711A9FB /* SpeakingProgressCardView.swift */,
 				921B8412452F125310CD2704 /* SpeakingModeCardView.swift */,
-				0180575DC1CA1F5B32909E14 /* ConversationScenarioPickerView.swift */,
-				A4ECB47D4F17FF082837F7AC /* ConversationHintBubbleView.swift */,
 				7A97D45BED44AAFEFA4360E8 /* ConversationTopicPickerSheetView.swift */,
-				A1B2C3D4E5F6A1B2C3D4E502 /* FreeSpeakingTopicCardView.swift */,
-				A1B2C3D4E5F6A1B2C3D4E503 /* FreeSpeakingTranscriptCardView.swift */,
-				A1B2C3D4E5F6A1B2C3D4E504 /* FreeSpeakingMicBarView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1543,12 +1535,8 @@
 		5664CEE2B818E11801A0986A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				495E62FA8A27D951237585CE /* AIConversationView.swift */,
-				C6B3CDDA3D8FCE6338004954 /* ConversationResultView.swift */,
 				0A461AAE69DC74375F13AF65 /* SpeakingView.swift */,
-				166774EDD7333A46957A6AC4 /* AIConversationSetupView.swift */,
-				A1B2C3D4E5F6A1B2C3D4E501 /* FreeSpeakingView.swift */,
-				A1B2C3D4E5F6A1B2C3D4E533 /* FreeSpeakingSetupView.swift */,
+				C6B3CDDA3D8FCE6338004954 /* ConversationResultView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1558,9 +1546,6 @@
 			children = (
 				BF003DDEE8AA2AA6B0FF09C4 /* SpeechRecognitionService.swift */,
 				6B775BE72F45678BB9BD56BD /* SpeechSynthesisService.swift */,
-				0DF93C380FF56C4B81B50FA4 /* SpeakingAIClient.swift */,
-				D235DD4EE005A447D25FB124 /* GeminiSpeakingAIClient.swift */,
-				12A8860A15E6DF1250D43707 /* SpeakingConversationService.swift */,
 				20B113BF852AB499BA282924 /* SpeakingTopicAIClient.swift */,
 				5812496DF001C8CC408925DC /* SpeakingTopicAIConfiguration.swift */,
 				2CCE117CAED40DED29549198 /* CloudflareSpeakingTopicAIClient.swift */,
@@ -1577,9 +1562,7 @@
 		5F3866D4CBE93AFE1320F95B /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				A6027F3B26E49DBC69FEC0E9 /* AIConversationViewModel.swift */,
 				A1B2C3D4E5F6A1B2C3D4E531 /* SpeakingProtocols.swift */,
-				A1B2C3D4E5F6A1B2C3D4E532 /* FreeSpeakingViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1587,13 +1570,110 @@
 		35A219B7F43FDC00B4CD164C /* Speaking */ = {
 			isa = PBXGroup;
 			children = (
-				DC37E10E5A86EC58BB2BFAC0 /* Models */,
-				015CA36C7CE9B82B92EB404E /* Components */,
-				E2AF8C080368EE58585832DD /* Services */,
-				5F3866D4CBE93AFE1320F95B /* ViewModels */,
-				5664CEE2B818E11801A0986A /* Views */,
+				A1B2C3D4E5F6A1B2C3D4F001 /* Shared */,
+				A1B2C3D4E5F6A1B2C3D4F002 /* AIConversation */,
+				A1B2C3D4E5F6A1B2C3D4F007 /* FreeSpeaking */,
 			);
 			path = Speaking;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F001 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				DC37E10E5A86EC58BB2BFAC0 /* Models */,
+				E2AF8C080368EE58585832DD /* Services */,
+				5F3866D4CBE93AFE1320F95B /* ViewModels */,
+				015CA36C7CE9B82B92EB404E /* Components */,
+				5664CEE2B818E11801A0986A /* Views */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F002 /* AIConversation */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4F003 /* Services */,
+				A1B2C3D4E5F6A1B2C3D4F004 /* ViewModels */,
+				A1B2C3D4E5F6A1B2C3D4F005 /* Components */,
+				A1B2C3D4E5F6A1B2C3D4F006 /* Views */,
+			);
+			path = AIConversation;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F003 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				0DF93C380FF56C4B81B50FA4 /* SpeakingAIClient.swift */,
+				D235DD4EE005A447D25FB124 /* GeminiSpeakingAIClient.swift */,
+				12A8860A15E6DF1250D43707 /* SpeakingConversationService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F004 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A6027F3B26E49DBC69FEC0E9 /* AIConversationViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F005 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				DDAFF0DF4645DF7ABD6A2E33 /* ConversationScenarioCardView.swift */,
+				DEE458D5ABF4FF5A42A9CEB4 /* ConversationMessageBubbleView.swift */,
+				C39350FADDDC4388A58DCC68 /* ConversationMicBarView.swift */,
+				0180575DC1CA1F5B32909E14 /* ConversationScenarioPickerView.swift */,
+				A4ECB47D4F17FF082837F7AC /* ConversationHintBubbleView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F006 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				495E62FA8A27D951237585CE /* AIConversationView.swift */,
+				166774EDD7333A46957A6AC4 /* AIConversationSetupView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F007 /* FreeSpeaking */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4F008 /* ViewModels */,
+				A1B2C3D4E5F6A1B2C3D4F009 /* Components */,
+				A1B2C3D4E5F6A1B2C3D4F00A /* Views */,
+			);
+			path = FreeSpeaking;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F008 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E532 /* FreeSpeakingViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F009 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E502 /* FreeSpeakingTopicCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E503 /* FreeSpeakingTranscriptCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E504 /* FreeSpeakingMicBarView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F00A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E501 /* FreeSpeakingView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E533 /* FreeSpeakingSetupView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -4,6 +4,13 @@ struct LanguageSelectorView: View {
     let selectedLanguage: GrammarLanguage
     let onSelect: (GrammarLanguage) -> Void
 
+    /// Optional theme override. When omitted the selector keeps its
+    /// original blue look — every existing call site is unchanged.
+    /// Free Speaking opts into a green theme by passing
+    /// `accent: AppColors.greenAccent` and `accentDark: AppColors.greenTitle`.
+    var accent: Color = AppColors.primaryBlue
+    var accentDark: Color = AppColors.primaryBlueDark
+
     @State private var isExpanded = false
 
     var body: some View {
@@ -27,7 +34,7 @@ struct LanguageSelectorView: View {
             HStack(spacing: Layout.essaySelectorButtonContentSpacing) {
                 Image(systemName: "globe.europe.africa.fill")
                     .font(.system(size: Layout.essaySelectorIconSize, weight: .semibold))
-                    .foregroundColor(AppColors.primaryBlue)
+                    .foregroundColor(accent)
 
                 VStack(alignment: .leading, spacing: Layout.essaySelectorLabelSpacing) {
                     Text("Language")
@@ -36,7 +43,7 @@ struct LanguageSelectorView: View {
 
                     Text(selectedLanguage.title)
                         .font(.system(size: Layout.essaySelectorTitleSize, weight: .bold, design: .rounded))
-                        .foregroundColor(AppColors.primaryBlueDark)
+                        .foregroundColor(accentDark)
                         .lineLimit(1)
                 }
 
@@ -44,10 +51,10 @@ struct LanguageSelectorView: View {
 
                 Text(selectedLanguage.shortTitle)
                     .font(.system(size: Layout.essaySelectorBadgeTextSize, weight: .bold, design: .rounded))
-                    .foregroundColor(AppColors.primaryBlue)
+                    .foregroundColor(accent)
                     .padding(.horizontal, Layout.essaySelectorBadgeHorizontalPadding)
                     .padding(.vertical, Layout.essaySelectorBadgeVerticalPadding)
-                    .background(AppColors.primaryBlue.opacity(0.08))
+                    .background(accent.opacity(0.08))
                     .clipShape(Capsule())
 
                 Image(systemName: "chevron.down")
@@ -62,7 +69,7 @@ struct LanguageSelectorView: View {
             .clipShape(RoundedRectangle(cornerRadius: Layout.essaySelectorCornerRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: Layout.essaySelectorCornerRadius, style: .continuous)
-                    .stroke(AppColors.primaryBlue.opacity(isExpanded ? 0.18 : 0.08), lineWidth: Layout.essaySelectorBorderWidth)
+                    .stroke(accent.opacity(isExpanded ? 0.18 : 0.08), lineWidth: Layout.essaySelectorBorderWidth)
             )
             .shadow(
                 color: Color.black.opacity(Layout.essaySelectorShadowOpacity),
@@ -86,30 +93,30 @@ struct LanguageSelectorView: View {
                     HStack(spacing: Layout.essaySelectorOptionContentSpacing) {
                         Text(language.shortTitle)
                             .font(.system(size: Layout.essaySelectorOptionBadgeTextSize, weight: .bold, design: .rounded))
-                            .foregroundColor(selectedLanguage == language ? .white : AppColors.primaryBlue)
+                            .foregroundColor(selectedLanguage == language ? .white : accent)
                             .frame(
                                 width: Layout.essaySelectorOptionCodeWidth,
                                 height: Layout.essaySelectorOptionBadgeHeight
                             )
-                            .background(selectedLanguage == language ? AppColors.primaryBlue : AppColors.primaryBlue.opacity(0.08))
+                            .background(selectedLanguage == language ? accent : accent.opacity(0.08))
                             .clipShape(Capsule())
 
                         Text(language.title)
                             .font(.system(size: Layout.essaySelectorOptionTitleSize, weight: .semibold, design: .rounded))
-                            .foregroundColor(AppColors.primaryBlueDark)
+                            .foregroundColor(accentDark)
 
                         Spacer(minLength: 0)
 
                         if selectedLanguage == language {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.system(size: Layout.essaySelectorCheckmarkSize, weight: .semibold))
-                                .foregroundColor(AppColors.primaryBlue)
+                                .foregroundColor(accent)
                         }
                     }
                     .contentShape(Rectangle())
                     .padding(.horizontal, Layout.essaySelectorOptionHorizontalPadding)
                     .padding(.vertical, Layout.essaySelectorOptionVerticalPadding)
-                    .background(selectedLanguage == language ? AppColors.primaryBlue.opacity(0.07) : Color.clear)
+                    .background(selectedLanguage == language ? accent.opacity(0.07) : Color.clear)
                     .clipShape(RoundedRectangle(cornerRadius: Layout.essaySelectorOptionCornerRadius, style: .continuous))
                 }
                 .buttonStyle(.plain)

@@ -4,6 +4,12 @@ struct DifficultySelectorView: View {
     let selectedDifficulty: EssayDifficulty
     let onSelect: (EssayDifficulty) -> Void
 
+    /// Optional theme override. When omitted the selector keeps its
+    /// original blue look — every existing call site is unchanged.
+    /// Free Speaking opts into green by passing greenAccent / greenTitle.
+    var accent: Color = AppColors.primaryBlue
+    var accentDark: Color = AppColors.primaryBlueDark
+
     @State private var isExpanded = false
 
     var body: some View {
@@ -27,7 +33,7 @@ struct DifficultySelectorView: View {
             HStack(spacing: Layout.essaySelectorButtonContentSpacing) {
                 Image(systemName: "slider.horizontal.3")
                     .font(.system(size: Layout.essaySelectorIconSize, weight: .semibold))
-                    .foregroundColor(AppColors.primaryBlue)
+                    .foregroundColor(accent)
 
                 VStack(alignment: .leading, spacing: Layout.essaySelectorLabelSpacing) {
                     Text("Level")
@@ -36,19 +42,19 @@ struct DifficultySelectorView: View {
 
                     Text(selectedDifficulty.title)
                         .font(.system(size: Layout.essaySelectorTitleSize, weight: .bold, design: .rounded))
-                        .foregroundColor(AppColors.primaryBlueDark)
+                        .foregroundColor(accentDark)
                 }
 
                 Spacer(minLength: 6)
 
                 Text(selectedDifficulty.helperIntensityTitle)
                     .font(.system(size: Layout.essaySelectorBadgeTextSize, weight: .bold, design: .rounded))
-                    .foregroundColor(AppColors.primaryBlue)
+                    .foregroundColor(accent)
                     .lineLimit(1)
                     .minimumScaleFactor(0.78)
                     .padding(.horizontal, Layout.essaySelectorBadgeHorizontalPadding)
                     .padding(.vertical, Layout.essaySelectorBadgeVerticalPadding)
-                    .background(AppColors.primaryBlue.opacity(0.08))
+                    .background(accent.opacity(0.08))
                     .clipShape(Capsule())
 
                 Image(systemName: "chevron.down")
@@ -63,7 +69,7 @@ struct DifficultySelectorView: View {
             .clipShape(RoundedRectangle(cornerRadius: Layout.essaySelectorCornerRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: Layout.essaySelectorCornerRadius, style: .continuous)
-                    .stroke(AppColors.primaryBlue.opacity(isExpanded ? 0.18 : 0.08), lineWidth: Layout.essaySelectorBorderWidth)
+                    .stroke(accent.opacity(isExpanded ? 0.18 : 0.08), lineWidth: Layout.essaySelectorBorderWidth)
             )
             .shadow(
                 color: Color.black.opacity(Layout.essaySelectorShadowOpacity),
@@ -87,18 +93,18 @@ struct DifficultySelectorView: View {
                     HStack(spacing: Layout.essaySelectorOptionContentSpacing) {
                         Text(difficulty.title)
                             .font(.system(size: Layout.essaySelectorOptionBadgeTextSize, weight: .bold, design: .rounded))
-                            .foregroundColor(selectedDifficulty == difficulty ? .white : AppColors.primaryBlue)
+                            .foregroundColor(selectedDifficulty == difficulty ? .white : accent)
                             .frame(
                                 width: Layout.essaySelectorOptionLevelWidth,
                                 height: Layout.essaySelectorOptionBadgeHeight
                             )
-                            .background(selectedDifficulty == difficulty ? AppColors.primaryBlue : AppColors.primaryBlue.opacity(0.08))
+                            .background(selectedDifficulty == difficulty ? accent : accent.opacity(0.08))
                             .clipShape(Capsule())
 
                         VStack(alignment: .leading, spacing: Layout.essaySelectorLabelSpacing) {
                             Text(difficulty.helperIntensityTitle)
                                 .font(.system(size: Layout.essaySelectorOptionTitleSize, weight: .bold, design: .rounded))
-                                .foregroundColor(AppColors.primaryBlueDark)
+                                .foregroundColor(accentDark)
 
                             Text("\(difficulty.hintsLimit) hints • \(difficulty.allowsTranslation ? "translation" : "no translation")")
                                 .font(.system(size: Layout.essaySelectorOptionSubtitleSize, weight: .semibold, design: .rounded))
@@ -112,13 +118,13 @@ struct DifficultySelectorView: View {
                         if selectedDifficulty == difficulty {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.system(size: Layout.essaySelectorCheckmarkSize, weight: .semibold))
-                                .foregroundColor(AppColors.primaryBlue)
+                                .foregroundColor(accent)
                         }
                     }
                     .contentShape(Rectangle())
                     .padding(.horizontal, Layout.essaySelectorOptionHorizontalPadding)
                     .padding(.vertical, Layout.essaySelectorOptionVerticalPadding)
-                    .background(selectedDifficulty == difficulty ? AppColors.primaryBlue.opacity(0.07) : Color.clear)
+                    .background(selectedDifficulty == difficulty ? accent.opacity(0.07) : Color.clear)
                     .clipShape(RoundedRectangle(cornerRadius: Layout.essaySelectorOptionCornerRadius, style: .continuous))
                 }
                 .buttonStyle(.plain)

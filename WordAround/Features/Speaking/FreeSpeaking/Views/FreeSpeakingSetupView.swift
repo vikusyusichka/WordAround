@@ -10,6 +10,7 @@ struct FreeSpeakingSetupView: View {
 
     private let lengths = ConversationLength.allCases
     private let green = AppColors.greenAccent
+    private let greenDark = AppColors.greenTitle
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -21,16 +22,29 @@ struct FreeSpeakingSetupView: View {
                         .padding(.bottom, 4)
 
                     sectionTitle("Language")
-                    LanguageSelectorView(selectedLanguage: selectedLanguage) { selectedLanguage = $0 }
+                    LanguageSelectorView(
+                        selectedLanguage: selectedLanguage,
+                        onSelect: { selectedLanguage = $0 },
+                        accent: green,
+                        accentDark: greenDark
+                    )
 
                     sectionTitle("Level")
-                    DifficultySelectorView(selectedDifficulty: selectedLevel) { selectedLevel = $0 }
+                    DifficultySelectorView(
+                        selectedDifficulty: selectedLevel,
+                        onSelect: { selectedLevel = $0 },
+                        accent: green,
+                        accentDark: greenDark
+                    )
 
                     sectionTitle("Session length")
                     durationPicker
 
                     sectionTitle("Preview")
                     previewCard
+                        .animation(.easeInOut(duration: 0.22), value: selectedLanguage)
+                        .animation(.easeInOut(duration: 0.22), value: selectedLevel)
+                        .animation(.easeInOut(duration: 0.22), value: selectedLength)
 
                     Spacer().frame(height: Layout.convSetupStartButtonHeight + 32)
                 }
@@ -71,7 +85,7 @@ struct FreeSpeakingSetupView: View {
                         weight: .bold,
                         design: .rounded
                     ))
-                    .foregroundColor(AppColors.primaryBlueDark)
+                    .foregroundColor(greenDark)
 
                 Text("Speak freely on a topic and get feedback.")
                     .font(.system(
@@ -94,15 +108,19 @@ struct FreeSpeakingSetupView: View {
                             size: Layout.flashcardDetailTopButtonIconSize,
                             weight: .bold
                         ))
-                        .foregroundColor(AppColors.primaryBlueDark)
+                        .foregroundColor(greenDark)
                         .frame(
                             width: Layout.flashcardDetailTopButtonSize,
                             height: Layout.flashcardDetailTopButtonSize
                         )
-                        .background(Color.white.opacity(0.82))
+                        .background(green.opacity(0.10))
+                        .overlay(
+                            Circle().stroke(green.opacity(0.22), lineWidth: 1)
+                        )
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
+                .hoverEffect(.lift)
 
                 Spacer()
             }
@@ -125,25 +143,35 @@ struct FreeSpeakingSetupView: View {
         HStack(spacing: Layout.convSetupGridSpacing) {
             ForEach(lengths) { length in
                 let isSelected = selectedLength == length
-                Button { selectedLength = length } label: {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.18)) {
+                        selectedLength = length
+                    }
+                } label: {
                     Text(length.title)
                         .font(.system(
                             size: Layout.convSetupDurationChipTextSize,
                             weight: .bold,
                             design: .rounded
                         ))
-                        .foregroundColor(isSelected ? .white : green)
+                        .foregroundColor(isSelected ? .white : greenDark)
                         .frame(maxWidth: .infinity)
                         .frame(height: Layout.convSetupDurationChipHeight)
-                        .background(isSelected ? green : green.opacity(0.09))
+                        .background(isSelected ? green : green.opacity(0.10))
                         .clipShape(RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous))
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
-                                .stroke(isSelected ? Color.clear : green.opacity(0.15), lineWidth: 1)
+                                .stroke(isSelected ? Color.clear : green.opacity(0.22), lineWidth: 1)
+                        )
+                        .shadow(
+                            color: isSelected ? green.opacity(0.22) : Color.clear,
+                            radius: isSelected ? 10 : 0,
+                            x: 0,
+                            y: isSelected ? 4 : 0
                         )
                 }
-                .buttonStyle(.plain)
-                .animation(.easeInOut(duration: 0.18), value: isSelected)
+                .buttonStyle(PressableScaleButtonStyle())
+                .hoverEffect(.lift)
             }
         }
     }
@@ -164,14 +192,22 @@ struct FreeSpeakingSetupView: View {
             }
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
-            .frame(height: Layout.convSetupStartButtonHeight)
-            .background(green)
+            .frame(height: Layout.convSetupStartButtonHeight + (Layout.isPadLike ? 6 : 0))
+            .background(
+                LinearGradient(
+                    colors: [green, greenDark],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
             .clipShape(RoundedRectangle(
                 cornerRadius: Layout.convSetupStartButtonCornerRadius,
                 style: .continuous
             ))
+            .shadow(color: green.opacity(0.30), radius: 16, x: 0, y: 8)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableScaleButtonStyle())
+        .hoverEffect(.lift)
     }
 
     private func sectionTitle(_ title: String) -> some View {
@@ -181,8 +217,20 @@ struct FreeSpeakingSetupView: View {
                 weight: .bold,
                 design: .rounded
             ))
-            .foregroundColor(AppColors.primaryBlueDark)
+            .foregroundColor(greenDark)
             .padding(.top, Layout.homeSectionTitleTopPadding)
+    }
+}
+
+// MARK: - Press Style
+
+/// Subtle scale-down on press for green action elements. Lives here
+/// (file-private) so we don't introduce a shared button style.
+private struct PressableScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
 

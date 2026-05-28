@@ -16,5 +16,9 @@
 		</dict>
 		<dict/>
 	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access is used to record your voice during speaking practice.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Speech recognition is used to convert your voice into text during speaking practice.</string>
 </dict>
 </plist>
