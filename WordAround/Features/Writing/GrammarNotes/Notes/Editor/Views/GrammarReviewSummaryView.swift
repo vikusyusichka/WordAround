@@ -4,34 +4,44 @@ struct GrammarReviewSummaryView: View {
     let summary: GrammarReviewSummary
     let isLoading: Bool
     let errorMessage: String?
-    let recommendations: [GrammarReviewRecommendation]
+    /// Number of cards the upcoming session will surface. This comes from
+    /// the pre-built `GrammarReviewQueueBuilder.Result` so the card and the
+    /// session are guaranteed to agree.
+    let queueCount: Int
+    /// Estimated minutes badge in the header — usually `max(1, count * 2)`.
+    let estimatedMinutes: Int
     let isAddingRecommendation: Bool
+    /// Which pool the upcoming session will use. `nil` means the queue is
+    /// empty and the card shows the "Nothing due" hint.
+    let effectivePool: GrammarReviewSourcePool?
     let onStart: () -> Void
     let onRetry: () -> Void
-    let onReviewRecommendation: (GrammarReviewRecommendation) -> Void
-    let onAddRecommendation: (GrammarReviewRecommendation) -> Void
 
     init(
         summary: GrammarReviewSummary,
         isLoading: Bool,
         errorMessage: String?,
-        recommendations: [GrammarReviewRecommendation] = [],
+        queueCount: Int = 0,
+        estimatedMinutes: Int = 1,
         isAddingRecommendation: Bool = false,
+        effectivePool: GrammarReviewSourcePool? = nil,
         onStart: @escaping () -> Void,
-        onRetry: @escaping () -> Void = {},
-        onReviewRecommendation: @escaping (GrammarReviewRecommendation) -> Void = { _ in },
-        onAddRecommendation: @escaping (GrammarReviewRecommendation) -> Void = { _ in }
+        onRetry: @escaping () -> Void = {}
     ) {
         self.summary = summary
         self.isLoading = isLoading
         self.errorMessage = errorMessage
-        self.recommendations = recommendations
+        self.queueCount = queueCount
+        self.estimatedMinutes = max(1, estimatedMinutes)
         self.isAddingRecommendation = isAddingRecommendation
+        self.effectivePool = effectivePool
         self.onStart = onStart
         self.onRetry = onRetry
-        self.onReviewRecommendation = onReviewRecommendation
-        self.onAddRecommendation = onAddRecommendation
     }
+
+    /// Count of notes in the effective pool — drives the headline subtitle.
+    /// Mirrors `GrammarReviewViewModel.effectiveCount`.
+    private var effectiveCount: Int { queueCount }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -41,13 +51,10 @@ struct GrammarReviewSummaryView: View {
                 loadingRow
             } else if let errorMessage, !errorMessage.isEmpty {
                 errorRow(errorMessage)
-            } else if summary.dueTotal == 0 {
+            } else if effectivePool == nil {
                 emptyRow
-                if !recommendations.isEmpty {
-                    recommendationsSection
-                }
             } else {
-                countsRow
+                sourceRow
                 startButton
             }
         }
@@ -61,6 +68,8 @@ struct GrammarReviewSummaryView: View {
         )
         .shadow(color: Color.black.opacity(0.05), radius: 14, x: 0, y: 8)
     }
+
+    // MARK: - Header
 
     private var header: some View {
         HStack(spacing: 12) {
@@ -83,43 +92,61 @@ struct GrammarReviewSummaryView: View {
             }
 
             Spacer(minLength: 0)
+
+            if !isLoading && effectivePool != nil {
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("~\(estimatedMinutes) min")
+                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .foregroundStyle(AppColors.primaryBlue)
+                    Text("estimated")
+                        .font(.system(size: 9, weight: .semibold, design: .rounded))
+                        .foregroundStyle(AppColors.textSecondary)
+                }
+            }
         }
     }
 
     private var headlineSubtitle: String {
         if isLoading { return "Loading review queue…" }
         if errorMessage != nil { return "Could not load review queue." }
-        switch summary.dueTotal {
-        case 0:
-            return recommendations.isEmpty
-                ? "Nothing due today. You're caught up."
-                : "Nothing due today. Here are notes worth revisiting."
-        case 1:  return "1 item ready for review."
-        default: return "\(summary.dueTotal) items ready for review."
+        guard let pool = effectivePool else {
+            return "Nothing due. Open a note to add it to review."
         }
+        return pool.homeCardSubtitle(count: effectiveCount)
     }
 
-    private var countsRow: some View {
-        HStack(spacing: 8) {
-            countPill(value: summary.dueNotes, label: "Notes", systemImage: GrammarReviewSourceType.note.systemImage, tint: AppColors.primaryBlue)
-            countPill(value: summary.dueMistakes, label: "Mistakes", systemImage: GrammarReviewSourceType.mistake.systemImage, tint: CreateSetTheme.red.accent)
-            countPill(value: summary.dueQuizzes, label: "Quizzes", systemImage: GrammarReviewSourceType.quiz.systemImage, tint: CreateSetTheme.purple.accent)
+    // MARK: - Source row
+
+    /// Single pill showing the pool the upcoming session will use plus the
+    /// count of notes inside it. Replaces the old "Manual + Recent" dual
+    /// pill row — sessions only ever draw from one pool now.
+    private var sourceRow: some View {
+        guard let pool = effectivePool, effectiveCount > 0 else {
+            return AnyView(EmptyView())
         }
+        return AnyView(
+            HStack(spacing: 8) {
+                sourcePill(pool: pool, count: effectiveCount)
+                Spacer(minLength: 0)
+            }
+        )
     }
 
-    private func countPill(value: Int, label: String, systemImage: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+    private func sourcePill(pool: GrammarReviewSourcePool, count: Int) -> some View {
+        let tint = sourceTint(pool)
+        return VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 5) {
-                Image(systemName: systemImage).font(.system(size: 10, weight: .bold))
-                Text(label)
+                Image(systemName: pool.systemImage).font(.system(size: 10, weight: .bold))
+                Text(pool.title)
                     .font(.system(size: 10, weight: .black, design: .rounded))
                     .textCase(.uppercase)
                     .tracking(0.5)
+                    .lineLimit(1)
             }
             .foregroundStyle(tint)
 
-            Text("\(value)")
-                .font(.system(size: 22, weight: .black, design: .rounded))
+            Text("\(count) note\(count == 1 ? "" : "s")")
+                .font(.system(size: 18, weight: .black, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -128,6 +155,16 @@ struct GrammarReviewSummaryView: View {
         .background(tint.opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
+
+    private func sourceTint(_ pool: GrammarReviewSourcePool) -> Color {
+        switch pool {
+        case .manual:         return AppColors.primaryBlue
+        case .recentlyOpened: return CreateSetTheme.green.accent
+        case .recentlyEdited: return Color(red: 0.85, green: 0.55, blue: 0.20)
+        }
+    }
+
+    // MARK: - Start button
 
     private var startButton: some View {
         Button(action: onStart) {
@@ -143,108 +180,30 @@ struct GrammarReviewSummaryView: View {
             .shadow(color: AppColors.primaryBlue.opacity(0.18), radius: 10, x: 0, y: 5)
         }
         .buttonStyle(.plain)
-        .disabled(summary.dueTotal == 0)
     }
+
+    // MARK: - Empty state
 
     private var emptyRow: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "checkmark.seal.fill")
-                .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(CreateSetTheme.green.accent)
-            Text("Nothing due today.")
-                .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .foregroundStyle(AppColors.textSecondary)
-            Spacer(minLength: 0)
-        }
-    }
-
-    private var recommendationsSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Recommended to Review")
-                    .font(.system(size: 13, weight: .black, design: .rounded))
-                    .foregroundStyle(AppColors.primaryBlueDark)
-                Text("You're fully caught up. Here are some notes worth revisiting.")
-                    .font(.system(size: 11, weight: .semibold, design: .rounded))
-                    .foregroundStyle(AppColors.textSecondary)
-            }
-
-            ForEach(recommendations) { item in
-                recommendationCard(item)
-            }
-        }
-        .padding(.top, 4)
-    }
-
-    private func recommendationCard(_ item: GrammarReviewRecommendation) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .top, spacing: 8) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(item.title.isEmpty ? "Untitled note" : item.title)
-                        .font(.system(size: 13, weight: .bold, design: .rounded))
-                        .foregroundStyle(AppColors.primaryBlueDark)
-                        .lineLimit(1)
-
-                    if !item.previewText.isEmpty {
-                        Text(item.previewText)
-                            .font(.system(size: 11, weight: .semibold, design: .rounded))
-                            .foregroundStyle(AppColors.textSecondary)
-                            .lineLimit(2)
-                    }
-                }
-
-                Spacer(minLength: 0)
-
-                if !item.languageName.isEmpty {
-                    Text(item.languageName)
-                        .font(.system(size: 10, weight: .bold, design: .rounded))
-                        .foregroundStyle(AppColors.primaryBlue)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(AppColors.primaryBlue.opacity(0.10))
-                        .clipShape(Capsule())
-                }
-            }
-
-            HStack(spacing: 8) {
-                Text(item.label)
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
+            HStack(spacing: 10) {
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(CreateSetTheme.green.accent)
+                Text("You're all caught up.")
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
-
                 Spacer(minLength: 0)
-
-                Button {
-                    onReviewRecommendation(item)
-                } label: {
-                    Text("Review Now")
-                        .font(.system(size: 11, weight: .bold, design: .rounded))
-                        .foregroundStyle(Color.white)
-                        .padding(.horizontal, 10)
-                        .frame(height: 30)
-                        .background(AppColors.primaryBlue)
-                        .clipShape(Capsule())
-                }
-                .buttonStyle(.plain)
-
-                Button {
-                    onAddRecommendation(item)
-                } label: {
-                    Text("Add to Review")
-                        .font(.system(size: 11, weight: .bold, design: .rounded))
-                        .foregroundStyle(AppColors.primaryBlue)
-                        .padding(.horizontal, 10)
-                        .frame(height: 30)
-                        .background(AppColors.primaryBlue.opacity(0.10))
-                        .clipShape(Capsule())
-                }
-                .buttonStyle(.plain)
-                .disabled(isAddingRecommendation)
             }
+
+            Text("Open a grammar note and tap \"Add to Review\" to schedule it here.")
+                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                .foregroundStyle(AppColors.textSecondary.opacity(0.75))
+                .lineSpacing(2)
         }
-        .padding(12)
-        .background(Color.white.opacity(0.66))
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
+
+    // MARK: - Loading / Error
 
     private var loadingRow: some View {
         HStack(spacing: 10) {
@@ -282,6 +241,8 @@ struct GrammarReviewSummaryView: View {
         }
     }
 
+    // MARK: - Background
+
     private var cardBackground: some View {
         ZStack(alignment: .topTrailing) {
             Color.white.opacity(0.92)
@@ -293,36 +254,44 @@ struct GrammarReviewSummaryView: View {
     }
 }
 
-#Preview("With items") {
+// MARK: - Previews
+
+#Preview("Manual") {
     GrammarReviewSummaryView(
-        summary: GrammarReviewSummary(dueTotal: 7, dueNotes: 3, dueMistakes: 2, dueQuizzes: 2),
+        summary: GrammarReviewSummary(dueTotal: 3, dueNotes: 2, dueMistakes: 1, dueQuizzes: 0),
         isLoading: false,
         errorMessage: nil,
+        queueCount: 3,
+        estimatedMinutes: 6,
+        effectivePool: .manual,
         onStart: {}
     )
     .padding()
     .background(AppColors.appBackground)
 }
 
-#Preview("Empty with recommendations") {
+#Preview("Recently opened") {
     GrammarReviewSummaryView(
         summary: .empty,
         isLoading: false,
         errorMessage: nil,
-        recommendations: [
-            GrammarReviewRecommendation(
-                id: "preview-topic_preview-note",
-                ownerUID: "preview-user",
-                topicId: "preview-topic",
-                noteId: "preview-note",
-                title: "Ser vs Estar",
-                previewText: "Use ser for identity and estar for states.",
-                languageCode: "es",
-                languageName: "Spanish",
-                lastOpenedAt: Date().addingTimeInterval(-3600),
-                lastEditedAt: Date().addingTimeInterval(-7200)
-            )
-        ],
+        queueCount: 2,
+        estimatedMinutes: 4,
+        effectivePool: .recentlyOpened,
+        onStart: {}
+    )
+    .padding()
+    .background(AppColors.appBackground)
+}
+
+#Preview("Empty") {
+    GrammarReviewSummaryView(
+        summary: .empty,
+        isLoading: false,
+        errorMessage: nil,
+        queueCount: 0,
+        estimatedMinutes: 1,
+        effectivePool: nil,
         onStart: {}
     )
     .padding()
@@ -334,6 +303,9 @@ struct GrammarReviewSummaryView: View {
         summary: .empty,
         isLoading: true,
         errorMessage: nil,
+        queueCount: 0,
+        estimatedMinutes: 1,
+        effectivePool: nil,
         onStart: {}
     )
     .padding()

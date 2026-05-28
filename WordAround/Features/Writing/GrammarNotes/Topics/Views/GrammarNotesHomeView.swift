@@ -5,8 +5,10 @@ struct GrammarNotesHomeView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: GrammarNotesHomeViewModel
     @StateObject private var settings = GrammarNotesSettingsStore()
-    /// Shared review VM — powers both the summary card and the session sheet.
+    /// Powers the Review Today summary card on the home screen.
     @StateObject private var reviewVM: GrammarReviewViewModel
+    /// Powers the active review session sheet.
+    @StateObject private var sessionVM: GrammarReviewSessionViewModel
     @State private var isCreateSheetPresented = false
     @State private var isSettingsPresented = false
     @State private var isFABExpanded = false
@@ -14,6 +16,8 @@ struct GrammarNotesHomeView: View {
     @State private var isQuickMistakeSheetPresented = false
     @State private var isReviewSessionPresented = false
     @State private var editorNote: GrammarNote?
+    @State private var isEditingTopics = false
+    @State private var topicPendingDeletion: GrammarNoteTopic?
 
     private let theme: CreateSetTheme = .blue
 
@@ -30,6 +34,9 @@ struct GrammarNotesHomeView: View {
         _reviewVM = StateObject(
             wrappedValue: GrammarReviewViewModel(ownerUID: uid)
         )
+        _sessionVM = StateObject(
+            wrappedValue: GrammarReviewSessionViewModel(ownerUID: uid)
+        )
     }
 
     @MainActor
@@ -37,6 +44,9 @@ struct GrammarNotesHomeView: View {
         _viewModel = StateObject(wrappedValue: viewModel)
         _reviewVM = StateObject(
             wrappedValue: GrammarReviewViewModel(ownerUID: "")
+        )
+        _sessionVM = StateObject(
+            wrappedValue: GrammarReviewSessionViewModel(ownerUID: "")
         )
     }
 
@@ -90,18 +100,24 @@ struct GrammarNotesHomeView: View {
             quickMistakeSheet
         }
         .sheet(isPresented: $isReviewSessionPresented, onDismiss: {
-            // Session may have rated items; refresh both the summary card
-            // and the highlight strips so counts/cards reflect the new
-            // schedule without a manual pull.
             Task {
                 await reviewVM.loadSummary(force: true)
                 await reviewVM.loadHighlights()
             }
-            reviewVM.resetSession()
+            sessionVM.reset()
         }) {
             GrammarReviewSessionView(
-                viewModel: reviewVM,
-                onDismiss: { isReviewSessionPresented = false }
+                viewModel: sessionVM,
+                onDismiss: { isReviewSessionPresented = false },
+                onOpenNote: { note in
+                    // Dismiss the session sheet first so the navigation
+                    // destination opens cleanly. Setting editorNote inside
+                    // the same tick would race with the dismissal animation.
+                    isReviewSessionPresented = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        editorNote = note
+                    }
+                }
             )
         }
         .task {
@@ -113,10 +129,53 @@ struct GrammarNotesHomeView: View {
         }
     }
 
+    // MARK: - Review summary card
+
+    /// Always shown — the empty state (`Nothing due. Open a note…`) is part
+    /// of the card itself, so new users still see the hint without us
+    /// special-casing visibility. The count and pool both come from the
+    /// pre-built `previewQueue` so the card and session can never disagree.
+    @ViewBuilder
+    private var reviewSummaryCard: some View {
+        let queue = reviewVM.previewQueue
+
+        GrammarReviewSummaryView(
+            summary: reviewVM.summary,
+            isLoading: reviewVM.isLoadingSummary || reviewVM.isBuildingPreviewQueue,
+            errorMessage: reviewVM.summaryError,
+            queueCount: queue.count,
+            estimatedMinutes: queue.estimatedMinutes,
+            isAddingRecommendation: reviewVM.isAddingRecommendation,
+            effectivePool: queue.pool,
+            onStart: startReviewSession,
+            onRetry: { Task { await reviewVM.loadSummary(force: true) } }
+        )
+    }
+
+    private func startReviewSession() {
+        // Single source of truth: hand the exact queue the home card just
+        // counted to the session. The session never rebuilds. If the queue
+        // is empty (which means the card was already showing the empty
+        // state), don't present the sheet at all.
+        let queue = reviewVM.previewQueue
+
+        #if DEBUG
+        print("[Review] Start Review tapped — card showed pool=\(queue.pool?.rawValue ?? "nil") count=\(queue.count) ids=\(queue.cards.map { $0.id })")
+        #endif
+
+        guard !queue.isEmpty else {
+            #if DEBUG
+            print("[Review] queue is empty — not presenting session sheet")
+            #endif
+            return
+        }
+
+        sessionVM.startSession(prebuilt: queue)
+        isReviewSessionPresented = true
+    }
+
     // MARK: - Mistakes to Fix
 
-    /// Compact horizontal scroll of recent mistakes the user has saved.
-    /// Hidden when empty so the home screen stays calm for new users.
     @ViewBuilder
     private var mistakesToFixSection: some View {
         if !reviewVM.mistakeHighlights.isEmpty {
@@ -131,8 +190,6 @@ struct GrammarNotesHomeView: View {
 
     // MARK: - Weak Quiz Areas
 
-    /// Quizzes the user scored low on. Powered by the same review queue —
-    /// items are created automatically when a quiz attempt scores < 70%.
     @ViewBuilder
     private var weakQuizAreasSection: some View {
         if !reviewVM.quizHighlights.isEmpty {
@@ -145,10 +202,8 @@ struct GrammarNotesHomeView: View {
         }
     }
 
-    // MARK: - Shared highlights renderer
+    // MARK: - Highlights renderer
 
-    /// One reusable horizontal strip. Tapping a card opens the Review
-    /// session focused on that item via the shared `GrammarReviewViewModel`.
     private func highlightsSection(
         title: String,
         subtitle: String,
@@ -178,13 +233,7 @@ struct GrammarNotesHomeView: View {
 
     private func highlightCard(_ item: GrammarReviewItem, accent: Color) -> some View {
         Button {
-            // Single-item review session — reuse the shared session sheet
-            // by injecting just this item. The session's "Done" returns
-            // home automatically.
-            Task {
-                await reviewVM.startSession()
-                isReviewSessionPresented = true
-            }
+            startReviewSession()
         } label: {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 6) {
@@ -226,26 +275,7 @@ struct GrammarNotesHomeView: View {
         .buttonStyle(.plain)
     }
 
-    /// Lightweight summary card. Hidden when there's nothing due AND no
-    /// load error — keeps the home screen calm for new users.
-    @ViewBuilder
-    private var reviewSummaryCard: some View {
-        if reviewVM.summary.dueTotal > 0
-            || reviewVM.isLoadingSummary
-            || reviewVM.summaryError != nil {
-            GrammarReviewSummaryView(
-                summary: reviewVM.summary,
-                isLoading: reviewVM.isLoadingSummary,
-                errorMessage: reviewVM.summaryError,
-                onStart: {
-                    Task {
-                        await reviewVM.startSession()
-                        isReviewSessionPresented = true
-                    }
-                }
-            )
-        }
-    }
+    // MARK: - Sheets
 
     private var createTopicSheet: some View {
         CreateGrammarTopicSheet(
@@ -325,6 +355,8 @@ struct GrammarNotesHomeView: View {
         }
     }
 
+    // MARK: - Header / Search / Content
+
     private var headerView: some View {
         VStack(spacing: isPadLike ? 18 : 14) {
             HStack {
@@ -395,12 +427,32 @@ struct GrammarNotesHomeView: View {
     }
 
     private var sectionHeader: some View {
-        HStack {
+        HStack(spacing: 8) {
             Text("My Topics")
                 .font(.system(size: isPadLike ? 21 : 18, weight: .bold, design: .rounded))
                 .foregroundStyle(theme.titleColor)
 
-            Spacer()
+            Spacer(minLength: 8)
+
+            if canShowEditButton {
+                Button {
+                    toggleEditingTopics()
+                } label: {
+                    Text(isEditingTopics ? "Done" : "Edit")
+                        .font(.system(size: isPadLike ? 14 : 12, weight: .bold, design: .rounded))
+                        .foregroundStyle(isEditingTopics ? Color.white : theme.accent)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(isEditingTopics ? theme.accent : theme.fieldBackground)
+                        .clipShape(Capsule())
+                        .overlay(
+                            Capsule()
+                                .stroke(theme.softBorderColor, lineWidth: 1)
+                        )
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(isEditingTopics ? "Done editing topics" : "Edit topics")
+            }
 
             Button {
                 isCreateSheetPresented = true
@@ -421,12 +473,29 @@ struct GrammarNotesHomeView: View {
         }
     }
 
+    /// Edit button is only meaningful once the user has at least one
+    /// non-mistakes topic to reorder/delete. Hiding it for empty states
+    /// avoids dead UI and keeps the original layout in onboarding. Stays
+    /// visible while editing so the user can always tap "Done" — even if
+    /// they just deleted the last editable topic.
+    private var canShowEditButton: Bool {
+        isEditingTopics || viewModel.topics.contains(where: { !$0.isMistakesTopic })
+    }
+
+    private func toggleEditingTopics() {
+        withAnimation(.spring(response: 0.32, dampingFraction: 0.86)) {
+            isEditingTopics.toggle()
+        }
+    }
+
     @ViewBuilder
     private var contentView: some View {
         if viewModel.isLoading {
             loadingCard
         } else if let errorMessage = viewModel.errorMessage {
             errorCard(message: errorMessage)
+        } else if isEditingTopics {
+            editableTopicsList
         } else {
             VStack(spacing: isPadLike ? 16 : 12) {
                 ForEach(viewModel.filteredTopics) { topic in
@@ -452,6 +521,71 @@ struct GrammarNotesHomeView: View {
                 }
             }
         }
+    }
+
+    /// Edit-mode list: switches to a `List` so SwiftUI gives us drag handles
+    /// and standard delete affordances. Uses the full `topics` array (not
+    /// `filteredTopics`) so the user can reorder across search results
+    /// without the indices going stale. The Common Mistakes topic is locked
+    /// in place via `.moveDisabled` + `.deleteDisabled`.
+    private var editableTopicsList: some View {
+        let editingTopics = viewModel.topics
+        let rowSpacing: CGFloat = isPadLike ? 14 : 12
+        let approxRowHeight: CGFloat = isPadLike ? 154 : 132
+
+        return List {
+            ForEach(editingTopics) { topic in
+                topicEditRow(topic)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: rowSpacing / 2, leading: 0, bottom: rowSpacing / 2, trailing: 0))
+                    .moveDisabled(topic.isMistakesTopic)
+                    .deleteDisabled(topic.isMistakesTopic)
+            }
+            .onMove { source, destination in
+                viewModel.moveTopics(from: source, to: destination)
+            }
+            .onDelete { indexSet in
+                guard let index = indexSet.first else { return }
+                let topic = editingTopics[index]
+                guard !topic.isMistakesTopic else { return }
+                topicPendingDeletion = topic
+            }
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .scrollDisabled(true)
+        .environment(\.editMode, .constant(.active))
+        .frame(height: approxRowHeight * CGFloat(editingTopics.count))
+        .confirmationDialog(
+            "Delete this topic?",
+            isPresented: topicDeletionBinding,
+            titleVisibility: .visible,
+            presenting: topicPendingDeletion
+        ) { topic in
+            Button("Delete \"\(topic.title)\"", role: .destructive) {
+                Task { await viewModel.deleteTopic(topic) }
+                topicPendingDeletion = nil
+            }
+            Button("Cancel", role: .cancel) { topicPendingDeletion = nil }
+        } message: { topic in
+            Text("All \(topic.notesCount) note\(topic.notesCount == 1 ? "" : "s") inside this topic will become inaccessible.")
+        }
+    }
+
+    private var topicDeletionBinding: Binding<Bool> {
+        Binding(
+            get: { topicPendingDeletion != nil },
+            set: { isPresented in
+                if !isPresented { topicPendingDeletion = nil }
+            }
+        )
+    }
+
+    private func topicEditRow(_ topic: GrammarNoteTopic) -> some View {
+        GrammarNoteTopicCardView(topic: topic, isEditing: true)
+            .contentShape(Rectangle())
+            .allowsHitTesting(false)
     }
 
     private var loadingCard: some View {

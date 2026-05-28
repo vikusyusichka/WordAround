@@ -10,6 +10,8 @@ struct GrammarNotesTopicView: View {
     @State private var isQuickMistakeSheetPresented = false
     @State private var editorNote: GrammarNote?
     @State private var quizNote: GrammarNote?
+    @State private var isEditingNotes = false
+    @State private var notePendingDeletion: GrammarNote?
 
     private let theme: CreateSetTheme
 
@@ -43,8 +45,10 @@ struct GrammarNotesTopicView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: isPadLike ? 20 : 16) {
                     headerView
-                    searchBar
-                    filtersRow
+                    if !isEditingNotes {
+                        searchBar
+                        filtersRow
+                    }
                     contentView
                 }
                 .padding(.horizontal, isPadLike ? 28 : 20)
@@ -198,17 +202,20 @@ struct GrammarNotesTopicView: View {
                 Spacer()
 
                 Button {
-                    // Placeholder for topic editing in a later step.
+                    toggleEditingNotes()
                 } label: {
-                    Image(systemName: "pencil")
+                    Image(systemName: isEditingNotes ? "checkmark" : "pencil")
                         .font(.system(size: isPadLike ? 17 : 15, weight: .bold))
-                        .foregroundStyle(theme.accent)
+                        .foregroundStyle(isEditingNotes ? Color.white : theme.accent)
                         .frame(width: isPadLike ? 46 : 40, height: isPadLike ? 46 : 40)
-                        .background(theme.fieldBackground)
+                        .background(isEditingNotes ? theme.accent : theme.fieldBackground)
                         .clipShape(Circle())
                         .shadow(color: theme.shadowColor, radius: 12, x: 0, y: 7)
                 }
                 .buttonStyle(.plain)
+                .disabled(!hasEditableNotes)
+                .opacity(hasEditableNotes ? 1 : 0.55)
+                .accessibilityLabel(isEditingNotes ? "Done editing notes" : "Edit notes")
             }
 
             HStack(alignment: .center, spacing: 14) {
@@ -296,6 +303,8 @@ struct GrammarNotesTopicView: View {
             loadingCard
         } else if let errorMessage = viewModel.errorMessage {
             errorCard(message: errorMessage)
+        } else if isEditingNotes {
+            editableNotesList
         } else if viewModel.hasNoNotes || viewModel.hasNoMatchingNotes {
             emptyState(
                 title: viewModel.emptyStateTitle,
@@ -315,6 +324,84 @@ struct GrammarNotesTopicView: View {
         } else {
             notesSection(title: nil, notes: viewModel.filteredNotes, isCompact: false)
         }
+    }
+
+    // MARK: - Edit mode
+
+    private var hasEditableNotes: Bool {
+        !viewModel.notes.isEmpty
+    }
+
+    private func toggleEditingNotes() {
+        withAnimation(.spring(response: 0.32, dampingFraction: 0.86)) {
+            isEditingNotes.toggle()
+        }
+    }
+
+    /// Edit-mode notes list. Switches to a `List` so SwiftUI gives us drag
+    /// handles and standard delete affordances. Uses the full `notes`
+    /// array (not the filtered/grouped one) so reorder indices stay stable
+    /// regardless of the active filter — the filter chips resume normal
+    /// behavior the moment the user taps "Done".
+    private var editableNotesList: some View {
+        let editingNotes = viewModel.notes
+        let rowSpacing: CGFloat = isPadLike ? 13 : 11
+        let approxRowHeight: CGFloat = isPadLike ? 138 : 122
+
+        return List {
+            ForEach(editingNotes) { note in
+                noteEditRow(note)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: rowSpacing / 2, leading: 0, bottom: rowSpacing / 2, trailing: 0))
+            }
+            .onMove { source, destination in
+                viewModel.moveNotes(from: source, to: destination)
+            }
+            .onDelete { indexSet in
+                guard let index = indexSet.first else { return }
+                notePendingDeletion = editingNotes[index]
+            }
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .scrollDisabled(true)
+        .environment(\.editMode, .constant(.active))
+        .frame(height: approxRowHeight * CGFloat(editingNotes.count))
+        .confirmationDialog(
+            "Delete this note?",
+            isPresented: noteDeletionBinding,
+            titleVisibility: .visible,
+            presenting: notePendingDeletion
+        ) { note in
+            Button("Delete \"\(note.title)\"", role: .destructive) {
+                Task { await viewModel.deleteNote(note) }
+                notePendingDeletion = nil
+            }
+            Button("Cancel", role: .cancel) { notePendingDeletion = nil }
+        } message: { _ in
+            Text("This note will be removed from the topic permanently.")
+        }
+    }
+
+    private var noteDeletionBinding: Binding<Bool> {
+        Binding(
+            get: { notePendingDeletion != nil },
+            set: { isPresented in
+                if !isPresented { notePendingDeletion = nil }
+            }
+        )
+    }
+
+    private func noteEditRow(_ note: GrammarNote) -> some View {
+        GrammarNoteCardView(
+            note: note,
+            isCompact: false,
+            onQuizTap: nil,
+            searchSnippet: nil
+        )
+        .contentShape(Rectangle())
+        .allowsHitTesting(false)
     }
 
     private func notesSection(title: String?, notes: [GrammarNote], isCompact: Bool) -> some View {

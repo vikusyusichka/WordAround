@@ -1,6 +1,7 @@
 import Foundation
 import FirebaseFirestore
 import Combine
+import SwiftUI
 
 @MainActor
 final class GrammarNotesTopicViewModel: ObservableObject {
@@ -430,6 +431,45 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Reordering (edit mode)
+
+    /// Reorders notes in place from edit mode. Reassigns `sortIndex` 0..n
+    /// based on the resulting visual order and persists in a single batch.
+    /// The local pinned/favorite priorities in `sortNotes` still group
+    /// notes — `sortIndex` only breaks ties within a group.
+    func moveNotes(from source: IndexSet, to destination: Int) {
+        var reordered = notes
+        reordered.move(fromOffsets: source, toOffset: destination)
+
+        for (offset, _) in reordered.enumerated() {
+            reordered[offset].sortIndex = offset
+        }
+
+        updateNotes(reordered)
+        persistNoteOrder(reordered)
+    }
+
+    private func persistNoteOrder(_ orderedNotes: [GrammarNote]) {
+        guard !ownerUID.isEmpty else { return }
+        let indices = orderedNotes.enumerated().map { (id: $1.id, sortIndex: $0) }
+        let service = noteService
+        let owner = ownerUID
+        let topicId = topic.id
+        Task.detached(priority: .utility) {
+            do {
+                try await service.updateNoteSortIndices(
+                    ownerUID: owner,
+                    topicId: topicId,
+                    indices: indices
+                )
+            } catch {
+                #if DEBUG
+                print("[ReorderNotes] persist failed:", error)
+                #endif
+            }
+        }
+    }
+
     func togglePinned(_ note: GrammarNote) async {
         replace(note) { $0.isPinned.toggle(); $0.updatedAt = Date() }
         do {
@@ -560,7 +600,17 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         notes.sorted { lhs, rhs in
             if lhs.isPinned   != rhs.isPinned   { return lhs.isPinned   && !rhs.isPinned   }
             if lhs.isFavorite != rhs.isFavorite { return lhs.isFavorite && !rhs.isFavorite }
-            return lhs.updatedAt > rhs.updatedAt
+            // User-defined order wins over recency when available; newly
+            // created notes (no sortIndex) surface above already-reordered
+            // ones so they still appear at the top of the list.
+            switch (lhs.sortIndex, rhs.sortIndex) {
+            case let (l?, r?):
+                if l != r { return l < r }
+                return lhs.updatedAt > rhs.updatedAt
+            case (nil, nil): return lhs.updatedAt > rhs.updatedAt
+            case (_?, nil):  return false
+            case (nil, _?):  return true
+            }
         }
     }
 

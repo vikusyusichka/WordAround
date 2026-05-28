@@ -29,6 +29,15 @@ struct GrammarNote: Identifiable, Codable, Equatable {
     /// Firestore documents stay compatible — the topic VM falls back to
     /// rebuilding it locally when this is empty.
     var searchableText: String = ""
+    /// User-defined ordering for edit mode. `nil` for legacy notes that
+    /// were never reordered; sort fallback uses `updatedAt` in that case so
+    /// newly created notes keep surfacing at the top.
+    var sortIndex: Int? = nil
+    /// Last time the note was opened in the editor. Used by Review Today to
+    /// surface "Recently opened" notes when no manual review items are due.
+    /// `nil` for legacy notes that never had this tracking; callers fall back
+    /// to `updatedAt` / `lastEditedAt` in that case.
+    var recentlyOpenedAt: Date? = nil
 }
 
 extension GrammarNote: Hashable {

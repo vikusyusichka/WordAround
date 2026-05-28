@@ -53,7 +53,7 @@ final class GeminiEssayAIClient: EssayAIClient {
     init(
         session: URLSession = .shared,
         endpointURL: URL? = GrammarQuizAIConfiguration.endpointURL,
-        timeoutInterval: TimeInterval = 30
+        timeoutInterval: TimeInterval = 45
     ) {
         self.session = session
         self.endpointURL = endpointURL
@@ -78,36 +78,25 @@ final class GeminiEssayAIClient: EssayAIClient {
         language: GrammarLanguage,
         avoidTitles: [String]
     ) async throws -> GeneratedEssayTask {
-        let prompt = """
-        Generate one essay practice task for a language learner.
+        #if DEBUG
+        print("[EssayAI] generateSuggestedTask language=\(language.title) avoidCount=\(avoidTitles.count)")
+        #endif
 
-        Target writing language: \(language.title)
-        Mode: suggested topic
-        Previously used titles to avoid: \(avoidTitles.joined(separator: ", "))
+        let avoidLine = avoidTitles.isEmpty
+            ? ""
+            : "Do not reuse any of these titles: \(avoidTitles.joined(separator: " | "))."
 
-        Requirements:
-        - Create a fresh, non-repetitive essay topic.
-        - Automatically detect the most suitable CEFR level based on topic complexity.
-        - Return exactly one essay task.
-        - Return exactly 3 short practical writing tips.
-        - Each tip must be 2-5 words.
-        - The task must be suitable for language learners.
-        - Do not include private or sensitive topics.
-        - Avoid medical, legal, extremist, violent, sexual, or traumatic topics.
-        - Return JSON only.
-        - Do not wrap JSON in markdown.
-
-        JSON schema:
-        {
-          "title": "string",
-          "task": "string",
-          "detectedLevel": "A1|A2|B1|B2|C1|Native",
-          "estimatedTimeMinutes": 12,
-          "wordLimitMin": 90,
-          "wordLimitMax": 150,
-          "quickTips": ["string", "string", "string"]
-        }
-        """
+        let prompt = [
+            "You generate one short essay-practice topic for a language learner.",
+            "Write the topic title and the task entirely in \(language.title).",
+            "Auto-detect the most suitable CEFR level (A1, A2, B1, B2, C1, or Native) based on topic complexity.",
+            avoidLine,
+            "Avoid sensitive, medical, legal, violent, or sexual topics.",
+            "",
+            Self.essayTaskResponseContract
+        ]
+        .filter { !$0.isEmpty }
+        .joined(separator: "\n")
 
         return try await requestJSON(prompt: prompt, responseType: GeneratedEssayTask.self)
     }
@@ -116,35 +105,20 @@ final class GeminiEssayAIClient: EssayAIClient {
         topic: String,
         language: GrammarLanguage
     ) async throws -> GeneratedEssayTask {
-        let prompt = """
-        Generate an essay practice task based on the user's custom topic.
+        #if DEBUG
+        print("[EssayAI] generateTaskFromCustomTopic language=\(language.title) topic=\(topic.prefix(60))")
+        #endif
 
-        Target writing language: \(language.title)
-        User topic: "\(topic)"
-
-        Requirements:
-        - Rewrite the topic naturally.
-        - Create a clear essay task.
-        - Automatically detect the most suitable CEFR level.
-        - Return exactly 3 short practical writing tips.
-        - Each tip must be 2-5 words.
-        - The task must be suitable for language learners.
-        - Avoid private or sensitive topics.
-        - Avoid medical, legal, extremist, violent, sexual, or traumatic topics.
-        - Return JSON only.
-        - Do not wrap JSON in markdown.
-
-        JSON schema:
-        {
-          "title": "string",
-          "task": "string",
-          "detectedLevel": "A1|A2|B1|B2|C1|Native",
-          "estimatedTimeMinutes": 12,
-          "wordLimitMin": 90,
-          "wordLimitMax": 150,
-          "quickTips": ["string", "string", "string"]
-        }
-        """
+        let prompt = [
+            "You generate one short essay-practice topic for a language learner.",
+            "Write the topic title and the task entirely in \(language.title).",
+            "Base the topic on the learner's idea: \"\(topic)\".",
+            "Auto-detect the most suitable CEFR level (A1, A2, B1, B2, C1, or Native).",
+            "Avoid sensitive, medical, legal, violent, or sexual topics.",
+            "",
+            Self.essayTaskResponseContract
+        ]
+        .joined(separator: "\n")
 
         return try await requestJSON(prompt: prompt, responseType: GeneratedEssayTask.self)
     }
@@ -157,36 +131,51 @@ final class GeminiEssayAIClient: EssayAIClient {
         essayText: String,
         previousHints: [String]
     ) async throws -> EssayGeneratedHint {
-        let prompt = """
-        Generate one helpful writing hint for a language learner.
+        #if DEBUG
+        print("[EssayAI] generateHint language=\(language.title) level=\(level.rawValue) essayChars=\(essayText.count) previousHints=\(previousHints.count)")
+        #endif
 
-        Target writing language: \(language.title)
-        CEFR level: \(level.rawValue)
-        Essay title: \(topicTitle)
-        Essay task: \(task)
-        Current essay text: "\(essayText)"
-        Previous hints: \(previousHints.joined(separator: " | "))
+        let previousLine = previousHints.isEmpty
+            ? ""
+            : "Avoid repeating these earlier hints: \(previousHints.joined(separator: " | "))."
 
-        Rules:
-        - Return exactly one hint.
-        - Do not write the essay for the user.
-        - Do not generate full paragraphs.
-        - Do not repeat previous hints.
-        - Keep the hint short.
-        - Maximum 12 words.
-        - Match learner level.
-        - Return JSON only.
-        - Do not wrap JSON in markdown.
+        let essayPreview = String(essayText.prefix(600))
 
-        JSON schema:
-        {
-          "text": "string",
-          "category": "content|grammar|vocabulary|structure"
-        }
-        """
+        let prompt = [
+            "You give one short writing hint to a language learner.",
+            "Writing language: \(language.title). Learner CEFR level: \(level.rawValue).",
+            "Essay title: \(topicTitle).",
+            "Essay task: \(task).",
+            "Learner's draft so far: \"\(essayPreview)\".",
+            previousLine,
+            "The hint must be at most 12 words, must not write the essay for them, must match the learner's level, and must be actionable.",
+            "",
+            Self.hintResponseContract
+        ]
+        .filter { !$0.isEmpty }
+        .joined(separator: "\n")
 
         return try await requestJSON(prompt: prompt, responseType: EssayGeneratedHint.self)
     }
+
+    // MARK: - Response contracts
+
+    /// Single-line JSON contract that mirrors the working
+    /// `GrammarQuizAIPromptBuilder.responseContract`. Gemini's JSON mode
+    /// behaves much more reliably when the schema is one compact line
+    /// rather than a pretty-printed multi-line example with placeholder
+    /// values (those get echoed back verbatim more often than not).
+    private static let essayTaskResponseContract: String = """
+    Return ONLY a JSON object that matches:
+    {"title":"<short topic title in target language>","task":"<one-paragraph essay prompt in target language>","detectedLevel":"A1|A2|B1|B2|C1|Native","estimatedTimeMinutes":12,"wordLimitMin":90,"wordLimitMax":150,"quickTips":["<2-5 word tip>","<2-5 word tip>","<2-5 word tip>"]}
+    Rules: estimatedTimeMinutes, wordLimitMin and wordLimitMax MUST be integers (not strings). quickTips MUST be an array of exactly 3 strings. Do not wrap the JSON in markdown or prose.
+    """
+
+    private static let hintResponseContract: String = """
+    Return ONLY a JSON object that matches:
+    {"text":"<<=12 word hint in target language>","category":"content|grammar|vocabulary|structure"}
+    Do not wrap the JSON in markdown or prose.
+    """
 
     // MARK: - Transport
 
@@ -199,8 +188,15 @@ final class GeminiEssayAIClient: EssayAIClient {
         responseType: T.Type
     ) async throws -> T {
         guard let endpointURL else {
+            #if DEBUG
+            print("[EssayAI] requestJSON — endpointURL is nil, worker not configured")
+            #endif
             throw GeminiEssayAIClientError.workerNotConfigured
         }
+
+        #if DEBUG
+        print("[EssayAI] → POST \(endpointURL.absoluteString) type=\(responseType)")
+        #endif
 
         var urlRequest = URLRequest(url: endpointURL, timeoutInterval: timeoutInterval)
         urlRequest.httpMethod = "POST"
@@ -208,10 +204,20 @@ final class GeminiEssayAIClient: EssayAIClient {
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
 
         do {
-            urlRequest.httpBody = try JSONEncoder().encode(
+            let body = try JSONEncoder().encode(
                 WorkerRequest(prompt: prompt, responseMimeType: "application/json")
             )
+            urlRequest.httpBody = body
+            #if DEBUG
+            print("[EssayAI] prompt (\(prompt.count) chars):\n\(prompt)")
+            if let bodyString = String(data: body, encoding: .utf8) {
+                print("[EssayAI] request body (\(body.count) bytes): \(bodyString.prefix(400))…")
+            }
+            #endif
         } catch {
+            #if DEBUG
+            print("[EssayAI] failed to encode request body:", error)
+            #endif
             throw GeminiEssayAIClientError.invalidResponse
         }
 
@@ -220,6 +226,9 @@ final class GeminiEssayAIClient: EssayAIClient {
         do {
             (data, response) = try await session.data(for: urlRequest)
         } catch {
+            #if DEBUG
+            print("[EssayAI] network error:", error)
+            #endif
             throw GeminiEssayAIClientError.serverError(0, error.localizedDescription)
         }
 
@@ -227,7 +236,15 @@ final class GeminiEssayAIClient: EssayAIClient {
             throw GeminiEssayAIClientError.invalidResponse
         }
 
+        #if DEBUG
+        print("[EssayAI] ← HTTP \(httpResponse.statusCode)")
+        #endif
+
         guard (200...299).contains(httpResponse.statusCode) else {
+            #if DEBUG
+            let bodyPreview = String(data: data, encoding: .utf8).map { String($0.prefix(500)) } ?? "<binary \(data.count) bytes>"
+            print("[EssayAI] error body:", bodyPreview)
+            #endif
             throw GeminiEssayAIClientError.serverError(
                 httpResponse.statusCode,
                 Self.workerErrorMessage(from: data)
@@ -250,16 +267,30 @@ final class GeminiEssayAIClient: EssayAIClient {
 
         guard let rawText = envelope.text?.trimmingCharacters(in: .whitespacesAndNewlines),
               !rawText.isEmpty else {
+            #if DEBUG
+            print("[EssayAI] worker returned empty text field")
+            #endif
             throw GeminiEssayAIClientError.emptyResponse
         }
 
+        #if DEBUG
+        print("[EssayAI] rawText (\(rawText.count) chars):\n\(rawText)")
+        #endif
+
         let jsonString = AIResponseTextCleaner.normalizedJSON(from: rawText)
         guard let jsonData = jsonString.data(using: .utf8) else {
+            #if DEBUG
+            print("[EssayAI] cleaned text not UTF-8 decodable:", jsonString)
+            #endif
             throw GeminiEssayAIClientError.malformedJSON(Self.safePreview(rawText))
         }
 
         do {
-            return try JSONDecoder().decode(T.self, from: jsonData)
+            let decoded = try JSONDecoder().decode(T.self, from: jsonData)
+            #if DEBUG
+            print("✅ [EssayAI] decoded \(T.self) successfully")
+            #endif
+            return decoded
         } catch {
             #if DEBUG
             print("[EssayAI] raw text:", rawText)

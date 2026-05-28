@@ -91,7 +91,14 @@ struct GrammarNoteEditorView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .task { await viewModel.loadBlocks() }
+        .task {
+            await viewModel.loadBlocks()
+            // Record the open AFTER blocks load so the local recommendation
+            // cache stores a snapshot with the latest title/preview. Stamps
+            // the note locally (UserDefaults) AND in Firestore so the
+            // Review Today "Recently opened" pool stays cross-device.
+            viewModel.recordOpened()
+        }
         .sheet(isPresented: $isAddBlockSheetPresented) {
             AddGrammarNoteBlockSheet(allowsQuiz: allowsQuiz) { type in
                 viewModel.addBlock(type)

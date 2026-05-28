@@ -14,6 +14,9 @@ struct GrammarNoteTopic: Identifiable, Codable, Equatable {
     var isMistakesTopic: Bool
     var createdAt: Date
     var updatedAt: Date
+    /// User-defined ordering for edit mode. `nil` for legacy documents that
+    /// were never reordered; sorting falls back to `updatedAt` in that case.
+    var sortIndex: Int? = nil
 
     static func commonMistakes(ownerUID: String) -> GrammarNoteTopic {
         let now = Date()

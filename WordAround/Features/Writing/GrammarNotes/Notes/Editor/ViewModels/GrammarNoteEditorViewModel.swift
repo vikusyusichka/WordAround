@@ -314,9 +314,42 @@ final class GrammarNoteEditorViewModel: ObservableObject {
             blocks = cleanedBlocks
             saveState = .saved
             errorMessage = nil
+            // Stamp this note in the "Recently edited" UserDefaults cache so
+            // Review Today can surface it as a Priority 3 source. Static
+            // helper hops to the main actor internally — safe to call here.
+            GrammarReviewViewModel.recordEditedNote(updatedNote)
         } catch {
             saveState = .failed(error.localizedDescription)
             errorMessage = error.localizedDescription
+        }
+    }
+
+    // MARK: - Review tracking
+
+    /// Records this note as the most-recently-opened in the local cache so
+    /// the Review Today "Recently opened" pool can surface it. Also fires a
+    /// best-effort single-field Firestore write to keep the stamp
+    /// cross-device — failures are silent because this is non-critical
+    /// telemetry.
+    func recordOpened() {
+        let snapshot = note
+        GrammarReviewViewModel.recordOpenedNote(snapshot)
+
+        let service = noteService
+        let now = Date()
+        Task.detached(priority: .background) {
+            do {
+                try await service.setNoteRecentlyOpenedAt(
+                    id: snapshot.id,
+                    ownerUID: snapshot.ownerUID,
+                    topicId: snapshot.topicId,
+                    openedAt: now
+                )
+            } catch {
+                #if DEBUG
+                print("[Review] setNoteRecentlyOpenedAt failed:", error)
+                #endif
+            }
         }
     }
 

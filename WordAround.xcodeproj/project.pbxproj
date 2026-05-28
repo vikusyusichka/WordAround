@@ -207,6 +207,11 @@
 		6F87D3C22DE749DCD79DB7F7 /* GrammarReviewSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F2E82CD3EDE1D93FC3FD21 /* GrammarReviewSummaryView.swift */; };
 		6B3E63BE03F960F333F99F0A /* GrammarReviewSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DE7DF9F549E721BDBE7BA7 /* GrammarReviewSessionView.swift */; };
 		3DBB9700B3ADF1377D74CE74 /* GrammarReviewCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571F476EDE5041DF15E84AD6 /* GrammarReviewCompletionView.swift */; };
+		B29B70D26B8E432C98B317A2 /* GrammarReviewSessionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84A775164FE4ABCAB4B5565 /* GrammarReviewSessionCard.swift */; };
+		ABC26D809DDB45BD856FD271 /* GrammarReviewSourcePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C496D53FC4A9591E18827 /* GrammarReviewSourcePool.swift */; };
+		97798C17DD8448EA8FCF116C /* GrammarReviewQueueBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45AC03EE45345DAB18A3F1A /* GrammarReviewQueueBuilder.swift */; };
+		1A9043AF4DC4409B972F68BB /* GrammarReviewSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 443B54A87317470CAC959B94 /* GrammarReviewSessionViewModel.swift */; };
+		B8C922509A854015A0C12237 /* GrammarReviewSessionSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160B4D9E2DB24322B7B6D772 /* GrammarReviewSessionSummaryView.swift */; };
 		648C5A3ED537A1674D6CDCDA /* GrammarNoteSearchIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E28D1EA2B5C6197D89A506 /* GrammarNoteSearchIndexer.swift */; };
 		A652D6CA195B6B7FB9A62DCF /* GrammarTopicTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F489257667566ECF6D490023 /* GrammarTopicTemplate.swift */; };
 		F1B5819548296F657B819FC8 /* GrammarTemplateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCF3DFB5EBE7A2DEB1A1F89 /* GrammarTemplateProvider.swift */; };
@@ -421,6 +426,11 @@
 		C6F2E82CD3EDE1D93FC3FD21 /* GrammarReviewSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarReviewSummaryView.swift; sourceTree = "<group>"; };
 		16DE7DF9F549E721BDBE7BA7 /* GrammarReviewSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarReviewSessionView.swift; sourceTree = "<group>"; };
 		571F476EDE5041DF15E84AD6 /* GrammarReviewCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarReviewCompletionView.swift; sourceTree = "<group>"; };
+		D84A775164FE4ABCAB4B5565 /* GrammarReviewSessionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarReviewSessionCard.swift; sourceTree = "<group>"; };
+		946C496D53FC4A9591E18827 /* GrammarReviewSourcePool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarReviewSourcePool.swift; sourceTree = "<group>"; };
+		F45AC03EE45345DAB18A3F1A /* GrammarReviewQueueBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarReviewQueueBuilder.swift; sourceTree = "<group>"; };
+		443B54A87317470CAC959B94 /* GrammarReviewSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarReviewSessionViewModel.swift; sourceTree = "<group>"; };
+		160B4D9E2DB24322B7B6D772 /* GrammarReviewSessionSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarReviewSessionSummaryView.swift; sourceTree = "<group>"; };
 		54E28D1EA2B5C6197D89A506 /* GrammarNoteSearchIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteSearchIndexer.swift; sourceTree = "<group>"; };
 		F489257667566ECF6D490023 /* GrammarTopicTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarTopicTemplate.swift; sourceTree = "<group>"; };
 		9CCF3DFB5EBE7A2DEB1A1F89 /* GrammarTemplateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarTemplateProvider.swift; sourceTree = "<group>"; };
@@ -1304,6 +1314,8 @@
 				A6059B873705BADEBC04207F /* GrammarReviewPriority.swift */,
 				AD3F707DB2DBCE590FDAE05A /* GrammarReviewResult.swift */,
 				A7B2F11A6E8E19C6099E4E40 /* GrammarReviewItem.swift */,
+				D84A775164FE4ABCAB4B5565 /* GrammarReviewSessionCard.swift */,
+				946C496D53FC4A9591E18827 /* GrammarReviewSourcePool.swift */,
 				F489257667566ECF6D490023 /* GrammarTopicTemplate.swift */,
 				B6CEA723F5AE62122579BCAE /* GrammarQuizCreationMode.swift */,
 				307D531F707F4D9BFE888C0B /* GrammarQuizAIResponseDTO.swift */,
@@ -1322,6 +1334,7 @@
 				E3820FC62FBC83ED007BDB57 /* GrammarNoteService.swift */,
 				00F3BAF2885AF3078CF456DC /* OnDeviceGrammarQuizAIClient.swift */,
 				27FC526E7CCDA9048E2BF5A0 /* GrammarReviewService.swift */,
+				F45AC03EE45345DAB18A3F1A /* GrammarReviewQueueBuilder.swift */,
 				54E28D1EA2B5C6197D89A506 /* GrammarNoteSearchIndexer.swift */,
 				9CCF3DFB5EBE7A2DEB1A1F89 /* GrammarTemplateProvider.swift */,
 				E8A8765FC329B3B99E67B042 /* GrammarQuizQuestionGenerating.swift */,
@@ -1351,6 +1364,7 @@
 				E3820FCD2FBC8451007BDB57 /* GrammarNoteEditorView.swift */,
 				C6F2E82CD3EDE1D93FC3FD21 /* GrammarReviewSummaryView.swift */,
 				16DE7DF9F549E721BDBE7BA7 /* GrammarReviewSessionView.swift */,
+				160B4D9E2DB24322B7B6D772 /* GrammarReviewSessionSummaryView.swift */,
 				571F476EDE5041DF15E84AD6 /* GrammarReviewCompletionView.swift */,
 				36C06D5A178E84BF7A274231 /* GrammarTemplateCardView.swift */,
 				F0F2DD88D8846C4A41FD0192 /* GrammarTemplatePreviewView.swift */,
@@ -1368,6 +1382,7 @@
 			children = (
 				E3820FDD2FBC8C7E007BDB57 /* GrammarNoteEditorViewModel.swift */,
 				E06536BA2267C9A560CE8633 /* GrammarReviewViewModel.swift */,
+				443B54A87317470CAC959B94 /* GrammarReviewSessionViewModel.swift */,
 				BCB014679B38A62F5830249F /* GrammarNoteQuizViewModel.swift */,
 			);
 			path = ViewModels;
@@ -1660,6 +1675,11 @@
 				6F87D3C22DE749DCD79DB7F7 /* GrammarReviewSummaryView.swift in Sources */,
 				6B3E63BE03F960F333F99F0A /* GrammarReviewSessionView.swift in Sources */,
 				3DBB9700B3ADF1377D74CE74 /* GrammarReviewCompletionView.swift in Sources */,
+				B29B70D26B8E432C98B317A2 /* GrammarReviewSessionCard.swift in Sources */,
+				ABC26D809DDB45BD856FD271 /* GrammarReviewSourcePool.swift in Sources */,
+				97798C17DD8448EA8FCF116C /* GrammarReviewQueueBuilder.swift in Sources */,
+				1A9043AF4DC4409B972F68BB /* GrammarReviewSessionViewModel.swift in Sources */,
+				B8C922509A854015A0C12237 /* GrammarReviewSessionSummaryView.swift in Sources */,
 				648C5A3ED537A1674D6CDCDA /* GrammarNoteSearchIndexer.swift in Sources */,
 				A652D6CA195B6B7FB9A62DCF /* GrammarTopicTemplate.swift in Sources */,
 				F1B5819548296F657B819FC8 /* GrammarTemplateProvider.swift in Sources */,

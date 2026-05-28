@@ -2,6 +2,10 @@ import SwiftUI
 
 struct GrammarNoteTopicCardView: View {
     let topic: GrammarNoteTopic
+    /// Hides the trailing chevron when the parent screen is in edit mode so
+    /// the affordance doesn't compete with the inline reorder/delete
+    /// controls. Default keeps the original look untouched.
+    var isEditing: Bool = false
 
     private var isPadLike: Bool {
         UIDevice.current.userInterfaceIdiom == .pad
@@ -9,8 +13,9 @@ struct GrammarNoteTopicCardView: View {
 
     private let theme: CreateSetTheme
 
-    init(topic: GrammarNoteTopic) {
+    init(topic: GrammarNoteTopic, isEditing: Bool = false) {
         self.topic = topic
+        self.isEditing = isEditing
         self.theme = CreateSetTheme.theme(forHex: topic.colorHex)
     }
 
@@ -35,9 +40,11 @@ struct GrammarNoteTopicCardView: View {
 
             Spacer(minLength: 8)
 
-            Image(systemName: "chevron.right")
-                .font(.system(size: isPadLike ? 16 : 14, weight: .semibold))
-                .foregroundStyle(theme.mutedTextColor.opacity(0.78))
+            if !isEditing {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: isPadLike ? 16 : 14, weight: .semibold))
+                    .foregroundStyle(theme.mutedTextColor.opacity(0.78))
+            }
         }
         .padding(.horizontal, isPadLike ? 22 : 18)
         .padding(.vertical, isPadLike ? 18 : 16)

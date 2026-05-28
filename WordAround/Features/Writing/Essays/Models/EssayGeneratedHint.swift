@@ -23,9 +23,9 @@ struct EssayGeneratedHint: Codable, Equatable, Identifiable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
-        let text = try container.decodeIfPresent(String.self, forKey: .text) ?? "Add one clear supporting example."
-        let categoryRaw = try container.decodeIfPresent(String.self, forKey: .category) ?? EssayHintCategory.content.rawValue
+        let id = (try? container.decode(UUID.self, forKey: .id)) ?? UUID()
+        let text = (try? container.decode(String.self, forKey: .text)) ?? "Add one clear supporting example."
+        let categoryRaw = (try? container.decode(String.self, forKey: .category)) ?? EssayHintCategory.content.rawValue
         let category = EssayHintCategory(rawValue: categoryRaw.lowercased()) ?? .content
 
         self.init(id: id, text: text, category: category)

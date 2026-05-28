@@ -118,6 +118,7 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
             itemToWrite.reviewCount = existing.reviewCount
             itemToWrite.correctStreak = existing.correctStreak
             itemToWrite.incorrectStreak = existing.incorrectStreak
+            itemToWrite.mistakeCount = existing.mistakeCount
             itemToWrite.lastReviewedAt = existing.lastReviewedAt
             itemToWrite.nextReviewAt = existing.nextReviewAt
             itemToWrite.createdAt = existing.createdAt
@@ -161,6 +162,7 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
             "reviewCount":      item.reviewCount,
             "correctStreak":    item.correctStreak,
             "incorrectStreak":  item.incorrectStreak,
+            "mistakeCount":     item.mistakeCount,
             "createdAt":        Timestamp(date: item.createdAt),
             "updatedAt":        Timestamp(date: item.updatedAt)
         ]
@@ -198,6 +200,7 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
             reviewCount:   data["reviewCount"]      as? Int ?? 0,
             correctStreak: data["correctStreak"]    as? Int ?? 0,
             incorrectStreak: data["incorrectStreak"] as? Int ?? 0,
+            mistakeCount:  data["mistakeCount"]     as? Int ?? 0,
             createdAt:     dateValue(data["createdAt"]) ?? Date(),
             updatedAt:     dateValue(data["updatedAt"]) ?? Date()
         )

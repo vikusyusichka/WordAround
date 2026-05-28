@@ -25,6 +25,24 @@ protocol GrammarNoteServicing {
     /// indexer existed. Does NOT touch `updatedAt` so backfill writes
     /// stay invisible in lists sorted by recency.
     func setSearchableText(id: String, ownerUID: String, topicId: String, searchableText: String) async throws
+    /// Persists a user-defined ordering for notes inside a single topic.
+    /// Used by edit-mode reorders. Writes happen in a single batch and do
+    /// NOT touch `updatedAt` so reorder-only changes don't reshuffle other
+    /// "recently updated" UI.
+    func updateNoteSortIndices(
+        ownerUID: String,
+        topicId: String,
+        indices: [(id: String, sortIndex: Int)]
+    ) async throws
+    /// Stamps `recentlyOpenedAt` on a single note. Fire-and-forget single-field
+    /// write — does NOT touch `updatedAt` so the lists sorted by recency
+    /// don't shuffle just because the user peeked at a note.
+    func setNoteRecentlyOpenedAt(
+        id: String,
+        ownerUID: String,
+        topicId: String,
+        openedAt: Date
+    ) async throws
 }
 
 extension GrammarNoteServicing {
@@ -144,6 +162,36 @@ final class GrammarNoteService: GrammarNoteServicing {
         ])
     }
 
+    func updateNoteSortIndices(
+        ownerUID: String,
+        topicId: String,
+        indices: [(id: String, sortIndex: Int)]
+    ) async throws {
+        guard !indices.isEmpty else { return }
+        let collection = notesCollection(ownerUID: ownerUID, topicId: topicId)
+        let batch = db.batch()
+        for entry in indices {
+            batch.updateData(
+                ["sortIndex": entry.sortIndex],
+                forDocument: collection.document(entry.id)
+            )
+        }
+        try await batch.commit()
+    }
+
+    func setNoteRecentlyOpenedAt(
+        id: String,
+        ownerUID: String,
+        topicId: String,
+        openedAt: Date
+    ) async throws {
+        // Single-field write — does NOT touch `updatedAt`. Simply opening a
+        // note should not push it to the top of the "recently updated" list.
+        try await notesCollection(ownerUID: ownerUID, topicId: topicId).document(id).updateData([
+            "recentlyOpenedAt": Timestamp(date: openedAt)
+        ])
+    }
+
     // MARK: - Private write helpers
     private func writeNote(_ note: GrammarNote) async throws {
         try await notesCollection(ownerUID: note.ownerUID, topicId: note.topicId)
@@ -242,7 +290,9 @@ final class GrammarNoteService: GrammarNoteServicing {
             createdAt:        dateValue(data["createdAt"])    ?? updatedAt,
             updatedAt:        updatedAt,
             lastEditedAt:     dateValue(data["lastEditedAt"]) ?? updatedAt,
-            searchableText:   data["searchableText"]   as? String ?? ""
+            searchableText:   data["searchableText"]   as? String ?? "",
+            sortIndex:        data["sortIndex"]        as? Int,
+            recentlyOpenedAt: dateValue(data["recentlyOpenedAt"])
         )
     }
 
@@ -289,7 +339,9 @@ final class GrammarNoteService: GrammarNoteServicing {
             lastEditedAt:     dateValue(data["lastEditedAt"]) ?? updatedAt,
             // Preview docs persist `searchableText` so list search works
             // without ever fetching `contentBlocks` from Firestore.
-            searchableText:   data["searchableText"] as? String ?? ""
+            searchableText:   data["searchableText"] as? String ?? "",
+            sortIndex:        data["sortIndex"]     as? Int,
+            recentlyOpenedAt: dateValue(data["recentlyOpenedAt"])
         )
     }
 
@@ -322,9 +374,11 @@ final class GrammarNoteService: GrammarNoteServicing {
             "updatedAt":       Timestamp(date: note.updatedAt),
             "lastEditedAt":    Timestamp(date: note.lastEditedAt)
         ]
-        if let savedIssueKey = note.savedIssueKey { data["savedIssueKey"] = savedIssueKey }
-        if let coverImageURL = note.coverImageURL { data["coverImageURL"] = coverImageURL }
-        if let templateId    = note.templateId    { data["templateId"]    = templateId }
+        if let savedIssueKey    = note.savedIssueKey    { data["savedIssueKey"]    = savedIssueKey }
+        if let coverImageURL    = note.coverImageURL    { data["coverImageURL"]    = coverImageURL }
+        if let templateId       = note.templateId       { data["templateId"]       = templateId }
+        if let sortIndex        = note.sortIndex        { data["sortIndex"]        = sortIndex }
+        if let recentlyOpenedAt = note.recentlyOpenedAt { data["recentlyOpenedAt"] = Timestamp(date: recentlyOpenedAt) }
         return data
     }
 
@@ -378,7 +432,17 @@ final class GrammarNoteService: GrammarNoteServicing {
         notes.sorted { lhs, rhs in
             if lhs.isPinned   != rhs.isPinned   { return lhs.isPinned   }
             if lhs.isFavorite != rhs.isFavorite { return lhs.isFavorite }
-            return lhs.updatedAt > rhs.updatedAt
+            // Honor user-defined ordering when available; newly created
+            // notes (no sortIndex) surface above already-reordered ones via
+            // the (nil, _?) branch.
+            switch (lhs.sortIndex, rhs.sortIndex) {
+            case let (l?, r?):
+                if l != r { return l < r }
+                return lhs.updatedAt > rhs.updatedAt
+            case (nil, nil): return lhs.updatedAt > rhs.updatedAt
+            case (_?, nil):  return false
+            case (nil, _?):  return true
+            }
         }
     }
 }
@@ -401,4 +465,6 @@ struct MockGrammarNoteService: GrammarNoteServicing {
     func setNotePinned(id: String, ownerUID: String, topicId: String, isPinned: Bool)   async throws {}
     func setNoteFavorite(id: String, ownerUID: String, topicId: String, isFavorite: Bool) async throws {}
     func setSearchableText(id: String, ownerUID: String, topicId: String, searchableText: String) async throws {}
+    func updateNoteSortIndices(ownerUID: String, topicId: String, indices: [(id: String, sortIndex: Int)]) async throws {}
+    func setNoteRecentlyOpenedAt(id: String, ownerUID: String, topicId: String, openedAt: Date) async throws {}
 }

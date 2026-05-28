@@ -26,6 +26,10 @@ struct GrammarReviewItem: Identifiable, Codable, Equatable {
     var reviewCount: Int
     var correctStreak: Int
     var incorrectStreak: Int
+    /// Cumulative count of times the user rated this item as Forgot. Used by
+    /// the session summary and could feed future "weakest items first"
+    /// scheduling. Defaults to 0 for legacy documents.
+    var mistakeCount: Int
     var createdAt: Date
     var updatedAt: Date
 
@@ -47,6 +51,7 @@ struct GrammarReviewItem: Identifiable, Codable, Equatable {
         reviewCount: Int = 0,
         correctStreak: Int = 0,
         incorrectStreak: Int = 0,
+        mistakeCount: Int = 0,
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -67,6 +72,7 @@ struct GrammarReviewItem: Identifiable, Codable, Equatable {
         self.reviewCount = reviewCount
         self.correctStreak = correctStreak
         self.incorrectStreak = incorrectStreak
+        self.mistakeCount = mistakeCount
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
@@ -112,6 +118,7 @@ extension GrammarReviewItem {
         case .forgot:
             copy.incorrectStreak += 1
             copy.correctStreak = 0
+            copy.mistakeCount += 1
         }
 
         return copy

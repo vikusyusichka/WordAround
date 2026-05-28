@@ -8,6 +8,11 @@ protocol GrammarNoteTopicServicing {
     func ensureDefaultMistakesTopic(ownerUID: String) async throws -> GrammarNoteTopic
     func updateTopic(_ topic: GrammarNoteTopic) async throws
     func deleteTopic(id: String, ownerUID: String) async throws
+    /// Persists a user-defined ordering by writing the supplied `sortIndex`
+    /// values in a single batch. Used by edit-mode reorders. Best-effort:
+    /// callers should keep their local array up to date so the UI reflects
+    /// the requested order even if persistence fails.
+    func updateTopicSortIndices(ownerUID: String, indices: [(id: String, sortIndex: Int)]) async throws
 }
 
 extension GrammarNoteTopicServicing {
@@ -59,6 +64,22 @@ final class GrammarNoteTopicService: GrammarNoteTopicServicing {
             .delete()
     }
 
+    func updateTopicSortIndices(
+        ownerUID: String,
+        indices: [(id: String, sortIndex: Int)]
+    ) async throws {
+        guard !indices.isEmpty else { return }
+        let collection = topicsCollection(ownerUID: ownerUID)
+        let batch = db.batch()
+        for entry in indices {
+            batch.updateData(
+                ["sortIndex": entry.sortIndex],
+                forDocument: collection.document(entry.id)
+            )
+        }
+        try await batch.commit()
+    }
+
     private func topicsCollection(ownerUID: String) -> CollectionReference {
         db.collection("users")
             .document(ownerUID)
@@ -85,6 +106,7 @@ final class GrammarNoteTopicService: GrammarNoteTopicServicing {
 
         let createdAt = (data["createdAt"] as? Timestamp)?.dateValue() ?? Date()
         let updatedAt = (data["updatedAt"] as? Timestamp)?.dateValue() ?? Date()
+        let sortIndex = data["sortIndex"] as? Int
 
         return GrammarNoteTopic(
             id: document.documentID,
@@ -99,12 +121,13 @@ final class GrammarNoteTopicService: GrammarNoteTopicServicing {
             isPinned: isPinned,
             isMistakesTopic: isMistakesTopic,
             createdAt: createdAt,
-            updatedAt: updatedAt
+            updatedAt: updatedAt,
+            sortIndex: sortIndex
         )
     }
 
     private func dictionary(from topic: GrammarNoteTopic) -> [String: Any] {
-        [
+        var data: [String: Any] = [
             "ownerUID": topic.ownerUID,
             "title": topic.title,
             "description": topic.description,
@@ -118,6 +141,10 @@ final class GrammarNoteTopicService: GrammarNoteTopicServicing {
             "createdAt": Timestamp(date: topic.createdAt),
             "updatedAt": Timestamp(date: topic.updatedAt)
         ]
+        if let sortIndex = topic.sortIndex {
+            data["sortIndex"] = sortIndex
+        }
+        return data
     }
 
     private func sortTopics(_ topics: [GrammarNoteTopic]) -> [GrammarNoteTopic] {
@@ -130,7 +157,22 @@ final class GrammarNoteTopicService: GrammarNoteTopicServicing {
                 return lhs.isMistakesTopic && !rhs.isMistakesTopic
             }
 
-            return lhs.updatedAt > rhs.updatedAt
+            // Honor user-defined ordering when present, fall back to recency
+            // for legacy documents and newly created topics without a
+            // sortIndex. Mixing: items without a sortIndex surface above
+            // reordered ones so freshly created topics keep appearing at
+            // the top of the list.
+            switch (lhs.sortIndex, rhs.sortIndex) {
+            case let (l?, r?):
+                if l != r { return l < r }
+                return lhs.updatedAt > rhs.updatedAt
+            case (nil, nil):
+                return lhs.updatedAt > rhs.updatedAt
+            case (_?, nil):
+                return false
+            case (nil, _?):
+                return true
+            }
         }
     }
 }
@@ -145,4 +187,5 @@ struct MockGrammarNoteTopicService: GrammarNoteTopicServicing {
     }
     func updateTopic(_ topic: GrammarNoteTopic) async throws {}
     func deleteTopic(id: String, ownerUID: String) async throws {}
+    func updateTopicSortIndices(ownerUID: String, indices: [(id: String, sortIndex: Int)]) async throws {}
 }

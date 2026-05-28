@@ -71,6 +71,14 @@ final class GrammarReviewViewModel: ObservableObject {
     @Published private(set) var summary: GrammarReviewSummary = .empty
     @Published private(set) var isLoadingSummary = false
     @Published private(set) var summaryError: String?
+    /// Notes the user has opened in the editor recently — loaded from
+    /// UserDefaults so it works offline. Priority 2 source for Review Today.
+    @Published private(set) var recentlyOpenedItems: [GrammarReviewRecommendation] = []
+    /// Notes the user has edited recently — also from UserDefaults.
+    /// Priority 3 source for Review Today.
+    @Published private(set) var recentlyEditedItems: [GrammarReviewRecommendation] = []
+    /// Kept for backwards-compat with any old callers; mirrors
+    /// `recentlyOpenedItems` for the duration of the deprecation window.
     @Published private(set) var recommendedItems: [GrammarReviewRecommendation] = []
     @Published private(set) var isAddingRecommendation = false
 
@@ -95,11 +103,29 @@ final class GrammarReviewViewModel: ObservableObject {
 
     private let ownerUID: String
     private let service: GrammarReviewServicing
+    private let queueBuilder: GrammarReviewQueueBuilder
     private var lastSummaryLoadAt: Date?
 
-    init(ownerUID: String, service: GrammarReviewServicing = GrammarReviewService()) {
+    // MARK: - Pre-built queue (single source of truth)
+
+    /// The pre-built queue that drives BOTH the Review Today home card and
+    /// the active session. Card reads `previewQueue.count` / `previewQueue.pool`;
+    /// session reads `previewQueue.cards`. The queue is never rebuilt at
+    /// "Start Review" time — pressing the button just hands this result
+    /// to the session view model verbatim.
+    @Published private(set) var previewQueue: GrammarReviewQueueBuilder.Result = .empty
+    /// True while the home card is computing the queue. The card shows a
+    /// loading row instead of misleading counts during this window.
+    @Published private(set) var isBuildingPreviewQueue: Bool = false
+
+    init(
+        ownerUID: String,
+        service: GrammarReviewServicing = GrammarReviewService(),
+        queueBuilder: GrammarReviewQueueBuilder = GrammarReviewQueueBuilder()
+    ) {
         self.ownerUID = ownerUID
         self.service = service
+        self.queueBuilder = queueBuilder
     }
 
     var currentItem: GrammarReviewItem? {
@@ -115,6 +141,19 @@ final class GrammarReviewViewModel: ObservableObject {
         return Double(min(currentIndex + 1, items.count)) / Double(items.count)
     }
 
+    /// Which pool the next session will use. Read directly from the
+    /// pre-built queue so it ALWAYS matches what the session will show.
+    /// No more "1 ready" → "Nothing reviewed" mismatches.
+    var effectiveSourcePool: GrammarReviewSourcePool? {
+        previewQueue.pool
+    }
+
+    /// How many cards the next session will surface. Same source as
+    /// the session — pulled from the pre-built queue, not from raw counts.
+    var effectiveCount: Int {
+        previewQueue.count
+    }
+
     func loadSummary(force: Bool = false) async {
         if !force, let last = lastSummaryLoadAt, Date().timeIntervalSince(last) < 30 { return }
         guard !isLoadingSummary else { return }
@@ -122,6 +161,7 @@ final class GrammarReviewViewModel: ObservableObject {
             summaryError = "User session is not available."
             summary = .empty
             loadLocalRecommendations()
+            previewQueue = .empty
             return
         }
 
@@ -129,14 +169,15 @@ final class GrammarReviewViewModel: ObservableObject {
         summaryError = nil
         defer { isLoadingSummary = false }
 
+        var manualItems: [GrammarReviewItem] = []
         do {
-            summary = try await service.fetchDueSummary(ownerUID: ownerUID)
+            // Pull the full set of due items so the queue builder uses the
+            // exact same list. `fetchDueSummary` only returns counts — we
+            // need real items here to feed the builder.
+            manualItems = try await service.fetchDueReviewItems(ownerUID: ownerUID, limit: 30)
+            summary = GrammarReviewSummary.from(items: manualItems)
             lastSummaryLoadAt = Date()
-            if summary.dueTotal == 0 {
-                loadLocalRecommendations()
-            } else {
-                recommendedItems = []
-            }
+            loadLocalRecommendations()
         } catch {
             summary = .empty
             summaryError = Self.readable(error)
@@ -144,7 +185,31 @@ final class GrammarReviewViewModel: ObservableObject {
             #if DEBUG
             print("[Review] summary load failed:", error)
             #endif
+            previewQueue = .empty
+            return
         }
+
+        await rebuildPreviewQueue(manualItems: manualItems)
+    }
+
+    /// Builds the pre-fetched queue used by both the home card and the
+    /// session. Called by `loadSummary` and any time the recommendation
+    /// pools change. Safe to call repeatedly — the builder is idempotent
+    /// and the result is cached locally.
+    private func rebuildPreviewQueue(manualItems: [GrammarReviewItem]) async {
+        isBuildingPreviewQueue = true
+        defer { isBuildingPreviewQueue = false }
+
+        let result = await queueBuilder.build(
+            manualItems: manualItems,
+            recentlyOpened: recentlyOpenedItems,
+            recentlyEdited: recentlyEditedItems
+        )
+        previewQueue = result
+
+        #if DEBUG
+        print("[Review] previewQueue → pool=\(result.pool?.rawValue ?? "nil") count=\(result.count)")
+        #endif
     }
 
     /// Loads the two Home highlight strips in parallel: open mistakes and
@@ -231,6 +296,8 @@ final class GrammarReviewViewModel: ObservableObject {
         do {
             try await service.createOrUpdateReviewItem(recommendation.reviewItem)
             recommendedItems.removeAll { $0.id == recommendation.id }
+            recentlyOpenedItems.removeAll { $0.id == recommendation.id }
+            recentlyEditedItems.removeAll { $0.id == recommendation.id }
             lastSummaryLoadAt = nil
             await loadSummary(force: true)
         } catch {
@@ -296,9 +363,63 @@ final class GrammarReviewViewModel: ObservableObject {
         isLoadingSession = false
     }
 
-    static func recordOpenedNote(_ note: GrammarNote, limit: Int = 5) {
-        let key = "grammarNotes.review.recentlyOpenedNotes"
-        let recommendation = GrammarReviewRecommendation.from(note: note)
+    static let recentlyOpenedKey = "grammarNotes.review.recentlyOpenedNotes"
+    static let recentlyEditedKey = "grammarNotes.review.recentlyEditedNotes"
+
+    /// Stamps `note` as the most-recently-opened entry in the local cache.
+    /// Idempotent — dedupes by (topicId, noteId) so reopening a note moves
+    /// it to the front instead of duplicating it. Capped at `limit` so the
+    /// cache stays small.
+    static func recordOpenedNote(_ note: GrammarNote, limit: Int = 10) {
+        upsertRecommendation(
+            for: note,
+            key: recentlyOpenedKey,
+            kind: .opened,
+            limit: limit
+        )
+    }
+
+    /// Stamps `note` as the most-recently-edited entry in the local cache.
+    /// Called from the editor autosave so the Review Today "Recently edited"
+    /// fallback can surface freshly-touched notes even when they were never
+    /// added to the manual queue.
+    static func recordEditedNote(_ note: GrammarNote, limit: Int = 10) {
+        upsertRecommendation(
+            for: note,
+            key: recentlyEditedKey,
+            kind: .edited,
+            limit: limit
+        )
+    }
+
+    private enum RecommendationKind { case opened, edited }
+
+    private static func upsertRecommendation(
+        for note: GrammarNote,
+        key: String,
+        kind: RecommendationKind,
+        limit: Int
+    ) {
+        let now = Date()
+        let recommendation: GrammarReviewRecommendation
+        switch kind {
+        case .opened:
+            recommendation = GrammarReviewRecommendation.from(note: note, openedAt: now)
+        case .edited:
+            recommendation = GrammarReviewRecommendation(
+                id: "\(note.topicId)_\(note.id)",
+                ownerUID: note.ownerUID,
+                topicId: note.topicId,
+                noteId: note.id,
+                title: note.title,
+                previewText: note.previewText,
+                languageCode: note.languageCode,
+                languageName: note.languageName,
+                lastOpenedAt: nil,
+                lastEditedAt: now
+            )
+        }
+
         let decoder = JSONDecoder()
         let encoder = JSONEncoder()
         var stored: [GrammarReviewRecommendation] = []
@@ -317,15 +438,33 @@ final class GrammarReviewViewModel: ObservableObject {
         }
     }
 
-    private func loadLocalRecommendations(limit: Int = 3) {
-        let key = "grammarNotes.review.recentlyOpenedNotes"
+    private func loadLocalRecommendations(limit: Int = 10) {
+        recentlyOpenedItems = Self.loadRecommendations(
+            key: Self.recentlyOpenedKey,
+            ownerUID: ownerUID,
+            limit: limit
+        )
+        recentlyEditedItems = Self.loadRecommendations(
+            key: Self.recentlyEditedKey,
+            ownerUID: ownerUID,
+            limit: limit
+        )
+        // Keep the legacy `recommendedItems` mirror for any UI that still
+        // reads it during this transition. The new home card uses
+        // `effectiveSourcePool` instead.
+        recommendedItems = recentlyOpenedItems
+    }
+
+    private static func loadRecommendations(
+        key: String,
+        ownerUID: String,
+        limit: Int
+    ) -> [GrammarReviewRecommendation] {
         guard let data = UserDefaults.standard.data(forKey: key),
               let decoded = try? JSONDecoder().decode([GrammarReviewRecommendation].self, from: data) else {
-            recommendedItems = []
-            return
+            return []
         }
-
-        recommendedItems = Array(
+        return Array(
             decoded
                 .filter { $0.ownerUID == ownerUID || ownerUID.isEmpty }
                 .prefix(limit)

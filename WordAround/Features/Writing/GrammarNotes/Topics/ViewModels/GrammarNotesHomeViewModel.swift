@@ -1,6 +1,7 @@
 import Foundation
 import FirebaseFirestore
 import Combine
+import SwiftUI
 
 @MainActor
 final class GrammarNotesHomeViewModel: ObservableObject {
@@ -341,6 +342,54 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Reordering (edit mode)
+
+    /// Reorders topics in place from edit mode. `.moveDisabled(...)` on the
+    /// row blocks dragging the Common Mistakes topic, but SwiftUI will still
+    /// allow other rows to be dropped above it — so we explicitly re-pin
+    /// the mistakes topic to position 0 here. New `sortIndex` values are
+    /// assigned 0..n based on the final visual order and persisted in a
+    /// single batch.
+    func moveTopics(from source: IndexSet, to destination: Int) {
+        var reordered = topics
+        reordered.move(fromOffsets: source, toOffset: destination)
+
+        // Re-pin the mistakes topic to position 0 if it slipped down. This
+        // keeps the "protected system topic" contract intact regardless of
+        // how the user drag-and-drops around it.
+        if let mistakesIndex = reordered.firstIndex(where: { $0.isMistakesTopic }),
+           mistakesIndex != 0 {
+            let mistakes = reordered.remove(at: mistakesIndex)
+            reordered.insert(mistakes, at: 0)
+        }
+
+        for (offset, _) in reordered.enumerated() {
+            reordered[offset].sortIndex = offset
+        }
+
+        updateTopics(reordered)
+        persistTopicOrder(reordered)
+    }
+
+    private func persistTopicOrder(_ orderedTopics: [GrammarNoteTopic]) {
+        guard !ownerUID.isEmpty else { return }
+        let indices = orderedTopics.enumerated().map { (id: $1.id, sortIndex: $0) }
+        let topicService = service
+        let owner = ownerUID
+        Task.detached(priority: .utility) {
+            do {
+                try await topicService.updateTopicSortIndices(
+                    ownerUID: owner,
+                    indices: indices
+                )
+            } catch {
+                #if DEBUG
+                print("[ReorderTopics] persist failed:", error)
+                #endif
+            }
+        }
+    }
+
     // MARK: - Quick Note creation
 
     func createQuickNote(draft: QuickGrammarNoteDraft) async -> GrammarNote? {
@@ -564,7 +613,17 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         topics.sorted { lhs, rhs in
             if lhs.isPinned != rhs.isPinned { return lhs.isPinned && !rhs.isPinned }
             if lhs.isMistakesTopic != rhs.isMistakesTopic { return lhs.isMistakesTopic && !rhs.isMistakesTopic }
-            return lhs.updatedAt > rhs.updatedAt
+            // User-defined order wins over recency when available. Newly
+            // created topics (no sortIndex) surface above already-reordered
+            // ones so they still appear at the top of the list.
+            switch (lhs.sortIndex, rhs.sortIndex) {
+            case let (l?, r?):
+                if l != r { return l < r }
+                return lhs.updatedAt > rhs.updatedAt
+            case (nil, nil): return lhs.updatedAt > rhs.updatedAt
+            case (_?, nil):  return false
+            case (nil, _?):  return true
+            }
         }
     }
 
