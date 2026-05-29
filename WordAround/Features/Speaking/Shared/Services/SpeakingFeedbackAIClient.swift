@@ -32,6 +32,12 @@ struct SpeakingFeedbackAIResponseDTO: Decodable {
     let fluency: MetricDTO
     let corrections: [CorrectionDTO]
 
+    /// Debate-only metrics. Optional so non-debate responses decode
+    /// unchanged; present only when `includeDebateMetrics` was requested.
+    let argumentQuality: MetricDTO?
+    let persuasiveness: MetricDTO?
+    let structure: MetricDTO?
+
     struct MetricDTO: Decodable {
         let rating: String
         let score: Int
@@ -53,6 +59,26 @@ struct SpeakingFeedbackRequest {
     let scenarioOrTopicContext: String
 
     let messages: [SpeakingConversationMessage]
+
+    /// When true the evaluator is asked to also produce the three debate
+    /// metrics (argument quality, persuasiveness, structure).
+    let includeDebateMetrics: Bool
+
+    init(
+        language: GrammarLanguage,
+        level: EssayDifficulty,
+        scenarioOrTopicTitle: String,
+        scenarioOrTopicContext: String,
+        messages: [SpeakingConversationMessage],
+        includeDebateMetrics: Bool = false
+    ) {
+        self.language = language
+        self.level = level
+        self.scenarioOrTopicTitle = scenarioOrTopicTitle
+        self.scenarioOrTopicContext = scenarioOrTopicContext
+        self.messages = messages
+        self.includeDebateMetrics = includeDebateMetrics
+    }
 }
 
 protocol SpeakingFeedbackAIClient {

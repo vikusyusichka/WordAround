@@ -192,15 +192,37 @@ final class GeminiSpeakingFeedbackAIClient: SpeakingFeedbackAIClient {
             ? "(no conversation)"
             : allTurns
 
-        return [
-            "You are a speaking-practice evaluator inside a language learning app.",
+        let debate = request.includeDebateMetrics
+
+        let intro = debate
+            ? "You are a debate-coach evaluator inside a language learning app. The learner debated an AI opponent."
+            : "You are a speaking-practice evaluator inside a language learning app."
+
+        let metricCountLine = debate
+            ? "3. Produce seven score blocks: grammar, pronunciation, vocabulary, fluency, argumentQuality, persuasiveness, structure."
+            : "3. Produce four score blocks: grammar, pronunciation, vocabulary, fluency."
+
+        let debateRule = debate
+            ? "- argumentQuality, persuasiveness and structure judge HOW the learner argued (logic, convincing reasons, clear organisation) — base them ONLY on the learner messages."
+            : nil
+
+        let debateSchemaLines = debate
+            ? [
+                "  \"argumentQuality\": {\"rating\":\"<rating>\",\"score\":<int>,\"explanation\":\"<short>\"},",
+                "  \"persuasiveness\":  {\"rating\":\"<rating>\",\"score\":<int>,\"explanation\":\"<short>\"},",
+                "  \"structure\":       {\"rating\":\"<rating>\",\"score\":<int>,\"explanation\":\"<short>\"},",
+            ]
+            : []
+
+        var lines: [String] = [
+            intro,
             "",
             "Selected language: \(request.language.title)",
             "Learner level: \(request.level.rawValue)",
             "Scenario/Topic: \(request.scenarioOrTopicTitle)",
             "Scenario context: \(request.scenarioOrTopicContext)",
             "",
-            "Full conversation (for context only — do NOT grade the Tutor lines):",
+            "Full conversation (for context only — do NOT grade the opponent lines):",
             allTurnsBlock,
             "",
             "Learner messages to evaluate (analyze ONLY these):",
@@ -209,15 +231,20 @@ final class GeminiSpeakingFeedbackAIClient: SpeakingFeedbackAIClient {
             "Task:",
             "1. Read the learner messages and judge them against level \(request.level.rawValue).",
             "2. Produce one short summary in English.",
-            "3. Produce four score blocks: grammar, pronunciation, vocabulary, fluency.",
+            metricCountLine,
             "4. Produce zero or more concrete corrections drawn ONLY from the learner messages above.",
             "",
             "Rules — read carefully:",
-            "- Analyze ONLY the learner messages. Never grade the tutor.",
+            "- Analyze ONLY the learner messages. Never grade the opponent.",
             "- Corrections MUST quote the learner's actual wording in `originalText`. Never invent sentences the learner did not say.",
             "- If a learner message contains no clear mistake, do NOT add a correction for it.",
             "- If there are no mistakes at all, return an empty `corrections` array.",
             "- Pronunciation cannot be truly measured from text — set `rating` to something like 'Estimated' or 'Needs audio' and mention this in `explanation`.",
+        ]
+
+        if let debateRule { lines.append(debateRule) }
+
+        lines.append(contentsOf: [
             "- If the transcript is very short (≤1 user message or very few words), reduce all scores and mention that more practice is needed in `summary`.",
             "- Keep `summary` and every `explanation` short (1-2 sentences).",
             "- All numeric scores MUST be integers in 0...100.",
@@ -232,11 +259,18 @@ final class GeminiSpeakingFeedbackAIClient: SpeakingFeedbackAIClient {
             "  \"pronunciation\": {\"rating\":\"<rating>\",\"score\":<int>,\"explanation\":\"<short>\"},",
             "  \"vocabulary\":    {\"rating\":\"<rating>\",\"score\":<int>,\"explanation\":\"<short>\"},",
             "  \"fluency\":       {\"rating\":\"<rating>\",\"score\":<int>,\"explanation\":\"<short>\"},",
+        ])
+
+        lines.append(contentsOf: debateSchemaLines)
+
+        lines.append(contentsOf: [
             "  \"corrections\": [",
             "    {\"originalText\":\"<exact learner words>\",\"correctedText\":\"<better version>\",\"explanation\":\"<short>\",\"category\":\"grammar|vocabulary|style\"}",
             "  ]",
             "}",
-        ].joined(separator: "\n")
+        ])
+
+        return lines.joined(separator: "\n")
     }
 
     private static func validate(_ dto: SpeakingFeedbackAIResponseDTO) throws {

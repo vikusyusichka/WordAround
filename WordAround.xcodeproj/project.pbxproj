@@ -283,6 +283,19 @@
 		A1B2C3D4E5F6A1B2C3D4E617 /* DescribePictureMicBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E607 /* DescribePictureMicBarView.swift */; };
 		A1B2C3D4E5F6A1B2C3D4E618 /* DescribePictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E608 /* DescribePictureView.swift */; };
 		A1B2C3D4E5F6A1B2C3D4E619 /* DescribePictureSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E609 /* DescribePictureSetupView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E801 /* DebateSide.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E701 /* DebateSide.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E802 /* DebateRound.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E702 /* DebateRound.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E803 /* DebateSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E703 /* DebateSession.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E804 /* DebateTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E704 /* DebateTheme.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E805 /* DebateConversationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E705 /* DebateConversationService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E806 /* DebateModeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E706 /* DebateModeViewModel.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E807 /* DebateMicBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E707 /* DebateMicBarView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E808 /* DebateSidePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E708 /* DebateSidePickerView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E809 /* DebateProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E709 /* DebateProgressView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E80A /* DebateRoundCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70A /* DebateRoundCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E80B /* DebateTopicCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70B /* DebateTopicCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E80C /* DebateModeSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70C /* DebateModeSetupView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E80D /* DebateModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70D /* DebateModeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -558,6 +571,19 @@
 		A1B2C3D4E5F6A1B2C3D4E607 /* DescribePictureMicBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureMicBarView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4E608 /* DescribePictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4E609 /* DescribePictureSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureSetupView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E701 /* DebateSide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateSide.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E702 /* DebateRound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateRound.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E703 /* DebateSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateSession.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E704 /* DebateTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateTheme.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E705 /* DebateConversationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateConversationService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E706 /* DebateModeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateModeViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E707 /* DebateMicBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateMicBarView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E708 /* DebateSidePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateSidePickerView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E709 /* DebateProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateProgressView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E70A /* DebateRoundCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateRoundCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E70B /* DebateTopicCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateTopicCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E70C /* DebateModeSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateModeSetupView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E70D /* DebateModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateModeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1594,6 +1620,7 @@
 				A1B2C3D4E5F6A1B2C3D4F002 /* AIConversation */,
 				A1B2C3D4E5F6A1B2C3D4F007 /* FreeSpeaking */,
 				A1B2C3D4E5F6A1B2C3D4F010 /* DescribePicture */,
+				A1B2C3D4E5F6A1B2C3D4F020 /* Debate */,
 			);
 			path = Speaking;
 			sourceTree = "<group>";
@@ -1731,6 +1758,66 @@
 			children = (
 				A1B2C3D4E5F6A1B2C3D4E608 /* DescribePictureView.swift */,
 				A1B2C3D4E5F6A1B2C3D4E609 /* DescribePictureSetupView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F020 /* Debate */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4F021 /* Models */,
+				A1B2C3D4E5F6A1B2C3D4F022 /* Services */,
+				A1B2C3D4E5F6A1B2C3D4F023 /* ViewModels */,
+				A1B2C3D4E5F6A1B2C3D4F024 /* Components */,
+				A1B2C3D4E5F6A1B2C3D4F025 /* Views */,
+			);
+			path = Debate;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F021 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E701 /* DebateSide.swift */,
+				A1B2C3D4E5F6A1B2C3D4E702 /* DebateRound.swift */,
+				A1B2C3D4E5F6A1B2C3D4E703 /* DebateSession.swift */,
+				A1B2C3D4E5F6A1B2C3D4E704 /* DebateTheme.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F022 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E705 /* DebateConversationService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F023 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E706 /* DebateModeViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F024 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E707 /* DebateMicBarView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E708 /* DebateSidePickerView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E709 /* DebateProgressView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E70A /* DebateRoundCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E70B /* DebateTopicCardView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F025 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E70C /* DebateModeSetupView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E70D /* DebateModeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2087,6 +2174,19 @@
 				A1B2C3D4E5F6A1B2C3D4E617 /* DescribePictureMicBarView.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4E618 /* DescribePictureView.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4E619 /* DescribePictureSetupView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E801 /* DebateSide.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E802 /* DebateRound.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E803 /* DebateSession.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E804 /* DebateTheme.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E805 /* DebateConversationService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E806 /* DebateModeViewModel.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E807 /* DebateMicBarView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E808 /* DebateSidePickerView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E809 /* DebateProgressView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E80A /* DebateRoundCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E80B /* DebateTopicCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E80C /* DebateModeSetupView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E80D /* DebateModeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

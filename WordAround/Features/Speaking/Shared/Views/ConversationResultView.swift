@@ -105,6 +105,15 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
                 Color(red: 0.54, green: 0.36, blue: 0.88),
                 Color(red: 0.90, green: 0.84, blue: 0.98)
             )
+        case "argument quality":
+            return (Color(red: 0.93, green: 0.40, blue: 0.60), AppColors.blobPink)
+        case "persuasiveness":
+            return (Color(red: 0.85, green: 0.28, blue: 0.52), AppColors.blobPink)
+        case "structure":
+            return (
+                Color(red: 0.62, green: 0.30, blue: 0.66),
+                Color(red: 0.92, green: 0.84, blue: 0.95)
+            )
         default:
             return (AppColors.primaryBlue, AppColors.blobBlue)
         }

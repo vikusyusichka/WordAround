@@ -10,6 +10,11 @@ struct SpeakingConversationFeedback: Equatable, Identifiable {
     let fluency: SpeakingFeedbackMetric
     let corrections: [SpeakingCorrection]
 
+    /// Mode-specific extra metrics shown after the four core ones. Empty for
+    /// most modes; Debate Mode populates it with Argument quality,
+    /// Persuasiveness and Structure.
+    let extraMetrics: [SpeakingFeedbackMetric]
+
     let transcript: String
 
     let isFallback: Bool
@@ -23,6 +28,7 @@ struct SpeakingConversationFeedback: Equatable, Identifiable {
         vocabulary: SpeakingFeedbackMetric,
         fluency: SpeakingFeedbackMetric,
         corrections: [SpeakingCorrection],
+        extraMetrics: [SpeakingFeedbackMetric] = [],
         transcript: String,
         isFallback: Bool
     ) {
@@ -34,12 +40,13 @@ struct SpeakingConversationFeedback: Equatable, Identifiable {
         self.vocabulary = vocabulary
         self.fluency = fluency
         self.corrections = corrections
+        self.extraMetrics = extraMetrics
         self.transcript = transcript
         self.isFallback = isFallback
     }
 
     var metrics: [SpeakingFeedbackMetric] {
-        [grammar, pronunciation, vocabulary, fluency]
+        [grammar, pronunciation, vocabulary, fluency] + extraMetrics
     }
 }
 

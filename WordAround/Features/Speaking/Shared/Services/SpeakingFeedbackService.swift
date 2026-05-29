@@ -17,7 +17,8 @@ final class SpeakingFeedbackService {
         language: GrammarLanguage,
         level: EssayDifficulty,
         context: SpeakingConversationContext?,
-        messages: [SpeakingConversationMessage]
+        messages: [SpeakingConversationMessage],
+        includeDebateMetrics: Bool = false
     ) async -> (feedback: SpeakingConversationFeedback, fallbackReason: String?) {
         let transcript = Self.buildTranscript(messages)
         let userMessages = messages.filter { $0.role == .user }
@@ -38,7 +39,8 @@ final class SpeakingFeedbackService {
                 level: level,
                 messages: messages,
                 transcript: transcript,
-                reason: .noUserMessages
+                reason: .noUserMessages,
+                includeDebateMetrics: includeDebateMetrics
             )
             return (fb, "No speaking answers were recorded.")
         }
@@ -48,7 +50,8 @@ final class SpeakingFeedbackService {
             level: level,
             scenarioOrTopicTitle: context?.title ?? "Open conversation",
             scenarioOrTopicContext: context?.promptContext ?? "Generic conversation practice.",
-            messages: messages
+            messages: messages,
+            includeDebateMetrics: includeDebateMetrics
         )
 
         var lastError: String = "unknown error"
@@ -83,7 +86,8 @@ final class SpeakingFeedbackService {
             level: level,
             messages: messages,
             transcript: transcript,
-            reason: .aiFailed
+            reason: .aiFailed,
+            includeDebateMetrics: includeDebateMetrics
         )
         return (fb, "AI feedback unavailable (\(lastError)). Showing basic feedback.")
     }
@@ -135,9 +139,26 @@ final class SpeakingFeedbackService {
                 )
             }
             .filter { !$0.originalText.isEmpty && !$0.correctedText.isEmpty },
+            extraMetrics: Self.debateMetrics(from: dto),
             transcript: transcript,
             isFallback: isFallback
         )
+    }
+
+    /// Maps the optional debate score blocks (if the AI returned them) into
+    /// extra metrics shown after the four core ones.
+    private static func debateMetrics(from dto: SpeakingFeedbackAIResponseDTO) -> [SpeakingFeedbackMetric] {
+        var result: [SpeakingFeedbackMetric] = []
+        if let argument = dto.argumentQuality {
+            result.append(metric(title: "Argument Quality", icon: "scalemass.fill", from: argument))
+        }
+        if let persuasiveness = dto.persuasiveness {
+            result.append(metric(title: "Persuasiveness", icon: "megaphone.fill", from: persuasiveness))
+        }
+        if let structure = dto.structure {
+            result.append(metric(title: "Structure", icon: "list.bullet.rectangle.fill", from: structure))
+        }
+        return result
     }
 
     private static func metric(
@@ -177,7 +198,8 @@ final class SpeakingFeedbackService {
         level: EssayDifficulty,
         messages: [SpeakingConversationMessage],
         transcript: String,
-        reason: FallbackReason
+        reason: FallbackReason,
+        includeDebateMetrics: Bool = false
     ) -> SpeakingConversationFeedback {
         let userMessages = messages.filter { $0.role == .user }
         let totalWords = userMessages.reduce(0) { $0 + Self.wordCount($1.text) }
@@ -219,6 +241,14 @@ final class SpeakingFeedbackService {
             return min(95, avg)
         }()
 
+        let extraMetrics: [SpeakingFeedbackMetric] = includeDebateMetrics
+            ? debateFallbackMetrics(
+                userMessageCount: userMessages.count,
+                totalWords: totalWords,
+                hasUserMessages: !userMessages.isEmpty
+            )
+            : []
+
         return SpeakingConversationFeedback(
             overallScore: overall,
             summary: summary,
@@ -257,9 +287,52 @@ final class SpeakingFeedbackService {
                 iconName: "waveform"
             ),
             corrections: [],
+            extraMetrics: extraMetrics,
             transcript: transcript,
             isFallback: true
         )
+    }
+
+    private static func debateFallbackMetrics(
+        userMessageCount: Int,
+        totalWords: Int,
+        hasUserMessages: Bool
+    ) -> [SpeakingFeedbackMetric] {
+        guard hasUserMessages else {
+            return [
+                SpeakingFeedbackMetric(title: "Argument Quality", rating: "—", score: 0, explanation: "No arguments to evaluate.", iconName: "scalemass.fill"),
+                SpeakingFeedbackMetric(title: "Persuasiveness", rating: "—", score: 0, explanation: "No arguments to evaluate.", iconName: "megaphone.fill"),
+                SpeakingFeedbackMetric(title: "Structure", rating: "—", score: 0, explanation: "No arguments to evaluate.", iconName: "list.bullet.rectangle.fill")
+            ]
+        }
+
+        let argumentScore = min(95, 30 + totalWords * 2)
+        let persuasivenessScore = min(95, 25 + userMessageCount * 8 + totalWords)
+        let structureScore = min(95, 35 + userMessageCount * 6)
+
+        return [
+            SpeakingFeedbackMetric(
+                title: "Argument Quality",
+                rating: ratingForScore(argumentScore, allowsZero: true),
+                score: argumentScore,
+                explanation: "Estimated from how much reasoning you gave. Full AI review needed.",
+                iconName: "scalemass.fill"
+            ),
+            SpeakingFeedbackMetric(
+                title: "Persuasiveness",
+                rating: ratingForScore(persuasivenessScore, allowsZero: true),
+                score: persuasivenessScore,
+                explanation: "Estimated from how actively you argued your case.",
+                iconName: "megaphone.fill"
+            ),
+            SpeakingFeedbackMetric(
+                title: "Structure",
+                rating: ratingForScore(structureScore, allowsZero: true),
+                score: structureScore,
+                explanation: "Estimated from how many turns you organised your points across.",
+                iconName: "list.bullet.rectangle.fill"
+            )
+        ]
     }
 
     private static func ratingForScore(_ score: Int, allowsZero: Bool) -> String {

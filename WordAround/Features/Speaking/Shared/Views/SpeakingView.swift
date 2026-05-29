@@ -4,6 +4,7 @@ struct SpeakingView: View {
     @State private var openAIConversation = false
     @State private var openFreeSpeaking = false
     @State private var openDescribePicture = false
+    @State private var openDebateMode = false
 
     private let modes = SpeakingMode.allModes
 
@@ -32,6 +33,8 @@ struct SpeakingView: View {
                             openFreeSpeaking = true
                         } else if mode.id == "describe-picture" {
                             openDescribePicture = true
+                        } else if mode.id == "debate-mode" {
+                            openDebateMode = true
                         }
                     } label: {
                         SpeakingModeCardView(mode: mode)
@@ -49,6 +52,9 @@ struct SpeakingView: View {
         }
         .navigationDestination(isPresented: $openDescribePicture) {
             DescribePictureSetupView()
+        }
+        .navigationDestination(isPresented: $openDebateMode) {
+            DebateModeSetupView()
         }
     }
 }
