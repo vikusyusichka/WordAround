@@ -3,8 +3,11 @@
 # Deploy with:
 #   wrangler deploy
 #
-# Set the Gemini API key as a secret (NEVER commit it to this file):
-#   wrangler secret put GEMINI_API_KEY
+# Set secrets (NEVER commit them to this file):
+#   wrangler secret put GEMINI_API_KEY      # Gemini proxy + shadowing phrases
+#   wrangler secret put UNSPLASH_ACCESS_KEY # Describe Picture random images
+#   wrangler secret put AZURE_SPEECH_KEY    # Azure Pronunciation Assessment
+#   wrangler secret put AZURE_SPEECH_REGION # e.g. westeurope
 
 name = "wordaround-gemini-proxy"
 main = "src/index.js"

@@ -41,18 +41,45 @@ final class SpeechSynthesisService: NSObject {
                     synthesizer.stopSpeaking(at: .immediate)
                 }
 
+                // IMPORTANT: the utterance text is exactly `trimmed` — the
+                // single string passed in by the caller. Callers must pass the
+                // target phrase ONLY (never the translation). See
+                // ShadowingViewModel.playTargetPhrase().
                 let utterance = AVSpeechUtterance(string: trimmed)
-                if let voice = AVSpeechSynthesisVoice(language: localeIdentifier) {
-                    utterance.voice = voice
-                } else {
-                    utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-                }
+                let resolvedVoice = Self.resolveVoice(localeIdentifier: localeIdentifier)
+                utterance.voice = resolvedVoice
                 utterance.rate = AVSpeechUtteranceDefaultSpeechRate
                 utterance.pitchMultiplier = 1.0
+
+                #if DEBUG
+                print("[TTS] speak len=\(trimmed.count) requestedLocale=\(localeIdentifier) voice=\(resolvedVoice?.language ?? "system-default") (single utterance, no translation)")
+                #endif
 
                 synthesizer.speak(utterance)
             }
         }
+    }
+
+    /// Picks the best installed voice for the requested locale, degrading
+    /// gracefully: exact locale → any voice sharing the language prefix
+    /// (e.g. "pt" matches "pt-BR" when "pt-PT" is missing) → system default
+    /// for the language → nil (system chooses). This keeps a non-English
+    /// phrase spoken in its own language whenever a voice exists.
+    private static func resolveVoice(localeIdentifier: String) -> AVSpeechSynthesisVoice? {
+        if let exact = AVSpeechSynthesisVoice(language: localeIdentifier) {
+            return exact
+        }
+
+        let languagePrefix = localeIdentifier.split(separator: "-").first.map(String.init) ?? localeIdentifier
+        if let prefixed = AVSpeechSynthesisVoice.speechVoices().first(where: {
+            $0.language.lowercased().hasPrefix(languagePrefix.lowercased())
+        }) {
+            return prefixed
+        }
+
+        // Last resort: let the system default voice handle it rather than
+        // forcing en-US onto, say, a Spanish phrase.
+        return AVSpeechSynthesisVoice(language: languagePrefix)
     }
 
     func stop() {

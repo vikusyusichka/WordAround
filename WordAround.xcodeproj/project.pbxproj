@@ -296,6 +296,34 @@
 		A1B2C3D4E5F6A1B2C3D4E80B /* DebateTopicCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70B /* DebateTopicCardView.swift */; };
 		A1B2C3D4E5F6A1B2C3D4E80C /* DebateModeSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70C /* DebateModeSetupView.swift */; };
 		A1B2C3D4E5F6A1B2C3D4E80D /* DebateModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70D /* DebateModeView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA01 /* ShadowingPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E901 /* ShadowingPhrase.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA02 /* ShadowingAttempt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E902 /* ShadowingAttempt.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA03 /* ShadowingTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E903 /* ShadowingTheme.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA04 /* ShadowingPhraseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E904 /* ShadowingPhraseService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA05 /* ShadowingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E905 /* ShadowingViewModel.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA06 /* ShadowingMicBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E906 /* ShadowingMicBarView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA07 /* ShadowingProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E907 /* ShadowingProgressCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA08 /* ShadowingPhraseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E908 /* ShadowingPhraseCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA09 /* ShadowingListenRepeatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E909 /* ShadowingListenRepeatCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA0A /* ShadowingComparisonCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E90A /* ShadowingComparisonCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA0B /* ShadowingSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E90B /* ShadowingSetupView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA0C /* ShadowingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E90C /* ShadowingView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EC01 /* PronunciationAssessmentResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4EB01 /* PronunciationAssessmentResult.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EC04 /* CloudflareShadowingPhraseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4EB04 /* CloudflareShadowingPhraseClient.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EC05 /* AzureSpeechTokenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4EB05 /* AzureSpeechTokenService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EC06 /* PronunciationAssessmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4EB06 /* PronunciationAssessmentService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE01 /* PronunciationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED01 /* PronunciationItem.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE02 /* PronunciationAttempt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED02 /* PronunciationAttempt.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE03 /* PronunciationTrainerTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED03 /* PronunciationTrainerTheme.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE04 /* CloudflarePronunciationContentClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED04 /* CloudflarePronunciationContentClient.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE05 /* PronunciationContentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED05 /* PronunciationContentService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE06 /* PronunciationTrainerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED06 /* PronunciationTrainerViewModel.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE07 /* PronunciationMicBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED07 /* PronunciationMicBarView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE08 /* PronunciationProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED08 /* PronunciationProgressCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE09 /* PronunciationItemCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED09 /* PronunciationItemCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE0A /* PronunciationAssessmentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED0A /* PronunciationAssessmentCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE0B /* PronunciationTrainerSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED0B /* PronunciationTrainerSetupView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE0C /* PronunciationTrainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED0C /* PronunciationTrainerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -584,6 +612,34 @@
 		A1B2C3D4E5F6A1B2C3D4E70B /* DebateTopicCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateTopicCardView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4E70C /* DebateModeSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateModeSetupView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4E70D /* DebateModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateModeView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E901 /* ShadowingPhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingPhrase.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E902 /* ShadowingAttempt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingAttempt.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E903 /* ShadowingTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingTheme.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E904 /* ShadowingPhraseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingPhraseService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E905 /* ShadowingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E906 /* ShadowingMicBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingMicBarView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E907 /* ShadowingProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingProgressCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E908 /* ShadowingPhraseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingPhraseCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E909 /* ShadowingListenRepeatCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingListenRepeatCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E90A /* ShadowingComparisonCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingComparisonCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E90B /* ShadowingSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingSetupView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E90C /* ShadowingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4EB01 /* PronunciationAssessmentResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationAssessmentResult.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4EB04 /* CloudflareShadowingPhraseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudflareShadowingPhraseClient.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4EB05 /* AzureSpeechTokenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AzureSpeechTokenService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4EB06 /* PronunciationAssessmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationAssessmentService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED01 /* PronunciationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationItem.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED02 /* PronunciationAttempt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationAttempt.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED03 /* PronunciationTrainerTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationTrainerTheme.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED04 /* CloudflarePronunciationContentClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudflarePronunciationContentClient.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED05 /* PronunciationContentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationContentService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED06 /* PronunciationTrainerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationTrainerViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED07 /* PronunciationMicBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationMicBarView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED08 /* PronunciationProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationProgressCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED09 /* PronunciationItemCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationItemCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED0A /* PronunciationAssessmentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationAssessmentCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED0B /* PronunciationTrainerSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationTrainerSetupView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED0C /* PronunciationTrainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationTrainerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1560,6 +1616,13 @@
 				FA7033BBC7C69CB216FCE292 /* SpeakingConversationContext.swift */,
 				21178B09E84D45F902F19B82 /* SpeakingConversationFeedback.swift */,
 				A1B2C3D4E5F6A1B2C3D4E601 /* DescribePictureImage.swift */,
+				A1B2C3D4E5F6A1B2C3D4E901 /* ShadowingPhrase.swift */,
+				A1B2C3D4E5F6A1B2C3D4E902 /* ShadowingAttempt.swift */,
+				A1B2C3D4E5F6A1B2C3D4E903 /* ShadowingTheme.swift */,
+				A1B2C3D4E5F6A1B2C3D4EB01 /* PronunciationAssessmentResult.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED01 /* PronunciationItem.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED02 /* PronunciationAttempt.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED03 /* PronunciationTrainerTheme.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1573,6 +1636,15 @@
 				5BDB6C4459B026506711A9FB /* SpeakingProgressCardView.swift */,
 				921B8412452F125310CD2704 /* SpeakingModeCardView.swift */,
 				7A97D45BED44AAFEFA4360E8 /* ConversationTopicPickerSheetView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E906 /* ShadowingMicBarView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E907 /* ShadowingProgressCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E908 /* ShadowingPhraseCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E909 /* ShadowingListenRepeatCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E90A /* ShadowingComparisonCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED07 /* PronunciationMicBarView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED08 /* PronunciationProgressCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED09 /* PronunciationItemCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED0A /* PronunciationAssessmentCardView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1582,6 +1654,10 @@
 			children = (
 				0A461AAE69DC74375F13AF65 /* SpeakingView.swift */,
 				C6B3CDDA3D8FCE6338004954 /* ConversationResultView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E90B /* ShadowingSetupView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E90C /* ShadowingView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED0B /* PronunciationTrainerSetupView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED0C /* PronunciationTrainerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1601,6 +1677,12 @@
 				26354EC32F4ECD11BB3B35E6 /* SpeakingFeedbackService.swift */,
 				6EB215CEB7A551DC99053816 /* SpeakingRecentTopicTitlesStore.swift */,
 				A1B2C3D4E5F6A1B2C3D4E602 /* DescribePictureImageService.swift */,
+				A1B2C3D4E5F6A1B2C3D4E904 /* ShadowingPhraseService.swift */,
+				A1B2C3D4E5F6A1B2C3D4EB04 /* CloudflareShadowingPhraseClient.swift */,
+				A1B2C3D4E5F6A1B2C3D4EB05 /* AzureSpeechTokenService.swift */,
+				A1B2C3D4E5F6A1B2C3D4EB06 /* PronunciationAssessmentService.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED04 /* CloudflarePronunciationContentClient.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED05 /* PronunciationContentService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1609,6 +1691,8 @@
 			isa = PBXGroup;
 			children = (
 				A1B2C3D4E5F6A1B2C3D4E531 /* SpeakingProtocols.swift */,
+				A1B2C3D4E5F6A1B2C3D4E905 /* ShadowingViewModel.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED06 /* PronunciationTrainerViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -2187,6 +2271,34 @@
 				A1B2C3D4E5F6A1B2C3D4E80B /* DebateTopicCardView.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4E80C /* DebateModeSetupView.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4E80D /* DebateModeView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA01 /* ShadowingPhrase.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA02 /* ShadowingAttempt.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA03 /* ShadowingTheme.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA04 /* ShadowingPhraseService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA05 /* ShadowingViewModel.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA06 /* ShadowingMicBarView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA07 /* ShadowingProgressCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA08 /* ShadowingPhraseCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA09 /* ShadowingListenRepeatCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA0A /* ShadowingComparisonCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA0B /* ShadowingSetupView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA0C /* ShadowingView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EC01 /* PronunciationAssessmentResult.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EC04 /* CloudflareShadowingPhraseClient.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EC05 /* AzureSpeechTokenService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EC06 /* PronunciationAssessmentService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE01 /* PronunciationItem.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE02 /* PronunciationAttempt.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE03 /* PronunciationTrainerTheme.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE04 /* CloudflarePronunciationContentClient.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE05 /* PronunciationContentService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE06 /* PronunciationTrainerViewModel.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE07 /* PronunciationMicBarView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE08 /* PronunciationProgressCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE09 /* PronunciationItemCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE0A /* PronunciationAssessmentCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE0B /* PronunciationTrainerSetupView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE0C /* PronunciationTrainerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

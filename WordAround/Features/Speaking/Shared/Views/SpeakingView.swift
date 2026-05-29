@@ -5,6 +5,8 @@ struct SpeakingView: View {
     @State private var openFreeSpeaking = false
     @State private var openDescribePicture = false
     @State private var openDebateMode = false
+    @State private var openShadowing = false
+    @State private var openPronunciation = false
 
     private let modes = SpeakingMode.allModes
 
@@ -35,6 +37,10 @@ struct SpeakingView: View {
                             openDescribePicture = true
                         } else if mode.id == "debate-mode" {
                             openDebateMode = true
+                        } else if mode.id == "shadowing" {
+                            openShadowing = true
+                        } else if mode.id == "pronunciation" {
+                            openPronunciation = true
                         }
                     } label: {
                         SpeakingModeCardView(mode: mode)
@@ -55,6 +61,12 @@ struct SpeakingView: View {
         }
         .navigationDestination(isPresented: $openDebateMode) {
             DebateModeSetupView()
+        }
+        .navigationDestination(isPresented: $openShadowing) {
+            ShadowingSetupView()
+        }
+        .navigationDestination(isPresented: $openPronunciation) {
+            PronunciationTrainerSetupView()
         }
     }
 }
