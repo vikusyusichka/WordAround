@@ -3,6 +3,7 @@ import SwiftUI
 struct SpeakingView: View {
     @State private var openAIConversation = false
     @State private var openFreeSpeaking = false
+    @State private var openDescribePicture = false
 
     private let modes = SpeakingMode.allModes
 
@@ -29,6 +30,8 @@ struct SpeakingView: View {
                             openAIConversation = true
                         } else if mode.id == "free-speaking" {
                             openFreeSpeaking = true
+                        } else if mode.id == "describe-picture" {
+                            openDescribePicture = true
                         }
                     } label: {
                         SpeakingModeCardView(mode: mode)
@@ -43,6 +46,9 @@ struct SpeakingView: View {
         }
         .navigationDestination(isPresented: $openFreeSpeaking) {
             FreeSpeakingSetupView()
+        }
+        .navigationDestination(isPresented: $openDescribePicture) {
+            DescribePictureSetupView()
         }
     }
 }
