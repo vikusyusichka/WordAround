@@ -29,6 +29,10 @@ enum AppColors {
 
     static let greenAccent = Color(red: 0.16, green: 0.73, blue: 0.40)
     static let greenTitle = Color(red: 0.07, green: 0.55, blue: 0.28)
+    /// Soft mint background used by Free Speaking cards. Pairs with
+    /// `greenAccent` and `greenTitle`. Centralised so no view has to
+    /// hardcode literal RGB triples.
+    static let greenSoftBackground = Color(red: 0.94, green: 0.98, blue: 0.95)
     
     static let createSetBackground = Color(red: 1.00, green: 0.98, blue: 0.99)
 

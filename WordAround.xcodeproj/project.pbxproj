@@ -46,6 +46,7 @@
 		D4E0722AB561809EF92551FB /* SpeakingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC4A6B7E165DB71293AEE3B /* SpeakingMode.swift */; };
 		B4CA72C761F94AAF050C38F4 /* SpeakingProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDB6C4459B026506711A9FB /* SpeakingProgressCardView.swift */; };
 		558889EE7EA7597D97336DE6 /* SpeakingModeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 921B8412452F125310CD2704 /* SpeakingModeCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FF02 /* SpeakingSetupComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FF01 /* SpeakingSetupComponents.swift */; };
 		8EB5848FA440F4BB42CDF05B /* SpeakingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A461AAE69DC74375F13AF65 /* SpeakingView.swift */; };
 		E30901722FB952EF00C52238 /* FlashcardRoundFinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901712FB952DC00C52238 /* FlashcardRoundFinishView.swift */; };
 		E30901752FB95C8500C52238 /* SetsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901742FB95C7700C52238 /* SetsListView.swift */; };
@@ -271,6 +272,59 @@
 		A1B2C3D4E5F6A1B2C3D4E512 /* FreeSpeakingTopicCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E502 /* FreeSpeakingTopicCardView.swift */; };
 		A1B2C3D4E5F6A1B2C3D4E513 /* FreeSpeakingTranscriptCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E503 /* FreeSpeakingTranscriptCardView.swift */; };
 		A1B2C3D4E5F6A1B2C3D4E514 /* FreeSpeakingMicBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E504 /* FreeSpeakingMicBarView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E521 /* SpeakingProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E531 /* SpeakingProtocols.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E522 /* FreeSpeakingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E532 /* FreeSpeakingViewModel.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E523 /* FreeSpeakingSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E533 /* FreeSpeakingSetupView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E611 /* DescribePictureImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E601 /* DescribePictureImage.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E612 /* DescribePictureImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E602 /* DescribePictureImageService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E613 /* DescribePictureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E603 /* DescribePictureViewModel.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E614 /* DescribePictureImageCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E604 /* DescribePictureImageCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E615 /* DescribePicturePromptCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E605 /* DescribePicturePromptCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E616 /* DescribePictureTranscriptCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E606 /* DescribePictureTranscriptCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E617 /* DescribePictureMicBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E607 /* DescribePictureMicBarView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E618 /* DescribePictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E608 /* DescribePictureView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E619 /* DescribePictureSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E609 /* DescribePictureSetupView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E801 /* DebateSide.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E701 /* DebateSide.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E802 /* DebateRound.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E702 /* DebateRound.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E803 /* DebateSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E703 /* DebateSession.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E804 /* DebateTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E704 /* DebateTheme.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E805 /* DebateConversationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E705 /* DebateConversationService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E806 /* DebateModeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E706 /* DebateModeViewModel.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E807 /* DebateMicBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E707 /* DebateMicBarView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E808 /* DebateSidePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E708 /* DebateSidePickerView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E809 /* DebateProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E709 /* DebateProgressView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E80A /* DebateRoundCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70A /* DebateRoundCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E80B /* DebateTopicCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70B /* DebateTopicCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E80C /* DebateModeSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70C /* DebateModeSetupView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4E80D /* DebateModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E70D /* DebateModeView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA01 /* ShadowingPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E901 /* ShadowingPhrase.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA02 /* ShadowingAttempt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E902 /* ShadowingAttempt.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA03 /* ShadowingTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E903 /* ShadowingTheme.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA04 /* ShadowingPhraseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E904 /* ShadowingPhraseService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA05 /* ShadowingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E905 /* ShadowingViewModel.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA06 /* ShadowingMicBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E906 /* ShadowingMicBarView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA07 /* ShadowingProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E907 /* ShadowingProgressCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA08 /* ShadowingPhraseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E908 /* ShadowingPhraseCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA09 /* ShadowingListenRepeatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E909 /* ShadowingListenRepeatCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA0A /* ShadowingComparisonCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E90A /* ShadowingComparisonCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA0B /* ShadowingSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E90B /* ShadowingSetupView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EA0C /* ShadowingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E90C /* ShadowingView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EC01 /* PronunciationAssessmentResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4EB01 /* PronunciationAssessmentResult.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EC04 /* CloudflareShadowingPhraseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4EB04 /* CloudflareShadowingPhraseClient.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EC05 /* AzureSpeechTokenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4EB05 /* AzureSpeechTokenService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EC06 /* PronunciationAssessmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4EB06 /* PronunciationAssessmentService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE01 /* PronunciationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED01 /* PronunciationItem.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE02 /* PronunciationAttempt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED02 /* PronunciationAttempt.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE03 /* PronunciationTrainerTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED03 /* PronunciationTrainerTheme.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE04 /* CloudflarePronunciationContentClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED04 /* CloudflarePronunciationContentClient.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE05 /* PronunciationContentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED05 /* PronunciationContentService.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE06 /* PronunciationTrainerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED06 /* PronunciationTrainerViewModel.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE07 /* PronunciationMicBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED07 /* PronunciationMicBarView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE08 /* PronunciationProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED08 /* PronunciationProgressCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE09 /* PronunciationItemCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED09 /* PronunciationItemCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE0A /* PronunciationAssessmentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED0A /* PronunciationAssessmentCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE0B /* PronunciationTrainerSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED0B /* PronunciationTrainerSetupView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4EE0C /* PronunciationTrainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4ED0C /* PronunciationTrainerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -313,6 +367,7 @@
 		4BC4A6B7E165DB71293AEE3B /* SpeakingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingMode.swift; sourceTree = "<group>"; };
 		5BDB6C4459B026506711A9FB /* SpeakingProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingProgressCardView.swift; sourceTree = "<group>"; };
 		921B8412452F125310CD2704 /* SpeakingModeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingModeCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FF01 /* SpeakingSetupComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingSetupComponents.swift; sourceTree = "<group>"; };
 		0A461AAE69DC74375F13AF65 /* SpeakingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingView.swift; sourceTree = "<group>"; };
 		E30901712FB952DC00C52238 /* FlashcardRoundFinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardRoundFinishView.swift; sourceTree = "<group>"; };
 		E30901742FB95C7700C52238 /* SetsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetsListView.swift; sourceTree = "<group>"; };
@@ -534,6 +589,59 @@
 		A1B2C3D4E5F6A1B2C3D4E502 /* FreeSpeakingTopicCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeSpeakingTopicCardView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4E503 /* FreeSpeakingTranscriptCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeSpeakingTranscriptCardView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4E504 /* FreeSpeakingMicBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeSpeakingMicBarView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E531 /* SpeakingProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingProtocols.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E532 /* FreeSpeakingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeSpeakingViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E533 /* FreeSpeakingSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeSpeakingSetupView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E601 /* DescribePictureImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureImage.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E602 /* DescribePictureImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureImageService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E603 /* DescribePictureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E604 /* DescribePictureImageCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureImageCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E605 /* DescribePicturePromptCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePicturePromptCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E606 /* DescribePictureTranscriptCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureTranscriptCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E607 /* DescribePictureMicBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureMicBarView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E608 /* DescribePictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E609 /* DescribePictureSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescribePictureSetupView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E701 /* DebateSide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateSide.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E702 /* DebateRound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateRound.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E703 /* DebateSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateSession.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E704 /* DebateTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateTheme.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E705 /* DebateConversationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateConversationService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E706 /* DebateModeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateModeViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E707 /* DebateMicBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateMicBarView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E708 /* DebateSidePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateSidePickerView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E709 /* DebateProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateProgressView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E70A /* DebateRoundCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateRoundCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E70B /* DebateTopicCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateTopicCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E70C /* DebateModeSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateModeSetupView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E70D /* DebateModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateModeView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E901 /* ShadowingPhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingPhrase.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E902 /* ShadowingAttempt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingAttempt.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E903 /* ShadowingTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingTheme.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E904 /* ShadowingPhraseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingPhraseService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E905 /* ShadowingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E906 /* ShadowingMicBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingMicBarView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E907 /* ShadowingProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingProgressCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E908 /* ShadowingPhraseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingPhraseCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E909 /* ShadowingListenRepeatCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingListenRepeatCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E90A /* ShadowingComparisonCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingComparisonCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E90B /* ShadowingSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingSetupView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E90C /* ShadowingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowingView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4EB01 /* PronunciationAssessmentResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationAssessmentResult.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4EB04 /* CloudflareShadowingPhraseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudflareShadowingPhraseClient.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4EB05 /* AzureSpeechTokenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AzureSpeechTokenService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4EB06 /* PronunciationAssessmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationAssessmentService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED01 /* PronunciationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationItem.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED02 /* PronunciationAttempt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationAttempt.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED03 /* PronunciationTrainerTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationTrainerTheme.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED04 /* CloudflarePronunciationContentClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudflarePronunciationContentClient.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED05 /* PronunciationContentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationContentService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED06 /* PronunciationTrainerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationTrainerViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED07 /* PronunciationMicBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationMicBarView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED08 /* PronunciationProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationProgressCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED09 /* PronunciationItemCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationItemCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED0A /* PronunciationAssessmentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationAssessmentCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED0B /* PronunciationTrainerSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationTrainerSetupView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4ED0C /* PronunciationTrainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationTrainerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1509,6 +1617,14 @@
 				DF31C0618C0D77C52908F5E3 /* GeneratedConversationTopic.swift */,
 				FA7033BBC7C69CB216FCE292 /* SpeakingConversationContext.swift */,
 				21178B09E84D45F902F19B82 /* SpeakingConversationFeedback.swift */,
+				A1B2C3D4E5F6A1B2C3D4E601 /* DescribePictureImage.swift */,
+				A1B2C3D4E5F6A1B2C3D4E901 /* ShadowingPhrase.swift */,
+				A1B2C3D4E5F6A1B2C3D4E902 /* ShadowingAttempt.swift */,
+				A1B2C3D4E5F6A1B2C3D4E903 /* ShadowingTheme.swift */,
+				A1B2C3D4E5F6A1B2C3D4EB01 /* PronunciationAssessmentResult.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED01 /* PronunciationItem.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED02 /* PronunciationAttempt.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED03 /* PronunciationTrainerTheme.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1516,20 +1632,22 @@
 		015CA36C7CE9B82B92EB404E /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				DDAFF0DF4645DF7ABD6A2E33 /* ConversationScenarioCardView.swift */,
-				DEE458D5ABF4FF5A42A9CEB4 /* ConversationMessageBubbleView.swift */,
-				C39350FADDDC4388A58DCC68 /* ConversationMicBarView.swift */,
 				FE4502ED9B29DB0C45C82ED4 /* ConversationScoreCardView.swift */,
 				CB1E4DE014D48713E74BA121 /* ConversationMetricCardView.swift */,
 				BD5AFE8CC0D9947681D2A7C9 /* ConversationCorrectionCardView.swift */,
 				5BDB6C4459B026506711A9FB /* SpeakingProgressCardView.swift */,
 				921B8412452F125310CD2704 /* SpeakingModeCardView.swift */,
-				0180575DC1CA1F5B32909E14 /* ConversationScenarioPickerView.swift */,
-				A4ECB47D4F17FF082837F7AC /* ConversationHintBubbleView.swift */,
+				A1B2C3D4E5F6A1B2C3D4FF01 /* SpeakingSetupComponents.swift */,
 				7A97D45BED44AAFEFA4360E8 /* ConversationTopicPickerSheetView.swift */,
-				A1B2C3D4E5F6A1B2C3D4E502 /* FreeSpeakingTopicCardView.swift */,
-				A1B2C3D4E5F6A1B2C3D4E503 /* FreeSpeakingTranscriptCardView.swift */,
-				A1B2C3D4E5F6A1B2C3D4E504 /* FreeSpeakingMicBarView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E906 /* ShadowingMicBarView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E907 /* ShadowingProgressCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E908 /* ShadowingPhraseCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E909 /* ShadowingListenRepeatCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E90A /* ShadowingComparisonCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED07 /* PronunciationMicBarView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED08 /* PronunciationProgressCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED09 /* PronunciationItemCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED0A /* PronunciationAssessmentCardView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1537,11 +1655,12 @@
 		5664CEE2B818E11801A0986A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				495E62FA8A27D951237585CE /* AIConversationView.swift */,
-				C6B3CDDA3D8FCE6338004954 /* ConversationResultView.swift */,
 				0A461AAE69DC74375F13AF65 /* SpeakingView.swift */,
-				166774EDD7333A46957A6AC4 /* AIConversationSetupView.swift */,
-				A1B2C3D4E5F6A1B2C3D4E501 /* FreeSpeakingView.swift */,
+				C6B3CDDA3D8FCE6338004954 /* ConversationResultView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E90B /* ShadowingSetupView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E90C /* ShadowingView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED0B /* PronunciationTrainerSetupView.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED0C /* PronunciationTrainerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1551,9 +1670,6 @@
 			children = (
 				BF003DDEE8AA2AA6B0FF09C4 /* SpeechRecognitionService.swift */,
 				6B775BE72F45678BB9BD56BD /* SpeechSynthesisService.swift */,
-				0DF93C380FF56C4B81B50FA4 /* SpeakingAIClient.swift */,
-				D235DD4EE005A447D25FB124 /* GeminiSpeakingAIClient.swift */,
-				12A8860A15E6DF1250D43707 /* SpeakingConversationService.swift */,
 				20B113BF852AB499BA282924 /* SpeakingTopicAIClient.swift */,
 				5812496DF001C8CC408925DC /* SpeakingTopicAIConfiguration.swift */,
 				2CCE117CAED40DED29549198 /* CloudflareSpeakingTopicAIClient.swift */,
@@ -1563,6 +1679,13 @@
 				736FF09236837D3780A0F253 /* GeminiSpeakingFeedbackAIClient.swift */,
 				26354EC32F4ECD11BB3B35E6 /* SpeakingFeedbackService.swift */,
 				6EB215CEB7A551DC99053816 /* SpeakingRecentTopicTitlesStore.swift */,
+				A1B2C3D4E5F6A1B2C3D4E602 /* DescribePictureImageService.swift */,
+				A1B2C3D4E5F6A1B2C3D4E904 /* ShadowingPhraseService.swift */,
+				A1B2C3D4E5F6A1B2C3D4EB04 /* CloudflareShadowingPhraseClient.swift */,
+				A1B2C3D4E5F6A1B2C3D4EB05 /* AzureSpeechTokenService.swift */,
+				A1B2C3D4E5F6A1B2C3D4EB06 /* PronunciationAssessmentService.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED04 /* CloudflarePronunciationContentClient.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED05 /* PronunciationContentService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1570,7 +1693,9 @@
 		5F3866D4CBE93AFE1320F95B /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				A6027F3B26E49DBC69FEC0E9 /* AIConversationViewModel.swift */,
+				A1B2C3D4E5F6A1B2C3D4E531 /* SpeakingProtocols.swift */,
+				A1B2C3D4E5F6A1B2C3D4E905 /* ShadowingViewModel.swift */,
+				A1B2C3D4E5F6A1B2C3D4ED06 /* PronunciationTrainerViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1578,13 +1703,210 @@
 		35A219B7F43FDC00B4CD164C /* Speaking */ = {
 			isa = PBXGroup;
 			children = (
-				DC37E10E5A86EC58BB2BFAC0 /* Models */,
-				015CA36C7CE9B82B92EB404E /* Components */,
-				E2AF8C080368EE58585832DD /* Services */,
-				5F3866D4CBE93AFE1320F95B /* ViewModels */,
-				5664CEE2B818E11801A0986A /* Views */,
+				A1B2C3D4E5F6A1B2C3D4F001 /* Shared */,
+				A1B2C3D4E5F6A1B2C3D4F002 /* AIConversation */,
+				A1B2C3D4E5F6A1B2C3D4F007 /* FreeSpeaking */,
+				A1B2C3D4E5F6A1B2C3D4F010 /* DescribePicture */,
+				A1B2C3D4E5F6A1B2C3D4F020 /* Debate */,
 			);
 			path = Speaking;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F001 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				DC37E10E5A86EC58BB2BFAC0 /* Models */,
+				E2AF8C080368EE58585832DD /* Services */,
+				5F3866D4CBE93AFE1320F95B /* ViewModels */,
+				015CA36C7CE9B82B92EB404E /* Components */,
+				5664CEE2B818E11801A0986A /* Views */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F002 /* AIConversation */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4F003 /* Services */,
+				A1B2C3D4E5F6A1B2C3D4F004 /* ViewModels */,
+				A1B2C3D4E5F6A1B2C3D4F005 /* Components */,
+				A1B2C3D4E5F6A1B2C3D4F006 /* Views */,
+			);
+			path = AIConversation;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F003 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				0DF93C380FF56C4B81B50FA4 /* SpeakingAIClient.swift */,
+				D235DD4EE005A447D25FB124 /* GeminiSpeakingAIClient.swift */,
+				12A8860A15E6DF1250D43707 /* SpeakingConversationService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F004 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A6027F3B26E49DBC69FEC0E9 /* AIConversationViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F005 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				DDAFF0DF4645DF7ABD6A2E33 /* ConversationScenarioCardView.swift */,
+				DEE458D5ABF4FF5A42A9CEB4 /* ConversationMessageBubbleView.swift */,
+				C39350FADDDC4388A58DCC68 /* ConversationMicBarView.swift */,
+				0180575DC1CA1F5B32909E14 /* ConversationScenarioPickerView.swift */,
+				A4ECB47D4F17FF082837F7AC /* ConversationHintBubbleView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F006 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				495E62FA8A27D951237585CE /* AIConversationView.swift */,
+				166774EDD7333A46957A6AC4 /* AIConversationSetupView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F007 /* FreeSpeaking */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4F008 /* ViewModels */,
+				A1B2C3D4E5F6A1B2C3D4F009 /* Components */,
+				A1B2C3D4E5F6A1B2C3D4F00A /* Views */,
+			);
+			path = FreeSpeaking;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F008 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E532 /* FreeSpeakingViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F009 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E502 /* FreeSpeakingTopicCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E503 /* FreeSpeakingTranscriptCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E504 /* FreeSpeakingMicBarView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F00A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E501 /* FreeSpeakingView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E533 /* FreeSpeakingSetupView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F010 /* DescribePicture */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4F011 /* ViewModels */,
+				A1B2C3D4E5F6A1B2C3D4F012 /* Components */,
+				A1B2C3D4E5F6A1B2C3D4F013 /* Views */,
+			);
+			path = DescribePicture;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F011 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E603 /* DescribePictureViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F012 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E604 /* DescribePictureImageCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E605 /* DescribePicturePromptCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E606 /* DescribePictureTranscriptCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E607 /* DescribePictureMicBarView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F013 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E608 /* DescribePictureView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E609 /* DescribePictureSetupView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F020 /* Debate */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4F021 /* Models */,
+				A1B2C3D4E5F6A1B2C3D4F022 /* Services */,
+				A1B2C3D4E5F6A1B2C3D4F023 /* ViewModels */,
+				A1B2C3D4E5F6A1B2C3D4F024 /* Components */,
+				A1B2C3D4E5F6A1B2C3D4F025 /* Views */,
+			);
+			path = Debate;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F021 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E701 /* DebateSide.swift */,
+				A1B2C3D4E5F6A1B2C3D4E702 /* DebateRound.swift */,
+				A1B2C3D4E5F6A1B2C3D4E703 /* DebateSession.swift */,
+				A1B2C3D4E5F6A1B2C3D4E704 /* DebateTheme.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F022 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E705 /* DebateConversationService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F023 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E706 /* DebateModeViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F024 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E707 /* DebateMicBarView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E708 /* DebateSidePickerView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E709 /* DebateProgressView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E70A /* DebateRoundCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E70B /* DebateTopicCardView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4F025 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4E70C /* DebateModeSetupView.swift */,
+				A1B2C3D4E5F6A1B2C3D4E70D /* DebateModeView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1711,6 +2033,7 @@
 				0FD31E1C05FB48F69AC7A462 /* AIConversationSetupView.swift in Sources */,
 				B4CA72C761F94AAF050C38F4 /* SpeakingProgressCardView.swift in Sources */,
 				558889EE7EA7597D97336DE6 /* SpeakingModeCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FF02 /* SpeakingSetupComponents.swift in Sources */,
 				8EB5848FA440F4BB42CDF05B /* SpeakingView.swift in Sources */,
 				E30A1CE12F9A358000387BDC /* VerifyEmailView.swift in Sources */,
 				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,
@@ -1927,6 +2250,59 @@
 				A1B2C3D4E5F6A1B2C3D4E512 /* FreeSpeakingTopicCardView.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4E513 /* FreeSpeakingTranscriptCardView.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4E514 /* FreeSpeakingMicBarView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E521 /* SpeakingProtocols.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E522 /* FreeSpeakingViewModel.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E523 /* FreeSpeakingSetupView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E611 /* DescribePictureImage.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E612 /* DescribePictureImageService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E613 /* DescribePictureViewModel.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E614 /* DescribePictureImageCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E615 /* DescribePicturePromptCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E616 /* DescribePictureTranscriptCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E617 /* DescribePictureMicBarView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E618 /* DescribePictureView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E619 /* DescribePictureSetupView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E801 /* DebateSide.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E802 /* DebateRound.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E803 /* DebateSession.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E804 /* DebateTheme.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E805 /* DebateConversationService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E806 /* DebateModeViewModel.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E807 /* DebateMicBarView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E808 /* DebateSidePickerView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E809 /* DebateProgressView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E80A /* DebateRoundCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E80B /* DebateTopicCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E80C /* DebateModeSetupView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4E80D /* DebateModeView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA01 /* ShadowingPhrase.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA02 /* ShadowingAttempt.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA03 /* ShadowingTheme.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA04 /* ShadowingPhraseService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA05 /* ShadowingViewModel.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA06 /* ShadowingMicBarView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA07 /* ShadowingProgressCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA08 /* ShadowingPhraseCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA09 /* ShadowingListenRepeatCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA0A /* ShadowingComparisonCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA0B /* ShadowingSetupView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EA0C /* ShadowingView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EC01 /* PronunciationAssessmentResult.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EC04 /* CloudflareShadowingPhraseClient.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EC05 /* AzureSpeechTokenService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EC06 /* PronunciationAssessmentService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE01 /* PronunciationItem.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE02 /* PronunciationAttempt.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE03 /* PronunciationTrainerTheme.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE04 /* CloudflarePronunciationContentClient.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE05 /* PronunciationContentService.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE06 /* PronunciationTrainerViewModel.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE07 /* PronunciationMicBarView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE08 /* PronunciationProgressCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE09 /* PronunciationItemCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE0A /* PronunciationAssessmentCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE0B /* PronunciationTrainerSetupView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4EE0C /* PronunciationTrainerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

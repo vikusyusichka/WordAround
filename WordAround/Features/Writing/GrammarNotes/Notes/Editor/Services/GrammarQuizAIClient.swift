@@ -75,6 +75,9 @@ final class GrammarQuizAIHTTPClient: GrammarQuizAIClient {
     private struct WorkerRequest: Encodable {
         let prompt: String
         let responseMimeType: String?
+        // Task hint for the Worker's AI Provider Router (ANALYSIS chain).
+        // Names a TASK TYPE, never a provider.
+        let task: String?
     }
 
     private struct WorkerResponse: Decodable {
@@ -96,7 +99,11 @@ final class GrammarQuizAIHTTPClient: GrammarQuizAIClient {
 
         do {
             urlRequest.httpBody = try JSONEncoder().encode(
-                WorkerRequest(prompt: prompt, responseMimeType: "application/json")
+                WorkerRequest(
+                    prompt: prompt,
+                    responseMimeType: "application/json",
+                    task: "grammar_quiz_generation"
+                )
             )
         } catch {
             throw GrammarQuizAIClientError.network(error.localizedDescription)

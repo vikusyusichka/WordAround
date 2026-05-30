@@ -1,31 +1,31 @@
 /**
- * WordAround — Cloudflare Worker.
+ * WordAround — Gemini proxy Worker.
  *
- * Two routes are served from the same Worker so the iOS app needs only
- * one base URL:
+ * Wire contract with the iOS app (`GrammarQuizAIHTTPClient`):
+ *   POST  /
+ *   body: { "prompt": "<full prompt>" }
+ *   resp: { "text": "<model output>" }
+ *   err:  { "error": "<message>" }   (HTTP 4xx/5xx)
  *
- *   1. POST /                     — Gemini text proxy (legacy wire contract
- *                                   used by GrammarQuizAIHTTPClient, the
- *                                   Essay AI client and similar).
- *
- *   2. POST /api/speaking/topic   — Groq-backed speaking-topic generator
- *                                   called by the iOS Speaking feature.
- *
- * Secrets (set once per environment with Wrangler):
+ * The Gemini API key lives ONLY as the Cloudflare Worker secret
+ * `GEMINI_API_KEY`. Set it once with:
  *   wrangler secret put GEMINI_API_KEY
- *   wrangler secret put GROQ_API_KEY
  *
- * The iOS app never sees either key — it only knows this Worker's URL.
+ * The iOS app never sees the key — it only knows this Worker's URL.
+ *
+ * Additional path-routed endpoints:
+ *   POST /api/describe-picture/random-image  → Unsplash proxy
+ *   POST /api/shadowing/phrases              → Gemini phrase generation (JSON)
+ *   POST /api/pronunciation/content          → Gemini pronunciation items (JSON)
+ *   POST /api/speech/azure-token             → short-lived Azure Speech token
+ *
+ * Extra secrets (set once, never committed):
+ *   wrangler secret put UNSPLASH_ACCESS_KEY
+ *   wrangler secret put AZURE_SPEECH_KEY
+ *   wrangler secret put AZURE_SPEECH_REGION
  */
 
-// ----- Gemini config -----
-const GEMINI_MODEL = "gemini-2.5-flash";
-const GEMINI_ENDPOINT = (model) =>
-  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-
-// ----- Groq config -----
-const GROQ_MODEL = "llama-3.1-8b-instant";
-const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+import { routeAIRequest } from "./router/router.js";
 
 const JSON_HEADERS = {
   "Content-Type": "application/json",
@@ -35,6 +35,15 @@ const JSON_HEADERS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
+
+const DESCRIBE_PICTURE_PATH = "/api/describe-picture/random-image";
+const UNSPLASH_RANDOM_ENDPOINT =
+  "https://api.unsplash.com/photos/random?orientation=landscape&content_filter=high";
+
+const SHADOWING_PHRASES_PATH = "/api/shadowing/phrases";
+const PRONUNCIATION_CONTENT_PATH = "/api/pronunciation/content";
+const SPEAKING_TOPIC_PATH = "/api/speaking/topic";
+const AZURE_TOKEN_PATH = "/api/speech/azure-token";
 
 export default {
   async fetch(request, env) {
@@ -48,28 +57,51 @@ export default {
       return jsonError("Only POST is supported.", 405);
     }
 
-    const url = new URL(request.url);
+    // Path-routed endpoints. Anything else falls through to the default
+    // Gemini prompt proxy below, preserving the existing `POST /` contract
+    // used by feedback/topic generation.
+    const pathname = new URL(request.url).pathname;
 
-    // Path-based dispatch. New routes go through the switch below;
-    // anything else falls through to the legacy Gemini handler so
-    // existing clients (which POST to "/") keep working unchanged.
-    if (url.pathname === "/api/speaking/topic") {
+    if (pathname === DESCRIBE_PICTURE_PATH) {
+      return handleDescribePictureRandomImage(env);
+    }
+
+    if (pathname === AZURE_TOKEN_PATH) {
+      return handleAzureSpeechToken(env);
+    }
+
+    if (pathname === SHADOWING_PHRASES_PATH) {
+      return handleShadowingPhrases(request, env);
+    }
+
+    if (pathname === PRONUNCIATION_CONTENT_PATH) {
+      return handlePronunciationContent(request, env);
+    }
+
+    if (pathname === SPEAKING_TOPIC_PATH) {
       return handleSpeakingTopic(request, env);
     }
 
-    return handleGeminiText(request, env);
+    // Default `POST /` — the generic prompt proxy used by grammar quiz,
+    // essays, speaking feedback, and conversation/debate replies. The body
+    // is unchanged ({ prompt, responseMimeType? }) plus an OPTIONAL `task`
+    // hint that selects the provider priority chain. iOS never names a
+    // provider — only (optionally) the task type.
+    return handlePromptProxy(request, env);
   },
 };
 
-// =====================================================================
-// Legacy Gemini text proxy (unchanged behaviour)
-// =====================================================================
-
-async function handleGeminiText(request, env) {
-  if (!env.GEMINI_API_KEY) {
-    return jsonError("Worker is missing GEMINI_API_KEY secret.", 500);
-  }
-
+/**
+ * Generic prompt proxy. Preserves the original wire contract:
+ *   Request  → { "prompt": "...", "responseMimeType"?: "application/json", "task"?: "..." }
+ *   Response → { "text": "<model output>" }
+ *
+ * All provider selection / fallback / cooldown / validation happens inside
+ * `routeAIRequest`. The response shape is byte-for-byte compatible with what
+ * the iOS clients already decode (`{ text }`), with optional debug-only
+ * metadata appended (which the clients ignore).
+ */
+async function handlePromptProxy(request, env) {
   let body;
   try {
     body = await request.json();
@@ -83,101 +115,66 @@ async function handleGeminiText(request, env) {
   }
 
   const requestedMime =
-    typeof body?.responseMimeType === "string"
-      ? body.responseMimeType.trim()
-      : "";
+    typeof body?.responseMimeType === "string" ? body.responseMimeType.trim() : "";
+  const responseFormat =
+    requestedMime === "application/json" ? "json" : "text";
 
-  const generationConfig = {
-    temperature: 0.4,
-    maxOutputTokens: 2048,
-  };
-  if (requestedMime === "application/json") {
-    generationConfig.responseMimeType = "application/json";
+  // Optional task hint. Unknown / missing → the router defaults to the
+  // analysis chain (Gemini first), preserving the original behavior.
+  const task = typeof body?.task === "string" && body.task.trim().length > 0
+    ? body.task.trim()
+    : "analysis_default";
+
+  const result = await routeAIRequest(
+    {
+      task,
+      prompt,
+      responseFormat,
+      temperature: 0.4,
+      maxTokens: 2048,
+      meta: { languageCode: typeof body?.languageCode === "string" ? body.languageCode : "" },
+    },
+    env
+  );
+
+  if (result.error || typeof result.text !== "string" || result.text.length === 0) {
+    // No provider could serve this prompt. Surface an error so the iOS app's
+    // existing fallback / error handling takes over (unchanged behavior).
+    return jsonError("AI request failed: all providers unavailable.", 502);
   }
 
-  let geminiResp;
-  try {
-    geminiResp = await fetch(
-      `${GEMINI_ENDPOINT(GEMINI_MODEL)}?key=${encodeURIComponent(env.GEMINI_API_KEY)}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [{ text: prompt }],
-            },
-          ],
-          generationConfig,
-        }),
-      }
-    );
-  } catch (e) {
-    return jsonError(`Upstream network error: ${String(e)}`, 502);
-  }
+  return new Response(
+    JSON.stringify({
+      text: result.text,
+      // Debug-only metadata; iOS decoders ignore unknown fields.
+      providerUsed: result.providerUsed,
+      fallbackUsed: result.fallbackUsed,
+    }),
+    { status: 200, headers: JSON_HEADERS }
+  );
+}
 
-  if (!geminiResp.ok) {
-    return jsonError(`Gemini error (${geminiResp.status}).`, 502);
-  }
-
-  let geminiJson;
-  try {
-    geminiJson = await geminiResp.json();
-  } catch {
-    return jsonError("Gemini returned a non-JSON response.", 502);
-  }
-
-  const text =
-    geminiJson?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-
-  if (typeof text !== "string" || text.trim().length === 0) {
-    return jsonError("Gemini returned empty text.", 502);
-  }
-
-  return new Response(JSON.stringify({ text }), {
-    status: 200,
+function jsonError(message, status) {
+  return new Response(JSON.stringify({ error: message }), {
+    status,
     headers: JSON_HEADERS,
   });
 }
 
-// =====================================================================
-// POST /api/speaking/topic — Groq-backed topic generator
-//
-// Request body from iOS:
-//   {
-//     "language":      "English",      // required
-//     "level":         "A2",           // required CEFR level or "Native"
-//     "lengthMinutes": 5               // required positive integer
-//   }
-//
-// Response on success (current contract):
-//   {
-//     "title":            "<short topic title in selected language>",
-//     "description":      "<one-sentence description in selected language>",
-//     "openingQuestion":  "<the tutor's opening question in selected language>",
-//     "promptContext":    "<English-language hint for the tutor prompt>",
-//     "category":         "<one-or-two-word category in English>",
-//     "level":            "<echo of requested level>",
-//     "estimatedMinutes": <echo of requested lengthMinutes>,
-//
-//     // Legacy aliases — kept for older iOS builds, drop in a future
-//     // release once everyone is on the new names.
-//     "prompt":           "<same as description>",
-//     "firstAIMessage":   "<same as openingQuestion>",
-//     "context":          "<same as promptContext>",
-//     "difficulty":       "<same as level>"
-//   }
-//
-// All error responses use { "error": "<safe message>" } so the iOS app
-// can surface them without leaking the Groq key or upstream stack traces.
-// =====================================================================
-
-async function handleSpeakingTopic(request, env) {
-  if (!env.GROQ_API_KEY) {
-    return jsonError("Worker is missing GROQ_API_KEY secret.", 500);
-  }
-
+/**
+ * Shadowing — generates a set of fresh target phrases in the learner's
+ * target language via Gemini and returns strict JSON:
+ *   { phrases: [ { id, text, translation, languageCode, level, category, tip } ] }
+ *
+ * Request body (from iOS `CloudflareShadowingPhraseClient`):
+ *   { language, languageCode, level, category, count, avoidPhrases, seed }
+ *
+ * Provider keys never leave the Worker. The request is routed through the
+ * FAST provider chain (Groq → Cerebras → Gemini); on total failure the router
+ * returns a curated local fallback, and the iOS app keeps its own local
+ * phrase sets as a deeper safety net.
+ */
+async function handleShadowingPhrases(request, env) {
   let body;
   try {
     body = await request.json();
@@ -186,108 +183,307 @@ async function handleSpeakingTopic(request, env) {
   }
 
   const language = typeof body?.language === "string" ? body.language.trim() : "";
-  const level = typeof body?.level === "string" ? body.level.trim() : "";
-  const lengthMinutes = Number(body?.lengthMinutes);
-
-  // Optional anti-repeat list. Trimmed to 12 entries on the iOS side
-  // already; we clamp again here to be safe.
-  const rawAvoid = Array.isArray(body?.avoidTitles) ? body.avoidTitles : [];
-  const avoidTitles = rawAvoid
-    .filter((t) => typeof t === "string" && t.trim().length > 0)
-    .map((t) => t.trim())
-    .slice(-12);
+  const languageCode =
+    typeof body?.languageCode === "string" ? body.languageCode.trim() : "";
+  const level = typeof body?.level === "string" ? body.level.trim() : "B1";
+  const category =
+    typeof body?.category === "string" ? body.category.trim() : "Daily phrases";
+  const count = Math.min(Math.max(Number(body?.count) || 5, 1), 10);
+  const avoidPhrases = Array.isArray(body?.avoidPhrases)
+    ? body.avoidPhrases.filter((p) => typeof p === "string").slice(-30)
+    : [];
+  const seed =
+    typeof body?.seed === "string" || typeof body?.seed === "number"
+      ? String(body.seed)
+      : String(Math.random());
 
   if (!language) {
-    return jsonError("Missing or empty 'language' field.", 400);
-  }
-  if (!level) {
-    return jsonError("Missing or empty 'level' field.", 400);
-  }
-  if (!Number.isFinite(lengthMinutes) || lengthMinutes <= 0 || lengthMinutes > 120) {
-    return jsonError("Invalid 'lengthMinutes' field.", 400);
+    return jsonError("Missing 'language' field.", 400);
   }
 
-  const prompt = buildTopicPrompt(language, level, lengthMinutes, avoidTitles);
+  const avoidBlock =
+    avoidPhrases.length > 0
+      ? `\nDo NOT reuse or closely paraphrase any of these recent phrases:\n- ${avoidPhrases.join(
+          "\n- "
+        )}\n`
+      : "\n";
 
-  let groqResp;
-  try {
-    groqResp = await fetch(GROQ_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${env.GROQ_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: GROQ_MODEL,
-        messages: [
-          {
-            role: "system",
-            content: "You output only JSON. No markdown, no prose, no commentary.",
-          },
-          { role: "user", content: prompt },
-        ],
-        // High temperature so successive calls drift into different
-        // categories rather than locking onto common defaults
-        // ("Morning routine", "Cafe", etc.).
-        temperature: 1.0,
-        top_p: 0.95,
-        max_tokens: 400,
-        response_format: { type: "json_object" },
-      }),
-    });
-  } catch (e) {
-    return jsonError(`Upstream network error: ${String(e)}`, 502);
-  }
+  const prompt = `You are generating short speaking-practice phrases for a language learner to shadow (listen and repeat).
 
-  // Surface rate-limits to the client without leaking provider detail.
-  if (groqResp.status === 429) {
-    return jsonError("Topic AI rate limit. Try again shortly.", 429);
-  }
+Target language: ${language}
+CEFR level: ${level}
+Category / theme: ${category}
+Generate exactly ${count} phrases.
+Variety seed: ${seed} (use it to make this set different from previous sets).
+${avoidBlock}
+Rules:
+- Every "text" MUST be written in ${language} only. Never put English in "text" unless the target language is English.
+- "translation" MUST be a natural English translation, for display only.
+- Keep phrases natural, idiomatic and appropriate for ${level}.
+- Each phrase is one sentence the learner can comfortably repeat aloud.
+- "tip" is one short pronunciation/rhythm tip in English.
+- Make the ${count} phrases distinct from each other.
 
-  if (!groqResp.ok) {
-    return jsonError(`Topic AI error (${groqResp.status}).`, 502);
-  }
+Return ONLY strict minified JSON in exactly this shape, with no markdown:
+{"phrases":[{"text":"...","translation":"...","tip":"..."}]}`;
 
-  let groqJson;
-  try {
-    groqJson = await groqResp.json();
-  } catch {
-    return jsonError("Topic AI returned a non-JSON response.", 502);
-  }
-
-  const rawContent = groqJson?.choices?.[0]?.message?.content;
-  if (typeof rawContent !== "string" || rawContent.trim().length === 0) {
-    return jsonError("Topic AI returned empty content.", 502);
-  }
-
-  let parsed;
-  try {
-    parsed = JSON.parse(rawContent);
-  } catch {
-    return jsonError("Topic AI returned malformed JSON.", 502);
-  }
-
-  // Required visible fields. Model may emit either old (`prompt` /
-  // `firstAIMessage` / `context` / `difficulty`) or new
-  // (`description` / `openingQuestion` / `promptContext` / `level`)
-  // key names — accept either and normalise.
-  const title = stringField(parsed?.title);
-  const description = stringField(parsed?.description ?? parsed?.prompt);
-  const promptContext = stringField(parsed?.promptContext ?? parsed?.context);
-  const openingQuestion = stringField(
-    parsed?.openingQuestion ?? parsed?.firstAIMessage
+  const result = await routeAIRequest(
+    {
+      task: "shadowing_phrase_generation",
+      prompt,
+      responseFormat: "json",
+      temperature: 1.0,
+      maxTokens: 2048,
+      meta: { languageCode, language, level, seed },
+    },
+    env
   );
 
-  if (!title || !description || !promptContext || !openingQuestion) {
-    return jsonError("Topic AI returned an incomplete topic.", 502);
+  if (result.error || !result.json) {
+    return jsonError("Could not generate shadowing phrases.", 502);
   }
 
-  const category = stringField(parsed?.category) || "Conversation";
+  const parsed = result.json;
+  const sourcePhrases = Array.isArray(parsed?.phrases) ? parsed.phrases : [];
+  const phrases = sourcePhrases
+    .map((p) => ({
+      id: crypto.randomUUID(),
+      text: typeof p?.text === "string" ? p.text.trim() : "",
+      translation: typeof p?.translation === "string" ? p.translation.trim() : "",
+      languageCode,
+      level,
+      category,
+      tip: typeof p?.tip === "string" ? p.tip.trim() : "",
+    }))
+    .filter((p) => p.text.length > 0)
+    .slice(0, count);
 
-  // Emit BOTH new and legacy keys so an iOS rollout doesn't have to be
-  // perfectly synchronised with the Worker rollout. The current iOS
-  // client reads the new names; older builds still work via the legacy
-  // aliases.
+  if (phrases.length === 0) {
+    return jsonError("Gemini returned no usable phrases.", 502);
+  }
+
+  return new Response(JSON.stringify({ phrases }), {
+    status: 200,
+    headers: JSON_HEADERS,
+  });
+}
+
+/**
+ * Pronunciation Trainer — generates focused pronunciation practice items
+ * (single words, minimal pairs, short sound-focused phrases) in the target
+ * language via Gemini. Returns strict JSON:
+ *   { items: [ { id, type, text, translation, languageCode, level,
+ *               difficulty, focusSound, tip, example } ] }
+ *
+ * Request body (from iOS `CloudflarePronunciationContentClient`):
+ *   { language, languageCode, level, difficulty, focus, count, avoidItems, seed }
+ *
+ * Provider keys never leave the Worker. The request is routed through the
+ * FAST provider chain (Groq → Cerebras → Gemini); on total failure the router
+ * returns curated local items, and the iOS app keeps its own local set too.
+ */
+async function handlePronunciationContent(request, env) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonError("Request body must be valid JSON.", 400);
+  }
+
+  const language = typeof body?.language === "string" ? body.language.trim() : "";
+  const languageCode =
+    typeof body?.languageCode === "string" ? body.languageCode.trim() : "";
+  const level = typeof body?.level === "string" ? body.level.trim() : "A2";
+  const difficulty =
+    typeof body?.difficulty === "string" ? body.difficulty.trim() : "balanced";
+  const focus = typeof body?.focus === "string" ? body.focus.trim() : "mixed";
+  const count = Math.min(Math.max(Number(body?.count) || 10, 1), 15);
+  const avoidItems = Array.isArray(body?.avoidItems)
+    ? body.avoidItems.filter((p) => typeof p === "string").slice(-40)
+    : [];
+  const seed =
+    typeof body?.seed === "string" || typeof body?.seed === "number"
+      ? String(body.seed)
+      : String(Math.random());
+
+  if (!language) {
+    return jsonError("Missing 'language' field.", 400);
+  }
+
+  const avoidBlock =
+    avoidItems.length > 0
+      ? `\nDo NOT reuse any of these recent items:\n- ${avoidItems.join("\n- ")}\n`
+      : "\n";
+
+  const prompt = `You are generating focused PRONUNCIATION practice items for a language learner.
+These are NOT full conversational sentences — they target specific sounds, difficult words, and minimal pairs.
+
+Target language: ${language}
+CEFR level: ${level}
+Difficulty: ${difficulty}
+Focus area: ${focus}
+Generate exactly ${count} items.
+Variety seed: ${seed} (use it to make this set different from previous sets).
+${avoidBlock}
+Each item has a "type", one of: "word", "minimalPair", "phrase", "sound".
+- "word": a single difficult word.
+- "minimalPair": two contrasting words separated by " / " (e.g. "ship / sheep").
+- "phrase": a SHORT sound-focused phrase (max 5 words).
+- "sound": an isolated sound or letter combination.
+
+Rules:
+- Every "text" MUST be written in ${language} only (never English unless the target language is English).
+- Bias the set toward the focus area "${focus}".
+- "translation" is a short natural English gloss, for display only (may be empty for pure "sound" items).
+- "focusSound" names the specific sound/letters being trained (e.g. "rr", "th", "ü").
+- "tip" is one short English tip on how to produce the sound.
+- "example" is ONE short natural sentence in ${language} using the item (for an optional example playback).
+- Make all ${count} items distinct.
+
+Return ONLY strict minified JSON in exactly this shape, no markdown:
+{"items":[{"type":"word","text":"...","translation":"...","focusSound":"...","tip":"...","example":"..."}]}`;
+
+  const result = await routeAIRequest(
+    {
+      task: "pronunciation_content_generation",
+      prompt,
+      responseFormat: "json",
+      temperature: 1.0,
+      maxTokens: 2048,
+      meta: { languageCode, language, level, seed },
+    },
+    env
+  );
+
+  if (result.error || !result.json) {
+    return jsonError("Could not generate pronunciation items.", 502);
+  }
+
+  const parsed = result.json;
+  const allowedTypes = new Set(["word", "minimalPair", "phrase", "sound"]);
+  const sourceItems = Array.isArray(parsed?.items) ? parsed.items : [];
+  const items = sourceItems
+    .map((it) => ({
+      id: crypto.randomUUID(),
+      type: allowedTypes.has(it?.type) ? it.type : "word",
+      text: typeof it?.text === "string" ? it.text.trim() : "",
+      translation: typeof it?.translation === "string" ? it.translation.trim() : "",
+      languageCode,
+      level,
+      difficulty,
+      focusSound: typeof it?.focusSound === "string" ? it.focusSound.trim() : "",
+      tip: typeof it?.tip === "string" ? it.tip.trim() : "",
+      example: typeof it?.example === "string" ? it.example.trim() : "",
+    }))
+    .filter((it) => it.text.length > 0)
+    .slice(0, count);
+
+  if (items.length === 0) {
+    return jsonError("Gemini returned no usable items.", 502);
+  }
+
+  return new Response(JSON.stringify({ items }), {
+    status: 200,
+    headers: JSON_HEADERS,
+  });
+}
+
+/**
+ * Speaking topic generation — produces one conversation topic in the target
+ * language. Routed through the FAST provider chain (Groq → Cerebras → Gemini),
+ * with a curated local fallback if every provider fails.
+ *
+ * Request body (from iOS `CloudflareSpeakingTopicAIClient`):
+ *   { language, level, lengthMinutes, avoidTitles }
+ *
+ * Response (decoded directly by the iOS client):
+ *   { title, description, promptContext, openingQuestion, category }
+ */
+async function handleSpeakingTopic(request, env) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonError("Request body must be valid JSON.", 400);
+  }
+
+  const language = typeof body?.language === "string" ? body.language.trim() : "";
+  const level = typeof body?.level === "string" ? body.level.trim() : "B1";
+  const lengthMinutes = Math.min(Math.max(Number(body?.lengthMinutes) || 5, 1), 60);
+  const avoidTitles = Array.isArray(body?.avoidTitles)
+    ? body.avoidTitles.filter((t) => typeof t === "string").slice(-12)
+    : [];
+
+  if (!language) {
+    return jsonError("Missing 'language' field.", 400);
+  }
+
+  const languageCode = language.slice(0, 2).toLowerCase();
+  const seed = `${Date.now()}-${Math.random()}`;
+  const avoidBlock =
+    avoidTitles.length > 0
+      ? `\nDo NOT reuse or closely paraphrase any of these recent topic titles:\n- ${avoidTitles.join(
+          "\n- "
+        )}\n`
+      : "\n";
+
+  const prompt = `You generate ONE speaking-practice conversation topic for a language learner.
+
+Target language: ${language}
+CEFR level: ${level}
+Planned conversation length: about ${lengthMinutes} minutes.
+Variety seed: ${seed} (use it to make this topic different from previous ones).
+${avoidBlock}
+Rules:
+- "title" is a short topic title written in ${language}.
+- "description" is one sentence in ${language} telling the learner what they will talk about.
+- "openingQuestion" is the tutor's first friendly message/question in ${language} to start the conversation.
+- "promptContext" is a SHORT instruction in English for the AI tutor describing how to run this conversation (kept server-side, not shown to the learner).
+- "category" is a short English label (e.g. "Daily life", "Travel", "Discussion").
+- Keep everything appropriate for level ${level}. Avoid sensitive, medical, legal, violent or sexual topics.
+
+Return ONLY strict minified JSON in exactly this shape, no markdown:
+{"title":"...","description":"...","openingQuestion":"...","promptContext":"...","category":"..."}`;
+
+  const result = await routeAIRequest(
+    {
+      task: "speaking_topic_generation",
+      prompt,
+      responseFormat: "json",
+      temperature: 1.0,
+      maxTokens: 1024,
+      meta: { languageCode, language, level, seed },
+    },
+    env
+  );
+
+  if (result.error || !result.json) {
+    return jsonError("Could not generate a speaking topic.", 502);
+  }
+
+  const t = result.json;
+  const title = typeof t?.title === "string" ? t.title.trim() : "";
+  const description =
+    typeof (t?.description ?? t?.prompt) === "string"
+      ? String(t.description ?? t.prompt).trim()
+      : "";
+  const openingQuestion =
+    typeof (t?.openingQuestion ?? t?.firstAIMessage) === "string"
+      ? String(t.openingQuestion ?? t.firstAIMessage).trim()
+      : "";
+  const promptContext =
+    typeof (t?.promptContext ?? t?.context) === "string"
+      ? String(t.promptContext ?? t.context).trim()
+      : "";
+  const category =
+    typeof t?.category === "string" && t.category.trim().length > 0
+      ? t.category.trim()
+      : "Conversation";
+
+  if (!title || !description || !openingQuestion || !promptContext) {
+    return jsonError("Generated topic was missing required fields.", 502);
+  }
+
   return new Response(
     JSON.stringify({
       title,
@@ -295,141 +491,136 @@ async function handleSpeakingTopic(request, env) {
       openingQuestion,
       promptContext,
       category,
-      level,
-      estimatedMinutes: lengthMinutes,
-
-      // Legacy aliases — safe to drop once every shipped client is on
-      // the new names.
-      prompt: description,
-      firstAIMessage: openingQuestion,
-      context: promptContext,
-      difficulty: level,
+      fallbackUsed: result.fallbackUsed,
     }),
     { status: 200, headers: JSON_HEADERS }
   );
 }
 
-function buildTopicPrompt(language, level, lengthMinutes, avoidTitles) {
-  const levelHint = levelHintFor(level);
-  // Small randomness anchor so the model has at least one freely-varying
-  // signal between calls (in addition to its temperature). Helps avoid
-  // "always returns the same topic" when the cache is forced-refresh.
-  const seed = Math.floor(Math.random() * 1_000_000);
+/**
+ * Azure Speech — issues a short-lived (~10 min) auth token so the iOS app
+ * can call Azure Pronunciation Assessment WITHOUT ever embedding the
+ * subscription key. Returns: { token, region }.
+ *
+ * Secrets (set once, never committed):
+ *   wrangler secret put AZURE_SPEECH_KEY
+ *   wrangler secret put AZURE_SPEECH_REGION
+ */
+async function handleAzureSpeechToken(env) {
+  const key = env.AZURE_SPEECH_KEY;
+  const region = env.AZURE_SPEECH_REGION;
 
-  // The single most important steering signal. Without this line the
-  // model overwhelmingly defaults to the same 3-4 topics per level.
-  const avoidBlock =
-    avoidTitles && avoidTitles.length > 0
-      ? [
-          `Do NOT reuse or rephrase any of these recent titles: ${avoidTitles
-            .map((t) => `"${t}"`)
-            .join(", ")}.`,
-          "Pick a clearly different scenario, category and vocabulary set.",
-        ]
-      : [];
-
-  // A wider palette than "cafe / morning routine / family". Listed so
-  // the model treats them as the *space* it can draw from, not a list
-  // to copy verbatim.
-  const inspirationPool = [
-    "asking a neighbour to borrow something",
-    "returning a damaged purchase",
-    "describing a strange dream",
-    "small talk at a bus stop",
-    "calling a doctor for an appointment",
-    "ordering food at a market stall",
-    "discussing a movie you just watched",
-    "explaining a recipe to a friend",
-    "negotiating a price at a flea market",
-    "lost in a museum, asking for help",
-    "phone call to fix a broken appliance",
-    "interviewing a grandparent about their childhood",
-    "talking to a cashier about a discount",
-    "describing your favourite season",
-    "settling into a hotel room with a problem",
-    "comparing two phones in a store",
-    "explaining why you're late",
-    "discussing weekend plans with a colleague",
-    "renting a bicycle on holiday",
-    "complaining politely about loud neighbours",
-  ];
-  // Sample a small subset so each call sees a different rotation.
-  const sample = inspirationPool
-    .map((value) => ({ value, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .slice(0, 6)
-    .map((entry) => `- ${entry.value}`)
-    .join("\n");
-
-  const lines = [
-    "You are creating a speaking practice topic for a language learner.",
-    "Your job is to invent something fresh — not to fall back on the same default topic every time.",
-    "",
-    `Selected language: ${language}`,
-    `Learner level: ${level}`,
-    `Conversation length: ${lengthMinutes} minutes`,
-    `Variety seed: ${seed}`,
-    "",
-    `Level guidance: ${levelHint}`,
-  ];
-
-  if (avoidBlock.length > 0) {
-    lines.push("");
-    lines.push(...avoidBlock);
+  if (!key || !region) {
+    return jsonError(
+      "Worker is missing AZURE_SPEECH_KEY or AZURE_SPEECH_REGION secret.",
+      500
+    );
   }
 
-  lines.push("");
-  lines.push("Inspiration (pick a different angle each call — do NOT copy these verbatim):");
-  lines.push(sample);
-  lines.push("");
-  lines.push("Return ONLY a JSON object that matches this shape:");
-  lines.push("{");
-  lines.push(`  "title": "<short topic title in ${language}>",`);
-  lines.push(`  "description": "<one short sentence in ${language} describing what the learner will practice>",`);
-  lines.push(`  "category": "<one or two word category in English (e.g. Daily life, Travel, Professional, Social, Health, Hobbies, Shopping, Family, Tech, Food)>",`);
-  lines.push(`  "level": "${level}",`);
-  lines.push(`  "estimatedMinutes": ${lengthMinutes},`);
-  lines.push(`  "openingQuestion": "<the tutor's opening question in ${language}>",`);
-  lines.push(`  "promptContext": "<one short paragraph in English describing what the tutor should do during the roleplay>"`);
-  lines.push("}");
-  lines.push("");
-  lines.push("Rules:");
-  lines.push(`- title, description, openingQuestion MUST be written in ${language}.`);
-  lines.push("- category and promptContext MUST be in English.");
-  lines.push(`- The vocabulary and grammar MUST match level ${level}.`);
-  lines.push(`- The openingQuestion MUST be a single sentence aimed at level ${level}.`);
-  lines.push("- Pick something specific and conversational — concrete situations beat generic categories. Prefer titles like 'Asking a neighbour for help' over just 'Family'.");
-  lines.push("- Vary the category from call to call when possible.");
-  lines.push("- Do not output markdown, prose, or commentary. JSON only.");
+  const issueURL = `https://${region}.api.cognitive.microsoft.com/sts/v1.0/issueToken`;
 
-  return lines.join("\n");
-}
-
-function levelHintFor(level) {
-  switch ((level || "").toUpperCase()) {
-    case "A1":
-      return "Use very simple words, short sentences (max 8 words), present tense, no abstract topics.";
-    case "A2":
-      return "Use simple practical situations: travel, shopping, cafe, daily life. Short sentences.";
-    case "B1":
-      return "Use everyday opinions, experiences, plans. Vocabulary moderate.";
-    case "B2":
-      return "Allow comparisons, deeper discussion, some abstract ideas.";
-    case "C1":
-      return "Use abstract topics and nuanced opinions. Allow complex vocabulary.";
-    default:
-      return "Natural fluent conversation. Any topic.";
+  let azureResp;
+  try {
+    azureResp = await fetch(issueURL, {
+      method: "POST",
+      headers: {
+        "Ocp-Apim-Subscription-Key": key,
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Length": "0",
+      },
+    });
+  } catch (e) {
+    return jsonError(`Azure token network error: ${String(e)}`, 502);
   }
-}
 
-function stringField(value) {
-  if (typeof value !== "string") return "";
-  return value.trim();
-}
+  if (azureResp.status === 401 || azureResp.status === 403) {
+    return jsonError("Azure rejected the speech credentials.", 502);
+  }
+  if (!azureResp.ok) {
+    return jsonError(`Azure token error (${azureResp.status}).`, 502);
+  }
 
-function jsonError(message, status) {
-  return new Response(JSON.stringify({ error: message }), {
-    status,
+  let token;
+  try {
+    token = await azureResp.text();
+  } catch {
+    return jsonError("Azure returned an unreadable token.", 502);
+  }
+
+  if (!token || token.trim().length === 0) {
+    return jsonError("Azure returned an empty token.", 502);
+  }
+
+  return new Response(JSON.stringify({ token, region }), {
+    status: 200,
     headers: JSON_HEADERS,
   });
+}
+
+/**
+ * Describe Picture — fetches a random landscape photo from Unsplash and
+ * returns a simplified shape the iOS app can decode directly:
+ *   { id, imageURL, authorName, authorURL }
+ *
+ * The Unsplash access key lives ONLY as the Worker secret
+ * `UNSPLASH_ACCESS_KEY`. Set it once with:
+ *   wrangler secret put UNSPLASH_ACCESS_KEY
+ * The iOS app never sees the key — it only knows this Worker's URL.
+ */
+async function handleDescribePictureRandomImage(env) {
+  if (!env.UNSPLASH_ACCESS_KEY) {
+    return jsonError("Worker is missing UNSPLASH_ACCESS_KEY secret.", 500);
+  }
+
+  let unsplashResp;
+  try {
+    unsplashResp = await fetch(UNSPLASH_RANDOM_ENDPOINT, {
+      headers: {
+        Authorization: `Client-ID ${env.UNSPLASH_ACCESS_KEY}`,
+        "Accept-Version": "v1",
+      },
+    });
+  } catch (e) {
+    return jsonError(`Upstream network error: ${String(e)}`, 502);
+  }
+
+  if (unsplashResp.status === 401 || unsplashResp.status === 403) {
+    // Auth/quota problem — never echo the provider's body (may hint at key).
+    return jsonError("Image provider rejected the request.", 502);
+  }
+  if (unsplashResp.status === 429) {
+    return jsonError("Image provider rate limit reached.", 429);
+  }
+  if (!unsplashResp.ok) {
+    return jsonError(`Image provider error (${unsplashResp.status}).`, 502);
+  }
+
+  let photo;
+  try {
+    photo = await unsplashResp.json();
+  } catch {
+    return jsonError("Image provider returned a non-JSON response.", 502);
+  }
+
+  const imageURL =
+    photo?.urls?.regular ?? photo?.urls?.full ?? photo?.urls?.raw ?? "";
+  const id = typeof photo?.id === "string" ? photo.id : "";
+
+  if (!id || typeof imageURL !== "string" || imageURL.length === 0) {
+    return jsonError("Image provider returned no usable image.", 502);
+  }
+
+  const authorName =
+    typeof photo?.user?.name === "string" && photo.user.name.trim().length > 0
+      ? photo.user.name.trim()
+      : "Unknown";
+  const authorURL =
+    typeof photo?.user?.links?.html === "string"
+      ? photo.user.links.html
+      : "https://unsplash.com";
+
+  return new Response(
+    JSON.stringify({ id, imageURL, authorName, authorURL }),
+    { status: 200, headers: JSON_HEADERS }
+  );
 }
