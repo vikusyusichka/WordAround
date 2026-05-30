@@ -77,6 +77,7 @@ struct FreeSpeakingView: View {
                 onMicTap: handleMicTap,
                 onPause: handlePause
             )
+            .speakingActionBarWidth()
             .padding(.horizontal, Layout.homeBottomBarHorizontalPadding)
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
         }

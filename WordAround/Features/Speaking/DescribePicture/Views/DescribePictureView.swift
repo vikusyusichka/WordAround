@@ -76,6 +76,7 @@ struct DescribePictureView: View {
                 onMicTap: handleMicTap,
                 onHint: handleHint
             )
+            .speakingActionBarWidth()
             .padding(.horizontal, Layout.homeBottomBarHorizontalPadding)
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
         }

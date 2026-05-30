@@ -153,5 +153,24 @@ struct SpeakingSetupStartButton: View {
         }
         .buttonStyle(SpeakingSetupPressStyle())
         .hoverEffect(.lift)
+        .speakingActionBarWidth()
+    }
+}
+
+// MARK: - Adaptive width
+
+extension View {
+    /// Centers and width-constrains a bottom action bar (Start button, mic bar,
+    /// banners) to the same `convContentMaxWidth` used by the scroll content,
+    /// so controls don't stretch edge-to-edge on iPad / large screens while the
+    /// content above stays centered.
+    ///
+    /// No-op on iPhone: there `convContentMaxWidth` is `.infinity`, so the
+    /// compact layout is byte-for-byte unchanged. Only iPad / regular-width
+    /// screens are affected.
+    func speakingActionBarWidth() -> some View {
+        self
+            .frame(maxWidth: Layout.convContentMaxWidth)
+            .frame(maxWidth: .infinity)
     }
 }

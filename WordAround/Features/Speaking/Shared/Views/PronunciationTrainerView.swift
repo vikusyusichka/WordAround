@@ -79,6 +79,7 @@ struct PronunciationTrainerView: View {
                 onMic: handleMicTap,
                 onNext: handleNext
             )
+            .speakingActionBarWidth()
             .padding(.horizontal, Layout.homeBottomBarHorizontalPadding)
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
         }

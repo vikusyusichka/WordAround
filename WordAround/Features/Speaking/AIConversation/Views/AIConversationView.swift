@@ -109,6 +109,7 @@ struct AIConversationView: View {
                     onHint: { viewModel.requestHint() }
                 )
             }
+            .speakingActionBarWidth()
             .padding(.horizontal, Layout.homeBottomBarHorizontalPadding)
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
             .animation(.easeInOut(duration: 0.22), value: viewModel.errorMessage)
