@@ -65,6 +65,9 @@ final class GeminiEssayAIClient: EssayAIClient {
     private struct WorkerRequest: Encodable {
         let prompt: String
         let responseMimeType: String?
+        // Task hint for the Worker's AI Provider Router (ANALYSIS chain).
+        // Names a TASK TYPE, never a provider.
+        let task: String?
     }
 
     private struct WorkerResponse: Decodable {
@@ -155,7 +158,7 @@ final class GeminiEssayAIClient: EssayAIClient {
         .filter { !$0.isEmpty }
         .joined(separator: "\n")
 
-        return try await requestJSON(prompt: prompt, responseType: EssayGeneratedHint.self)
+        return try await requestJSON(prompt: prompt, responseType: EssayGeneratedHint.self, task: "essay_hints")
     }
 
     // MARK: - Response contracts
@@ -185,7 +188,8 @@ final class GeminiEssayAIClient: EssayAIClient {
     /// around the JSON.
     private func requestJSON<T: Decodable>(
         prompt: String,
-        responseType: T.Type
+        responseType: T.Type,
+        task: String = "essay_generation"
     ) async throws -> T {
         guard let endpointURL else {
             #if DEBUG
@@ -205,7 +209,7 @@ final class GeminiEssayAIClient: EssayAIClient {
 
         do {
             let body = try JSONEncoder().encode(
-                WorkerRequest(prompt: prompt, responseMimeType: "application/json")
+                WorkerRequest(prompt: prompt, responseMimeType: "application/json", task: task)
             )
             urlRequest.httpBody = body
             #if DEBUG

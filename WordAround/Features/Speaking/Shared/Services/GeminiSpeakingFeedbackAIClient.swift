@@ -19,6 +19,9 @@ final class GeminiSpeakingFeedbackAIClient: SpeakingFeedbackAIClient {
     private struct WorkerRequest: Encodable {
         let prompt: String
         let responseMimeType: String?
+        // Task hint for the Worker's AI Provider Router (ANALYSIS chain).
+        // Names a TASK TYPE, never a provider.
+        let task: String?
     }
 
     private struct WorkerResponse: Decodable {
@@ -37,6 +40,7 @@ final class GeminiSpeakingFeedbackAIClient: SpeakingFeedbackAIClient {
         }
 
         let prompt = Self.buildPrompt(request)
+        let task = request.includeDebateMetrics ? "debate_feedback" : "speaking_feedback"
         let userMessageCount = request.messages.filter { $0.role == .user }.count
 
         #if DEBUG
@@ -52,7 +56,7 @@ final class GeminiSpeakingFeedbackAIClient: SpeakingFeedbackAIClient {
 
         do {
             urlRequest.httpBody = try JSONEncoder().encode(
-                WorkerRequest(prompt: prompt, responseMimeType: "application/json")
+                WorkerRequest(prompt: prompt, responseMimeType: "application/json", task: task)
             )
         } catch {
             #if DEBUG

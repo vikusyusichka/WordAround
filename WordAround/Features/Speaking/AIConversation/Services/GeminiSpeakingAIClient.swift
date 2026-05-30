@@ -18,6 +18,10 @@ final class GeminiSpeakingAIClient: SpeakingAIClient {
 
     private struct WorkerRequest: Encodable {
         let prompt: String
+        // Task hint so the Worker's AI Provider Router picks the FAST chain.
+        // This names a TASK TYPE, never an AI provider — the iOS app stays
+        // unaware of which provider actually serves the request.
+        let task: String
     }
 
     private struct WorkerResponse: Decodable {
@@ -39,7 +43,9 @@ final class GeminiSpeakingAIClient: SpeakingAIClient {
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
 
         do {
-            urlRequest.httpBody = try JSONEncoder().encode(WorkerRequest(prompt: prompt))
+            urlRequest.httpBody = try JSONEncoder().encode(
+                WorkerRequest(prompt: prompt, task: "speaking_conversation")
+            )
         } catch {
             throw SpeakingAIClientError.invalidResponse
         }

@@ -1,17 +1,27 @@
-# WordAround — Gemini proxy Cloudflare Worker.
+# WordAround — multi-provider AI proxy Cloudflare Worker.
 #
 # Deploy with:
 #   wrangler deploy
 #
-# Set secrets (NEVER commit them to this file):
-#   wrangler secret put GEMINI_API_KEY      # Gemini proxy + shadowing phrases
+# AI provider secrets (all OPTIONAL — the AI Provider Router skips any that are
+# missing and falls through the priority chain). At minimum set GEMINI_API_KEY.
+#   wrangler secret put GEMINI_API_KEY      # analysis-chain #1, fast-chain fallback
+#   wrangler secret put GROQ_API_KEY        # fast-chain #1
+#   wrangler secret put CEREBRAS_API_KEY    # fast-chain #2
+#   wrangler secret put COHERE_API_KEY      # analysis-chain #2
+#   wrangler secret put DEEPSEEK_API_KEY    # analysis-chain #3
+#
+# Non-AI secrets:
 #   wrangler secret put UNSPLASH_ACCESS_KEY # Describe Picture random images
 #   wrangler secret put AZURE_SPEECH_KEY    # Azure Pronunciation Assessment
 #   wrangler secret put AZURE_SPEECH_REGION # e.g. westeurope
+#
+# Optional model overrides (vars, not secrets) — defaults are sensible:
+#   GEMINI_MODEL, GROQ_MODEL, CEREBRAS_MODEL, COHERE_MODEL, DEEPSEEK_MODEL
 
 name = "wordaround-gemini-proxy"
 main = "src/index.js"
 compatibility_date = "2025-09-23"
 
-# Keep the worker free-tier friendly: no Durable Objects, no R2, no D1.
-# The only resource is the inbound fetch route handled inside `src/index.js`.
+# Keep the worker free-tier friendly: no Durable Objects, no R2, no D1, no KV.
+# Provider cooldown state is in-memory, per Worker instance only.
