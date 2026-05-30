@@ -7,6 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1B2C3D4E5F6A1B2C3D4FC51 /* ReadingSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FC01 /* ReadingSetupView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FC52 /* ReadingSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FC02 /* ReadingSetupViewModel.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FC53 /* ReadingSetupConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FC03 /* ReadingSetupConfig.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FB51 /* ReadingSetupHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FB01 /* ReadingSetupHeaderView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FB52 /* ReadingSetupSectionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FB02 /* ReadingSetupSectionCard.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FB53 /* ReadingOptionPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FB03 /* ReadingOptionPill.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FB54 /* ReadingSegmentedSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FB04 /* ReadingSegmentedSelector.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FB55 /* ReadingPreviewCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FB05 /* ReadingPreviewCard.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FB56 /* ReadingPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FB06 /* ReadingPrimaryButton.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FB57 /* ReadingMetadataChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FB07 /* ReadingMetadataChip.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FB58 /* ReadingSetupOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FB08 /* ReadingSetupOptions.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FA20 /* ReadingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FA10 /* ReadingMode.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FA21 /* ReadingHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FA11 /* ReadingHomeViewModel.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FA22 /* ReadingModeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FA12 /* ReadingModeCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FA23 /* ReadingFeaturedModeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FA13 /* ReadingFeaturedModeCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FA24 /* ReadingProgressSummaryCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FA14 /* ReadingProgressSummaryCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FA25 /* ReadingComingSoonCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FA15 /* ReadingComingSoonCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FA26 /* ReadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FA16 /* ReadingView.swift */; };
 		75D0F220F2775947EF051105 /* ConversationPlaceholderData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5895C8023840E0D0824D88A8 /* ConversationPlaceholderData.swift */; };
 		69F7C0C15ED96D93D8C3678C /* ConversationLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1666F716F8C6241E38C8A81D /* ConversationLength.swift */; };
 		1D7A6E4F7ED95BE2D7CE240B /* GeneratedConversationTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF31C0618C0D77C52908F5E3 /* GeneratedConversationTopic.swift */; };
@@ -328,6 +346,24 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A1B2C3D4E5F6A1B2C3D4FC01 /* ReadingSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSetupView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FC02 /* ReadingSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSetupViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FC03 /* ReadingSetupConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSetupConfig.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FB01 /* ReadingSetupHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSetupHeaderView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FB02 /* ReadingSetupSectionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSetupSectionCard.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FB03 /* ReadingOptionPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingOptionPill.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FB04 /* ReadingSegmentedSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSegmentedSelector.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FB05 /* ReadingPreviewCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingPreviewCard.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FB06 /* ReadingPrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingPrimaryButton.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FB07 /* ReadingMetadataChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingMetadataChip.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FB08 /* ReadingSetupOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSetupOptions.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FA10 /* ReadingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingMode.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FA11 /* ReadingHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingHomeViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FA12 /* ReadingModeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingModeCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FA13 /* ReadingFeaturedModeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingFeaturedModeCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FA14 /* ReadingProgressSummaryCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingProgressSummaryCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FA15 /* ReadingComingSoonCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingComingSoonCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FA16 /* ReadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingView.swift; sourceTree = "<group>"; };
 		5895C8023840E0D0824D88A8 /* ConversationPlaceholderData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationPlaceholderData.swift; sourceTree = "<group>"; };
 		DDAFF0DF4645DF7ABD6A2E33 /* ConversationScenarioCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationScenarioCardView.swift; sourceTree = "<group>"; };
 		DEE458D5ABF4FF5A42A9CEB4 /* ConversationMessageBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationMessageBubbleView.swift; sourceTree = "<group>"; };
@@ -661,6 +697,223 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A1B2C3D4E5F6A1B2C3D4FBA0 /* GeneratedReading */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FBA1 /* Views */,
+				A1B2C3D4E5F6A1B2C3D4FBA2 /* ViewModels */,
+			);
+			path = GeneratedReading;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBA1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBA2 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBB0 /* MyTexts */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FBB1 /* Views */,
+				A1B2C3D4E5F6A1B2C3D4FBB2 /* ViewModels */,
+			);
+			path = MyTexts;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBB1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBB2 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBC0 /* ReadingFromSets */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FBC1 /* Views */,
+				A1B2C3D4E5F6A1B2C3D4FBC2 /* ViewModels */,
+			);
+			path = ReadingFromSets;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBC1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBC2 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBD0 /* StoryMode */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FBD1 /* Views */,
+				A1B2C3D4E5F6A1B2C3D4FBD2 /* ViewModels */,
+			);
+			path = StoryMode;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBD1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBD2 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBE0 /* SpeedReading */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FBE1 /* Views */,
+				A1B2C3D4E5F6A1B2C3D4FBE2 /* ViewModels */,
+			);
+			path = SpeedReading;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBE1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBE2 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBF0 /* InteractiveReading */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FBF1 /* Views */,
+				A1B2C3D4E5F6A1B2C3D4FBF2 /* ViewModels */,
+			);
+			path = InteractiveReading;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBF1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FBF2 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FA00 /* Reading */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FBA0 /* GeneratedReading */,
+				A1B2C3D4E5F6A1B2C3D4FBB0 /* MyTexts */,
+				A1B2C3D4E5F6A1B2C3D4FBC0 /* ReadingFromSets */,
+				A1B2C3D4E5F6A1B2C3D4FBD0 /* StoryMode */,
+				A1B2C3D4E5F6A1B2C3D4FBE0 /* SpeedReading */,
+				A1B2C3D4E5F6A1B2C3D4FBF0 /* InteractiveReading */,
+				A1B2C3D4E5F6A1B2C3D4FA01 /* Shared */,
+			);
+			path = Reading;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FA01 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FA02 /* Models */,
+				A1B2C3D4E5F6A1B2C3D4FA03 /* Services */,
+				A1B2C3D4E5F6A1B2C3D4FA04 /* ViewModels */,
+				A1B2C3D4E5F6A1B2C3D4FA05 /* Components */,
+				A1B2C3D4E5F6A1B2C3D4FA06 /* Views */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FA02 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FC03 /* ReadingSetupConfig.swift */,
+				A1B2C3D4E5F6A1B2C3D4FB08 /* ReadingSetupOptions.swift */,
+				A1B2C3D4E5F6A1B2C3D4FA10 /* ReadingMode.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FA03 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FA04 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FC02 /* ReadingSetupViewModel.swift */,
+				A1B2C3D4E5F6A1B2C3D4FA11 /* ReadingHomeViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FA05 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FB01 /* ReadingSetupHeaderView.swift */,
+				A1B2C3D4E5F6A1B2C3D4FB02 /* ReadingSetupSectionCard.swift */,
+				A1B2C3D4E5F6A1B2C3D4FB03 /* ReadingOptionPill.swift */,
+				A1B2C3D4E5F6A1B2C3D4FB04 /* ReadingSegmentedSelector.swift */,
+				A1B2C3D4E5F6A1B2C3D4FB05 /* ReadingPreviewCard.swift */,
+				A1B2C3D4E5F6A1B2C3D4FB06 /* ReadingPrimaryButton.swift */,
+				A1B2C3D4E5F6A1B2C3D4FB07 /* ReadingMetadataChip.swift */,
+				A1B2C3D4E5F6A1B2C3D4FA12 /* ReadingModeCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4FA13 /* ReadingFeaturedModeCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4FA14 /* ReadingProgressSummaryCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4FA15 /* ReadingComingSoonCardView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6A1B2C3D4FA06 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A1B2C3D4FC01 /* ReadingSetupView.swift */,
+				A1B2C3D4E5F6A1B2C3D4FA16 /* ReadingView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		E30901732FB95C6F00C52238 /* Sets */ = {
 			isa = PBXGroup;
 			children = (
@@ -1041,6 +1294,7 @@
 			isa = PBXGroup;
 			children = (
 				35A219B7F43FDC00B4CD164C /* Speaking */,
+				A1B2C3D4E5F6A1B2C3D4FA00 /* Reading */,
 				E309021F2FBA3E5B00C52238 /* Writing */,
 				E30A1DA72F9E07B800387BDC /* Folders */,
 				E30A1D582F9BEB3700387BDC /* Flashcards */,
@@ -1993,6 +2247,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1B2C3D4E5F6A1B2C3D4FC51 /* ReadingSetupView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FC52 /* ReadingSetupViewModel.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FC53 /* ReadingSetupConfig.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FB51 /* ReadingSetupHeaderView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FB52 /* ReadingSetupSectionCard.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FB53 /* ReadingOptionPill.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FB54 /* ReadingSegmentedSelector.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FB55 /* ReadingPreviewCard.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FB56 /* ReadingPrimaryButton.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FB57 /* ReadingMetadataChip.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FB58 /* ReadingSetupOptions.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FA20 /* ReadingMode.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FA21 /* ReadingHomeViewModel.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FA22 /* ReadingModeCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FA23 /* ReadingFeaturedModeCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FA24 /* ReadingProgressSummaryCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FA25 /* ReadingComingSoonCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FA26 /* ReadingView.swift in Sources */,
 				75D0F220F2775947EF051105 /* ConversationPlaceholderData.swift in Sources */,
 				1CC96E5759FAC845B3BFBA09 /* ConversationScenarioCardView.swift in Sources */,
 				A41BB1C25F790799DCAFCA90 /* ConversationMessageBubbleView.swift in Sources */,
