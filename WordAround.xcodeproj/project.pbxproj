@@ -46,6 +46,7 @@
 		D4E0722AB561809EF92551FB /* SpeakingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC4A6B7E165DB71293AEE3B /* SpeakingMode.swift */; };
 		B4CA72C761F94AAF050C38F4 /* SpeakingProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDB6C4459B026506711A9FB /* SpeakingProgressCardView.swift */; };
 		558889EE7EA7597D97336DE6 /* SpeakingModeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 921B8412452F125310CD2704 /* SpeakingModeCardView.swift */; };
+		A1B2C3D4E5F6A1B2C3D4FF02 /* SpeakingSetupComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FF01 /* SpeakingSetupComponents.swift */; };
 		8EB5848FA440F4BB42CDF05B /* SpeakingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A461AAE69DC74375F13AF65 /* SpeakingView.swift */; };
 		E30901722FB952EF00C52238 /* FlashcardRoundFinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901712FB952DC00C52238 /* FlashcardRoundFinishView.swift */; };
 		E30901752FB95C8500C52238 /* SetsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30901742FB95C7700C52238 /* SetsListView.swift */; };
@@ -366,6 +367,7 @@
 		4BC4A6B7E165DB71293AEE3B /* SpeakingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingMode.swift; sourceTree = "<group>"; };
 		5BDB6C4459B026506711A9FB /* SpeakingProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingProgressCardView.swift; sourceTree = "<group>"; };
 		921B8412452F125310CD2704 /* SpeakingModeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingModeCardView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4FF01 /* SpeakingSetupComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingSetupComponents.swift; sourceTree = "<group>"; };
 		0A461AAE69DC74375F13AF65 /* SpeakingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingView.swift; sourceTree = "<group>"; };
 		E30901712FB952DC00C52238 /* FlashcardRoundFinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardRoundFinishView.swift; sourceTree = "<group>"; };
 		E30901742FB95C7700C52238 /* SetsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetsListView.swift; sourceTree = "<group>"; };
@@ -1635,6 +1637,7 @@
 				BD5AFE8CC0D9947681D2A7C9 /* ConversationCorrectionCardView.swift */,
 				5BDB6C4459B026506711A9FB /* SpeakingProgressCardView.swift */,
 				921B8412452F125310CD2704 /* SpeakingModeCardView.swift */,
+				A1B2C3D4E5F6A1B2C3D4FF01 /* SpeakingSetupComponents.swift */,
 				7A97D45BED44AAFEFA4360E8 /* ConversationTopicPickerSheetView.swift */,
 				A1B2C3D4E5F6A1B2C3D4E906 /* ShadowingMicBarView.swift */,
 				A1B2C3D4E5F6A1B2C3D4E907 /* ShadowingProgressCardView.swift */,
@@ -2030,6 +2033,7 @@
 				0FD31E1C05FB48F69AC7A462 /* AIConversationSetupView.swift in Sources */,
 				B4CA72C761F94AAF050C38F4 /* SpeakingProgressCardView.swift in Sources */,
 				558889EE7EA7597D97336DE6 /* SpeakingModeCardView.swift in Sources */,
+				A1B2C3D4E5F6A1B2C3D4FF02 /* SpeakingSetupComponents.swift in Sources */,
 				8EB5848FA440F4BB42CDF05B /* SpeakingView.swift in Sources */,
 				E30A1CE12F9A358000387BDC /* VerifyEmailView.swift in Sources */,
 				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,

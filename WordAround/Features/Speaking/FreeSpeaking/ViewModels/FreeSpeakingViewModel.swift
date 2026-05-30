@@ -178,10 +178,16 @@ final class FreeSpeakingViewModel: ObservableObject {
 
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
+            guard let self else { return }
+            // Only show the live partial while actually listening. A late
+            // partial result can fire AFTER we've stopped and appended the
+            // final chunk — accepting it would re-show a faded duplicate
+            // transcript card of the same utterance.
+            guard self.state.isListening else { return }
             #if DEBUG
             print("[FreeSpeakingVM] partial transcript update (len=\(text.count))")
             #endif
-            self?.partialTranscript = text
+            self.partialTranscript = text
         }
 
         recognizer.onFinalTranscript = { [weak self] text in

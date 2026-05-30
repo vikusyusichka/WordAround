@@ -6,8 +6,23 @@ struct AIConversationView: View {
     @StateObject private var viewModel: AIConversationViewModel
     @State private var showResult = false
 
-    init(setup: SpeakingConversationSetup) {
+    /// Pops the conversation (and the result pushed on top of it) back to the
+    /// AI Conversation setup screen. Owned by the setup screen. `nil` in previews.
+    private let onExitToSetup: (() -> Void)?
+
+    /// Pops the whole AI Conversation flow (setup + conversation + result)
+    /// back to the main Speaking screen. Supplied by `SpeakingView` via the
+    /// setup screen. `nil` in previews.
+    private let onExitToSpeaking: (() -> Void)?
+
+    init(
+        setup: SpeakingConversationSetup,
+        onExitToSetup: (() -> Void)? = nil,
+        onExitToSpeaking: (() -> Void)? = nil
+    ) {
         _viewModel = StateObject(wrappedValue: AIConversationViewModel(setup: setup))
+        self.onExitToSetup = onExitToSetup
+        self.onExitToSpeaking = onExitToSpeaking
     }
 
     var body: some View {
@@ -115,16 +130,25 @@ struct AIConversationView: View {
             ConversationResultView(
                 viewModel: viewModel,
                 onPracticeAgain: {
-                    viewModel.resetConversation()
-                    showResult = false
-                    Task { @MainActor in
-                        try? await Task.sleep(nanoseconds: 200_000_000)
-                        viewModel.startConversation()
+                    // Return to the AI Conversation setup screen so the user
+                    // can start a fresh session. The setup screen owns the
+                    // binding, so this pops the conversation AND the result in
+                    // one step.
+                    viewModel.endConversation()
+                    if let onExitToSetup {
+                        onExitToSetup()
+                    } else {
+                        showResult = false
+                        dismiss()
                     }
                 },
                 onBackToSpeaking: {
-                    showResult = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    // Leave the whole flow back to the main Speaking screen.
+                    viewModel.endConversation()
+                    if let onExitToSpeaking {
+                        onExitToSpeaking()
+                    } else {
+                        showResult = false
                         dismiss()
                     }
                 }

@@ -29,6 +29,8 @@ final class AIConversationViewModel: ObservableObject {
 
     @Published var currentHint: String?
 
+    @Published private(set) var isRequestingHint: Bool = false
+
     @Published var showTopicPicker: Bool = false
 
     var selectedScenario: ConversationScenario? {
@@ -110,7 +112,13 @@ final class AIConversationViewModel: ObservableObject {
 
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
-            self?.partialTranscript = text
+            guard let self else { return }
+            // Only show the live partial while actually listening. A late
+            // partial result can fire AFTER we've stopped and appended the
+            // final message — accepting it would re-show a faded duplicate
+            // bubble of the same answer.
+            guard self.state.isListening else { return }
+            self.partialTranscript = text
         }
 
         recognizer.onFinalTranscript = { [weak self] text in
@@ -584,27 +592,87 @@ final class AIConversationViewModel: ObservableObject {
             #endif
             return
         }
+        guard !isRequestingHint else { return }
 
-        let hintText: String
-        if let context {
-            hintText = SpeakingConversationService.localHint(for: setup.language, context: context)
-        } else {
-            hintText = SpeakingConversationService.genericTopicHint(for: setup.language)
+        // Without a resolved topic/scenario yet, fall back instantly.
+        guard let context else {
+            presentHint(SpeakingConversationService.genericTopicHint(for: setup.language))
+            return
         }
 
-        #if DEBUG
-        print("[ConversationVM] hint tapped: \(hintText.prefix(60))")
-        #endif
+        isRequestingHint = true
+        let language = setup.language
+        let level = setup.level
+        let history = messages
+        let lastUserMessage = messages.last(where: { $0.role == .user })?.text
+        let service = conversationService
 
+        Task { [weak self] in
+            let hintText = await Self.resolveHint(
+                service: service,
+                language: language,
+                level: level,
+                context: context,
+                history: history,
+                lastUserMessage: lastUserMessage
+            )
+            await MainActor.run {
+                guard let self else { return }
+                self.isRequestingHint = false
+                self.presentHint(hintText)
+            }
+        }
+    }
+
+    /// Tries the AI Router for a context-aware suggested answer, falling back
+    /// to the context-aware local hint if the AI is unavailable.
+    private static func resolveHint(
+        service: SpeakingConversationService,
+        language: GrammarLanguage,
+        level: EssayDifficulty,
+        context: SpeakingConversationContext,
+        history: [SpeakingConversationMessage],
+        lastUserMessage: String?
+    ) async -> String {
+        do {
+            let hint = try await service.requestHint(
+                mode: .aiConversation,
+                language: language,
+                level: level,
+                context: context,
+                history: history,
+                lastUserMessage: lastUserMessage
+            )
+            if !hint.isEmpty { return hint }
+        } catch {
+            #if DEBUG
+            print("[ConversationVM] AI hint failed: \(error.localizedDescription) — using local hint")
+            #endif
+        }
+        return SpeakingConversationService.localHint(for: language, context: context)
+    }
+
+    private func presentHint(_ hintText: String) {
+        // Drop a stale hint if the user already started speaking or the tutor
+        // is busy replying by the time the AI hint resolved.
+        guard !state.isListening, !state.isBusy else {
+            #if DEBUG
+            print("[ConversationVM] hint dropped — state=\(state)")
+            #endif
+            return
+        }
+        #if DEBUG
+        print("[ConversationVM] hint shown: \(hintText.prefix(60))")
+        #endif
         currentHint = hintText
         scheduleHintAutoHide()
-
         speakAIResponse(hintText)
     }
 
     func clearHint() {
         hintAutoHideTask?.cancel()
         hintAutoHideTask = nil
+        isRequestingHint = false
         if currentHint != nil { currentHint = nil }
     }
 

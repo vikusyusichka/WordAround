@@ -330,7 +330,6 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
         VStack(spacing: 10) {
             Button {
                 onPracticeAgain()
-                dismiss()
             } label: {
                 Text("Practice Again")
                     .font(.system(

@@ -51,10 +51,10 @@ struct SpeakingView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .navigationDestination(isPresented: $openAIConversation) {
-            AIConversationSetupView()
+            AIConversationSetupView(onExitToSpeaking: { openAIConversation = false })
         }
         .navigationDestination(isPresented: $openFreeSpeaking) {
-            FreeSpeakingSetupView()
+            FreeSpeakingSetupView(onExitToSpeaking: { openFreeSpeaking = false })
         }
         .navigationDestination(isPresented: $openDescribePicture) {
             DescribePictureSetupView()

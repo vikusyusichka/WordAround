@@ -8,8 +8,23 @@ struct FreeSpeakingView: View {
     @State private var isPaused = false
     @State private var showResult = false
 
-    init(setup: SpeakingConversationSetup) {
+    /// Pops the session (and the result pushed on top of it) back to the Free
+    /// Speaking setup screen. Owned by the setup screen. `nil` in previews.
+    private let onExitToSetup: (() -> Void)?
+
+    /// Pops the whole Free Speaking flow (setup + session + result) back to
+    /// the main Speaking screen. Supplied by `SpeakingView` via the setup
+    /// screen. `nil` in previews.
+    private let onExitToSpeaking: (() -> Void)?
+
+    init(
+        setup: SpeakingConversationSetup,
+        onExitToSetup: (() -> Void)? = nil,
+        onExitToSpeaking: (() -> Void)? = nil
+    ) {
         _viewModel = StateObject(wrappedValue: FreeSpeakingViewModel(setup: setup))
+        self.onExitToSetup = onExitToSetup
+        self.onExitToSpeaking = onExitToSpeaking
     }
 
     private var isRecording: Bool { viewModel.state == .listening }
@@ -83,17 +98,24 @@ struct FreeSpeakingView: View {
                 viewModel: viewModel,
                 completionTitle: "Free Speaking completed",
                 onPracticeAgain: {
-                    viewModel.resetSession()
-                    showResult = false
-                    isPaused = false
-                    Task { @MainActor in
-                        try? await Task.sleep(nanoseconds: 200_000_000)
-                        viewModel.startSession()
+                    // Return to the Free Speaking setup screen for a fresh run.
+                    // The setup screen owns the binding, so this pops the
+                    // session AND the result in one step.
+                    viewModel.endSession()
+                    if let onExitToSetup {
+                        onExitToSetup()
+                    } else {
+                        showResult = false
+                        dismiss()
                     }
                 },
                 onBackToSpeaking: {
-                    showResult = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    // Leave the whole flow back to the main Speaking screen.
+                    viewModel.endSession()
+                    if let onExitToSpeaking {
+                        onExitToSpeaking()
+                    } else {
+                        showResult = false
                         dismiss()
                     }
                 }

@@ -71,6 +71,93 @@ final class SpeakingConversationService {
         """
     }
 
+    // MARK: - Suggested answer (hint)
+
+    /// Asks the AI (via the same Worker AI Router as replies) for ONE short,
+    /// level-appropriate example answer the learner could say next. The prompt
+    /// includes the full speaking context: mode, language, level, topic, the
+    /// recent transcript, the tutor's last question and the learner's last
+    /// answer. Throws on failure so the caller can use a context-aware local
+    /// fallback.
+    func requestHint(
+        mode: SpeakingHintMode,
+        language: GrammarLanguage,
+        level: EssayDifficulty,
+        context: SpeakingConversationContext,
+        history: [SpeakingConversationMessage],
+        lastUserMessage: String?
+    ) async throws -> String {
+        let recent = Array(history.suffix(recentHistoryLimit))
+        let prompt = Self.buildHintPrompt(
+            mode: mode,
+            language: language,
+            level: level,
+            context: context,
+            recentMessages: recent,
+            lastUserMessage: lastUserMessage
+        )
+        let reply = try await client.generateReply(prompt: prompt)
+        return reply.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    static func buildHintPrompt(
+        mode: SpeakingHintMode,
+        language: GrammarLanguage,
+        level: EssayDifficulty,
+        context: SpeakingConversationContext,
+        recentMessages: [SpeakingConversationMessage],
+        lastUserMessage: String?
+    ) -> String {
+        let lastAIQuestion = recentMessages.last(where: { $0.role == .ai })?.text
+        let lastAnswer = lastUserMessage?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let transcript: String
+        if recentMessages.isEmpty {
+            transcript = "(conversation has not started yet)"
+        } else {
+            transcript = recentMessages
+                .map { msg in "\(msg.role == .ai ? "Tutor" : "Learner"): \(msg.text)" }
+                .joined(separator: "\n")
+        }
+
+        let questionLine = (lastAIQuestion?.isEmpty == false)
+            ? "Tutor's last question: \(lastAIQuestion!)"
+            : "There is no tutor question yet — suggest a natural way to start talking about the topic."
+        let answerLine = (lastAnswer?.isEmpty == false)
+            ? "Learner's last answer: \(lastAnswer!)"
+            : "The learner has not answered yet."
+
+        let levelGuidance: String
+        switch level {
+        case .a1, .a2:
+            levelGuidance = "The learner is a beginner (\(level.rawValue)). Keep it ONE very simple, natural short sentence with basic, common words."
+        default:
+            levelGuidance = "Match CEFR level \(level.rawValue): natural and fluent, but still ONE short sentence the learner can comfortably say aloud."
+        }
+
+        return """
+        You help a language learner by suggesting ONE example answer they could say out loud next.
+
+        Practice mode: \(mode.promptLabel)
+        Language: \(language.title)
+        Level: \(level.rawValue)
+        Topic: \(context.title) — \(context.description)
+        Topic context: \(context.promptContext)
+        \(questionLine)
+        \(answerLine)
+
+        Recent conversation:
+        \(transcript)
+
+        Write ONE example answer the learner could say next.
+        Rules:
+        - If there is a tutor question, the answer MUST directly and relevantly respond to it.
+        - \(levelGuidance)
+        - Write it in \(language.title), in the learner's own first-person voice.
+        - Output ONLY the sentence itself — no translation, no quotes, no label, no explanation, no markdown.
+        """
+    }
+
     static func fallbackReply(for language: GrammarLanguage) -> String {
         switch language {
         case .spanish:    return "Te escuché. Continuemos. ¿Qué más te gustaría?"
@@ -138,8 +225,39 @@ final class SpeakingConversationService {
         switch context {
         case .scenario(let scenario):
             return hintMessage(language: language, scenario: scenario)
-        case .generatedTopic:
-            return genericTopicHint(for: language)
+        case .generatedTopic(let topic):
+            return topicAwareLocalHint(for: language, topicTitle: topic.title)
+        }
+    }
+
+    /// Context-aware local fallback for AI-generated topics: it at least names
+    /// the current topic instead of the old generic "say one sentence" line.
+    static func topicAwareLocalHint(for language: GrammarLanguage, topicTitle: String) -> String {
+        let title = topicTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !title.isEmpty else { return genericTopicHint(for: language) }
+
+        switch language {
+        case .spanish:    return "Intenta decir qué piensas o qué te gusta sobre «\(title)»."
+        case .french:     return "Essaie de dire ce que tu penses ou ce que tu aimes à propos de « \(title) »."
+        case .german:     return "Sag, was du über „\(title)“ denkst oder was dir daran gefällt."
+        case .italian:    return "Prova a dire cosa pensi o cosa ti piace di «\(title)»."
+        case .portuguese: return "Tente dizer o que você pensa ou do que gosta sobre «\(title)»."
+        default:          return "Try saying what you think or like about “\(title).”"
+        }
+    }
+}
+
+/// Which speaking flow is asking for a suggested-answer hint. Only used to
+/// shape the AI prompt — it never selects an AI provider (the Worker router
+/// owns that).
+enum SpeakingHintMode {
+    case aiConversation
+    case freeSpeaking
+
+    var promptLabel: String {
+        switch self {
+        case .aiConversation: return "AI Conversation (back-and-forth dialogue with a tutor)"
+        case .freeSpeaking:   return "Free Speaking (the learner speaks freely about a topic, no tutor replies)"
         }
     }
 }

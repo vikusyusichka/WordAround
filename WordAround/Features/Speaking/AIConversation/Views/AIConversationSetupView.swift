@@ -3,6 +3,10 @@ import SwiftUI
 struct AIConversationSetupView: View {
     @Environment(\.dismiss) private var dismiss
 
+    /// Pops the whole flow back to the main Speaking screen. Supplied by
+    /// `SpeakingView`. `nil` in previews.
+    var onExitToSpeaking: (() -> Void)? = nil
+
     @State private var selectedLanguage: GrammarLanguage = .english
     @State private var selectedLevel: EssayDifficulty = .b1
 
@@ -10,7 +14,8 @@ struct AIConversationSetupView: View {
     @State private var selectedLength: ConversationLength = .medium
     @State private var showConversation = false
 
-    private let lengths = ConversationLength.allCases
+    private let accent = AppColors.primaryBlue
+    private let accentDark = AppColors.primaryBlueDark
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -18,22 +23,42 @@ struct AIConversationSetupView: View {
 
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-                    topBar
-                        .padding(.bottom, 4)
+                    SpeakingSetupTopBar(
+                        title: "Set up conversation",
+                        subtitle: "Choose what to practice today.",
+                        accent: accent,
+                        accentDark: accentDark,
+                        onBack: { dismiss() }
+                    )
+                    .padding(.bottom, 4)
 
-                    sectionTitle("Language")
-                    LanguageSelectorView(selectedLanguage: selectedLanguage) { selectedLanguage = $0 }
+                    SpeakingSetupSectionTitle("Language", accentDark: accentDark)
+                    LanguageSelectorView(
+                        selectedLanguage: selectedLanguage,
+                        onSelect: { selectedLanguage = $0 },
+                        accent: accent,
+                        accentDark: accentDark
+                    )
 
-                    sectionTitle("Level")
-                    DifficultySelectorView(selectedDifficulty: selectedLevel) { selectedLevel = $0 }
+                    SpeakingSetupSectionTitle("Level", accentDark: accentDark)
+                    DifficultySelectorView(
+                        selectedDifficulty: selectedLevel,
+                        onSelect: { selectedLevel = $0 },
+                        accent: accent,
+                        accentDark: accentDark
+                    )
 
-                    sectionTitle("Scenario")
+                    SpeakingSetupSectionTitle("Scenario", accentDark: accentDark)
                     ConversationScenarioPickerView(selectedScenario: selectedScenario) { selectedScenario = $0 }
 
-                    sectionTitle("Session length")
-                    durationPicker
+                    SpeakingSetupSectionTitle("Session length", accentDark: accentDark)
+                    SpeakingSetupDurationPicker(
+                        selection: $selectedLength,
+                        accent: accent,
+                        accentDark: accentDark
+                    )
 
-                    sectionTitle("Preview")
+                    SpeakingSetupSectionTitle("Preview", accentDark: accentDark)
                     previewCard
                         .transition(.opacity.combined(with: .scale(scale: 0.97)))
 
@@ -47,9 +72,15 @@ struct AIConversationSetupView: View {
                 .padding(.bottom, Layout.homeBottomSafeSpacing)
             }
 
-            startButton
-                .padding(.horizontal, Layout.homeHorizontalPadding)
-                .padding(.bottom, Layout.homeBottomBarBottomPadding)
+            SpeakingSetupStartButton(
+                title: "Start Conversation",
+                icon: "bubble.left.and.bubble.right.fill",
+                accent: accent,
+                accentDark: accentDark,
+                action: { showConversation = true }
+            )
+            .padding(.horizontal, Layout.homeHorizontalPadding)
+            .padding(.bottom, Layout.homeBottomBarBottomPadding)
         }
         .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(true)
@@ -61,53 +92,10 @@ struct AIConversationSetupView: View {
                     level: selectedLevel,
                     scenario: selectedScenario,
                     length: selectedLength
-                )
+                ),
+                onExitToSetup: { showConversation = false },
+                onExitToSpeaking: onExitToSpeaking
             )
-        }
-    }
-
-    private var topBar: some View {
-        ZStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Set up conversation")
-                    .font(.system(
-                        size: Layout.homeHeaderTitleSize,
-                        weight: .bold,
-                        design: .rounded
-                    ))
-                    .foregroundColor(AppColors.primaryBlueDark)
-
-                Text("Choose what to practice today.")
-                    .font(.system(
-                        size: Layout.homeHeaderSubtitleSize,
-                        weight: .medium,
-                        design: .rounded
-                    ))
-                    .foregroundColor(AppColors.mutedText)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, Layout.flashcardDetailTopButtonSize + 10)
-            .padding(.trailing, 10)
-
-            HStack {
-                Button { dismiss() } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(
-                            size: Layout.flashcardDetailTopButtonIconSize,
-                            weight: .bold
-                        ))
-                        .foregroundColor(AppColors.primaryBlueDark)
-                        .frame(
-                            width: Layout.flashcardDetailTopButtonSize,
-                            height: Layout.flashcardDetailTopButtonSize
-                        )
-                        .background(Color.white.opacity(0.82))
-                        .clipShape(Circle())
-                }
-                .buttonStyle(.plain)
-
-                Spacer()
-            }
         }
     }
 
@@ -128,63 +116,6 @@ struct AIConversationSetupView: View {
                 chips: [selectedLevel.title, selectedLength.title, "Auto"]
             )
         }
-    }
-
-    private var durationPicker: some View {
-        HStack(spacing: Layout.convSetupGridSpacing) {
-            ForEach(lengths) { length in
-                let isSelected = selectedLength == length
-                Button { selectedLength = length } label: {
-                    Text(length.title)
-                        .font(.system(
-                            size: Layout.convSetupDurationChipTextSize,
-                            weight: .bold,
-                            design: .rounded
-                        ))
-                        .foregroundColor(isSelected ? .white : AppColors.primaryBlue)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: Layout.convSetupDurationChipHeight)
-                        .background(isSelected ? AppColors.primaryBlue : AppColors.primaryBlue.opacity(0.09))
-                        .clipShape(RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
-                                .stroke(isSelected ? Color.clear : AppColors.primaryBlue.opacity(0.12), lineWidth: 1)
-                        )
-                }
-                .buttonStyle(.plain)
-                .animation(.easeInOut(duration: 0.18), value: isSelected)
-            }
-        }
-    }
-
-    private var startButton: some View {
-        Button {
-            showConversation = true
-        } label: {
-            Text("Start Conversation")
-                .font(.system(
-                    size: Layout.convSetupStartButtonTextSize,
-                    weight: .bold,
-                    design: .rounded
-                ))
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: Layout.convSetupStartButtonHeight)
-                .background(AppColors.primaryBlue)
-                .clipShape(RoundedRectangle(cornerRadius: Layout.convSetupStartButtonCornerRadius, style: .continuous))
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func sectionTitle(_ title: String) -> some View {
-        Text(title)
-            .font(.system(
-                size: Layout.homeSectionTitleSize,
-                weight: .bold,
-                design: .rounded
-            ))
-            .foregroundColor(AppColors.primaryBlueDark)
-            .padding(.top, Layout.homeSectionTitleTopPadding)
     }
 }
 
