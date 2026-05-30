@@ -55,8 +55,7 @@ struct SpeakingSetupTopBar: View {
                             width: Layout.flashcardDetailTopButtonSize,
                             height: Layout.flashcardDetailTopButtonSize
                         )
-                        .background(accent.opacity(0.10))
-                        .overlay(Circle().stroke(accent.opacity(0.22), lineWidth: 1))
+                        .background(Color.white.opacity(0.82))
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
