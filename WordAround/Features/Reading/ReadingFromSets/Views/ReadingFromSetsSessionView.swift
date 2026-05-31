@@ -31,7 +31,7 @@ struct ReadingFromSetsSessionView: View {
                         onBack: onExitToSetup
                     )
 
-                    ReadingTextCardView(
+                    ReadingSessionTextCardView(
                         bodyText: ReadingPlaceholderData.setPreviewText,
                         highlightedWords: ReadingPlaceholderData.setHighlightedWords,
                         highlightColor: setup.accent,
@@ -47,13 +47,14 @@ struct ReadingFromSetsSessionView: View {
                         accent: setup.accent
                     )
 
-                    VStack(spacing: 10) {
+                    ReadingQuestionOptionsGrid {
                         ForEach(Array(viewModel.currentQuestion.options.enumerated()), id: \.offset) { index, option in
                             ReadingAnswerOptionCard(
                                 label: optionLabel(index),
                                 text: option,
                                 isSelected: viewModel.selectedAnswerIndex == index,
-                                accent: setup.accent
+                                accent: setup.accent,
+                                accentDark: setup.accentDark
                             ) {
                                 viewModel.selectAnswer(index)
                             }

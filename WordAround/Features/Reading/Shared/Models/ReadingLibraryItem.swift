@@ -1,6 +1,5 @@
 import Foundation
 
-/// Lifecycle status of a saved reading item.
 enum ReadingLibraryItemStatus: String, Codable, CaseIterable {
     case new
     case inProgress
@@ -15,16 +14,16 @@ enum ReadingLibraryItemStatus: String, Codable, CaseIterable {
     }
 }
 
-/// Where a saved reading item came from.
 enum ReadingSourceType: String, Codable, CaseIterable {
     case generated
     case pastedText
+    case photoImport
+    case pdfImport
     case flashcardSet
     case story
     case speedPractice
     case interactive
 
-    /// Default source type for a Reading mode id (matches `ReadingMode.id`).
     static func forMode(_ modeID: String) -> ReadingSourceType {
         switch modeID {
         case "generated-reading":   return .generated
@@ -38,17 +37,9 @@ enum ReadingSourceType: String, Codable, CaseIterable {
     }
 }
 
-/// One saved item in a Reading mode library — a generated reading, story,
-/// speed session, interactive scenario or set-based reading.
-///
-/// Persisted in Firestore at `users/{userId}/readingItems/{id}`. `ReadingMode`
-/// itself is a presentation type (holds `Color`) and is not `Codable`, so the
-/// owning mode is stored as `modeID` (matches `ReadingMode.id`). Items are
-/// always queried by `modeID`, so one mode's library never shows another's.
 struct ReadingLibraryItem: Identifiable, Codable, Equatable, Hashable {
     let id: String
     var userId: String
-    /// Owning mode — matches `ReadingMode.id`.
     var modeID: String
     var title: String
     var preview: String
@@ -64,11 +55,17 @@ struct ReadingLibraryItem: Identifiable, Codable, Equatable, Hashable {
     var sourceType: ReadingSourceType
     var sourceId: String?
     var status: ReadingLibraryItemStatus
-    /// Setup selections/toggles captured at creation, so the saved item can
-    /// re-open its session without showing setup again.
     var selections: [String: String]
     var toggles: [String: Bool]
     var languageCode: String
+    // My Texts–specific metadata (optional for other modes; defaults keep decoding safe).
+    var wordCount: Int
+    var characterCount: Int
+    var detectedDifficulty: String
+    var readingFocus: String
+    var enabledQuestionTypes: [String]
+    var readingTimeSeconds: Int?
+    var lastReadCharacterIndex: Int
 
     init(
         id: String = UUID().uuidString,
@@ -90,7 +87,14 @@ struct ReadingLibraryItem: Identifiable, Codable, Equatable, Hashable {
         status: ReadingLibraryItemStatus = .new,
         selections: [String: String] = [:],
         toggles: [String: Bool] = [:],
-        languageCode: String = GrammarLanguage.english.rawValue
+        languageCode: String = GrammarLanguage.english.rawValue,
+        wordCount: Int = 0,
+        characterCount: Int = 0,
+        detectedDifficulty: String = "",
+        readingFocus: String = ReadingFocus.mainIdea.rawValue,
+        enabledQuestionTypes: [String] = ReadingQuestionType.defaultEnabledRawValues,
+        readingTimeSeconds: Int? = nil,
+        lastReadCharacterIndex: Int = 0
     ) {
         self.id = id
         self.userId = userId
@@ -112,6 +116,13 @@ struct ReadingLibraryItem: Identifiable, Codable, Equatable, Hashable {
         self.selections = selections
         self.toggles = toggles
         self.languageCode = languageCode
+        self.wordCount = wordCount
+        self.characterCount = characterCount
+        self.detectedDifficulty = detectedDifficulty
+        self.readingFocus = readingFocus
+        self.enabledQuestionTypes = enabledQuestionTypes
+        self.readingTimeSeconds = readingTimeSeconds
+        self.lastReadCharacterIndex = lastReadCharacterIndex
     }
 }
 
@@ -149,7 +160,6 @@ extension ReadingLibraryItem {
         return "\(Int((min(max(comprehensionScore, 0), 1) * 100).rounded()))% score"
     }
 
-    /// Recomputes `status` from progress (used when persisting progress updates).
     static func status(forProgress progress: Double) -> ReadingLibraryItemStatus {
         if progress >= 1 { return .completed }
         if progress > 0 { return .inProgress }

@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Small rounded chip used in Reading preview cards to summarize a setting.
 struct ReadingMetadataChip: View {
     let text: String
     var accent: Color = AppColors.primaryBlue

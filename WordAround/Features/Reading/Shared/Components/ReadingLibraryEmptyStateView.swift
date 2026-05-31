@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Friendly, mode-aware empty state for a Reading mode library.
-/// Explains the mode and offers an Add button — it never auto-opens setup.
 struct ReadingLibraryEmptyStateView: View {
     let title: String
     let subtitle: String
@@ -48,9 +46,7 @@ struct ReadingLibraryEmptyStateView: View {
                 .foregroundColor(.white)
                 .padding(.horizontal, 20)
                 .frame(height: Layout.isPadLike ? 48 : 44)
-                .background(
-                    LinearGradient(colors: [accent, accentDark], startPoint: .topLeading, endPoint: .bottomTrailing)
-                )
+                .background(accent)
                 .clipShape(Capsule())
                 .shadow(color: accent.opacity(0.28), radius: 12, x: 0, y: 6)
             }

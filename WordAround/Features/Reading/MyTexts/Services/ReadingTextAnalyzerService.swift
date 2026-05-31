@@ -1,14 +1,5 @@
 import Foundation
 
-protocol ReadingTextAnalyzing: Sendable {
-    func analyze(title: String, content: String, language: GrammarLanguage?, manualLevel: EssayDifficulty?) -> ReadingTextAnalysis
-    func wordCount(for content: String) -> Int
-    func preview(for content: String, maxLength: Int) -> String
-    func estimatedReadingMinutes(wordCount: Int) -> Int
-    func estimateLevel(for content: String, wordCount: Int) -> EssayDifficulty
-    func sentences(from content: String) -> [String]
-}
-
 struct ReadingTextAnalyzerService: ReadingTextAnalyzing, Sendable {
     static let shared = ReadingTextAnalyzerService()
 

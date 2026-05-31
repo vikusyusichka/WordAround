@@ -1,11 +1,6 @@
 import SwiftUI
 import Combine
 
-/// Drives the Reading home/menu screen.
-///
-/// Menu only — Reading *sessions* are not implemented yet, so all data here is
-/// mock/placeholder. The modes are presented as a uniform grid (same principle
-/// as `SpeakingView`); each one opens the shared `ReadingSetupView`.
 @MainActor
 final class ReadingHomeViewModel: ObservableObject {
 
@@ -25,14 +20,7 @@ final class ReadingHomeViewModel: ObservableObject {
             accentColor: ReadingHomeViewModel.indigo,
             blobColor: ReadingHomeViewModel.indigoBlob
         ),
-        ReadingMode(
-            id: "my-texts",
-            title: "My Texts",
-            subtitle: "Paste your own text and read it with help.",
-            systemImage: "doc.text.fill",
-            accentColor: Color(red: 0.13, green: 0.66, blue: 0.74),
-            blobColor: Color(red: 0.80, green: 0.94, blue: 0.96)
-        ),
+        ReadingMyTextsMode.homeCard,
         ReadingMode(
             id: "reading-from-sets",
             title: "Reading From Sets",

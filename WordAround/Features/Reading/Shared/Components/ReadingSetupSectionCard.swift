@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// A titled setup section: a heading (+ optional subtitle / helper) followed by
-/// its content (typically a `ReadingSegmentedSelector`). Keeps every setup
-/// screen consistent and free of repeated layout code.
 struct ReadingSetupSectionCard<Content: View>: View {
     let title: String
     var subtitle: String? = nil

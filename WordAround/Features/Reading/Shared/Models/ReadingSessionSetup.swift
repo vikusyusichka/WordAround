@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Typed setup payload passed from the shared setup screen into post-setup flows.
-/// UI-only — no generation or persistence logic.
 struct ReadingSessionSetup {
     let modeID: String
     let language: GrammarLanguage

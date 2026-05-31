@@ -2,9 +2,6 @@ import SwiftUI
 import Combine
 import FirebaseAuth
 
-/// Drives one Reading mode's library screen. Loads only that mode's items for
-/// the signed-in user from Firestore; exposes loading / error / empty /
-/// logged-out states. Never mixes content across modes.
 @MainActor
 final class ReadingModeLibraryViewModel: ObservableObject {
     let mode: ReadingMode
@@ -15,6 +12,7 @@ final class ReadingModeLibraryViewModel: ObservableObject {
     @Published private(set) var isLoggedOut = false
     @Published var selectedItem: ReadingLibraryItem?
     @Published var isShowingSetup = false
+    @Published var isShowingSetCreation = false
 
     private let storage: ReadingStorageServicing
     private let currentUserId: () -> String?
@@ -32,7 +30,7 @@ final class ReadingModeLibraryViewModel: ObservableObject {
 
     // MARK: - Derived state
 
-    var isEmpty: Bool { items.isEmpty }
+    var isEmpty: Bool { items.isEmpty && errorMessage == nil }
     var savedCountText: String { items.count == 1 ? "1 saved" : "\(items.count) saved" }
 
     // MARK: - Theme (reuses the mode's setup accent)
@@ -50,7 +48,6 @@ final class ReadingModeLibraryViewModel: ObservableObject {
     var addButtonTitle: String {
         switch mode.id {
         case "generated-reading":   return "Generate Reading"
-        case "my-texts":            return "Add Text"
         case "reading-from-sets":   return "Create From Set"
         case "story-mode":          return "Start Story"
         case "speed-reading":       return "Start Speed Practice"
@@ -73,7 +70,6 @@ final class ReadingModeLibraryViewModel: ObservableObject {
     var emptyTitle: String {
         switch mode.id {
         case "generated-reading":   return "No generated readings yet"
-        case "my-texts":            return "No personal texts yet"
         case "reading-from-sets":   return "No set-based readings yet"
         case "story-mode":          return "No stories yet"
         case "speed-reading":       return "No speed sessions yet"
@@ -85,7 +81,6 @@ final class ReadingModeLibraryViewModel: ObservableObject {
     var emptySubtitle: String {
         switch mode.id {
         case "generated-reading":   return "Generate reading texts and practice sessions from topics."
-        case "my-texts":            return "Paste or import your own texts and turn them into reading practice."
         case "reading-from-sets":   return "Create reading sessions from your flashcard sets."
         case "story-mode":          return "Start stories, unlock chapters, and continue reading."
         case "speed-reading":       return "Train faster reading with timed exercises."
@@ -97,24 +92,25 @@ final class ReadingModeLibraryViewModel: ObservableObject {
     // MARK: - Loading
 
     func loadItems() async {
-        guard let userId = currentUserId() else {
-            isLoggedOut = true
+        guard PracticeLibraryLoadCoordinator.begin(
+            hasLoadedOnce: &hasLoadedOnce,
+            isLoading: &isLoading,
+            isLoggedOut: &isLoggedOut,
+            errorMessage: &errorMessage,
+            userId: currentUserId()
+        ) else {
             items = []
-            isLoading = false
-            errorMessage = nil
             return
         }
 
-        isLoggedOut = false
-        // Only show the full-screen spinner on the first load; refreshes are quiet.
-        if !hasLoadedOnce { isLoading = true }
-        errorMessage = nil
-        defer { isLoading = false; hasLoadedOnce = true }
+        defer { PracticeLibraryLoadCoordinator.finish(hasLoadedOnce: &hasLoadedOnce, isLoading: &isLoading) }
+
+        guard let userId = currentUserId() else { return }
 
         do {
             items = try await storage.fetchItems(for: userId, mode: mode)
         } catch {
-            errorMessage = "Couldn't load your library. Check your connection and try again."
+            errorMessage = PracticeLibraryLoadCoordinator.genericLoadError
             #if DEBUG
             print("[ReadingModeLibraryViewModel] load failed:", error)
             #endif
@@ -138,7 +134,29 @@ final class ReadingModeLibraryViewModel: ObservableObject {
         }
     }
 
-    /// Records that a saved item was opened (fire-and-forget) and selects it for navigation.
+    func renameItem(_ item: ReadingLibraryItem, newTitle: String) {
+        let trimmed = newTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, trimmed != item.title else { return }
+        guard let userId = currentUserId() else { return }
+
+        var updated = item
+        updated.title = trimmed
+        updated.updatedAt = Date()
+
+        if let index = items.firstIndex(where: { $0.id == item.id }) {
+            items[index] = updated
+        }
+
+        Task {
+            do {
+                try await storage.updateItem(updated, for: userId)
+            } catch {
+                errorMessage = "Couldn't rename that reading."
+                await loadItems()
+            }
+        }
+    }
+
     func openItem(_ item: ReadingLibraryItem) {
         updateLastOpened(item)
         selectedItem = item
@@ -149,12 +167,20 @@ final class ReadingModeLibraryViewModel: ObservableObject {
         Task { try? await storage.updateLastOpened(itemId: item.id, mode: mode, for: userId) }
     }
 
-    func handleAddTapped() { isShowingSetup = true }
+    func handleAddTapped() {
+        if usesSetCreationFlow {
+            isShowingSetCreation = true
+        } else {
+            isShowingSetup = true
+        }
+    }
+
+    var usesSetCreationFlow: Bool { mode.id == "reading-from-sets" }
+
+    var supportsRename: Bool { mode.id == "reading-from-sets" }
 
     func clearError() { errorMessage = nil }
 
-    /// Rebuilds a typed session payload so a saved item opens straight into its
-    /// session, bypassing setup.
     func sessionSetup(for item: ReadingLibraryItem) -> ReadingSessionSetup {
         ReadingSessionSetup(
             modeID: mode.id,

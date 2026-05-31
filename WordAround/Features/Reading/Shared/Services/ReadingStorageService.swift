@@ -1,12 +1,6 @@
 import Foundation
 import FirebaseFirestore
 
-/// Persistence for Reading mode libraries. Items live per user in Firestore and
-/// are always scoped by `modeID`, so a mode's library never mixes content.
-///
-/// Mirrors the existing `FlashcardSetService` / `GrammarNoteService` conventions:
-/// `users/{userId}/readingItems/{id}`, Codable mapping via `setData(from:)` /
-/// `data(as:)`, `Timestamp`↔`Date`, async/await, and a `Mock` for previews.
 protocol ReadingStorageServicing {
     func fetchItems(for userId: String, mode: ReadingMode) async throws -> [ReadingLibraryItem]
     func saveItem(_ item: ReadingLibraryItem, for userId: String) async throws
@@ -67,7 +61,6 @@ final class ReadingStorageService: ReadingStorageServicing {
         ])
     }
 
-    /// lastOpenedAt desc → updatedAt desc → createdAt desc.
     static func sorted(_ items: [ReadingLibraryItem]) -> [ReadingLibraryItem] {
         items.sorted { lhs, rhs in
             let l = lhs.lastOpenedAt ?? lhs.updatedAt

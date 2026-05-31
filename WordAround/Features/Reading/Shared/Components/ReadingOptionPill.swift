@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// A single selectable option pill, themed by the mode's accent.
 struct ReadingOptionPill: View {
     let title: String
     let isSelected: Bool

@@ -1,21 +1,15 @@
 import SwiftUI
 
-/// A single Reading mode's library — shown between Reading Home and setup.
-/// Lists only this mode's saved items (from Firestore for the signed-in user).
-/// Tapping an item opens its session directly (setup bypassed); the Add button
-/// routes to the existing, unchanged `ReadingSetupView`.
-///
-/// My Texts keeps its own richer library (`ReadingMyTextsView`) and isn't routed
-/// here.
 struct ReadingModeLibraryView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: ReadingModeLibraryViewModel
+    @State private var renameTarget: ReadingLibraryItem?
+    @State private var renameDraft = ""
 
     init(mode: ReadingMode) {
         _viewModel = StateObject(wrappedValue: ReadingModeLibraryViewModel(mode: mode))
     }
 
-    /// Injectable initializer for previews/tests (mock storage, no Firebase).
     init(viewModel: ReadingModeLibraryViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -60,15 +54,39 @@ struct ReadingModeLibraryView: View {
                 ReadingSetupView(config: config)
             }
         }
+        .navigationDestination(isPresented: $viewModel.isShowingSetCreation) {
+            ReadingFromSetCreationView(mode: viewModel.mode)
+        }
         .navigationDestination(item: $viewModel.selectedItem) { item in
-            ReadingPostSetupRouterView(
-                setup: viewModel.sessionSetup(for: item),
-                onExitToSetup: { viewModel.selectedItem = nil },
-                onExitToReading: { viewModel.selectedItem = nil }
-            )
+            if viewModel.usesSetCreationFlow {
+                // Set-based readings reuse the existing reading session directly.
+                ReadingSessionView(item: item)
+            } else {
+                ReadingPostSetupRouterView(
+                    setup: viewModel.sessionSetup(for: item),
+                    onExitToSetup: { viewModel.selectedItem = nil },
+                    onExitToReading: { viewModel.selectedItem = nil }
+                )
+            }
         }
         .onChange(of: viewModel.selectedItem) { _, newValue in
             if newValue == nil { Task { await viewModel.refresh() } }
+        }
+        .onChange(of: viewModel.isShowingSetCreation) { _, newValue in
+            if newValue == false { Task { await viewModel.refresh() } }
+        }
+        .alert("Rename reading", isPresented: Binding(
+            get: { renameTarget != nil },
+            set: { if !$0 { renameTarget = nil } }
+        )) {
+            TextField("Title", text: $renameDraft)
+            Button("Cancel", role: .cancel) { renameTarget = nil }
+            Button("Save") {
+                if let target = renameTarget {
+                    viewModel.renameItem(target, newTitle: renameDraft)
+                }
+                renameTarget = nil
+            }
         }
     }
 
@@ -118,11 +136,21 @@ struct ReadingModeLibraryView: View {
     @ViewBuilder
     private var content: some View {
         if viewModel.isLoggedOut {
-            loggedOutState
+            PracticeLibraryLoggedOutView(
+                title: "Sign in to see your library",
+                message: "Your saved readings sync to your account. Sign in to add and continue them.",
+                accent: viewModel.accent,
+                accentDark: viewModel.accentDark
+            )
         } else if viewModel.isLoading {
-            loadingState
+            PracticeLibraryLoadingView(message: "Loading your library…", accent: viewModel.accent)
         } else if let error = viewModel.errorMessage {
-            errorState(error)
+            PracticeLibraryErrorView(
+                message: error,
+                accent: viewModel.accent,
+                accentDark: viewModel.accentDark,
+                onRetry: { Task { await viewModel.loadItems() } }
+            )
         } else if viewModel.isEmpty {
             ReadingLibraryEmptyStateView(
                 title: viewModel.emptyTitle,
@@ -154,82 +182,17 @@ struct ReadingModeLibraryView: View {
                         accentDark: viewModel.accentDark,
                         systemImage: viewModel.icon,
                         onOpen: { viewModel.openItem(item) },
-                        onDelete: { viewModel.deleteItem(item) }
+                        onDelete: { viewModel.deleteItem(item) },
+                        onRename: viewModel.supportsRename ? {
+                            renameTarget = item
+                            renameDraft = item.title
+                        } : nil
                     )
                 }
             }
         }
     }
 
-    private var loadingState: some View {
-        VStack(spacing: 12) {
-            ProgressView()
-                .tint(viewModel.accent)
-            Text("Loading your library…")
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(AppColors.textSecondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 48)
-    }
-
-    private func errorState(_ message: String) -> some View {
-        VStack(spacing: 14) {
-            Image(systemName: "wifi.exclamationmark")
-                .font(.system(size: 30, weight: .semibold))
-                .foregroundColor(viewModel.accent)
-            Text(message)
-                .font(.system(size: 14, weight: .medium, design: .rounded))
-                .foregroundColor(AppColors.textSecondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 320)
-            Button {
-                Task { await viewModel.loadItems() }
-            } label: {
-                Text("Retry")
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 22)
-                    .frame(height: 42)
-                    .background(
-                        LinearGradient(colors: [viewModel.accent, viewModel.accentDark],
-                                       startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
-                    .clipShape(Capsule())
-            }
-            .buttonStyle(.plain)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(28)
-        .background(
-            RoundedRectangle(cornerRadius: Layout.cardCornerRadius, style: .continuous)
-                .fill(Color.white.opacity(0.94))
-                .shadow(color: Color.black.opacity(0.05), radius: 12, x: 0, y: 5)
-        )
-    }
-
-    private var loggedOutState: some View {
-        VStack(spacing: 14) {
-            Image(systemName: "person.crop.circle.badge.questionmark")
-                .font(.system(size: 32, weight: .semibold))
-                .foregroundColor(viewModel.accent)
-            Text("Sign in to see your library")
-                .font(.system(size: 17, weight: .bold, design: .rounded))
-                .foregroundColor(viewModel.accentDark)
-            Text("Your saved readings sync to your account. Sign in to add and continue them.")
-                .font(.system(size: 13, weight: .medium, design: .rounded))
-                .foregroundColor(AppColors.textSecondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 320)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(28)
-        .background(
-            RoundedRectangle(cornerRadius: Layout.cardCornerRadius, style: .continuous)
-                .fill(Color.white.opacity(0.94))
-                .shadow(color: Color.black.opacity(0.05), radius: 12, x: 0, y: 5)
-        )
-    }
 }
 
 #Preview("With items") {

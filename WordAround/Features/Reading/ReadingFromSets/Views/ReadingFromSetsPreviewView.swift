@@ -23,7 +23,7 @@ struct ReadingFromSetsPreviewView: View {
 
                     summaryCard
 
-                    ReadingTextCardView(
+                    ReadingSessionTextCardView(
                         bodyText: ReadingPlaceholderData.setPreviewText,
                         highlightedWords: ReadingPlaceholderData.setHighlightedWords,
                         highlightColor: setup.accent,

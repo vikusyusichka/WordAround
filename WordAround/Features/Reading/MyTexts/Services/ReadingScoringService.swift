@@ -1,9 +1,5 @@
 import Foundation
 
-protocol ReadingScoringServicing: Sendable {
-    func score(session: ReadingSession, answers: [ReadingAnswer], readingTimeSeconds: Int) -> ReadingResult
-}
-
 struct ReadingScoringService: ReadingScoringServicing, Sendable {
     static let shared = ReadingScoringService()
 

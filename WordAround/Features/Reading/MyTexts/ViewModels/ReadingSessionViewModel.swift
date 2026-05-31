@@ -3,7 +3,7 @@ import Combine
 
 @MainActor
 final class ReadingSessionViewModel: ObservableObject {
-    @Published private(set) var session: ReadingSession
+    @Published private(set) var session: ReadingSession?
     @Published var currentPhase: ReadingSessionPhase = .reading
     @Published var currentQuestionIndex = 0
     @Published var selectedAnswers: [String: String] = [:]
@@ -11,37 +11,47 @@ final class ReadingSessionViewModel: ObservableObject {
     @Published private(set) var result: ReadingResult?
     @Published var errorMessage: String?
     @Published var navigateToResult = false
+    @Published var isLoadingSession = true
+    @Published private(set) var selectedWord: String?
+    @Published private(set) var selectedWordRange: NSRange?
+    @Published private(set) var translatedWord: String?
+    @Published private(set) var isTranslatingWord = false
+    @Published private(set) var translationError: String?
+    @Published var translationTargetLanguage: GrammarLanguage
+
+    let userText: ReadingUserText
+    let assistance: ReadingAssistanceOptions
 
     private var timerCancellable: AnyCancellable?
+    private var translationTask: Task<Void, Never>?
     private let sessionService: ReadingSessionServicing
     private let analyzer: ReadingTextAnalyzing
+    private let translationService: ReadingTranslationService
 
     init(
         userText: ReadingUserText,
-        focus: ReadingFocus? = nil,
         sessionService: ReadingSessionServicing = ReadingSessionService.shared,
-        analyzer: ReadingTextAnalyzing = ReadingTextAnalyzerService.shared
+        analyzer: ReadingTextAnalyzing = ReadingTextAnalyzerService.shared,
+        translationService: ReadingTranslationService = ReadingTranslationService()
     ) {
+        self.userText = userText
+        self.assistance = userText.assistance
+        self.translationTargetLanguage = userText.assistance.resolvedTranslationTarget(
+            sourceLanguage: userText.language
+        )
         self.sessionService = sessionService
         self.analyzer = analyzer
-        let focusValue = focus ?? .mainIdea
-        let maxQuestions = focusValue == .vocabulary ? 6 : 5
-        let questions = ReadingLocalQuestionService.shared.generateQuestions(
-            for: userText,
-            focus: focusValue,
-            maxQuestions: maxQuestions
-        )
-        self.session = ReadingSession(
-            textId: userText.id,
-            title: userText.title,
-            content: userText.content,
-            language: userText.language,
-            level: userText.level,
-            wordCount: userText.wordCount,
-            questions: questions,
-            focus: focusValue
-        )
-        ReadingTextStorageService.shared.markOpened(textId: userText.id)
+        self.translationService = translationService
+    }
+
+    var translationSourceLanguage: GrammarLanguage { userText.language }
+
+    var translationSourceTitle: String {
+        translationSourceLanguage.title
+    }
+
+    var translationTargetTitle: String {
+        translationTargetLanguage.title
     }
 
     var formattedTime: String {
@@ -50,7 +60,10 @@ final class ReadingSessionViewModel: ObservableObject {
         return String(format: "%d:%02d", minutes, seconds)
     }
 
+    var showTimer: Bool { assistance.readingTimer }
+
     var readingProgress: Double {
+        guard let session else { return 0 }
         switch currentPhase {
         case .reading:
             let estimate = analyzer.estimatedReadingTimeSeconds(wordCount: session.wordCount)
@@ -67,9 +80,9 @@ final class ReadingSessionViewModel: ObservableObject {
     var progressText: String {
         switch currentPhase {
         case .reading:
-            return "Reading • \(formattedTime)"
+            return showTimer ? "Reading • \(formattedTime)" : "Reading"
         case .questions:
-            guard !session.questions.isEmpty else { return "Questions" }
+            guard let session, !session.questions.isEmpty else { return "Questions" }
             return "Question \(currentQuestionIndex + 1) / \(session.questions.count)"
         case .completed:
             return "Complete"
@@ -78,41 +91,52 @@ final class ReadingSessionViewModel: ObservableObject {
 
     var currentQuestion: ReadingQuestion? {
         guard currentPhase == .questions,
+              let session,
               currentQuestionIndex < session.questions.count else { return nil }
         return session.questions[currentQuestionIndex]
     }
 
     var isLastQuestion: Bool {
-        currentQuestionIndex >= session.questions.count - 1
+        guard let session else { return true }
+        return currentQuestionIndex >= session.questions.count - 1
     }
 
-    var hasQuestions: Bool { !session.questions.isEmpty }
-
-    var phase: ReadingSessionPhase { currentPhase }
+    var hasQuestions: Bool { session?.questions.isEmpty == false }
 
     var selectedAnswer: String? {
         guard let question = currentQuestion else { return nil }
         return selectedAnswers[question.id]
     }
 
-    func onAppear() { startTimer() }
+    func loadSession() async {
+        isLoadingSession = true
+        let built = await sessionService.createSession(from: userText)
+        session = built
+        isLoadingSession = false
+    }
+
+    func onAppear() {
+        if assistance.readingTimer { startTimer() }
+    }
 
     func onDisappear() {
         stopTimer()
-        if currentPhase != .completed {
-            Task {
-                await sessionService.savePartialProgress(
-                    textId: session.textId,
-                    progress: readingProgress,
-                    lastReadCharacterIndex: Int(Double(session.content.count) * readingProgress)
-                )
-            }
+        translationTask?.cancel()
+        guard currentPhase != .completed, let session else { return }
+        Task {
+            await sessionService.savePartialProgress(
+                textId: session.textId,
+                progress: readingProgress,
+                lastReadCharacterIndex: Int(Double(session.content.count) * readingProgress)
+            )
         }
     }
 
     func startQuestions() {
+        clearTranslation()
         currentPhase = .questions
         currentQuestionIndex = 0
+        guard let session else { return }
         Task {
             await sessionService.savePartialProgress(
                 textId: session.textId,
@@ -122,27 +146,15 @@ final class ReadingSessionViewModel: ObservableObject {
         }
     }
 
-    func selectAnswer(question: ReadingQuestion, answer: String) {
-        selectedAnswers[question.id] = answer
-    }
-
     func selectAnswer(_ answer: String) {
         guard let question = currentQuestion else { return }
-        selectAnswer(question: question, answer: answer)
-    }
-
-    func answer(for question: ReadingQuestion) -> String? {
-        selectedAnswers[question.id]
-    }
-
-    func isAnswered(question: ReadingQuestion) -> Bool {
-        selectedAnswers[question.id] != nil
+        selectedAnswers[question.id] = answer
     }
 
     func goToNextQuestion() {
         guard let question = currentQuestion else { return }
         recordAnswer(for: question)
-        guard currentQuestionIndex < session.questions.count - 1 else { return }
+        guard currentQuestionIndex < (session?.questions.count ?? 0) - 1 else { return }
         currentQuestionIndex += 1
     }
 
@@ -151,17 +163,19 @@ final class ReadingSessionViewModel: ObservableObject {
             recordAnswer(for: question)
         }
         stopTimer()
-        session.readingTimeSeconds = elapsedSeconds
+        guard var activeSession = session else { return }
+        activeSession.readingTimeSeconds = elapsedSeconds
 
         let answers = buildAnswers()
         Task {
             let scored = await sessionService.completeSession(
-                session,
+                activeSession,
                 answers: answers,
                 readingTimeSeconds: elapsedSeconds
             )
             result = scored
-            session.result = scored
+            activeSession.result = scored
+            session = activeSession
             currentPhase = .completed
             navigateToResult = true
         }
@@ -174,12 +188,13 @@ final class ReadingSessionViewModel: ObservableObject {
             selectedAnswer: selected,
             isCorrect: normalize(selected) == normalize(question.correctAnswer)
         )
-        session.answers.removeAll { $0.questionId == question.id }
-        session.answers.append(answer)
+        session?.answers.removeAll { $0.questionId == question.id }
+        session?.answers.append(answer)
     }
 
     private func buildAnswers() -> [ReadingAnswer] {
-        session.questions.compactMap { question in
+        guard let session else { return [] }
+        return session.questions.compactMap { question in
             guard let selected = selectedAnswers[question.id] else { return nil }
             return ReadingAnswer(
                 questionId: question.id,
@@ -205,6 +220,73 @@ final class ReadingSessionViewModel: ObservableObject {
 
     private func normalize(_ value: String) -> String {
         value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+    }
+
+    func handleWordTap(_ word: String, range: NSRange) {
+        guard assistance.translationOnTap || assistance.highlightUnknownWords else { return }
+
+        let cleaned = word.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard cleaned.count >= 2 else { return }
+
+        if selectedWord?.caseInsensitiveCompare(cleaned) == .orderedSame,
+           selectedWordRange?.location == range.location,
+           selectedWordRange?.length == range.length {
+            clearTranslation()
+            return
+        }
+
+        selectedWord = cleaned
+        selectedWordRange = range
+        translatedWord = nil
+        translationError = nil
+        translationTask?.cancel()
+
+        guard assistance.translationOnTap else { return }
+        translationTask = Task { await translateSelectedWord(cleaned) }
+    }
+
+    func clearTranslation() {
+        translationTask?.cancel()
+        selectedWord = nil
+        selectedWordRange = nil
+        translatedWord = nil
+        translationError = nil
+        isTranslatingWord = false
+    }
+
+    func selectTranslationTarget(_ language: GrammarLanguage) {
+        guard language != userText.language else { return }
+        translationTargetLanguage = language
+        translationError = nil
+        guard assistance.translationOnTap, let word = selectedWord else { return }
+        translationTask?.cancel()
+        translatedWord = nil
+        translationTask = Task { await translateSelectedWord(word) }
+    }
+
+    private func translateSelectedWord(_ word: String) async {
+        isTranslatingWord = true
+        translationError = nil
+        translatedWord = nil
+
+        defer {
+            if !Task.isCancelled {
+                isTranslatingWord = false
+            }
+        }
+
+        do {
+            let result = try await translationService.translate(
+                word: word,
+                from: userText.language,
+                to: translationTargetLanguage
+            )
+            guard !Task.isCancelled else { return }
+            translatedWord = result
+        } catch {
+            guard !Task.isCancelled else { return }
+            translationError = (error as? LocalizedError)?.errorDescription ?? "Translation unavailable."
+        }
     }
 }
 

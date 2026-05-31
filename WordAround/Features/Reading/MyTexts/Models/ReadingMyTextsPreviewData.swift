@@ -1,6 +1,5 @@
 import Foundation
 
-/// Preview-only mock data for My Texts SwiftUI previews.
 enum ReadingMyTextsPreviewData {
     static let shortText = ReadingUserText(
         title: "Morning Coffee",

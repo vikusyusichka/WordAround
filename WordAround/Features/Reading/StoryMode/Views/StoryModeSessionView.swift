@@ -30,7 +30,7 @@ struct StoryModeSessionView: View {
                         onBack: onExitToSetup
                     )
 
-                    ReadingTextCardView(
+                    ReadingSessionTextCardView(
                         title: ReadingPlaceholderData.storyChapterTitle,
                         bodyText: ReadingPlaceholderData.storyText,
                         highlightedWords: ["map", "stranger", "trouble"],

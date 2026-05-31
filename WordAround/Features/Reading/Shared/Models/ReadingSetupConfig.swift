@@ -1,10 +1,5 @@
 import SwiftUI
 
-/// Describes everything that differs between Reading setup screens.
-///
-/// All six modes share one screen (`ReadingSetupView`); only this data changes
-/// per mode — header text, accent, the list of setup sections, the preview and
-/// the CTA. No business logic lives here.
 struct ReadingSetupConfig {
 
     struct Section: Identifiable {
@@ -12,7 +7,6 @@ struct ReadingSetupConfig {
         let title: String
         var subtitle: String? = nil
         let kind: Kind
-        /// Optional helper text computed from the section's current selection.
         var helper: ((String) -> String)? = nil
 
         enum Kind {
@@ -28,8 +22,6 @@ struct ReadingSetupConfig {
         let defaultOn: Bool
     }
 
-    /// Owning Reading mode id — matches `ReadingMode.id`. Used by post-setup
-    /// flows (`ReadingSessionSetup`) to route to the correct session.
     let modeID: String
     let title: String
     let subtitle: String
@@ -41,7 +33,6 @@ struct ReadingSetupConfig {
     let ctaTitle: String
     let ctaIcon: String
     let sections: [Section]
-    /// Builds the preview metadata chips from the current selections/toggles.
     let chips: (_ selections: [String: String], _ toggles: [String: Bool]) -> [String]
 }
 
@@ -72,34 +63,6 @@ extension ReadingSetupConfig {
             let topic = sel["topic"] ?? ""
             let topicChip = (topic == ReadingTopicOption.random.title) ? "Random topic" : topic
             return [sel["level"] ?? "", sel["size"] ?? "", topicChip, "8 questions"]
-        }
-    )
-
-    static let myTexts = ReadingSetupConfig(
-        modeID: "my-texts",
-        title: "My Texts",
-        subtitle: "Paste your own text and read it with help.",
-        accent: Color(red: 0.13, green: 0.66, blue: 0.74),
-        accentDark: Color(red: 0.06, green: 0.42, blue: 0.50),
-        previewTitle: "Custom Reading",
-        previewSubtitle: "Your own text with generated reading practice.",
-        previewIcon: "doc.text.fill",
-        ctaTitle: "Start Reading",
-        ctaIcon: "doc.text.fill",
-        sections: [
-            Section(id: "source", title: "Text Source",
-                    kind: .segmented(options: ReadingTextSource.titles, columns: 2, defaultSelection: ReadingTextSource.pasteText.title)),
-            Section(id: "questions", title: "Question Mode",
-                    kind: .segmented(options: ReadingQuestionMode.titles, columns: 0, defaultSelection: ReadingQuestionMode.mixed.title)),
-            Section(id: "assist", title: "Reading Assist",
-                    kind: .toggles([
-                        ToggleSpec(id: "translations", title: "Translations", defaultOn: true),
-                        ToggleSpec(id: "hints", title: "Hints", defaultOn: false),
-                        ToggleSpec(id: "highlight", title: "Highlight difficult words", defaultOn: true),
-                    ])),
-        ],
-        chips: { sel, tog in
-            [sel["source"] ?? "", "\(sel["questions"] ?? "") questions", (tog["highlight"] ?? false) ? "Highlights on" : "Highlights off"]
         }
     )
 
@@ -207,11 +170,9 @@ extension ReadingSetupConfig {
         }
     )
 
-    /// Config for a home-menu mode id (matches `ReadingMode.id`).
     static func make(forModeID id: String) -> ReadingSetupConfig? {
         switch id {
         case "generated-reading":   return generatedReading
-        case "my-texts":            return myTexts
         case "reading-from-sets":   return readingFromSets
         case "story-mode":          return storyMode
         case "speed-reading":       return speedReading

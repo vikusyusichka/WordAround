@@ -130,7 +130,6 @@ struct InteractiveReadingSessionView: View {
     }
 }
 
-/// Simple wrapping layout for tappable word chips.
 private struct ReadingWordFlowLayout: SwiftUI.Layout {
     var spacing: CGFloat = 8
 

@@ -1,17 +1,6 @@
 import Foundation
 
-protocol ReadingTextStorageServicing: Sendable {
-    func fetchTexts() async throws -> [ReadingUserText]
-    func saveText(_ text: ReadingUserText) async throws
-    func updateText(_ text: ReadingUserText) async throws
-    func deleteText(id: String) async throws
-    func updateProgress(textId: String, progress: Double, lastReadCharacterIndex: Int) async throws
-    func markCompleted(textId: String, score: Double?) async throws
-    func markOpened(textId: String) async throws
-}
-
-/// Local JSON persistence for My Texts (UserDefaults).
-/// TODO: Firestore sync can replace this implementation later.
+// TODO: Firestore sync can replace this implementation later.
 final class ReadingTextStorageService: ReadingTextStorageServicing, @unchecked Sendable {
     static let shared = ReadingTextStorageService()
 

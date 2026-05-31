@@ -1,24 +1,26 @@
 import SwiftUI
 
-/// Personal reading library — save, browse, and continue saved texts.
 struct ReadingMyTextsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @StateObject private var viewModel = ReadingMyTextsViewModel()
 
-    @State private var sessionText: ReadingUserText?
+    @State private var renameTarget: ReadingUserText?
+    @State private var renameDraft = ""
 
-    private let accent = ReadingSetupConfig.myTexts.accent
-    private let accentDark = ReadingSetupConfig.myTexts.accentDark
+    private let accent = ReadingMyTextsTheme.accent
+    private let accentDark = ReadingMyTextsTheme.accentDark
 
-    private var textColumns: [GridItem] {
-        if Layout.isPadLike {
-            [
-                GridItem(.flexible(), spacing: Layout.readingModeGridSpacing),
-                GridItem(.flexible(), spacing: Layout.readingModeGridSpacing)
-            ]
-        } else {
-            [GridItem(.flexible())]
-        }
+    private var savedTextsColumnCount: Int {
+        if horizontalSizeClass == .compact { return 1 }
+        return Layout.isPadLike ? 2 : 1
+    }
+
+    private var savedTextsColumns: [GridItem] {
+        Array(
+            repeating: GridItem(.flexible(), spacing: Layout.readingModeGridSpacing),
+            count: savedTextsColumnCount
+        )
     }
 
     var body: some View {
@@ -36,22 +38,20 @@ struct ReadingMyTextsView: View {
                     )
                     .padding(.bottom, 4)
 
-                    if let error = viewModel.errorMessage {
-                        errorBanner(error)
+                    if viewModel.isLoggedOut {
+                        PracticeLibraryLoggedOutView(
+                            title: "Sign in to save texts",
+                            message: "Sign in to save texts and sync across devices.",
+                            accent: accent,
+                            accentDark: accentDark
+                        )
                     }
 
-                    addTextButton
-
-                    if viewModel.isEmpty && !viewModel.isLoading {
-                        ReadingMyTextsEmptyStateView {
-                            viewModel.showAddTextSheet = true
-                        }
-                    } else {
-                        if let continueText = viewModel.continueReadingText {
-                            continueSection(continueText)
-                        }
-                        savedTextsSection
+                    if !viewModel.isLoggedOut {
+                        addTextButton
                     }
+
+                    libraryContent
                 }
                 .frame(maxWidth: Layout.convContentMaxWidth)
                 .frame(maxWidth: .infinity)
@@ -63,37 +63,65 @@ struct ReadingMyTextsView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
         .task { await viewModel.loadTextsAsync() }
-        .sheet(isPresented: $viewModel.showAddTextSheet) {
-            AddReadingTextSheet(
-                errorMessage: viewModel.errorMessage,
-                onCancel: {
-                    viewModel.clearError()
-                    viewModel.showAddTextSheet = false
-                },
-                onSave: { title, content, language, manualLevel, useAutoLevel, focus in
-                    Task {
-                        let saved = await viewModel.addText(
-                            title: title,
-                            content: content,
-                            language: language,
-                            manualLevel: manualLevel,
-                            useAutoLevel: useAutoLevel,
-                            focus: focus
-                        )
-                        if saved {
-                            viewModel.showAddTextSheet = false
-                        }
+        .navigationDestination(isPresented: $viewModel.navigateToAddText) {
+            ReadingAddTextView(
+                onSavedAndStart: { text in
+                    viewModel.navigateToAddText = false
+                    Task { @MainActor in
+                        viewModel.sessionText = text
                     }
                 }
             )
         }
-        .navigationDestination(item: $sessionText) { text in
-            ReadingSessionView(userText: text)
+        .navigationDestination(item: $viewModel.sessionText) { text in
+            ReadingSessionView(
+                userText: text,
+                onExitToLibrary: { viewModel.sessionText = nil }
+            )
         }
-        .onChange(of: sessionText) { _, newValue in
-            if newValue == nil {
-                Task { await viewModel.loadTextsAsync() }
+        .onChange(of: viewModel.sessionText) { _, newValue in
+            if newValue == nil { Task { await viewModel.loadTextsAsync() } }
+        }
+        .onChange(of: viewModel.navigateToAddText) { _, isShowing in
+            if !isShowing { Task { await viewModel.loadTextsAsync() } }
+        }
+        .alert("Rename text", isPresented: Binding(
+            get: { renameTarget != nil },
+            set: { if !$0 { renameTarget = nil } }
+        )) {
+            TextField("Title", text: $renameDraft)
+            Button("Cancel", role: .cancel) { renameTarget = nil }
+            Button("Save") {
+                if let target = renameTarget {
+                    viewModel.renameText(target, newTitle: renameDraft)
+                }
+                renameTarget = nil
             }
+        }
+    }
+
+    // MARK: - Content states
+
+    @ViewBuilder
+    private var libraryContent: some View {
+        if viewModel.isLoading {
+            PracticeLibraryLoadingView(message: "Loading your texts…", accent: accent)
+        } else if let error = viewModel.errorMessage {
+            PracticeLibraryErrorView(
+                message: error,
+                accent: accent,
+                accentDark: accentDark,
+                onRetry: { viewModel.retry() }
+            )
+        } else if viewModel.isEmpty {
+            ReadingEmptyStateView {
+                viewModel.showAddText()
+            }
+        } else {
+            if let continueText = viewModel.continueReadingText {
+                continueSection(continueText)
+            }
+            savedTextsSection
         }
     }
 
@@ -106,20 +134,20 @@ struct ReadingMyTextsView: View {
             accent: accent,
             accentDark: accentDark
         ) {
-            viewModel.showAddTextSheet = true
+            viewModel.showAddText()
         }
     }
 
     private func continueSection(_ text: ReadingUserText) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             sectionTitle("Continue reading")
-            ReadingContinueTextCardView(
+            ReadingContinueReadingCardView(
                 title: text.title,
                 languageTitle: text.languageTitle,
                 levelTitle: text.levelTitle,
                 progress: text.progress,
                 lastOpenedText: text.lastOpenedText,
-                onContinue: { openText(text) }
+                onContinue: { viewModel.openText(text) }
             )
         }
         .padding(.top, Layout.homeSectionTitleTopPadding)
@@ -130,19 +158,28 @@ struct ReadingMyTextsView: View {
             sectionTitle("Saved texts")
                 .padding(.top, viewModel.continueReadingText == nil ? Layout.homeSectionTitleTopPadding : 4)
 
-            LazyVGrid(columns: textColumns, spacing: Layout.readingModeGridSpacing) {
+            LazyVGrid(columns: savedTextsColumns, spacing: Layout.readingModeGridSpacing) {
                 ForEach(viewModel.sortedTexts) { text in
-                    ReadingMyTextsCardView(
+                    ReadingTextCardView(
                         title: text.title,
                         preview: text.preview,
                         languageTitle: text.languageTitle,
                         levelTitle: text.levelTitle,
                         wordCount: text.wordCount,
                         progress: text.progress,
+                        statusLabel: text.statusLabel,
                         dateText: text.dateText,
                         actionTitle: text.actionTitle,
-                        onAction: { openText(text) },
-                        onDelete: { viewModel.deleteText(text) }
+                        onAction: { viewModel.openText(text) },
+                        onDelete: { viewModel.deleteText(text) },
+                        onRename: {
+                            renameTarget = text
+                            renameDraft = text.title
+                        },
+                        onMarkCompleted: text.isCompleted ? nil : { viewModel.markCompleted(text) }
+                    )
+                    .gridCellColumns(
+                        viewModel.sortedTexts.count == 1 ? savedTextsColumnCount : 1
                     )
                 }
             }
@@ -155,28 +192,9 @@ struct ReadingMyTextsView: View {
             .foregroundColor(accentDark)
     }
 
-    private func errorBanner(_ message: String) -> some View {
-        Text(message)
-            .font(.system(size: 13, weight: .semibold, design: .rounded))
-            .foregroundColor(AppColors.primaryBlueDark)
-            .padding(12)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.white.opacity(0.94))
-            .clipShape(RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous))
-    }
-
-    private func openText(_ text: ReadingUserText) {
-        sessionText = viewModel.text(withId: text.id) ?? text
-    }
 }
 
-#Preview("With texts") {
-    NavigationStack {
-        ReadingMyTextsView()
-    }
-}
-
-#Preview("Empty") {
+#Preview {
     NavigationStack {
         ReadingMyTextsView()
     }

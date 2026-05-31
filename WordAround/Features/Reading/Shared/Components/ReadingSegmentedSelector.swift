@@ -1,11 +1,5 @@
 import SwiftUI
 
-/// Renders a set of string options as themed pills and binds the selected one.
-///
-/// - `columns == 0` (default): a single horizontal row (good for short option
-///   sets like levels / lengths).
-/// - `columns > 0`: a wrapping grid with that many columns (good for longer
-///   option sets like topics / sources).
 struct ReadingSegmentedSelector: View {
     let options: [String]
     @Binding var selection: String

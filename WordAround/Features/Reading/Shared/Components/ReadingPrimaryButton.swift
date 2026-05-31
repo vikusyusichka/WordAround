@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Full-width gradient CTA used at the bottom of every Reading setup screen.
-/// Width is constrained by the caller via `convContentMaxWidth` for iPad/Mac.
 struct ReadingPrimaryButton: View {
     let title: String
     var icon: String? = nil
@@ -22,11 +20,9 @@ struct ReadingPrimaryButton: View {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .frame(height: Layout.convSetupStartButtonHeight + (Layout.isPadLike ? 6 : 0))
-            .background(
-                LinearGradient(colors: [accent, accentDark], startPoint: .topLeading, endPoint: .bottomTrailing)
-            )
+            .background(accent)
             .clipShape(RoundedRectangle(cornerRadius: Layout.convSetupStartButtonCornerRadius, style: .continuous))
-            .shadow(color: accent.opacity(0.30), radius: 16, x: 0, y: 8)
+            .shadow(color: accent.opacity(0.28), radius: 16, x: 0, y: 8)
         }
         .buttonStyle(.plain)
         .hoverEffect(.lift)

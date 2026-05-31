@@ -1,18 +1,10 @@
 import Foundation
 
-// Lightweight UI option enums for the Reading setup screens.
-//
-// These are presentation-only: each case maps to a display title. The setup
-// view models expose the option lists (via `titles`) and store the selected
-// title as a `String`, which keeps the shared selectors simple and generic.
-// No persistence, no business logic.
-
 protocol ReadingDisplayOption: CaseIterable {
     var title: String { get }
 }
 
 extension ReadingDisplayOption {
-    /// Display titles in declaration order — convenient for the selectors.
     static var titles: [String] { allCases.map { $0.title } }
 }
 
@@ -86,12 +78,11 @@ enum ReadingGenerationStyle: ReadingDisplayOption {
         }
     }
 
-    /// Helper text shown under the generation-style selector.
     var helperText: String {
         switch self {
-        case .natural: return "Uses set words in a natural text."
-        case .strict: return "Uses mostly words from the selected set."
-        case .mixed: return "Balances learned words with new vocabulary."
+        case .natural: return "Uses every set word in a natural text."
+        case .strict: return "Uses every word from the selected set."
+        case .mixed: return "Uses every set word with natural supporting vocabulary."
         }
     }
 
@@ -135,7 +126,6 @@ enum ReadingSpeedTarget: ReadingDisplayOption {
         }
     }
 
-    /// Mock words-per-minute target shown in the preview.
     var wpmTarget: Int {
         switch self {
         case .relaxed: return 180

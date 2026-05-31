@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Summary card shown above the CTA on each setup screen. Displays an icon,
-/// a title + subtitle, and a wrapping row of metadata chips.
 struct ReadingPreviewCard: View {
     let title: String
     let subtitle: String

@@ -35,7 +35,7 @@ struct GeneratedReadingSessionView: View {
                         accent: setup.accent
                     )
 
-                    ReadingTextCardView(
+                    ReadingSessionTextCardView(
                         title: ReadingPlaceholderData.articleTitle,
                         bodyText: ReadingPlaceholderData.articleBody,
                         highlightedWords: ReadingPlaceholderData.highlightedWords,

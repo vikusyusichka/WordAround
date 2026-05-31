@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Static mock data for Reading session UI previews and placeholders.
 enum ReadingPlaceholderData {
 
     // MARK: - Article

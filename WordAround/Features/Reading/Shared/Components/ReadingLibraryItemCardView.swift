@@ -1,10 +1,5 @@
 import SwiftUI
 
-/// Subtle card for one saved item in a Reading mode library.
-///
-/// Visually consistent with `ReadingTextCardView` (rounded white card, soft
-/// border, metadata chips, progress bar) but accent-themed per mode and driven
-/// by the generic `ReadingLibraryItem`. Tapping the card opens the session.
 struct ReadingLibraryItemCardView: View {
     let item: ReadingLibraryItem
     let accent: Color
@@ -12,6 +7,7 @@ struct ReadingLibraryItemCardView: View {
     var systemImage: String = "book.fill"
     let onOpen: () -> Void
     var onDelete: (() -> Void)? = nil
+    var onRename: (() -> Void)? = nil
 
     var body: some View {
         Button(action: onOpen) {
@@ -49,6 +45,9 @@ struct ReadingLibraryItemCardView: View {
         .buttonStyle(.plain)
         .contextMenu {
             Button(action: onOpen) { Label("Open", systemImage: "book") }
+            if let onRename {
+                Button(action: onRename) { Label("Rename", systemImage: "pencil") }
+            }
             if let onDelete {
                 Button(role: .destructive, action: onDelete) { Label("Delete", systemImage: "trash") }
             }
@@ -143,6 +142,9 @@ struct ReadingLibraryItemCardView: View {
             if let onDelete {
                 Menu {
                     Button(action: onOpen) { Label("Open", systemImage: "book") }
+                    if let onRename {
+                        Button(action: onRename) { Label("Rename", systemImage: "pencil") }
+                    }
                     Button(role: .destructive, action: onDelete) { Label("Delete", systemImage: "trash") }
                 } label: {
                     Image(systemName: "ellipsis")

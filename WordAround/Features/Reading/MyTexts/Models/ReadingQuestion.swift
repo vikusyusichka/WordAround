@@ -1,22 +1,6 @@
 import Foundation
 
-enum ReadingQuestionType: String, Codable, CaseIterable, Equatable {
-    case comprehension
-    case trueFalse
-    case fillGap
-    case vocabulary
-
-    var displayTitle: String {
-        switch self {
-        case .comprehension: return "Comprehension"
-        case .trueFalse: return "True / False"
-        case .fillGap: return "Fill Gap"
-        case .vocabulary: return "Vocabulary"
-        }
-    }
-}
-
-struct ReadingQuestion: Identifiable, Codable, Equatable {
+struct ReadingQuestion: Identifiable, Codable, Equatable, Hashable {
     let id: String
     let type: ReadingQuestionType
     let prompt: String
@@ -28,7 +12,7 @@ struct ReadingQuestion: Identifiable, Codable, Equatable {
     var title: String { type.displayTitle }
 }
 
-struct ReadingAnswer: Identifiable, Codable, Equatable {
+struct ReadingAnswer: Identifiable, Codable, Equatable, Hashable {
     let id: String
     let questionId: String
     let selectedAnswer: String
@@ -42,7 +26,7 @@ struct ReadingAnswer: Identifiable, Codable, Equatable {
     }
 }
 
-struct ReadingMistake: Identifiable, Codable, Equatable {
+struct ReadingMistake: Identifiable, Codable, Equatable, Hashable {
     let id: String
     let questionId: String
     let prompt: String
@@ -51,7 +35,7 @@ struct ReadingMistake: Identifiable, Codable, Equatable {
     let explanation: String?
 }
 
-struct ReadingResult: Identifiable, Codable, Equatable {
+struct ReadingResult: Identifiable, Codable, Equatable, Hashable {
     let id: String
     let sessionId: String
     let textId: String

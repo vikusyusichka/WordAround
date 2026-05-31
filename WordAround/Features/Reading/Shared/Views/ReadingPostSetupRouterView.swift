@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Routes from the shared setup screen into the first post-setup screen for each mode.
 struct ReadingPostSetupRouterView: View {
     let setup: ReadingSessionSetup
     var onExitToSetup: () -> Void
@@ -11,7 +10,7 @@ struct ReadingPostSetupRouterView: View {
         case "generated-reading":
             GeneratedReadingLoadingView(setup: setup, onExitToSetup: onExitToSetup, onExitToReading: onExitToReading)
         case "my-texts":
-            MyTextsEditorView(setup: setup, onExitToSetup: onExitToSetup, onExitToReading: onExitToReading)
+            ReadingMyTextsView()
         case "reading-from-sets":
             ReadingFromSetsPreviewView(setup: setup, onExitToSetup: onExitToSetup, onExitToReading: onExitToReading)
         case "story-mode":

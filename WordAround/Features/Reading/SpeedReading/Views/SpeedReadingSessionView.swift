@@ -18,7 +18,7 @@ struct SpeedReadingSessionView: View {
 
                     ReadingProgressBar(progress: viewModel.readingProgress, accent: setup.accent)
 
-                    ReadingTextCardView(
+                    ReadingSessionTextCardView(
                         bodyText: viewModel.chunks[viewModel.currentChunkIndex],
                         accent: setup.accent
                     )

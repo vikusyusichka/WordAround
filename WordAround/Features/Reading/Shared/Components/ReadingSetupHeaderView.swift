@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// Back button + title + subtitle header shared by all Reading setup screens.
-/// Matches the Speaking setup header (white circular back button, themed text).
 struct ReadingSetupHeaderView: View {
     let title: String
     let subtitle: String
     var accent: Color = AppColors.primaryBlue
     var accentDark: Color = AppColors.primaryBlueDark
+    var trailingIcon: String? = nil
+    var trailingText: String? = nil
     let onBack: () -> Void
 
     var body: some View {
@@ -24,9 +24,9 @@ struct ReadingSetupHeaderView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, Layout.flashcardDetailTopButtonSize + 10)
-            .padding(.trailing, 10)
+            .padding(.trailing, trailingText != nil ? 64 : 10)
 
-            HStack {
+            HStack(alignment: .top) {
                 Button(action: onBack) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: Layout.flashcardDetailTopButtonIconSize, weight: .bold))
@@ -42,6 +42,19 @@ struct ReadingSetupHeaderView: View {
                 .hoverEffect(.lift)
 
                 Spacer()
+
+                if let trailingText {
+                    HStack(spacing: 4) {
+                        if let trailingIcon {
+                            Image(systemName: trailingIcon)
+                                .font(.system(size: 10, weight: .bold))
+                        }
+                        Text(trailingText)
+                            .font(.system(size: 11, weight: .bold, design: .rounded))
+                    }
+                    .foregroundColor(accentDark)
+                    .padding(.top, 6)
+                }
             }
         }
     }

@@ -17,6 +17,14 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
     var isCompleted: Bool
     var completedSessionsCount: Int
     var averageScore: Double?
+    var readingFocus: ReadingFocus
+    var enabledQuestionTypes: Set<ReadingQuestionType>
+    var assistance: ReadingAssistanceOptions
+    var sourceType: ReadingSourceType
+    var detectedLevel: EssayDifficulty?
+    var characterCount: Int
+    var status: ReadingLibraryItemStatus
+    var readingTimeSeconds: Int?
 
     var language: GrammarLanguage {
         get { GrammarLanguage(rawValue: languageCode) ?? .english }
@@ -39,7 +47,15 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         lastReadCharacterIndex: Int = 0,
         isCompleted: Bool = false,
         completedSessionsCount: Int = 0,
-        averageScore: Double? = nil
+        averageScore: Double? = nil,
+        readingFocus: ReadingFocus = .mainIdea,
+        enabledQuestionTypes: Set<ReadingQuestionType> = ReadingQuestionType.defaultEnabled,
+        assistance: ReadingAssistanceOptions = .default,
+        sourceType: ReadingSourceType = .pastedText,
+        detectedLevel: EssayDifficulty? = nil,
+        characterCount: Int = 0,
+        status: ReadingLibraryItemStatus = .new,
+        readingTimeSeconds: Int? = nil
     ) {
         self.id = id
         self.title = title
@@ -57,6 +73,19 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         self.isCompleted = isCompleted || progress >= 1
         self.completedSessionsCount = completedSessionsCount
         self.averageScore = averageScore
+        self.readingFocus = readingFocus
+        self.enabledQuestionTypes = enabledQuestionTypes
+        self.assistance = assistance
+        self.sourceType = sourceType
+        self.detectedLevel = detectedLevel
+        self.characterCount = characterCount > 0 ? characterCount : content.count
+        self.status = status
+        self.readingTimeSeconds = readingTimeSeconds
+        if progress >= 1 || isCompleted {
+            self.status = .completed
+        } else if progress > 0 {
+            self.status = .inProgress
+        }
     }
 
     mutating func clampProgress() {
@@ -70,11 +99,14 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
     // MARK: - Codable (legacy field support)
 
     enum CodingKeys: String, CodingKey {
-        case id, title, content, languageCode, level, detectedLevel
+        case id, title, content, languageCode, level
+        case detectedLevel
         case wordCount, estimatedReadingMinutes, preview
         case createdAt, updatedAt, lastOpenedAt
         case progress, lastReadCharacterIndex, isCompleted
         case completedSessionsCount, averageScore
+        case readingFocus, enabledQuestionTypes, assistance, sourceType
+        case characterCount, status, readingTimeSeconds
     }
 
     init(from decoder: Decoder) throws {
@@ -83,10 +115,13 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         title = try container.decode(String.self, forKey: .title)
         content = try container.decode(String.self, forKey: .content)
         languageCode = try container.decode(String.self, forKey: .languageCode)
+        let legacyLevel = try container.decodeIfPresent(EssayDifficulty.self, forKey: .detectedLevel)
         if let decodedLevel = try container.decodeIfPresent(EssayDifficulty.self, forKey: .level) {
             level = decodedLevel
+            detectedLevel = legacyLevel
         } else {
-            level = try container.decodeIfPresent(EssayDifficulty.self, forKey: .detectedLevel) ?? .b1
+            level = legacyLevel ?? .b1
+            detectedLevel = legacyLevel
         }
         wordCount = try container.decodeIfPresent(Int.self, forKey: .wordCount) ?? 0
         estimatedReadingMinutes = try container.decodeIfPresent(Int.self, forKey: .estimatedReadingMinutes) ?? 1
@@ -99,6 +134,17 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         isCompleted = try container.decodeIfPresent(Bool.self, forKey: .isCompleted) ?? false
         completedSessionsCount = try container.decodeIfPresent(Int.self, forKey: .completedSessionsCount) ?? 0
         averageScore = try container.decodeIfPresent(Double.self, forKey: .averageScore)
+        readingFocus = try container.decodeIfPresent(ReadingFocus.self, forKey: .readingFocus) ?? .mainIdea
+        if let types = try container.decodeIfPresent([String].self, forKey: .enabledQuestionTypes) {
+            enabledQuestionTypes = ReadingQuestionType.from(rawValues: types)
+        } else {
+            enabledQuestionTypes = ReadingQuestionType.defaultEnabled
+        }
+        assistance = try container.decodeIfPresent(ReadingAssistanceOptions.self, forKey: .assistance) ?? .default
+        sourceType = try container.decodeIfPresent(ReadingSourceType.self, forKey: .sourceType) ?? .pastedText
+        characterCount = try container.decodeIfPresent(Int.self, forKey: .characterCount) ?? content.count
+        status = try container.decodeIfPresent(ReadingLibraryItemStatus.self, forKey: .status) ?? .new
+        readingTimeSeconds = try container.decodeIfPresent(Int.self, forKey: .readingTimeSeconds)
         clampProgress()
     }
 
@@ -120,6 +166,14 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         try container.encode(isCompleted, forKey: .isCompleted)
         try container.encode(completedSessionsCount, forKey: .completedSessionsCount)
         try container.encodeIfPresent(averageScore, forKey: .averageScore)
+        try container.encode(readingFocus, forKey: .readingFocus)
+        try container.encode(enabledQuestionTypes.map(\.rawValue).sorted(), forKey: .enabledQuestionTypes)
+        try container.encode(assistance, forKey: .assistance)
+        try container.encode(sourceType, forKey: .sourceType)
+        try container.encodeIfPresent(detectedLevel, forKey: .detectedLevel)
+        try container.encode(characterCount, forKey: .characterCount)
+        try container.encode(status, forKey: .status)
+        try container.encodeIfPresent(readingTimeSeconds, forKey: .readingTimeSeconds)
     }
 }
 
@@ -128,8 +182,12 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
 extension ReadingUserText {
     var languageTitle: String { language.title }
     var levelTitle: String { level.title }
+    var statusLabel: String { status.label }
+    var focusTitle: String { readingFocus.title }
 
-    var isUnfinished: Bool { progress > 0 && progress < 1 && !isCompleted }
+    var isUnfinished: Bool {
+        (status == .inProgress || (progress > 0 && progress < 1)) && !isCompleted
+    }
 
     var actionTitle: String {
         if isCompleted { return "Read again" }

@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Dimmed, non-interactive card for a Reading mode whose session is not built
-/// yet. Shows a "Coming soon" badge.
 struct ReadingComingSoonCardView: View {
     let mode: ReadingMode
 

@@ -6,29 +6,22 @@ final class ReadingMyTextsViewModel: ObservableObject {
     @Published var texts: [ReadingUserText] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var showAddTextSheet = false
-    @Published var selectedText: ReadingUserText?
-    @Published var navigateToSession = false
+    @Published var isLoggedOut = false
+    @Published var navigateToAddText = false
+    @Published var sessionText: ReadingUserText?
 
-    private let storage: ReadingTextStorageServicing
-    private let analyzer: ReadingTextAnalyzing
+    private let storage: ReadingMyTextsStorageServicing
 
-    init(
-        storage: ReadingTextStorageServicing = ReadingTextStorageService.shared,
-        analyzer: ReadingTextAnalyzing = ReadingTextAnalyzerService.shared
-    ) {
+    init(storage: ReadingMyTextsStorageServicing = ReadingMyTextsStorageService.shared) {
         self.storage = storage
-        self.analyzer = analyzer
     }
 
     var continueReadingText: ReadingUserText? {
         texts
-            .filter { $0.progress > 0 && $0.progress < 1 && !$0.isCompleted }
+            .filter { $0.isUnfinished }
             .sorted { ($0.lastOpenedAt ?? $0.updatedAt) > ($1.lastOpenedAt ?? $1.updatedAt) }
             .first
     }
-
-    var continueText: ReadingUserText? { continueReadingText }
 
     var completedTexts: [ReadingUserText] {
         texts.filter(\.isCompleted)
@@ -38,7 +31,7 @@ final class ReadingMyTextsViewModel: ObservableObject {
         texts.filter { !$0.isCompleted }
     }
 
-    var isEmpty: Bool { texts.isEmpty }
+    var isEmpty: Bool { texts.isEmpty && errorMessage == nil }
 
     var sortedTexts: [ReadingUserText] { texts }
 
@@ -46,83 +39,46 @@ final class ReadingMyTextsViewModel: ObservableObject {
         Task { await loadTextsAsync() }
     }
 
-    func load() { loadTexts() }
+    private var hasLoadedOnce = false
 
     func loadTextsAsync() async {
-        isLoading = true
-        defer { isLoading = false }
-        errorMessage = nil
+        guard PracticeLibraryLoadCoordinator.begin(
+            hasLoadedOnce: &hasLoadedOnce,
+            isLoading: &isLoading,
+            isLoggedOut: &isLoggedOut,
+            errorMessage: &errorMessage,
+            userId: storage.currentUserId()
+        ) else {
+            texts = []
+            return
+        }
+
+        defer { PracticeLibraryLoadCoordinator.finish(hasLoadedOnce: &hasLoadedOnce, isLoading: &isLoading) }
+
         do {
             texts = try await storage.fetchTexts()
+        } catch ReadingMyTextsStorageError.cloudPermissionDenied {
+            errorMessage = ReadingMyTextsStorageError.cloudPermissionDenied.localizedDescription
+            #if DEBUG
+            print("[ReadingMyTextsViewModel] Firestore rules block readingItems")
+            #endif
         } catch {
-            errorMessage = "Could not load saved texts."
-            texts = []
+            errorMessage = "Couldn't load your texts. Check your connection and try again."
+            #if DEBUG
+            print("[ReadingMyTextsViewModel] load failed:", error)
+            #endif
         }
     }
 
-    @discardableResult
-    func addText(
-        title: String,
-        content: String,
-        language: GrammarLanguage,
-        manualLevel: EssayDifficulty?,
-        useAutoLevel: Bool,
-        focus: ReadingFocus = .mainIdea
-    ) async -> Bool {
-        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        guard !trimmedTitle.isEmpty else {
-            errorMessage = "Please enter a title."
-            return false
-        }
-        guard !trimmedContent.isEmpty else {
-            errorMessage = "Please paste some text content."
-            return false
-        }
-
-        let analysis = analyzer.analyze(
-            title: trimmedTitle,
-            content: trimmedContent,
-            language: language,
-            manualLevel: useAutoLevel ? nil : manualLevel
-        )
-
-        if analysis.wordCount < 20 {
-            #if DEBUG
-            print("ReadingMyTextsViewModel: saving short text (\(analysis.wordCount) words)")
-            #endif
-        }
-
-        let text = ReadingUserText(
-            title: analysis.title,
-            content: analysis.normalizedContent,
-            language: language,
-            level: analysis.estimatedLevel,
-            wordCount: analysis.wordCount,
-            estimatedReadingMinutes: analysis.estimatedReadingMinutes,
-            preview: analysis.preview
-        )
-
-        do {
-            try await storage.saveText(text)
-            texts = try await storage.fetchTexts()
-            clearError()
-            return true
-        } catch {
-            errorMessage = "Could not save text. Try again."
-            return false
-        }
+    func retry() {
+        Task { await loadTextsAsync() }
     }
 
     func deleteText(_ text: ReadingUserText) {
         Task {
             do {
-                try await storage.deleteText(id: text.id)
-                if selectedText?.id == text.id {
-                    selectedText = nil
-                    navigateToSession = false
-                }
+                try await storage.delete(id: text.id)
+                if sessionText?.id == text.id { sessionText = nil }
                 texts = try await storage.fetchTexts()
             } catch {
                 errorMessage = "Could not delete text."
@@ -130,13 +86,34 @@ final class ReadingMyTextsViewModel: ObservableObject {
         }
     }
 
-    func startSession(for text: ReadingUserText) {
-        selectedText = text
-        navigateToSession = true
+    func renameText(_ text: ReadingUserText, newTitle: String) {
+        Task {
+            do {
+                try await storage.rename(textId: text.id, newTitle: newTitle)
+                texts = try await storage.fetchTexts()
+            } catch {
+                errorMessage = "Could not rename text."
+            }
+        }
     }
 
-    func continueText(_ text: ReadingUserText) {
-        startSession(for: text)
+    func markCompleted(_ text: ReadingUserText) {
+        Task {
+            do {
+                try await storage.markCompleted(textId: text.id, scorePercent: text.averageScore ?? 100, readingTimeSeconds: text.readingTimeSeconds ?? 0)
+                texts = try await storage.fetchTexts()
+            } catch {
+                errorMessage = "Could not update text."
+            }
+        }
+    }
+
+    func openText(_ text: ReadingUserText) {
+        sessionText = text
+        Task {
+            try? await storage.markOpened(textId: text.id)
+            texts = (try? await storage.fetchTexts()) ?? texts
+        }
     }
 
     func text(withId id: String) -> ReadingUserText? {
@@ -145,5 +122,9 @@ final class ReadingMyTextsViewModel: ObservableObject {
 
     func clearError() {
         errorMessage = nil
+    }
+
+    func showAddText() {
+        navigateToAddText = true
     }
 }

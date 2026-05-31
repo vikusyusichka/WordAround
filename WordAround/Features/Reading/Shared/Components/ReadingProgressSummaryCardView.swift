@@ -1,9 +1,5 @@
 import SwiftUI
 
-/// Daily reading-progress summary shown at the top of the Reading menu.
-///
-/// Reuses the shared `ProgressCardView` (same component the Speaking progress
-/// card uses) so progress UI stays consistent across modules.
 struct ReadingProgressSummaryCardView: View {
     let currentMinutes: Int
     let totalMinutes: Int

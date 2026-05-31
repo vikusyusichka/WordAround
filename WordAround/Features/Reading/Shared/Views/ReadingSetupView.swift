@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// One setup screen shared by every Reading mode. The layout (header →
-/// Language → sections → preview → CTA) is fixed; the mode-specific bits come
-/// from the injected `ReadingSetupConfig`.
 struct ReadingSetupView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: ReadingSetupViewModel

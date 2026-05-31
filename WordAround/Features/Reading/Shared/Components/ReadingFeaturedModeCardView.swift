@@ -1,9 +1,5 @@
 import SwiftUI
 
-/// Large, full-width highlight card for the primary Reading mode.
-///
-/// Display-only: the parent wraps it in a `Button` so navigation/selection
-/// stays out of the view layer.
 struct ReadingFeaturedModeCardView: View {
     let mode: ReadingMode
 
@@ -12,13 +8,7 @@ struct ReadingFeaturedModeCardView: View {
 
         ZStack(alignment: .bottomTrailing) {
             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [mode.accentColor, mode.accentColor.opacity(0.82)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(mode.accentColor)
 
             StatBlobShape()
                 .fill(Color.white.opacity(0.16))

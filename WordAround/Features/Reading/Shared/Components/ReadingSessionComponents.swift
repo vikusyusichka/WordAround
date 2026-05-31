@@ -78,13 +78,7 @@ struct ReadingProgressBar: View {
                 Capsule()
                     .fill(accent.opacity(0.14))
                 Capsule()
-                    .fill(
-                        LinearGradient(
-                            colors: [accent, accent.opacity(0.72)],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
+                    .fill(accent)
                     .frame(width: max(8, geo.size.width * min(max(progress, 0), 1)))
             }
         }
@@ -92,9 +86,9 @@ struct ReadingProgressBar: View {
     }
 }
 
-// MARK: - Text card
+// MARK: - Session text card
 
-struct ReadingTextCardView: View {
+struct ReadingSessionTextCardView: View {
     var title: String? = nil
     let bodyText: String
     var highlightedWords: [String] = []
@@ -245,6 +239,8 @@ struct ReadingAnswerOptionCard: View {
     let text: String
     var isSelected: Bool
     var accent: Color
+    var accentDark: Color = AppColors.primaryBlueDark
+    var minHeight: CGFloat = 68
     let action: () -> Void
 
     var body: some View {
@@ -259,13 +255,14 @@ struct ReadingAnswerOptionCard: View {
 
                 Text(text)
                     .font(.system(size: 15, weight: .semibold, design: .rounded))
-                    .foregroundColor(AppColors.primaryBlueDark)
+                    .foregroundColor(accentDark)
                     .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.9)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
-                Spacer(minLength: 0)
             }
             .padding(14)
+            .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
                     .fill(Color.white.opacity(0.94))
@@ -276,6 +273,34 @@ struct ReadingAnswerOptionCard: View {
             )
         }
         .buttonStyle(.plain)
+        .frame(maxWidth: .infinity)
+    }
+}
+
+struct ReadingQuestionOptionsGrid<OptionContent: View>: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @ViewBuilder let content: () -> OptionContent
+
+    var body: some View {
+        Group {
+            if horizontalSizeClass != .compact {
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: 10, alignment: .top),
+                        GridItem(.flexible(), spacing: 10, alignment: .top)
+                    ],
+                    alignment: .leading,
+                    spacing: 10
+                ) {
+                    content()
+                }
+            } else {
+                VStack(spacing: 10) {
+                    content()
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -305,9 +330,7 @@ struct ReadingBottomActionBar: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: Layout.convSetupStartButtonHeight - 4)
-                    .background(
-                        LinearGradient(colors: [accent, accentDark], startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
+                    .background(accent)
                     .clipShape(RoundedRectangle(cornerRadius: Layout.convSetupStartButtonCornerRadius, style: .continuous))
             }
             .buttonStyle(.plain)

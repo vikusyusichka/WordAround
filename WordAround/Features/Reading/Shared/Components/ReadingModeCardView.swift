@@ -1,12 +1,5 @@
 import SwiftUI
 
-/// One uniform grid card for a Reading mode.
-///
-/// Every card is identical in size, padding, corner radius, spacing and shadow.
-/// A `isFeatured` card differs ONLY by a stronger gradient fill, a small
-/// "Featured" badge and a brighter icon treatment — never by size. Structure is
-/// always: icon (top-left) + optional badge (top-right) → title → subtitle →
-/// arrow (bottom-right).
 struct ReadingModeCardView: View {
     let mode: ReadingMode
     var isFeatured: Bool = false
@@ -75,13 +68,7 @@ struct ReadingModeCardView: View {
     private var background: some View {
         let shape = RoundedRectangle(cornerRadius: corner, style: .continuous)
         if isFeatured {
-            shape.fill(
-                LinearGradient(
-                    colors: [mode.accentColor, mode.accentColor.opacity(0.82)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
+            shape.fill(mode.accentColor)
         } else {
             shape.fill(Color.white)
         }

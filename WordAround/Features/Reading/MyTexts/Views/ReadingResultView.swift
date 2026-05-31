@@ -1,14 +1,39 @@
 import SwiftUI
 
-/// Result summary after completing a My Texts reading session.
 struct ReadingResultView: View {
-    let result: ReadingResult
-    let title: String
+    @StateObject private var viewModel: ReadingResultViewModel
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let onReadAgain: () -> Void
     let onBackToLibrary: () -> Void
 
-    private let accent = ReadingSetupConfig.myTexts.accent
-    private let accentDark = ReadingSetupConfig.myTexts.accentDark
+    private let accent: Color
+    private let accentDark: Color
+
+    private var contentMaxWidth: CGFloat {
+        horizontalSizeClass == .regular ? Layout.convContentMaxWidth : .infinity
+    }
+
+    init(
+        result: ReadingResult,
+        title: String,
+        levelTitle: String = "",
+        focusTitle: String = "",
+        accent: Color = ReadingMyTextsTheme.accent,
+        accentDark: Color = ReadingMyTextsTheme.accentDark,
+        onReadAgain: @escaping () -> Void,
+        onBackToLibrary: @escaping () -> Void
+    ) {
+        _viewModel = StateObject(wrappedValue: ReadingResultViewModel(
+            result: result,
+            title: title,
+            levelTitle: levelTitle,
+            focusTitle: focusTitle
+        ))
+        self.accent = accent
+        self.accentDark = accentDark
+        self.onReadAgain = onReadAgain
+        self.onBackToLibrary = onBackToLibrary
+    }
 
     var body: some View {
         ZStack {
@@ -19,16 +44,16 @@ struct ReadingResultView: View {
                     resultHeader
                     summaryCard
 
-                    if !result.mistakes.isEmpty {
+                    if viewModel.hasMistakes {
                         sectionTitle("Mistakes")
-                        ForEach(result.mistakes) { mistake in
+                        ForEach(viewModel.result.mistakes) { mistake in
                             mistakeCard(mistake)
                         }
                     }
 
                     actions
                 }
-                .frame(maxWidth: Layout.convContentMaxWidth)
+                .frame(maxWidth: contentMaxWidth)
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, Layout.homeHorizontalPadding)
                 .padding(.top, Layout.homeTopSpacing)
@@ -54,34 +79,40 @@ struct ReadingResultView: View {
                 .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
 
-            Text(title)
+            Text(viewModel.title)
                 .font(.system(size: Layout.homeHeaderSubtitleSize, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.mutedText)
                 .multilineTextAlignment(.center)
+
+            if viewModel.showMetadata {
+                HStack(spacing: 6) {
+                    if !viewModel.levelTitle.isEmpty {
+                        ReadingMetadataChip(text: viewModel.levelTitle, accent: accent)
+                    }
+                    if !viewModel.focusTitle.isEmpty {
+                        ReadingMetadataChip(text: viewModel.focusTitle, accent: accent)
+                    }
+                }
+            }
         }
         .frame(maxWidth: .infinity)
     }
 
     private var summaryCard: some View {
         VStack(spacing: 18) {
-            VStack(spacing: 4) {
-                Text("\(result.comprehensionPercentInt)%")
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
-                    .foregroundColor(accent)
-                Text("Comprehension")
-                    .font(.system(size: 15, weight: .semibold, design: .rounded))
-                    .foregroundColor(AppColors.textSecondary)
-            }
+            ReadingScoreCardView(
+                comprehensionPercent: viewModel.comprehensionPercent,
+                accent: accent
+            )
 
-            HStack(spacing: 0) {
-                metric(value: "\(result.correctAnswers) / \(result.totalQuestions)", label: "Correct")
-                Divider().frame(height: 36)
-                metric(value: formattedTime, label: "Reading time")
-                Divider().frame(height: 36)
-                metric(value: "\(result.wordsPerMinute)", label: "WPM")
-                Divider().frame(height: 36)
-                metric(value: "\(result.mistakes.count)", label: "Mistakes")
-            }
+            ReadingStatisticsCardView(
+                correctAnswers: viewModel.result.correctAnswers,
+                totalQuestions: viewModel.result.totalQuestions,
+                formattedTime: viewModel.formattedTime,
+                wordsPerMinute: viewModel.result.wordsPerMinute,
+                mistakeCount: viewModel.result.mistakes.count,
+                accentDark: accentDark
+            )
         }
         .padding(20)
         .frame(maxWidth: .infinity)
@@ -121,18 +152,6 @@ struct ReadingResultView: View {
             .foregroundColor(accentDark)
     }
 
-    private func metric(value: String, label: String) -> some View {
-        VStack(spacing: 4) {
-            Text(value)
-                .font(.system(size: 16, weight: .bold, design: .rounded))
-                .foregroundColor(accentDark)
-            Text(label)
-                .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundColor(AppColors.textSecondary)
-        }
-        .frame(maxWidth: .infinity)
-    }
-
     private func mistakeCard(_ mistake: ReadingMistake) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(mistake.prompt)
@@ -164,15 +183,6 @@ struct ReadingResultView: View {
             RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
                 .fill(Color.white.opacity(0.94))
         )
-    }
-
-    private var formattedTime: String {
-        let minutes = result.readingTimeSeconds / 60
-        let seconds = result.readingTimeSeconds % 60
-        if minutes > 0 {
-            return "\(minutes)m \(seconds)s"
-        }
-        return "\(seconds)s"
     }
 }
 
