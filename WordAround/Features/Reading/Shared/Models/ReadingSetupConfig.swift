@@ -28,6 +28,9 @@ struct ReadingSetupConfig {
         let defaultOn: Bool
     }
 
+    /// Owning Reading mode id — matches `ReadingMode.id`. Used by post-setup
+    /// flows (`ReadingSessionSetup`) to route to the correct session.
+    let modeID: String
     let title: String
     let subtitle: String
     let accent: Color
@@ -47,6 +50,7 @@ struct ReadingSetupConfig {
 extension ReadingSetupConfig {
 
     static let generatedReading = ReadingSetupConfig(
+        modeID: "generated-reading",
         title: "Generated Reading",
         subtitle: "A fresh text created for your level.",
         accent: Color(red: 0.42, green: 0.36, blue: 0.86),
@@ -72,6 +76,7 @@ extension ReadingSetupConfig {
     )
 
     static let myTexts = ReadingSetupConfig(
+        modeID: "my-texts",
         title: "My Texts",
         subtitle: "Paste your own text and read it with help.",
         accent: Color(red: 0.13, green: 0.66, blue: 0.74),
@@ -99,6 +104,7 @@ extension ReadingSetupConfig {
     )
 
     static let readingFromSets = ReadingSetupConfig(
+        modeID: "reading-from-sets",
         title: "Reading From Sets",
         subtitle: "Build a reading from your flashcard sets.",
         accent: AppColors.orangeAccent,
@@ -129,6 +135,7 @@ extension ReadingSetupConfig {
     )
 
     static let storyMode = ReadingSetupConfig(
+        modeID: "story-mode",
         title: "Story Mode",
         subtitle: "Read short stories that adapt to you.",
         accent: Color(red: 0.93, green: 0.40, blue: 0.60),
@@ -152,6 +159,7 @@ extension ReadingSetupConfig {
     )
 
     static let speedReading = ReadingSetupConfig(
+        modeID: "speed-reading",
         title: "Speed Reading",
         subtitle: "Train faster reading with timed pacing.",
         accent: Color(red: 0.95, green: 0.42, blue: 0.40),
@@ -176,6 +184,7 @@ extension ReadingSetupConfig {
     )
 
     static let interactiveReading = ReadingSetupConfig(
+        modeID: "interactive-reading",
         title: "Interactive Reading",
         subtitle: "Tap words, answer questions, and explore.",
         accent: AppColors.greenAccent,

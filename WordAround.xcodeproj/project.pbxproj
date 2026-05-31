@@ -7,6 +7,61 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10D23DB6F2EEB558DA13BD0E /* AddReadingTextSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69C281BEAA8E2C4BDD31728 /* AddReadingTextSheet.swift */; };
+		FB139DA80DE2360E5E4B4A71 /* GeneratedReadingLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D24FE8CC5210E11EEA53CE /* GeneratedReadingLoadingView.swift */; };
+		BFDEF2F1722A8043FBF17406 /* GeneratedReadingResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F77896511F842ABD102E29 /* GeneratedReadingResultView.swift */; };
+		755E0EB96322486B9429F5D4 /* GeneratedReadingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A27478B191F07D83B53D5C /* GeneratedReadingSessionView.swift */; };
+		965A18A12D80E6447DF8F158 /* GeneratedReadingSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81CA652DB88AAC7D8184514 /* GeneratedReadingSessionViewModel.swift */; };
+		AEF1749878AEF7D710413BA5 /* InteractiveReadingResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D092DD1A2376175440091FF /* InteractiveReadingResultView.swift */; };
+		CFFADA2156D249EA514787FE /* InteractiveReadingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9C3C811A9A2E2EDC01F4F0 /* InteractiveReadingSessionView.swift */; };
+		D98FC6D84126A40A0184850F /* InteractiveReadingSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828C4A3996B969BC1E53716F /* InteractiveReadingSessionViewModel.swift */; };
+		E2FF2809635CDFB589418930 /* InteractiveReadingTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1278CA252FDEDDB0F42A0E4 /* InteractiveReadingTaskView.swift */; };
+		3A5B669D594B6CB7E550D10C /* MyTextsEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB36926572B74DADEF594C0 /* MyTextsEditorView.swift */; };
+		E7AA0077666388D416CA945B /* MyTextsResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8697874130DFF88EA4A70E9 /* MyTextsResultView.swift */; };
+		22A8C464A6D8E33952B042D5 /* MyTextsSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FE23AE2F0479E5AED1F201 /* MyTextsSessionView.swift */; };
+		E485C8313CBC486DB7884002 /* MyTextsSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D5A53711D029E2FCC940F8 /* MyTextsSessionViewModel.swift */; };
+		0FC579912964E5125CF4D038 /* ReadingContinueTextCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2BE2847600C6A88CFC44E2 /* ReadingContinueTextCardView.swift */; };
+		9B0838DC79A01EB7D74608BC /* ReadingFocus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03347F6E8FB5E049F42DF22E /* ReadingFocus.swift */; };
+		35286D7C5999A59565206261 /* ReadingFromSetsPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39237528372E537E742012A9 /* ReadingFromSetsPreviewView.swift */; };
+		34E6737C976FCFF7C4B13506 /* ReadingFromSetsResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AD7E33988F00609FBB97BF /* ReadingFromSetsResultView.swift */; };
+		C68D28822F08461F955BD8D4 /* ReadingFromSetsSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A5EF9BB874FF40E2ABEC2 /* ReadingFromSetsSessionView.swift */; };
+		68439D30D6D0B06BFE756084 /* ReadingFromSetsSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B7F5D5BC97983AF6DCDD60 /* ReadingFromSetsSessionViewModel.swift */; };
+		BCAD447CE532EFA717D9271D /* ReadingLibraryEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1919AF159247D7971590B68D /* ReadingLibraryEmptyStateView.swift */; };
+		8F4FF52E5ECAA3E105541038 /* ReadingLibraryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EE99616C9E23DE733CA901 /* ReadingLibraryItem.swift */; };
+		8842F63D8E97AB836E9D6C4C /* ReadingLibraryItemCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6065FCB33C22E1C66EAEDB8 /* ReadingLibraryItemCardView.swift */; };
+		1BD648F96A7BD35ECF0285E2 /* ReadingLocalQuestionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E069F9B1F86B0DE264965B0 /* ReadingLocalQuestionService.swift */; };
+		520A73E8B76FE3132EF23930 /* ReadingModeLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC3BC0C6EB20EAAD4EC9A16 /* ReadingModeLibraryView.swift */; };
+		BE52C13A47A8B0F8552BAD4C /* ReadingModeLibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37718876CDD58BFE2577E4DC /* ReadingModeLibraryViewModel.swift */; };
+		2B2CBBEAECE9039861799D9D /* ReadingMyTextsEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7A1E6F5979AB9C118677C30 /* ReadingMyTextsEmptyStateView.swift */; };
+		F9299BA3E052AA439FD43C6A /* ReadingMyTextsPreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36CB88C6B6010ED503A1076 /* ReadingMyTextsPreviewData.swift */; };
+		8215200584381F26348E6EC9 /* ReadingMyTextsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE54E6F0462D5285643DDF6C /* ReadingMyTextsView.swift */; };
+		759E2EB8FFDAD07BC9BBFEEA /* ReadingMyTextsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902E4E2D1BADFCACE893FF47 /* ReadingMyTextsViewModel.swift */; };
+		B597636BD75D075F0BBF329D /* ReadingPlaceholderData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE216D97C2D1091C4CBC3253 /* ReadingPlaceholderData.swift */; };
+		F16DAB702FBBD2B72B280410 /* ReadingPostSetupRouterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB04503255C59710E8520C1E /* ReadingPostSetupRouterView.swift */; };
+		B4AA8F38EB18070E60F79606 /* ReadingQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEADEFEA3BDBE8BAA4EE34A /* ReadingQuestion.swift */; };
+		2DA28944807749AF4B16DB8A /* ReadingResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32655D0F1D0C4702B20E699B /* ReadingResultView.swift */; };
+		02FC92FFE15BCC93E744C0C2 /* ReadingScoringService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC08FCB820AC044EB8BB46F /* ReadingScoringService.swift */; };
+		F53AA720836D6DC0B70190A8 /* ReadingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4324D1EE0DD13EB04DE81EB /* ReadingSession.swift */; };
+		96827C325DB6343087777B56 /* ReadingSessionComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B72B4155761C1EBB6CFBD95 /* ReadingSessionComponents.swift */; };
+		F2E267F2984408CEA037B66E /* ReadingSessionPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32E05B634F1EACB4BA97623 /* ReadingSessionPhase.swift */; };
+		19E88907981CD8A0BC9F1D62 /* ReadingSessionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0542310ACF2270A0E9955F9 /* ReadingSessionService.swift */; };
+		12E0BD12FA76A3B7BD84DC26 /* ReadingSessionSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16EAA0BC09142DA86E0ED7 /* ReadingSessionSetup.swift */; };
+		FEB3D7678CFD9413AB7A3C97 /* ReadingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BDFD09977CB1A61DEB84E7 /* ReadingSessionView.swift */; };
+		CDB19DF7DE6A0A14D3E851E5 /* ReadingSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7338E0F9F3A7494B48B55E17 /* ReadingSessionViewModel.swift */; };
+		853FDCA7602F96B95C86BE76 /* ReadingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD27B5DDF464FA07C788A9C /* ReadingStorageService.swift */; };
+		8CAFC4A0ABA6A2BFF912A99E /* ReadingTextAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9DB2F7EC4ECD14D8064578 /* ReadingTextAnalysis.swift */; };
+		FC736D183A27D8BAD99B6D61 /* ReadingTextAnalyzerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A156FFF0999C3FCA57BF39CC /* ReadingTextAnalyzerService.swift */; };
+		9777856FB7D0E066B5FFB306 /* ReadingTextCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E5B40A32926BC23E62FA3CB /* ReadingTextCardView.swift */; };
+		BA1F2901160812313B92829A /* ReadingTextStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CA1997CF345687311D8C28 /* ReadingTextStorageService.swift */; };
+		E6EFDAD84D1D9ABC65CF862A /* ReadingUserText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B0A213EBAB0C5967E037332 /* ReadingUserText.swift */; };
+		8D7ADE5B8DE17FA9C76D0EC8 /* SpeedReadingCountdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29CC5E3206C9BFFA9D244EB /* SpeedReadingCountdownView.swift */; };
+		E632490155C70F1687F02A66 /* SpeedReadingResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B0B9D4A92905006F5D3644 /* SpeedReadingResultView.swift */; };
+		4631AA7438C1196A1F2568F9 /* SpeedReadingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3368FD0E44D38B226DC43BA1 /* SpeedReadingSessionView.swift */; };
+		70D8B653FC8659778F267225 /* SpeedReadingSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9390BD929F3CC9CF890DF49 /* SpeedReadingSessionViewModel.swift */; };
+		97309F3AD3133F9AF815378C /* StoryModeChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6BB616434468D3F739B4A6 /* StoryModeChoiceView.swift */; };
+		8DA2008214F5E1E543D7E095 /* StoryModeResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F62B9BBC6E791C51546D3E /* StoryModeResultView.swift */; };
+		02B8082E92CE53EFE23BA19B /* StoryModeSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB232DA4B1361F4E35C30B04 /* StoryModeSessionView.swift */; };
+		3ABF04C9CBC5E3339482D425 /* StoryModeSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8652A190932A285DFDF8F880 /* StoryModeSessionViewModel.swift */; };
 		A1B2C3D4E5F6A1B2C3D4FC51 /* ReadingSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FC01 /* ReadingSetupView.swift */; };
 		A1B2C3D4E5F6A1B2C3D4FC52 /* ReadingSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FC02 /* ReadingSetupViewModel.swift */; };
 		A1B2C3D4E5F6A1B2C3D4FC53 /* ReadingSetupConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4FC03 /* ReadingSetupConfig.swift */; };
@@ -346,6 +401,61 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B69C281BEAA8E2C4BDD31728 /* AddReadingTextSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddReadingTextSheet.swift; path = "WordAround/Features/Reading/MyTexts/Views/AddReadingTextSheet.swift"; sourceTree = SOURCE_ROOT; };
+		F7D24FE8CC5210E11EEA53CE /* GeneratedReadingLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeneratedReadingLoadingView.swift; path = "WordAround/Features/Reading/GeneratedReading/Views/GeneratedReadingLoadingView.swift"; sourceTree = SOURCE_ROOT; };
+		62F77896511F842ABD102E29 /* GeneratedReadingResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeneratedReadingResultView.swift; path = "WordAround/Features/Reading/GeneratedReading/Views/GeneratedReadingResultView.swift"; sourceTree = SOURCE_ROOT; };
+		86A27478B191F07D83B53D5C /* GeneratedReadingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeneratedReadingSessionView.swift; path = "WordAround/Features/Reading/GeneratedReading/Views/GeneratedReadingSessionView.swift"; sourceTree = SOURCE_ROOT; };
+		F81CA652DB88AAC7D8184514 /* GeneratedReadingSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeneratedReadingSessionViewModel.swift; path = "WordAround/Features/Reading/GeneratedReading/ViewModels/GeneratedReadingSessionViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		2D092DD1A2376175440091FF /* InteractiveReadingResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InteractiveReadingResultView.swift; path = "WordAround/Features/Reading/InteractiveReading/Views/InteractiveReadingResultView.swift"; sourceTree = SOURCE_ROOT; };
+		6C9C3C811A9A2E2EDC01F4F0 /* InteractiveReadingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InteractiveReadingSessionView.swift; path = "WordAround/Features/Reading/InteractiveReading/Views/InteractiveReadingSessionView.swift"; sourceTree = SOURCE_ROOT; };
+		828C4A3996B969BC1E53716F /* InteractiveReadingSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InteractiveReadingSessionViewModel.swift; path = "WordAround/Features/Reading/InteractiveReading/ViewModels/InteractiveReadingSessionViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		B1278CA252FDEDDB0F42A0E4 /* InteractiveReadingTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InteractiveReadingTaskView.swift; path = "WordAround/Features/Reading/InteractiveReading/Views/InteractiveReadingTaskView.swift"; sourceTree = SOURCE_ROOT; };
+		8EB36926572B74DADEF594C0 /* MyTextsEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MyTextsEditorView.swift; path = "WordAround/Features/Reading/MyTexts/Views/MyTextsEditorView.swift"; sourceTree = SOURCE_ROOT; };
+		A8697874130DFF88EA4A70E9 /* MyTextsResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MyTextsResultView.swift; path = "WordAround/Features/Reading/MyTexts/Views/MyTextsResultView.swift"; sourceTree = SOURCE_ROOT; };
+		D5FE23AE2F0479E5AED1F201 /* MyTextsSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MyTextsSessionView.swift; path = "WordAround/Features/Reading/MyTexts/Views/MyTextsSessionView.swift"; sourceTree = SOURCE_ROOT; };
+		10D5A53711D029E2FCC940F8 /* MyTextsSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MyTextsSessionViewModel.swift; path = "WordAround/Features/Reading/MyTexts/ViewModels/MyTextsSessionViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		1C2BE2847600C6A88CFC44E2 /* ReadingContinueTextCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingContinueTextCardView.swift; path = "WordAround/Features/Reading/MyTexts/Components/ReadingContinueTextCardView.swift"; sourceTree = SOURCE_ROOT; };
+		03347F6E8FB5E049F42DF22E /* ReadingFocus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingFocus.swift; path = "WordAround/Features/Reading/MyTexts/Models/ReadingFocus.swift"; sourceTree = SOURCE_ROOT; };
+		39237528372E537E742012A9 /* ReadingFromSetsPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingFromSetsPreviewView.swift; path = "WordAround/Features/Reading/ReadingFromSets/Views/ReadingFromSetsPreviewView.swift"; sourceTree = SOURCE_ROOT; };
+		E4AD7E33988F00609FBB97BF /* ReadingFromSetsResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingFromSetsResultView.swift; path = "WordAround/Features/Reading/ReadingFromSets/Views/ReadingFromSetsResultView.swift"; sourceTree = SOURCE_ROOT; };
+		CE6A5EF9BB874FF40E2ABEC2 /* ReadingFromSetsSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingFromSetsSessionView.swift; path = "WordAround/Features/Reading/ReadingFromSets/Views/ReadingFromSetsSessionView.swift"; sourceTree = SOURCE_ROOT; };
+		61B7F5D5BC97983AF6DCDD60 /* ReadingFromSetsSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingFromSetsSessionViewModel.swift; path = "WordAround/Features/Reading/ReadingFromSets/ViewModels/ReadingFromSetsSessionViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		1919AF159247D7971590B68D /* ReadingLibraryEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingLibraryEmptyStateView.swift; path = "WordAround/Features/Reading/Shared/Components/ReadingLibraryEmptyStateView.swift"; sourceTree = SOURCE_ROOT; };
+		09EE99616C9E23DE733CA901 /* ReadingLibraryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingLibraryItem.swift; path = "WordAround/Features/Reading/Shared/Models/ReadingLibraryItem.swift"; sourceTree = SOURCE_ROOT; };
+		D6065FCB33C22E1C66EAEDB8 /* ReadingLibraryItemCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingLibraryItemCardView.swift; path = "WordAround/Features/Reading/Shared/Components/ReadingLibraryItemCardView.swift"; sourceTree = SOURCE_ROOT; };
+		9E069F9B1F86B0DE264965B0 /* ReadingLocalQuestionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingLocalQuestionService.swift; path = "WordAround/Features/Reading/MyTexts/Services/ReadingLocalQuestionService.swift"; sourceTree = SOURCE_ROOT; };
+		EEC3BC0C6EB20EAAD4EC9A16 /* ReadingModeLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingModeLibraryView.swift; path = "WordAround/Features/Reading/Shared/Views/ReadingModeLibraryView.swift"; sourceTree = SOURCE_ROOT; };
+		37718876CDD58BFE2577E4DC /* ReadingModeLibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingModeLibraryViewModel.swift; path = "WordAround/Features/Reading/Shared/ViewModels/ReadingModeLibraryViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		F7A1E6F5979AB9C118677C30 /* ReadingMyTextsEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingMyTextsEmptyStateView.swift; path = "WordAround/Features/Reading/MyTexts/Components/ReadingMyTextsEmptyStateView.swift"; sourceTree = SOURCE_ROOT; };
+		C36CB88C6B6010ED503A1076 /* ReadingMyTextsPreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingMyTextsPreviewData.swift; path = "WordAround/Features/Reading/MyTexts/Models/ReadingMyTextsPreviewData.swift"; sourceTree = SOURCE_ROOT; };
+		FE54E6F0462D5285643DDF6C /* ReadingMyTextsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingMyTextsView.swift; path = "WordAround/Features/Reading/MyTexts/Views/ReadingMyTextsView.swift"; sourceTree = SOURCE_ROOT; };
+		902E4E2D1BADFCACE893FF47 /* ReadingMyTextsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingMyTextsViewModel.swift; path = "WordAround/Features/Reading/MyTexts/ViewModels/ReadingMyTextsViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		FE216D97C2D1091C4CBC3253 /* ReadingPlaceholderData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingPlaceholderData.swift; path = "WordAround/Features/Reading/Shared/Models/ReadingPlaceholderData.swift"; sourceTree = SOURCE_ROOT; };
+		CB04503255C59710E8520C1E /* ReadingPostSetupRouterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingPostSetupRouterView.swift; path = "WordAround/Features/Reading/Shared/Views/ReadingPostSetupRouterView.swift"; sourceTree = SOURCE_ROOT; };
+		7DEADEFEA3BDBE8BAA4EE34A /* ReadingQuestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingQuestion.swift; path = "WordAround/Features/Reading/MyTexts/Models/ReadingQuestion.swift"; sourceTree = SOURCE_ROOT; };
+		32655D0F1D0C4702B20E699B /* ReadingResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingResultView.swift; path = "WordAround/Features/Reading/MyTexts/Views/ReadingResultView.swift"; sourceTree = SOURCE_ROOT; };
+		6EC08FCB820AC044EB8BB46F /* ReadingScoringService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingScoringService.swift; path = "WordAround/Features/Reading/MyTexts/Services/ReadingScoringService.swift"; sourceTree = SOURCE_ROOT; };
+		A4324D1EE0DD13EB04DE81EB /* ReadingSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingSession.swift; path = "WordAround/Features/Reading/MyTexts/Models/ReadingSession.swift"; sourceTree = SOURCE_ROOT; };
+		4B72B4155761C1EBB6CFBD95 /* ReadingSessionComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingSessionComponents.swift; path = "WordAround/Features/Reading/Shared/Components/ReadingSessionComponents.swift"; sourceTree = SOURCE_ROOT; };
+		F32E05B634F1EACB4BA97623 /* ReadingSessionPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingSessionPhase.swift; path = "WordAround/Features/Reading/MyTexts/Models/ReadingSessionPhase.swift"; sourceTree = SOURCE_ROOT; };
+		B0542310ACF2270A0E9955F9 /* ReadingSessionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingSessionService.swift; path = "WordAround/Features/Reading/MyTexts/Services/ReadingSessionService.swift"; sourceTree = SOURCE_ROOT; };
+		7C16EAA0BC09142DA86E0ED7 /* ReadingSessionSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingSessionSetup.swift; path = "WordAround/Features/Reading/Shared/Models/ReadingSessionSetup.swift"; sourceTree = SOURCE_ROOT; };
+		C9BDFD09977CB1A61DEB84E7 /* ReadingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingSessionView.swift; path = "WordAround/Features/Reading/MyTexts/Views/ReadingSessionView.swift"; sourceTree = SOURCE_ROOT; };
+		7338E0F9F3A7494B48B55E17 /* ReadingSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingSessionViewModel.swift; path = "WordAround/Features/Reading/MyTexts/ViewModels/ReadingSessionViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		4AD27B5DDF464FA07C788A9C /* ReadingStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingStorageService.swift; path = "WordAround/Features/Reading/Shared/Services/ReadingStorageService.swift"; sourceTree = SOURCE_ROOT; };
+		3F9DB2F7EC4ECD14D8064578 /* ReadingTextAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingTextAnalysis.swift; path = "WordAround/Features/Reading/MyTexts/Models/ReadingTextAnalysis.swift"; sourceTree = SOURCE_ROOT; };
+		A156FFF0999C3FCA57BF39CC /* ReadingTextAnalyzerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingTextAnalyzerService.swift; path = "WordAround/Features/Reading/MyTexts/Services/ReadingTextAnalyzerService.swift"; sourceTree = SOURCE_ROOT; };
+		0E5B40A32926BC23E62FA3CB /* ReadingTextCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingTextCardView.swift; path = "WordAround/Features/Reading/MyTexts/Components/ReadingTextCardView.swift"; sourceTree = SOURCE_ROOT; };
+		17CA1997CF345687311D8C28 /* ReadingTextStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingTextStorageService.swift; path = "WordAround/Features/Reading/MyTexts/Services/ReadingTextStorageService.swift"; sourceTree = SOURCE_ROOT; };
+		9B0A213EBAB0C5967E037332 /* ReadingUserText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingUserText.swift; path = "WordAround/Features/Reading/MyTexts/Models/ReadingUserText.swift"; sourceTree = SOURCE_ROOT; };
+		D29CC5E3206C9BFFA9D244EB /* SpeedReadingCountdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SpeedReadingCountdownView.swift; path = "WordAround/Features/Reading/SpeedReading/Views/SpeedReadingCountdownView.swift"; sourceTree = SOURCE_ROOT; };
+		28B0B9D4A92905006F5D3644 /* SpeedReadingResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SpeedReadingResultView.swift; path = "WordAround/Features/Reading/SpeedReading/Views/SpeedReadingResultView.swift"; sourceTree = SOURCE_ROOT; };
+		3368FD0E44D38B226DC43BA1 /* SpeedReadingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SpeedReadingSessionView.swift; path = "WordAround/Features/Reading/SpeedReading/Views/SpeedReadingSessionView.swift"; sourceTree = SOURCE_ROOT; };
+		E9390BD929F3CC9CF890DF49 /* SpeedReadingSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SpeedReadingSessionViewModel.swift; path = "WordAround/Features/Reading/SpeedReading/ViewModels/SpeedReadingSessionViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		BC6BB616434468D3F739B4A6 /* StoryModeChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StoryModeChoiceView.swift; path = "WordAround/Features/Reading/StoryMode/Views/StoryModeChoiceView.swift"; sourceTree = SOURCE_ROOT; };
+		F9F62B9BBC6E791C51546D3E /* StoryModeResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StoryModeResultView.swift; path = "WordAround/Features/Reading/StoryMode/Views/StoryModeResultView.swift"; sourceTree = SOURCE_ROOT; };
+		BB232DA4B1361F4E35C30B04 /* StoryModeSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StoryModeSessionView.swift; path = "WordAround/Features/Reading/StoryMode/Views/StoryModeSessionView.swift"; sourceTree = SOURCE_ROOT; };
+		8652A190932A285DFDF8F880 /* StoryModeSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StoryModeSessionViewModel.swift; path = "WordAround/Features/Reading/StoryMode/ViewModels/StoryModeSessionViewModel.swift"; sourceTree = SOURCE_ROOT; };
 		A1B2C3D4E5F6A1B2C3D4FC01 /* ReadingSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSetupView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4FC02 /* ReadingSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSetupViewModel.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A1B2C3D4FC03 /* ReadingSetupConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingSetupConfig.swift; sourceTree = "<group>"; };
@@ -898,6 +1008,61 @@
 				A1B2C3D4E5F6A1B2C3D4FB06 /* ReadingPrimaryButton.swift */,
 				A1B2C3D4E5F6A1B2C3D4FB07 /* ReadingMetadataChip.swift */,
 				A1B2C3D4E5F6A1B2C3D4FA12 /* ReadingModeCardView.swift */,
+				B69C281BEAA8E2C4BDD31728 /* AddReadingTextSheet.swift */,
+				F7D24FE8CC5210E11EEA53CE /* GeneratedReadingLoadingView.swift */,
+				62F77896511F842ABD102E29 /* GeneratedReadingResultView.swift */,
+				86A27478B191F07D83B53D5C /* GeneratedReadingSessionView.swift */,
+				F81CA652DB88AAC7D8184514 /* GeneratedReadingSessionViewModel.swift */,
+				2D092DD1A2376175440091FF /* InteractiveReadingResultView.swift */,
+				6C9C3C811A9A2E2EDC01F4F0 /* InteractiveReadingSessionView.swift */,
+				828C4A3996B969BC1E53716F /* InteractiveReadingSessionViewModel.swift */,
+				B1278CA252FDEDDB0F42A0E4 /* InteractiveReadingTaskView.swift */,
+				8EB36926572B74DADEF594C0 /* MyTextsEditorView.swift */,
+				A8697874130DFF88EA4A70E9 /* MyTextsResultView.swift */,
+				D5FE23AE2F0479E5AED1F201 /* MyTextsSessionView.swift */,
+				10D5A53711D029E2FCC940F8 /* MyTextsSessionViewModel.swift */,
+				1C2BE2847600C6A88CFC44E2 /* ReadingContinueTextCardView.swift */,
+				03347F6E8FB5E049F42DF22E /* ReadingFocus.swift */,
+				39237528372E537E742012A9 /* ReadingFromSetsPreviewView.swift */,
+				E4AD7E33988F00609FBB97BF /* ReadingFromSetsResultView.swift */,
+				CE6A5EF9BB874FF40E2ABEC2 /* ReadingFromSetsSessionView.swift */,
+				61B7F5D5BC97983AF6DCDD60 /* ReadingFromSetsSessionViewModel.swift */,
+				1919AF159247D7971590B68D /* ReadingLibraryEmptyStateView.swift */,
+				09EE99616C9E23DE733CA901 /* ReadingLibraryItem.swift */,
+				D6065FCB33C22E1C66EAEDB8 /* ReadingLibraryItemCardView.swift */,
+				9E069F9B1F86B0DE264965B0 /* ReadingLocalQuestionService.swift */,
+				EEC3BC0C6EB20EAAD4EC9A16 /* ReadingModeLibraryView.swift */,
+				37718876CDD58BFE2577E4DC /* ReadingModeLibraryViewModel.swift */,
+				F7A1E6F5979AB9C118677C30 /* ReadingMyTextsEmptyStateView.swift */,
+				C36CB88C6B6010ED503A1076 /* ReadingMyTextsPreviewData.swift */,
+				FE54E6F0462D5285643DDF6C /* ReadingMyTextsView.swift */,
+				902E4E2D1BADFCACE893FF47 /* ReadingMyTextsViewModel.swift */,
+				FE216D97C2D1091C4CBC3253 /* ReadingPlaceholderData.swift */,
+				CB04503255C59710E8520C1E /* ReadingPostSetupRouterView.swift */,
+				7DEADEFEA3BDBE8BAA4EE34A /* ReadingQuestion.swift */,
+				32655D0F1D0C4702B20E699B /* ReadingResultView.swift */,
+				6EC08FCB820AC044EB8BB46F /* ReadingScoringService.swift */,
+				A4324D1EE0DD13EB04DE81EB /* ReadingSession.swift */,
+				4B72B4155761C1EBB6CFBD95 /* ReadingSessionComponents.swift */,
+				F32E05B634F1EACB4BA97623 /* ReadingSessionPhase.swift */,
+				B0542310ACF2270A0E9955F9 /* ReadingSessionService.swift */,
+				7C16EAA0BC09142DA86E0ED7 /* ReadingSessionSetup.swift */,
+				C9BDFD09977CB1A61DEB84E7 /* ReadingSessionView.swift */,
+				7338E0F9F3A7494B48B55E17 /* ReadingSessionViewModel.swift */,
+				4AD27B5DDF464FA07C788A9C /* ReadingStorageService.swift */,
+				3F9DB2F7EC4ECD14D8064578 /* ReadingTextAnalysis.swift */,
+				A156FFF0999C3FCA57BF39CC /* ReadingTextAnalyzerService.swift */,
+				0E5B40A32926BC23E62FA3CB /* ReadingTextCardView.swift */,
+				17CA1997CF345687311D8C28 /* ReadingTextStorageService.swift */,
+				9B0A213EBAB0C5967E037332 /* ReadingUserText.swift */,
+				D29CC5E3206C9BFFA9D244EB /* SpeedReadingCountdownView.swift */,
+				28B0B9D4A92905006F5D3644 /* SpeedReadingResultView.swift */,
+				3368FD0E44D38B226DC43BA1 /* SpeedReadingSessionView.swift */,
+				E9390BD929F3CC9CF890DF49 /* SpeedReadingSessionViewModel.swift */,
+				BC6BB616434468D3F739B4A6 /* StoryModeChoiceView.swift */,
+				F9F62B9BBC6E791C51546D3E /* StoryModeResultView.swift */,
+				BB232DA4B1361F4E35C30B04 /* StoryModeSessionView.swift */,
+				8652A190932A285DFDF8F880 /* StoryModeSessionViewModel.swift */,
 				A1B2C3D4E5F6A1B2C3D4FA13 /* ReadingFeaturedModeCardView.swift */,
 				A1B2C3D4E5F6A1B2C3D4FA14 /* ReadingProgressSummaryCardView.swift */,
 				A1B2C3D4E5F6A1B2C3D4FA15 /* ReadingComingSoonCardView.swift */,
@@ -2261,6 +2426,61 @@
 				A1B2C3D4E5F6A1B2C3D4FA20 /* ReadingMode.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4FA21 /* ReadingHomeViewModel.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4FA22 /* ReadingModeCardView.swift in Sources */,
+				10D23DB6F2EEB558DA13BD0E /* AddReadingTextSheet.swift in Sources */,
+				FB139DA80DE2360E5E4B4A71 /* GeneratedReadingLoadingView.swift in Sources */,
+				BFDEF2F1722A8043FBF17406 /* GeneratedReadingResultView.swift in Sources */,
+				755E0EB96322486B9429F5D4 /* GeneratedReadingSessionView.swift in Sources */,
+				965A18A12D80E6447DF8F158 /* GeneratedReadingSessionViewModel.swift in Sources */,
+				AEF1749878AEF7D710413BA5 /* InteractiveReadingResultView.swift in Sources */,
+				CFFADA2156D249EA514787FE /* InteractiveReadingSessionView.swift in Sources */,
+				D98FC6D84126A40A0184850F /* InteractiveReadingSessionViewModel.swift in Sources */,
+				E2FF2809635CDFB589418930 /* InteractiveReadingTaskView.swift in Sources */,
+				3A5B669D594B6CB7E550D10C /* MyTextsEditorView.swift in Sources */,
+				E7AA0077666388D416CA945B /* MyTextsResultView.swift in Sources */,
+				22A8C464A6D8E33952B042D5 /* MyTextsSessionView.swift in Sources */,
+				E485C8313CBC486DB7884002 /* MyTextsSessionViewModel.swift in Sources */,
+				0FC579912964E5125CF4D038 /* ReadingContinueTextCardView.swift in Sources */,
+				9B0838DC79A01EB7D74608BC /* ReadingFocus.swift in Sources */,
+				35286D7C5999A59565206261 /* ReadingFromSetsPreviewView.swift in Sources */,
+				34E6737C976FCFF7C4B13506 /* ReadingFromSetsResultView.swift in Sources */,
+				C68D28822F08461F955BD8D4 /* ReadingFromSetsSessionView.swift in Sources */,
+				68439D30D6D0B06BFE756084 /* ReadingFromSetsSessionViewModel.swift in Sources */,
+				BCAD447CE532EFA717D9271D /* ReadingLibraryEmptyStateView.swift in Sources */,
+				8F4FF52E5ECAA3E105541038 /* ReadingLibraryItem.swift in Sources */,
+				8842F63D8E97AB836E9D6C4C /* ReadingLibraryItemCardView.swift in Sources */,
+				1BD648F96A7BD35ECF0285E2 /* ReadingLocalQuestionService.swift in Sources */,
+				520A73E8B76FE3132EF23930 /* ReadingModeLibraryView.swift in Sources */,
+				BE52C13A47A8B0F8552BAD4C /* ReadingModeLibraryViewModel.swift in Sources */,
+				2B2CBBEAECE9039861799D9D /* ReadingMyTextsEmptyStateView.swift in Sources */,
+				F9299BA3E052AA439FD43C6A /* ReadingMyTextsPreviewData.swift in Sources */,
+				8215200584381F26348E6EC9 /* ReadingMyTextsView.swift in Sources */,
+				759E2EB8FFDAD07BC9BBFEEA /* ReadingMyTextsViewModel.swift in Sources */,
+				B597636BD75D075F0BBF329D /* ReadingPlaceholderData.swift in Sources */,
+				F16DAB702FBBD2B72B280410 /* ReadingPostSetupRouterView.swift in Sources */,
+				B4AA8F38EB18070E60F79606 /* ReadingQuestion.swift in Sources */,
+				2DA28944807749AF4B16DB8A /* ReadingResultView.swift in Sources */,
+				02FC92FFE15BCC93E744C0C2 /* ReadingScoringService.swift in Sources */,
+				F53AA720836D6DC0B70190A8 /* ReadingSession.swift in Sources */,
+				96827C325DB6343087777B56 /* ReadingSessionComponents.swift in Sources */,
+				F2E267F2984408CEA037B66E /* ReadingSessionPhase.swift in Sources */,
+				19E88907981CD8A0BC9F1D62 /* ReadingSessionService.swift in Sources */,
+				12E0BD12FA76A3B7BD84DC26 /* ReadingSessionSetup.swift in Sources */,
+				FEB3D7678CFD9413AB7A3C97 /* ReadingSessionView.swift in Sources */,
+				CDB19DF7DE6A0A14D3E851E5 /* ReadingSessionViewModel.swift in Sources */,
+				853FDCA7602F96B95C86BE76 /* ReadingStorageService.swift in Sources */,
+				8CAFC4A0ABA6A2BFF912A99E /* ReadingTextAnalysis.swift in Sources */,
+				FC736D183A27D8BAD99B6D61 /* ReadingTextAnalyzerService.swift in Sources */,
+				9777856FB7D0E066B5FFB306 /* ReadingTextCardView.swift in Sources */,
+				BA1F2901160812313B92829A /* ReadingTextStorageService.swift in Sources */,
+				E6EFDAD84D1D9ABC65CF862A /* ReadingUserText.swift in Sources */,
+				8D7ADE5B8DE17FA9C76D0EC8 /* SpeedReadingCountdownView.swift in Sources */,
+				E632490155C70F1687F02A66 /* SpeedReadingResultView.swift in Sources */,
+				4631AA7438C1196A1F2568F9 /* SpeedReadingSessionView.swift in Sources */,
+				70D8B653FC8659778F267225 /* SpeedReadingSessionViewModel.swift in Sources */,
+				97309F3AD3133F9AF815378C /* StoryModeChoiceView.swift in Sources */,
+				8DA2008214F5E1E543D7E095 /* StoryModeResultView.swift in Sources */,
+				02B8082E92CE53EFE23BA19B /* StoryModeSessionView.swift in Sources */,
+				3ABF04C9CBC5E3339482D425 /* StoryModeSessionViewModel.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4FA23 /* ReadingFeaturedModeCardView.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4FA24 /* ReadingProgressSummaryCardView.swift in Sources */,
 				A1B2C3D4E5F6A1B2C3D4FA25 /* ReadingComingSoonCardView.swift in Sources */,

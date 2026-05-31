@@ -1,11 +1,5 @@
 import SwiftUI
 
-/// Reading home / menu screen.
-///
-/// A single uniform 2-column grid of mode cards (same principle as
-/// `SpeakingView`). Generated Reading is highlighted via the card's `isFeatured`
-/// treatment (gradient + badge), not a larger size, so the grid stays balanced.
-/// Tapping a card pushes the shared `ReadingSetupView`. Sessions aren't built.
 struct ReadingView: View {
     @StateObject private var viewModel = ReadingHomeViewModel()
 
@@ -47,23 +41,32 @@ struct ReadingView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        // Each mode opens its own library first. My Texts keeps its existing,
+        // richer library screen; the other modes share `ReadingModeLibraryView`.
         .navigationDestination(isPresented: $openGenerated) {
-            ReadingSetupView(config: .generatedReading)
+            library(for: "generated-reading")
         }
         .navigationDestination(isPresented: $openMyTexts) {
-            ReadingSetupView(config: .myTexts)
+            ReadingMyTextsView()
         }
         .navigationDestination(isPresented: $openFromSets) {
-            ReadingSetupView(config: .readingFromSets)
+            library(for: "reading-from-sets")
         }
         .navigationDestination(isPresented: $openStory) {
-            ReadingSetupView(config: .storyMode)
+            library(for: "story-mode")
         }
         .navigationDestination(isPresented: $openSpeed) {
-            ReadingSetupView(config: .speedReading)
+            library(for: "speed-reading")
         }
         .navigationDestination(isPresented: $openInteractive) {
-            ReadingSetupView(config: .interactiveReading)
+            library(for: "interactive-reading")
+        }
+    }
+
+    @ViewBuilder
+    private func library(for id: String) -> some View {
+        if let mode = viewModel.modes.first(where: { $0.id == id }) {
+            ReadingModeLibraryView(mode: mode)
         }
     }
 
