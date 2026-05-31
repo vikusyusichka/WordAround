@@ -31,3 +31,8 @@ fastlane/test_output/
 .env.*
 **/.env
 **/.env.*
+
+# AI / agent tooling (Claude, Cursor, agent skills) — not part of the app
+.claude/
+.agents/
+skills-lock.json
