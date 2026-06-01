@@ -36,3 +36,4 @@ fastlane/test_output/
 .claude/
 .agents/
 skills-lock.json
+skills-lock*.json

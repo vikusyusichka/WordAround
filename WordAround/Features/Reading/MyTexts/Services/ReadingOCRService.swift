@@ -1,0 +1,53 @@
+import Foundation
+import UIKit
+import Vision
+
+enum ReadingOCRError: LocalizedError {
+    case permissionDenied
+    case invalidImage
+    case recognitionFailed
+    case noTextFound
+
+    var errorDescription: String? {
+        switch self {
+        case .permissionDenied: return "Photo access was denied. Enable it in Settings to import text from photos."
+        case .invalidImage: return "Could not read that image. Try another photo."
+        case .recognitionFailed: return "Could not read text from the photo. Try a clearer image."
+        case .noTextFound: return "No text was found in this photo. Try a photo with visible text."
+        }
+    }
+}
+
+struct ReadingOCRService: ReadingOCRServicing, Sendable {
+    static let shared = ReadingOCRService()
+
+    func extractText(from image: UIImage) async throws -> String {
+        guard let cgImage = image.cgImage else { throw ReadingOCRError.invalidImage }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let request = VNRecognizeTextRequest { request, error in
+                if let error {
+                    continuation.resume(throwing: ReadingOCRError.recognitionFailed)
+                    return
+                }
+                let observations = request.results as? [VNRecognizedTextObservation] ?? []
+                let lines = observations.compactMap { $0.topCandidates(1).first?.string }
+                let text = lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+                if text.isEmpty {
+                    continuation.resume(throwing: ReadingOCRError.noTextFound)
+                } else {
+                    continuation.resume(returning: text)
+                }
+            }
+            request.recognitionLevel = .accurate
+            request.usesLanguageCorrection = true
+
+            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            do {
+                try handler.perform([request])
+            } catch {
+                continuation.resume(throwing: ReadingOCRError.recognitionFailed)
+            }
+        }
+    }
+}

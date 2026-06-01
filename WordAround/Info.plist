@@ -20,5 +20,9 @@
 	<string>Microphone access is used to record your voice during speaking practice.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Speech recognition is used to convert your voice into text during speaking practice.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo access lets you import text from images for reading practice.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>The camera is used to scan text from photos for your reading library.</string>
 </dict>
 </plist>

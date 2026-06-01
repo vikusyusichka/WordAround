@@ -1033,6 +1033,33 @@ extension Layout {
     static let speakingModeBlobOffsetY: CGFloat = isPadLike ? 14 : 10
 }
 
+// MARK: - Reading mode cards
+//
+// One uniform card system for the Reading home grid. Every card uses the same
+// size / padding / corner / spacing — the "Featured" mode differs only by a
+// gradient + badge, never by size. Values mirror the Speaking card metrics so
+// the two screens feel like one design system.
+extension Layout {
+    static let readingModeGridSpacing: CGFloat = isPadLike ? 14 : 10
+    static let readingModeCardCornerRadius: CGFloat = isPadLike ? 26 : 20
+    static let readingModeCardPadding: CGFloat = isPadLike ? 18 : 14
+    static let readingModeCardMinHeight: CGFloat = isPadLike ? 178 : 156
+    static let readingModeIconCircleSize: CGFloat = isPadLike ? 56 : 46
+    static let readingModeIconSize: CGFloat = isPadLike ? 24 : 20
+    static let readingModeTitleSize: CGFloat = isPadLike ? 18 : 15
+    static let readingModeSubtitleSize: CGFloat = isPadLike ? 14 : 12
+    static let readingModeArrowCircleSize: CGFloat = isPadLike ? 32 : 26
+    static let readingModeArrowIconSize: CGFloat = isPadLike ? 14 : 11
+    /// Vertical gap between the icon row, the text block and the arrow row.
+    static let readingModeContentSpacing: CGFloat = 10
+    /// Gap between title and subtitle.
+    static let readingModeTextSpacing: CGFloat = 4
+    static let readingModeBlobSize: CGSize = CGSize(width: isPadLike ? 92 : 72, height: isPadLike ? 76 : 60)
+    static let readingModeBlobOffsetX: CGFloat = isPadLike ? 18 : 14
+    static let readingModeBlobOffsetY: CGFloat = isPadLike ? 14 : 10
+    static let readingModeFeaturedBadgeTextSize: CGFloat = isPadLike ? 12 : 10
+}
+
 // MARK: - AI Conversation
 
 extension Layout {

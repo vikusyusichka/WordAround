@@ -4,10 +4,10 @@ struct LanguageSelectorView: View {
     let selectedLanguage: GrammarLanguage
     let onSelect: (GrammarLanguage) -> Void
 
-    /// Optional theme override. When omitted the selector keeps its
-    /// original blue look — every existing call site is unchanged.
-    /// Free Speaking opts into a green theme by passing
-    /// `accent: AppColors.greenAccent` and `accentDark: AppColors.greenTitle`.
+    /// Optional label above the selected language. Defaults to `"Language"`.
+    var label: String = "Language"
+    /// Languages hidden from the dropdown (e.g. the text's source language).
+    var excludedLanguages: Set<GrammarLanguage> = []
     var accent: Color = AppColors.primaryBlue
     var accentDark: Color = AppColors.primaryBlueDark
 
@@ -37,7 +37,7 @@ struct LanguageSelectorView: View {
                     .foregroundColor(accent)
 
                 VStack(alignment: .leading, spacing: Layout.essaySelectorLabelSpacing) {
-                    Text("Language")
+                    Text(label)
                         .font(.system(size: Layout.essaySelectorLabelSize, weight: .bold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
 
@@ -81,9 +81,13 @@ struct LanguageSelectorView: View {
         .buttonStyle(.plain)
     }
 
+    private var availableLanguages: [GrammarLanguage] {
+        GrammarLanguage.allCases.filter { !excludedLanguages.contains($0) }
+    }
+
     private var optionsList: some View {
         VStack(spacing: Layout.essaySelectorOptionsSpacing) {
-            ForEach(GrammarLanguage.allCases) { language in
+            ForEach(availableLanguages) { language in
                 Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         onSelect(language)
