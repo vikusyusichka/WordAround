@@ -8,6 +8,13 @@ struct ListeningContinueCardView: View {
 
     private var progressPercent: Int { Int((session.progress * 100).rounded()) }
 
+    private var progressLabel: String {
+        if session.isInProgress && progressPercent >= 99 && session.score == nil {
+            return "Ready to finish"
+        }
+        return "\(progressPercent)% complete"
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 12) {
@@ -47,7 +54,7 @@ struct ListeningContinueCardView: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("\(progressPercent)% complete")
+                Text(progressLabel)
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
 

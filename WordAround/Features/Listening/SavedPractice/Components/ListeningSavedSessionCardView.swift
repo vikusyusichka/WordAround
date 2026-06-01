@@ -3,6 +3,8 @@ import SwiftUI
 struct ListeningSavedSessionCardView: View {
     let session: ListeningSavedSession
     let onContinue: () -> Void
+    var onReview: (() -> Void)? = nil
+    var onDelete: (() -> Void)? = nil
     var accent: Color = ListeningTheme.accent
     var accentDark: Color = ListeningTheme.accentDark
 
@@ -25,8 +27,12 @@ struct ListeningSavedSessionCardView: View {
                 Spacer(minLength: 0)
 
                 Menu {
-                    Button("Review mistakes", action: {})
-                    Button("Delete session", role: .destructive, action: {})
+                    if let onReview {
+                        Button("Review result", action: onReview)
+                    }
+                    if let onDelete {
+                        Button("Delete session", role: .destructive, action: onDelete)
+                    }
                 } label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 14, weight: .bold))

@@ -1,44 +1,67 @@
 import Foundation
 
 enum SavedPracticePreviewData {
-    static let continueSession = ListeningSavedSession(
-        id: "continue-1",
-        title: "A Morning in the City",
-        modeTitle: "Listen from Text",
-        languageTitle: "English",
-        levelTitle: "B1",
-        score: nil,
-        progress: 0.45,
-        status: "In progress",
-        dateText: "Yesterday",
-        isInProgress: true
-    )
-
-    static let savedSessions: [ListeningSavedSession] = [
-        continueSession,
-        ListeningSavedSession(
-            id: "saved-2",
-            title: "Weekend Travel Podcast",
-            modeTitle: "Import Audio",
-            languageTitle: "English",
-            levelTitle: "B2",
-            score: 78,
-            progress: 1,
-            status: "Completed",
-            dateText: "3 days ago",
-            isInProgress: false
+    /// Full persisted sessions used by the mock store and previews.
+    static let persistedSessions: [ListeningPersistedSession] = [
+        ListeningPersistedSession(
+            id: "continue-1",
+            modeID: "listen-from-text",
+            title: "A Morning in the City",
+            language: .english,
+            level: .b1,
+            createdAt: Date().addingTimeInterval(-86_400),
+            updatedAt: Date().addingTimeInterval(-3_600),
+            durationSeconds: 180,
+            elapsedSeconds: 80,
+            progress: 0.45,
+            playbackPosition: 80,
+            text: ListeningPlaceholderData.sampleText,
+            showTextWhileListening: true,
+            addQuestions: true,
+            questions: ListeningPlaceholderData.sampleQuestions,
+            selectedAnswers: ["q1": 1],
+            status: .inProgress
         ),
-        ListeningSavedSession(
-            id: "saved-3",
-            title: "Daily Life in Tokyo",
-            modeTitle: "Video Listening",
-            languageTitle: "English",
-            levelTitle: "A2",
-            score: 91,
+        ListeningPersistedSession(
+            id: "saved-2",
+            modeID: "import-audio",
+            title: "Weekend Travel Podcast",
+            language: .english,
+            level: .b2,
+            createdAt: Date().addingTimeInterval(-3 * 86_400),
+            updatedAt: Date().addingTimeInterval(-3 * 86_400),
+            durationSeconds: 272,
+            elapsedSeconds: 272,
             progress: 1,
-            status: "Completed",
-            dateText: "Last week",
-            isInProgress: false
+            addQuestions: true,
+            questions: ListeningPlaceholderData.sampleQuestions,
+            selectedAnswers: ["q1": 1, "q2": 1, "q3": 0],
+            result: ListeningPlaceholderData.sampleResult,
+            status: .completed
+        ),
+        ListeningPersistedSession(
+            id: "saved-3",
+            modeID: "video-listening",
+            title: "Daily Life in Tokyo",
+            language: .english,
+            level: .a2,
+            createdAt: Date().addingTimeInterval(-7 * 86_400),
+            updatedAt: Date().addingTimeInterval(-7 * 86_400),
+            durationSeconds: 255,
+            elapsedSeconds: 255,
+            progress: 1,
+            videoURL: "https://www.youtube.com/watch?v=LXb3EKWsInQ",
+            videoTitle: "Daily Life in Tokyo",
+            addQuestions: false,
+            status: .completed
         )
     ]
+
+    static var savedSessions: [ListeningSavedSession] {
+        persistedSessions.map { $0.toSavedSession() }
+    }
+
+    static var continueSession: ListeningSavedSession {
+        persistedSessions.first { $0.isInProgress }!.toSavedSession()
+    }
 }

@@ -8,6 +8,10 @@ struct ListeningAudioPlayerCard: View {
     let speedLabel: String
     var accent: Color = ListeningTheme.accent
     var accentDark: Color = ListeningTheme.accentDark
+    /// When provided, the view model owns playback: the play/pause button calls
+    /// this instead of just toggling the binding locally.
+    var onPlayPause: (() -> Void)? = nil
+    var onReplay: (() -> Void)? = nil
 
     var body: some View {
         ListeningWhiteCard {
@@ -39,7 +43,11 @@ struct ListeningAudioPlayerCard: View {
 
                 HStack(spacing: 16) {
                     Button {
-                        withAnimation(.easeInOut(duration: 0.2)) { isPlaying.toggle() }
+                        if let onPlayPause {
+                            onPlayPause()
+                        } else {
+                            withAnimation(.easeInOut(duration: 0.2)) { isPlaying.toggle() }
+                        }
                     } label: {
                         ZStack {
                             Circle()
@@ -69,7 +77,7 @@ struct ListeningAudioPlayerCard: View {
                 HStack(spacing: 10) {
                     ListeningMetadataChip(text: speedLabel, accent: accent)
 
-                    Button {} label: {
+                    Button { onReplay?() } label: {
                         HStack(spacing: 5) {
                             Image(systemName: "arrow.counterclockwise")
                                 .font(.system(size: 12, weight: .semibold))

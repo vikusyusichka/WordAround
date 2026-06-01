@@ -12,10 +12,20 @@ struct ImportAudioSessionView: View {
 
     init(
         setup: ListeningAudioImportSetup,
+        sessionId: String = UUID().uuidString,
+        questions: [ListeningQuestion] = [],
+        transcript: String = "",
+        restore: ListeningPersistedSession? = nil,
         onExitToSetup: (() -> Void)? = nil,
         onExitToListening: (() -> Void)? = nil
     ) {
-        _viewModel = StateObject(wrappedValue: ImportAudioSessionViewModel(setup: setup))
+        _viewModel = StateObject(wrappedValue: ImportAudioSessionViewModel(
+            setup: setup,
+            sessionId: sessionId,
+            questions: questions,
+            transcript: transcript,
+            restore: restore
+        ))
         self.onExitToSetup = onExitToSetup
         self.onExitToListening = onExitToListening
     }
@@ -36,14 +46,20 @@ struct ImportAudioSessionView: View {
                     )
 
                     ListeningAudioPlayerCard(
-                        isPlaying: $viewModel.isPlaying,
+                        isPlaying: .constant(viewModel.isPlaying),
                         progress: viewModel.progress,
-                        currentTimeText: "1:00",
-                        durationText: viewModel.setup.durationText,
+                        currentTimeText: viewModel.currentTimeText,
+                        durationText: viewModel.durationText,
                         speedLabel: "1.0x",
                         accent: accent,
-                        accentDark: accentDark
+                        accentDark: accentDark,
+                        onPlayPause: { viewModel.togglePlayback() },
+                        onReplay: { viewModel.replay() }
                     )
+
+                    if let errorMessage = viewModel.errorMessage {
+                        ListeningInlineErrorView(message: errorMessage, accent: accent)
+                    }
 
                     hiddenTranscriptNote
 
@@ -74,12 +90,15 @@ struct ImportAudioSessionView: View {
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
         }
         .ignoresSafeArea(edges: .bottom)
+        .tint(accentDark)
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
+        .onAppear { viewModel.onAppear() }
+        .onDisappear { viewModel.teardown() }
         .navigationDestination(isPresented: $viewModel.showResult) {
             ListeningResultView(
-                result: ListeningPlaceholderData.sampleResult,
-                subtitle: "Listening Practice",
+                result: viewModel.result ?? ListeningPlaceholderData.sampleResult,
+                subtitle: viewModel.setup.fileName,
                 chips: [viewModel.setup.language.title, viewModel.setup.level.title, "Import Audio"],
                 accent: accent,
                 accentDark: accentDark,
@@ -120,20 +139,32 @@ struct ImportAudioSessionView: View {
             ReadingQuestionCardView(
                 title: "Question \(index + 1)",
                 question: question.prompt,
-                accent: accent
+                accent: accent,
+                accentDark: accentDark
             )
 
             ReadingQuestionOptionsGrid {
                 ForEach(Array(question.options.enumerated()), id: \.offset) { optionIndex, option in
                     let label = String(UnicodeScalar(65 + optionIndex)!)
+                    let isSelected = viewModel.selectedAnswers[question.id] == optionIndex
+                    let showState = viewModel.hasCheckedAnswers && isSelected
+                    let isCorrect = optionIndex == question.correctIndex
+
                     ReadingAnswerOptionCard(
                         label: label,
                         text: option,
-                        isSelected: viewModel.selectedAnswers[question.id] == optionIndex,
+                        isSelected: isSelected,
                         accent: accent,
                         accentDark: accentDark
                     ) {
                         viewModel.selectAnswer(questionID: question.id, optionIndex: optionIndex)
+                    }
+                    .overlay(alignment: .trailing) {
+                        if showState {
+                            Image(systemName: isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
+                                .foregroundColor(isCorrect ? accent : Color(red: 0.95, green: 0.42, blue: 0.40))
+                                .padding(.trailing, 14)
+                        }
                     }
                 }
             }
@@ -148,12 +179,15 @@ struct ImportAudioSessionView: View {
                 language: .english,
                 level: .b1,
                 fileName: "podcast.mp3",
+                storedFileName: "preview.mp3",
                 durationText: "4:32",
+                durationSeconds: 272,
                 fileSizeText: "8.4 MB",
                 addQuestions: true,
                 questionCount: 5,
                 questionTypes: Set(ListeningQuestionType.allCases)
-            )
+            ),
+            questions: ListeningPlaceholderData.sampleQuestions
         )
     }
 }

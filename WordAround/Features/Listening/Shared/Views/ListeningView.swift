@@ -39,6 +39,7 @@ struct ListeningView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .onAppear { viewModel.refreshDailyProgress() }
         .navigationDestination(isPresented: $openListenFromText) {
             ListenFromTextSetupView(onExitToListening: { openListenFromText = false })
         }

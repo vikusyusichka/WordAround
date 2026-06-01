@@ -8,29 +8,72 @@ final class ImportAudioSetupViewModel: ObservableObject {
     @Published var addQuestions = true
     @Published var questionCount = 5
     @Published var questionTypes: Set<ListeningQuestionType> = Set(ListeningQuestionType.allCases)
-    @Published var selectedFileName: String?
-    @Published var selectedDuration = "4:32"
-    @Published var selectedFileSize = "8.4 MB"
+
+    @Published private(set) var importedAudio: ListeningImportedAudio?
+    @Published private(set) var isImporting = false
+    @Published var errorMessage: String?
     @Published var showFileImporter = false
     @Published var showProcessing = false
 
-    var canContinue: Bool { selectedFileName != nil }
+    private let importer = ListeningAudioImporter()
+
+    var selectedFileName: String? { importedAudio?.originalName }
+    var selectedDuration: String { importedAudio?.durationText ?? "" }
+    var selectedFileSize: String { importedAudio?.fileSizeText ?? "" }
+
+    var canContinue: Bool { importedAudio != nil && !isImporting }
 
     func clearSelectedFile() {
-        selectedFileName = nil
+        if let stored = importedAudio?.fileName {
+            ListeningAudioImporter.deleteAudio(fileName: stored)
+        }
+        importedAudio = nil
+        errorMessage = nil
     }
 
-    func handleImportedFile(_ url: URL) {
-        selectedFileName = url.lastPathComponent
+    /// Result coming back from SwiftUI's `.fileImporter`.
+    func handleImportResult(_ result: Result<[URL], Error>) {
+        switch result {
+        case .failure(let error):
+            errorMessage = "Couldn't open that file: \(error.localizedDescription)"
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            importAudio(from: url)
+        }
+    }
+
+    func importAudio(from url: URL) {
+        errorMessage = nil
+        isImporting = true
+        Task {
+            do {
+                let audio = try await importer.importAudio(from: url)
+                self.importedAudio = audio
+            } catch {
+                self.errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            }
+            self.isImporting = false
+        }
+    }
+
+    func continueToProcessing() {
+        guard importedAudio != nil else {
+            errorMessage = "Choose an audio file first."
+            return
+        }
+        showProcessing = true
     }
 
     func makeSetup() -> ListeningAudioImportSetup {
-        ListeningAudioImportSetup(
+        let audio = importedAudio
+        return ListeningAudioImportSetup(
             language: selectedLanguage,
             level: selectedLevel,
-            fileName: selectedFileName ?? "audio.mp3",
-            durationText: selectedDuration,
-            fileSizeText: selectedFileSize,
+            fileName: audio?.originalName ?? "audio",
+            storedFileName: audio?.fileName ?? "",
+            durationText: audio?.durationText ?? "0:00",
+            durationSeconds: audio?.durationSeconds ?? 0,
+            fileSizeText: audio?.fileSizeText ?? "",
             addQuestions: addQuestions,
             questionCount: questionCount,
             questionTypes: questionTypes

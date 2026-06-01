@@ -123,6 +123,55 @@ struct ListeningWhiteCard<Content: View>: View {
     }
 }
 
+/// Inline, non-blocking error banner used inside session/setup screens.
+struct ListeningInlineErrorView: View {
+    let message: String
+    var accent: Color = ListeningTheme.accent
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundColor(Color(red: 0.95, green: 0.42, blue: 0.40))
+            Text(message)
+                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .foregroundColor(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
+                .fill(Color(red: 0.95, green: 0.42, blue: 0.40).opacity(0.10))
+        )
+    }
+}
+
+/// Small inline progress row (spinner + label) for async work like question
+/// generation or transcription.
+struct ListeningLoadingRow: View {
+    let message: String
+    var accent: Color = ListeningTheme.accent
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ProgressView()
+                .progressViewStyle(.circular)
+                .tint(accent)
+            Text(message)
+                .font(.system(size: 14, weight: .medium, design: .rounded))
+                .foregroundColor(AppColors.textSecondary)
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
+                .fill(Color.white.opacity(0.94))
+        )
+    }
+}
+
 struct ListeningToggleRow: View {
     let title: String
     @Binding var isOn: Bool

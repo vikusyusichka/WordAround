@@ -28,6 +28,33 @@ struct ImportAudioProcessingView: View {
             VStack(spacing: Layout.homeContentSpacing) {
                 Spacer()
 
+                if viewModel.hasFailed {
+                    errorState
+                } else {
+                    progressState
+                }
+
+                Spacer()
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .tint(accentDark)
+        .toolbar(.hidden, for: .navigationBar)
+        .onAppear { viewModel.runProcessing() }
+        .navigationDestination(isPresented: $viewModel.showSession) {
+            ImportAudioSessionView(
+                setup: setup,
+                sessionId: viewModel.sessionId,
+                questions: viewModel.questions,
+                transcript: viewModel.transcript,
+                onExitToSetup: onExitToSetup,
+                onExitToListening: onExitToListening
+            )
+        }
+    }
+
+    private var progressState: some View {
+        Group {
                 VStack(spacing: 20) {
                     Text("Preparing your listening practice")
                         .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
@@ -73,20 +100,58 @@ struct ImportAudioProcessingView: View {
                 }
                 .frame(maxWidth: Layout.convContentMaxWidth)
                 .padding(.horizontal, Layout.homeHorizontalPadding)
+        }
+    }
 
-                Spacer()
+    private var errorState: some View {
+        VStack(spacing: 18) {
+            ZStack {
+                Circle()
+                    .fill(Color(red: 0.95, green: 0.42, blue: 0.40).opacity(0.14))
+                    .frame(width: 64, height: 64)
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.system(size: 26, weight: .semibold))
+                    .foregroundColor(Color(red: 0.95, green: 0.42, blue: 0.40))
+            }
+
+            Text("We couldn't prepare this audio")
+                .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
+                .foregroundColor(accentDark)
+                .multilineTextAlignment(.center)
+
+            Text(viewModel.errorMessage ?? "Something went wrong.")
+                .font(.system(size: 14, weight: .medium, design: .rounded))
+                .foregroundColor(AppColors.textSecondary)
+                .multilineTextAlignment(.center)
+
+            VStack(spacing: 10) {
+                ListeningPrimaryButton(
+                    title: "Try Again",
+                    icon: "arrow.clockwise",
+                    accent: accent,
+                    accentDark: accentDark
+                ) { viewModel.retry() }
+
+                Button { onExitToSetup?() } label: {
+                    Text("Choose another file")
+                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                        .foregroundColor(accentDark)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: Layout.convSetupStartButtonHeight)
+                        .background(accent.opacity(0.10))
+                        .clipShape(RoundedRectangle(cornerRadius: Layout.convSetupStartButtonCornerRadius, style: .continuous))
+                }
+                .buttonStyle(.plain)
             }
         }
-        .navigationBarBackButtonHidden(true)
-        .toolbar(.hidden, for: .navigationBar)
-        .onAppear { viewModel.runProcessing() }
-        .navigationDestination(isPresented: $viewModel.showSession) {
-            ImportAudioSessionView(
-                setup: setup,
-                onExitToSetup: onExitToSetup,
-                onExitToListening: onExitToListening
-            )
-        }
+        .padding(24)
+        .frame(maxWidth: Layout.convContentMaxWidth)
+        .background(
+            RoundedRectangle(cornerRadius: Layout.cardCornerRadius, style: .continuous)
+                .fill(Color.white.opacity(0.94))
+                .shadow(color: Color.black.opacity(0.05), radius: 12, x: 0, y: 4)
+        )
+        .padding(.horizontal, Layout.homeHorizontalPadding)
     }
 }
 
@@ -97,7 +162,9 @@ struct ImportAudioProcessingView: View {
                 language: .english,
                 level: .b1,
                 fileName: "podcast.mp3",
+                storedFileName: "preview.mp3",
                 durationText: "4:32",
+                durationSeconds: 272,
                 fileSizeText: "8.4 MB",
                 addQuestions: true,
                 questionCount: 5,

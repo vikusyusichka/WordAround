@@ -1,12 +1,22 @@
 import Foundation
 
-enum ListeningQuestionType: String, CaseIterable, Identifiable {
+enum ListeningQuestionType: String, CaseIterable, Identifiable, Codable {
     case mainIdea = "Main idea"
     case details = "Details"
     case vocabulary = "Vocabulary"
     case trueFalse = "True / False"
 
     var id: String { rawValue }
+}
+
+/// Shared playback state across all listening modes (TTS, audio, video).
+enum ListeningPlaybackState: Equatable {
+    case idle
+    case playing
+    case paused
+    case finished
+
+    var isActive: Bool { self == .playing }
 }
 
 enum ListeningVoiceSpeed: String, CaseIterable, Identifiable {

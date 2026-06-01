@@ -1,27 +1,27 @@
-import Combine
 import Foundation
+import Combine
 
 @MainActor
 final class VideoListeningSetupViewModel: ObservableObject {
     @Published var selectedLanguage: GrammarLanguage = .english
     @Published var selectedLevel: EssayDifficulty = .b1
-    @Published var topicQuery = ""
     @Published var selectedLength: ListeningVideoLength = .medium
     @Published var showResults = false
 
-    let suggestedTopics = ["Daily life", "Travel", "Food", "Work", "Culture", "News", "Stories"]
+    func findVideos() {
+        showResults = true
+    }
 
     func makeSetup() -> ListeningVideoSetup {
         ListeningVideoSetup(
             language: selectedLanguage,
             level: selectedLevel,
-            topic: topicQuery.isEmpty ? "Daily life" : topicQuery,
             length: selectedLength
         )
     }
 
     var previewSubtitle: String {
-        "We'll find videos for \(selectedLanguage.title) • \(selectedLevel.title) based on your topic."
+        "We'll find \(selectedLength.rawValue.lowercased()) videos for \(selectedLanguage.title) • \(selectedLevel.title)."
     }
 
     var previewChips: [String] {

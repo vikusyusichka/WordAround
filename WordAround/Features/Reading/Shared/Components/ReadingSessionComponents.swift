@@ -96,13 +96,14 @@ struct ReadingSessionTextCardView: View {
     var helperButtons: [String] = []
     var legend: String? = nil
     var accent: Color = AppColors.primaryBlue
+    var accentDark: Color = AppColors.primaryBlueDark
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             if let title {
                 Text(title)
                     .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .foregroundColor(AppColors.primaryBlueDark)
+                    .foregroundColor(accentDark)
             }
 
             if let legend {
@@ -116,7 +117,7 @@ struct ReadingSessionTextCardView: View {
 
             highlightedText
                 .font(.system(size: 16, weight: .medium, design: .rounded))
-                .foregroundColor(AppColors.primaryBlueDark)
+                .foregroundColor(accentDark)
                 .lineSpacing(6)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -194,6 +195,7 @@ struct ReadingQuestionCardView: View {
     let question: String
     var showsFindInText: Bool = false
     var accent: Color = AppColors.primaryBlue
+    var accentDark: Color = AppColors.primaryBlueDark
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -218,7 +220,7 @@ struct ReadingQuestionCardView: View {
 
             Text(question)
                 .font(.system(size: 17, weight: .semibold, design: .rounded))
-                .foregroundColor(AppColors.primaryBlueDark)
+                .foregroundColor(accentDark)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(16)

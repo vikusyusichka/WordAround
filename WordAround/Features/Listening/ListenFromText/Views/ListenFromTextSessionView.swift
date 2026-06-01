@@ -12,10 +12,11 @@ struct ListenFromTextSessionView: View {
 
     init(
         setup: ListeningSessionSetup,
+        restore: ListeningPersistedSession? = nil,
         onExitToSetup: (() -> Void)? = nil,
         onExitToListening: (() -> Void)? = nil
     ) {
-        _viewModel = StateObject(wrappedValue: ListenFromTextSessionViewModel(setup: setup))
+        _viewModel = StateObject(wrappedValue: ListenFromTextSessionViewModel(setup: setup, restore: restore))
         self.onExitToSetup = onExitToSetup
         self.onExitToListening = onExitToListening
     }
@@ -36,25 +37,36 @@ struct ListenFromTextSessionView: View {
                     )
 
                     ListeningAudioPlayerCard(
-                        isPlaying: $viewModel.isPlaying,
+                        isPlaying: .constant(viewModel.isPlaying),
                         progress: viewModel.progress,
                         currentTimeText: viewModel.currentTimeText,
                         durationText: viewModel.durationText,
                         speedLabel: viewModel.setup.voiceSpeed.rawValue,
                         accent: accent,
-                        accentDark: accentDark
+                        accentDark: accentDark,
+                        onPlayPause: { viewModel.togglePlayback() },
+                        onReplay: { viewModel.replay() }
                     )
+
+                    if let errorMessage = viewModel.errorMessage {
+                        ListeningInlineErrorView(message: errorMessage, accent: accent)
+                    }
 
                     if viewModel.setup.showTextWhileListening {
                         ReadingSessionTextCardView(
                             title: "Transcript",
                             bodyText: viewModel.setup.text,
-                            accent: accent
+                            highlightColor: accent,
+                            accent: accent,
+                            accentDark: accentDark
                         )
                     }
 
                     if viewModel.setup.addQuestions {
                         ListeningSetupSectionTitle("Questions", accentDark: accentDark)
+                        if viewModel.isGeneratingQuestions {
+                            ListeningLoadingRow(message: "Creating questions…", accent: accent)
+                        }
                         ForEach(Array(viewModel.questions.enumerated()), id: \.element.id) { index, question in
                             questionBlock(question, index: index)
                         }
@@ -80,12 +92,15 @@ struct ListenFromTextSessionView: View {
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
         }
         .ignoresSafeArea(edges: .bottom)
+        .tint(accentDark)
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
+        .onAppear { viewModel.onAppear() }
+        .onDisappear { viewModel.teardown() }
         .navigationDestination(isPresented: $viewModel.showResult) {
             ListeningResultView(
-                result: ListeningPlaceholderData.sampleResult,
-                subtitle: "Listening Practice",
+                result: viewModel.result ?? ListeningPlaceholderData.sampleResult,
+                subtitle: viewModel.setup.title,
                 chips: [viewModel.setup.language.title, viewModel.setup.level.title, "Listen from Text"],
                 accent: accent,
                 accentDark: accentDark,
@@ -110,7 +125,8 @@ struct ListenFromTextSessionView: View {
             ReadingQuestionCardView(
                 title: "Question \(index + 1)",
                 question: question.prompt,
-                accent: accent
+                accent: accent,
+                accentDark: accentDark
             )
 
             ReadingQuestionOptionsGrid {

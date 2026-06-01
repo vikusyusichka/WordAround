@@ -49,6 +49,7 @@ struct ListeningResultView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .tint(accentDark)
         .toolbar(.hidden, for: .navigationBar)
     }
 
@@ -81,17 +82,22 @@ struct ListeningResultView: View {
         .frame(maxWidth: .infinity)
     }
 
+    @ViewBuilder
     private var summaryCard: some View {
         VStack(spacing: 18) {
-            ReadingScoreCardView(comprehensionPercent: result.comprehensionPercent, accent: accent)
-            ListeningStatisticsCardView(
-                correctAnswers: result.correctAnswers,
-                totalQuestions: result.totalQuestions,
-                formattedTime: formattedTime,
-                speedLabel: result.speedLabel,
-                mistakeCount: result.mistakeCount,
-                accentDark: accentDark
-            )
+            if result.hasQuestions {
+                ReadingScoreCardView(comprehensionPercent: result.comprehensionPercent, accent: accent)
+                ListeningStatisticsCardView(
+                    correctAnswers: result.correctAnswers,
+                    totalQuestions: result.totalQuestions,
+                    formattedTime: formattedTime,
+                    speedLabel: result.speedLabel,
+                    mistakeCount: result.mistakeCount,
+                    accentDark: accentDark
+                )
+            } else {
+                watchOnlySummary
+            }
         }
         .padding(20)
         .frame(maxWidth: .infinity)
@@ -100,6 +106,27 @@ struct ListeningResultView: View {
                 .fill(Color.white.opacity(0.94))
                 .shadow(color: Color.black.opacity(0.05), radius: 12, x: 0, y: 4)
         )
+    }
+
+    /// Shown for watch-only sessions (no questions answered): no fake score,
+    /// just the listening time and a "completed" message.
+    private var watchOnlySummary: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "checkmark.seal.fill")
+                .font(.system(size: 40, weight: .semibold))
+                .foregroundColor(accent)
+            Text("Listening completed")
+                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .foregroundColor(accentDark)
+            Text("You listened for \(formattedTime).")
+                .font(.system(size: 14, weight: .medium, design: .rounded))
+                .foregroundColor(AppColors.textSecondary)
+            Text("No questions were set for this session, so there's no comprehension score.")
+                .font(.system(size: 12, weight: .medium, design: .rounded))
+                .foregroundColor(AppColors.mutedText)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
     }
 
     private var actions: some View {

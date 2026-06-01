@@ -55,6 +55,10 @@ struct ImportAudioSetupView: View {
 
                     infoNote
 
+                    if let errorMessage = viewModel.errorMessage {
+                        ListeningInlineErrorView(message: errorMessage, accent: accent)
+                    }
+
                     Spacer().frame(height: Layout.convSetupStartButtonHeight + 32)
                 }
                 .frame(maxWidth: Layout.convContentMaxWidth)
@@ -69,7 +73,7 @@ struct ImportAudioSetupView: View {
                 icon: "arrow.right",
                 accent: accent,
                 accentDark: accentDark,
-                action: { viewModel.showProcessing = true }
+                action: { viewModel.continueToProcessing() }
             )
             .padding(.horizontal, Layout.homeHorizontalPadding)
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
@@ -77,6 +81,7 @@ struct ImportAudioSetupView: View {
             .opacity(viewModel.canContinue ? 1 : 0.55)
         }
         .ignoresSafeArea(edges: .bottom)
+        .tint(accentDark)
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
         .fileImporter(
@@ -84,9 +89,7 @@ struct ImportAudioSetupView: View {
             allowedContentTypes: [.mp3, .mpeg4Audio, .wav, .audio],
             allowsMultipleSelection: false
         ) { result in
-            if case .success(let urls) = result, let url = urls.first {
-                viewModel.handleImportedFile(url)
-            }
+            viewModel.handleImportResult(result)
         }
         .navigationDestination(isPresented: $viewModel.showProcessing) {
             ImportAudioProcessingView(

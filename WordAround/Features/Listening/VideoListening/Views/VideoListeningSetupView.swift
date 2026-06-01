@@ -40,9 +40,6 @@ struct VideoListeningSetupView: View {
                         accentDark: accentDark
                     )
 
-                    ListeningSetupSectionTitle("Topic", accentDark: accentDark)
-                    topicCard
-
                     ListeningSetupSectionTitle("Video Length", accentDark: accentDark)
                     lengthSelector
                     Text(viewModel.selectedLength.helperText)
@@ -72,12 +69,13 @@ struct VideoListeningSetupView: View {
                 icon: "magnifyingglass",
                 accent: accent,
                 accentDark: accentDark,
-                action: { viewModel.showResults = true }
+                action: { viewModel.findVideos() }
             )
             .padding(.horizontal, Layout.homeHorizontalPadding)
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
         }
         .ignoresSafeArea(edges: .bottom)
+        .tint(accentDark)
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(isPresented: $viewModel.showResults) {
@@ -86,35 +84,6 @@ struct VideoListeningSetupView: View {
                 onExitToSetup: { viewModel.showResults = false },
                 onExitToListening: onExitToListening
             )
-        }
-    }
-
-    private var topicCard: some View {
-        ListeningWhiteCard {
-            VStack(alignment: .leading, spacing: 12) {
-                TextField("Enter a topic...", text: $viewModel.topicQuery)
-                    .font(.system(size: 15, weight: .medium, design: .rounded))
-                    .foregroundColor(accentDark)
-
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(viewModel.suggestedTopics, id: \.self) { topic in
-                            Button {
-                                viewModel.topicQuery = topic
-                            } label: {
-                                Text(topic)
-                                    .font(.system(size: 13, weight: .semibold, design: .rounded))
-                                    .foregroundColor(viewModel.topicQuery == topic ? .white : accentDark)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 8)
-                                    .background(viewModel.topicQuery == topic ? accent : accent.opacity(0.10))
-                                    .clipShape(Capsule())
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-            }
         }
     }
 

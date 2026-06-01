@@ -87,6 +87,7 @@ struct ListenFromTextSetupView: View {
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
         }
         .ignoresSafeArea(edges: .bottom)
+        .tint(accentDark)
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(isPresented: $viewModel.showSession) {

@@ -3,27 +3,36 @@ import Foundation
 
 @MainActor
 final class SavedPracticeViewModel: ObservableObject {
-    @Published private(set) var sessions: [ListeningSavedSession] = []
+    @Published private(set) var sessions: [ListeningPersistedSession] = []
 
-    private let storage: ListeningSessionStoring
+    private let store: ListeningSessionStoring
 
-    init(storage: ListeningSessionStoring = ListeningStorageService()) {
-        self.storage = storage
+    init(store: ListeningSessionStoring? = nil) {
+        self.store = store ?? LocalListeningSessionStore.shared
     }
 
-    var continueSession: ListeningSavedSession? {
-        sessions.first(where: \.isInProgress)
+    /// Most recent unfinished session, surfaced as "Continue listening".
+    var continueSession: ListeningPersistedSession? {
+        sessions.first { $0.status != .completed && $0.result == nil }
     }
 
-    var savedSessionItems: [ListeningSavedSession] {
-        sessions.filter { !$0.isInProgress || $0.id != continueSession?.id }
+    /// Everything except the single highlighted continue session, newest first.
+    var savedSessions: [ListeningPersistedSession] {
+        sessions.filter { $0.id != continueSession?.id }
     }
 
     var isEmpty: Bool { sessions.isEmpty }
 
     func load() {
         Task {
-            sessions = await storage.fetchSavedSessions()
+            sessions = await store.fetchSessions()
+        }
+    }
+
+    func delete(_ session: ListeningPersistedSession) {
+        Task {
+            await store.delete(id: session.id)
+            sessions = await store.fetchSessions()
         }
     }
 }
