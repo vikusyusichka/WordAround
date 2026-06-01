@@ -98,9 +98,17 @@ final class ReadingMyTextsViewModel: ObservableObject {
     }
 
     func markCompleted(_ text: ReadingUserText) {
+        guard let score = text.averageScore else {
+            errorMessage = "Finish a reading session first to mark this text complete."
+            return
+        }
         Task {
             do {
-                try await storage.markCompleted(textId: text.id, scorePercent: text.averageScore ?? 100, readingTimeSeconds: text.readingTimeSeconds ?? 0)
+                try await storage.markCompleted(
+                    textId: text.id,
+                    scorePercent: score,
+                    readingTimeSeconds: text.readingTimeSeconds ?? 0
+                )
                 texts = try await storage.fetchTexts()
             } catch {
                 errorMessage = "Could not update text."

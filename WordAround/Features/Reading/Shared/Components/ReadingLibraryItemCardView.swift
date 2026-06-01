@@ -8,6 +8,7 @@ struct ReadingLibraryItemCardView: View {
     let onOpen: () -> Void
     var onDelete: (() -> Void)? = nil
     var onRename: (() -> Void)? = nil
+    var onOpenSourceSet: (() -> Void)? = nil
 
     var body: some View {
         Button(action: onOpen) {
@@ -45,6 +46,11 @@ struct ReadingLibraryItemCardView: View {
         .buttonStyle(.plain)
         .contextMenu {
             Button(action: onOpen) { Label("Open", systemImage: "book") }
+            if let onOpenSourceSet {
+                Button(action: onOpenSourceSet) {
+                    Label("View flashcard set", systemImage: "rectangle.stack")
+                }
+            }
             if let onRename {
                 Button(action: onRename) { Label("Rename", systemImage: "pencil") }
             }
@@ -167,7 +173,7 @@ struct ReadingLibraryItemCardView: View {
         ReadingLibraryItemCardView(
             item: ReadingLibraryItem(
                 userId: "preview",
-                modeID: "generated-reading",
+                modeID: ReadingMode.myTextsID,
                 title: "A Morning in the City",
                 preview: "The streets were quiet as the first light touched the rooftops…",
                 difficulty: "B1",
@@ -178,9 +184,9 @@ struct ReadingLibraryItemCardView: View {
                 tags: ["Travel"],
                 status: .inProgress
             ),
-            accent: ReadingSetupConfig.generatedReading.accent,
-            accentDark: ReadingSetupConfig.generatedReading.accentDark,
-            systemImage: "sparkles",
+            accent: ReadingMyTextsTheme.accent,
+            accentDark: ReadingMyTextsTheme.accentDark,
+            systemImage: "doc.text.fill",
             onOpen: {},
             onDelete: {}
         )

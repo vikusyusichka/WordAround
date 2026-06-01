@@ -87,6 +87,7 @@ private struct ReadingSessionContentView: View {
                                 translationError: viewModel.translationError,
                                 accent: accent,
                                 accentDark: accentDark,
+                                vocabularyTerms: viewModel.vocabularyHighlightTerms,
                                 onWordTap: { viewModel.handleWordTap($0, range: $1) },
                                 onSelectTranslationTarget: { viewModel.selectTranslationTarget($0) }
                             )

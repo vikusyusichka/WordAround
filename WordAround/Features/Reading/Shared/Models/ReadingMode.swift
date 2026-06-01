@@ -7,5 +7,4 @@ struct ReadingMode: Identifiable {
     let systemImage: String
     let accentColor: Color
     let blobColor: Color
-    var isComingSoon: Bool = false
 }

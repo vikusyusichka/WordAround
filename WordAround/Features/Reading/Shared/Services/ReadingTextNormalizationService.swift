@@ -7,20 +7,15 @@ enum ReadingTextNormalizationService {
     }
 
     static func paragraphs(from raw: String) -> [String] {
-        // 1. Reuse the shared cleaner to strip code fences / unwrap JSON strings.
         var text = AIResponseTextCleaner.normalizedText(from: raw)
 
-        // 2. Strip AI intro/outro lines.
         text = removeAIBoilerplate(text)
 
-        // 3. Remove markdown emphasis + placeholder artifacts.
         text = removeMarkdown(text)
         text = removePlaceholders(text)
 
-        // 4. Normalize whitespace and newlines.
         text = normalizeWhitespace(text)
 
-        // 5. Split into paragraphs, splitting oversized blobs by sentence groups.
         let rawParagraphs = splitParagraphs(text)
         let result = rawParagraphs.flatMap { wrapLongParagraph($0) }
 
@@ -35,7 +30,6 @@ enum ReadingTextNormalizationService {
             "here is", "here's", "sure, here", "sure! here", "below is",
             "here is the text", "here is your", "of course"
         ]
-        // Drop a single leading boilerplate line if it matches.
         if let first = lines.first?.trimmingCharacters(in: .whitespaces).lowercased(),
            prefixes.contains(where: { first.hasPrefix($0) }),
            first.count < 80 {
@@ -46,7 +40,6 @@ enum ReadingTextNormalizationService {
 
     private static func removeMarkdown(_ text: String) -> String {
         var result = text
-        // Bold / italic emphasis: keep inner content, drop the markers.
         let patterns = [
             "\\*\\*(.+?)\\*\\*",   // **bold**
             "__(.+?)__",           // __bold__
@@ -56,7 +49,6 @@ enum ReadingTextNormalizationService {
         for pattern in patterns {
             result = replace(pattern: pattern, in: result, with: "$1")
         }
-        // Heading markers / blockquotes / leftover bullets at line starts.
         result = replace(pattern: "(?m)^\\s{0,3}#{1,6}\\s*", in: result, with: "")
         result = replace(pattern: "(?m)^\\s{0,3}>\\s?", in: result, with: "")
         result = replace(pattern: "(?m)^\\s{0,3}[-*•]\\s+", in: result, with: "")
@@ -65,11 +57,9 @@ enum ReadingTextNormalizationService {
 
     private static func removePlaceholders(_ text: String) -> String {
         var result = text
-        // Literal vocabulary placeholders the model sometimes emits.
         result = replace(pattern: "(?i)\\bword\\s*\\(\\s*translate\\s*\\)", in: result, with: "")
         result = replace(pattern: "(?i)\\[\\s*word\\s*\\]", in: result, with: "")
         result = replace(pattern: "(?i)\\[\\s*translate\\s*\\]", in: result, with: "")
-        // Empty parens/brackets left behind after stripping.
         result = replace(pattern: "\\(\\s*\\)", in: result, with: "")
         result = replace(pattern: "\\[\\s*\\]", in: result, with: "")
         return result
@@ -78,11 +68,8 @@ enum ReadingTextNormalizationService {
     private static func normalizeWhitespace(_ text: String) -> String {
         var result = text.replacingOccurrences(of: "\r\n", with: "\n")
             .replacingOccurrences(of: "\r", with: "\n")
-        // Collapse runs of spaces/tabs (not newlines).
         result = replace(pattern: "[ \\t]{2,}", in: result, with: " ")
-        // Trim trailing spaces on each line.
         result = replace(pattern: "(?m)[ \\t]+$", in: result, with: "")
-        // Collapse 3+ newlines to a paragraph break.
         result = replace(pattern: "\\n{3,}", in: result, with: "\n\n")
         return result.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -93,7 +80,6 @@ enum ReadingTextNormalizationService {
             .filter { !$0.isEmpty }
         if byBlank.count > 1 { return byBlank }
 
-        // No blank-line breaks: fall back to single-newline breaks if present.
         let bySingle = text.components(separatedBy: "\n")
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }

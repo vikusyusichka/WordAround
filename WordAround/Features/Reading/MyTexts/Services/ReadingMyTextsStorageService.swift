@@ -181,7 +181,7 @@ enum ReadingMyTextsStorageError: LocalizedError {
         case .notSignedIn:
             return "Please sign in to save and sync your texts."
         case .cloudPermissionDenied:
-            return "Cloud sync is blocked by Firestore rules. Add access for users/{uid}/readingItems, then deploy rules. Texts you save are stored on this device."
+            return "Library sync is paused. Your texts are saved on this device — try again later to sync."
         }
     }
 }

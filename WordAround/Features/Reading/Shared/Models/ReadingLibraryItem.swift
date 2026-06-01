@@ -15,24 +15,26 @@ enum ReadingLibraryItemStatus: String, Codable, CaseIterable {
 }
 
 enum ReadingSourceType: String, Codable, CaseIterable {
-    case generated
+    case generated      // legacy: pre-refactor generated-reading items still in Firebase
     case pastedText
     case photoImport
     case pdfImport
     case flashcardSet
     case story
     case speedPractice
-    case interactive
+    case interactive    // legacy: pre-refactor interactive-reading items still in Firebase
+    case aiGenerated    // new: AI-generated text saved under My Texts
+    case exploredArticle // new: Explore Reading (Wikipedia / public article) saved under My Texts
 
     static func forMode(_ modeID: String) -> ReadingSourceType {
         switch modeID {
-        case "generated-reading":   return .generated
         case "my-texts":            return .pastedText
         case "reading-from-sets":   return .flashcardSet
         case "story-mode":          return .story
         case "speed-reading":       return .speedPractice
-        case "interactive-reading": return .interactive
-        default:                    return .generated
+        case "generated-reading":   return .aiGenerated
+        case "interactive-reading": return .story
+        default:                    return .pastedText
         }
     }
 }
@@ -58,7 +60,6 @@ struct ReadingLibraryItem: Identifiable, Codable, Equatable, Hashable {
     var selections: [String: String]
     var toggles: [String: Bool]
     var languageCode: String
-    // My Texts–specific metadata (optional for other modes; defaults keep decoding safe).
     var wordCount: Int
     var characterCount: Int
     var detectedDifficulty: String

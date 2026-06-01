@@ -14,10 +14,11 @@ struct ReadingReadingToolbarView: View {
     let translationError: String?
     let accent: Color
     let accentDark: Color
+    var vocabularyTerms: [String] = []
     let onWordTap: (String, NSRange) -> Void
     let onSelectTranslationTarget: (GrammarLanguage) -> Void
 
-    private var isInteractive: Bool { highlightOnTap || translationOnTap }
+    private var isInteractive: Bool { highlightOnTap || translationOnTap || !vocabularyTerms.isEmpty }
 
     private var paragraphs: [String] {
         ReadingTextNormalizationService.paragraphs(from: content)
@@ -49,6 +50,8 @@ struct ReadingReadingToolbarView: View {
                     selectedWordRange: selectedWordRange,
                     accent: UIColor(accent),
                     baseTextColor: UIColor(accentDark),
+                    vocabularyTerms: vocabularyTerms,
+                    vocabularyColor: UIColor(accent),
                     onWordTap: onWordTap
                 )
                 .frame(maxWidth: .infinity, alignment: .topLeading)

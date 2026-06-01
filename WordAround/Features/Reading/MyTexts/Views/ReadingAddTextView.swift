@@ -103,7 +103,7 @@ struct ReadingAddTextView: View {
         VStack(alignment: .leading, spacing: 6) {
             ReadingSetupHeaderView(
                 title: "Add Text",
-                subtitle: "Paste, scan, or import a PDF — then configure your practice",
+                subtitle: "Paste, import, generate, or explore texts",
                 accent: accent,
                 accentDark: accentDark,
                 onBack: { dismiss() }
@@ -129,8 +129,7 @@ struct ReadingAddTextView: View {
 
     @ViewBuilder
     private var importActions: some View {
-        let source = ReadingTextImportSource.from(title: viewModel.importSourceTitle)
-        switch source {
+        switch viewModel.currentSource {
         case .pasteText:
             EmptyView()
         case .photo:
@@ -161,8 +160,159 @@ struct ReadingAddTextView: View {
             if viewModel.isImporting {
                 ProgressView().tint(accent)
             }
+        case .generate:
+            generateSection
+        case .explore:
+            exploreSection
         }
     }
+
+    // MARK: - Generate Text section
+
+    private var generateSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            sectionHeader(title: "Generate Text", subtitle: "Create a reading text from a topic.")
+
+            textInputField(
+                placeholder: "Topic — e.g. coral reefs, the printing press, a day at the market",
+                text: $viewModel.generateTopic
+            )
+
+            ReadingSetupSectionCard(title: "Style", accentDark: accentDark) {
+                ReadingSegmentedSelector(
+                    options: MyTextsAIGenerationRequest.Style.titles,
+                    selection: $viewModel.generateStyleTitle,
+                    accent: accent,
+                    accentDark: accentDark,
+                    columns: 2
+                )
+            }
+
+            ReadingSetupSectionCard(title: "Length", accentDark: accentDark) {
+                ReadingSegmentedSelector(
+                    options: ReadingLength.titles,
+                    selection: $viewModel.generateLengthTitle,
+                    accent: accent,
+                    accentDark: accentDark
+                )
+            }
+
+            if let error = viewModel.generateErrorMessage {
+                messageBanner(error, isError: true)
+            }
+
+            Button {
+                Task { await viewModel.generateText() }
+            } label: {
+                HStack(spacing: 8) {
+                    if viewModel.isGenerating {
+                        ProgressView().tint(accent)
+                    } else {
+                        Image(systemName: "sparkles")
+                    }
+                    Text(viewModel.isGenerating ? "Generating…" : "Generate Text")
+                }
+                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .foregroundColor(accentDark)
+                .padding(.horizontal, 14)
+                .frame(height: 44)
+                .frame(maxWidth: .infinity)
+                .background(accent.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous))
+            }
+            .buttonStyle(.plain)
+            .disabled(!viewModel.canGenerate)
+            .opacity(viewModel.canGenerate ? 1 : 0.55)
+        }
+    }
+
+    // MARK: - Explore Reading section
+
+    private var exploreSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            sectionHeader(title: "Explore Reading", subtitle: "Find or fetch a text from a topic.")
+
+            textInputField(
+                placeholder: "Topic or keyword — e.g. Marie Curie, Venice, photosynthesis",
+                text: $viewModel.exploreTopic
+            )
+
+            ReadingSetupSectionCard(title: "Source", accentDark: accentDark) {
+                ReadingSegmentedSelector(
+                    options: MyTextsExploreRequest.SourcePreference.titles,
+                    selection: $viewModel.exploreSourceTitle,
+                    accent: accent,
+                    accentDark: accentDark,
+                    columns: 3
+                )
+            }
+
+            ReadingSetupSectionCard(title: "Length", accentDark: accentDark) {
+                ReadingSegmentedSelector(
+                    options: ReadingLength.titles,
+                    selection: $viewModel.exploreLengthTitle,
+                    accent: accent,
+                    accentDark: accentDark
+                )
+            }
+
+            if let error = viewModel.exploreErrorMessage {
+                messageBanner(error, isError: true)
+            }
+
+            if let label = viewModel.exploreSourceLabel {
+                exploreSourceBanner(
+                    label: label,
+                    isPlaceholder: viewModel.exploreResultIsPlaceholder
+                )
+            }
+
+            Button {
+                Task { await viewModel.exploreReading() }
+            } label: {
+                HStack(spacing: 8) {
+                    if viewModel.isExploring {
+                        ProgressView().tint(accent)
+                    } else {
+                        Image(systemName: "safari")
+                    }
+                    Text(viewModel.isExploring ? "Fetching…" : "Fetch Article")
+                }
+                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .foregroundColor(accentDark)
+                .padding(.horizontal, 14)
+                .frame(height: 44)
+                .frame(maxWidth: .infinity)
+                .background(accent.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous))
+            }
+            .buttonStyle(.plain)
+            .disabled(!viewModel.canExplore)
+            .opacity(viewModel.canExplore ? 1 : 0.55)
+        }
+    }
+
+    private func sectionHeader(title: String, subtitle: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.system(size: 15, weight: .bold, design: .rounded))
+                .foregroundColor(accentDark)
+            Text(subtitle)
+                .font(.system(size: 13, weight: .medium, design: .rounded))
+                .foregroundColor(AppColors.textSecondary)
+        }
+    }
+
+    private func textInputField(placeholder: String, text: Binding<String>) -> some View {
+        TextField(placeholder, text: text)
+            .font(.system(size: 15, weight: .medium, design: .rounded))
+            .foregroundColor(accentDark)
+            .padding(.horizontal, 14)
+            .frame(height: 48)
+            .background(fieldBackground)
+    }
+
+    // MARK: - Editor / standard sections
 
     private var titleField: some View {
         ReadingSetupSectionCard(title: "Title", accentDark: accentDark) {
@@ -176,10 +326,10 @@ struct ReadingAddTextView: View {
     }
 
     private var textEditor: some View {
-        ReadingSetupSectionCard(title: "Text", accentDark: accentDark) {
+        ReadingSetupSectionCard(title: editorTitle, accentDark: accentDark) {
             ZStack(alignment: .topLeading) {
                 if viewModel.editorText.isEmpty {
-                    Text("Paste your text here...")
+                    Text(editorPlaceholder)
                         .font(.system(size: 15, weight: .medium, design: .rounded))
                         .foregroundColor(AppColors.textSecondary.opacity(0.65))
                         .padding(.top, 12)
@@ -193,6 +343,23 @@ struct ReadingAddTextView: View {
                     .padding(8)
             }
             .background(fieldBackground)
+        }
+    }
+
+    private var editorTitle: String {
+        switch viewModel.currentSource {
+        case .generate, .explore: return "Text — edit before saving"
+        default: return "Text"
+        }
+    }
+
+    private var editorPlaceholder: String {
+        switch viewModel.currentSource {
+        case .pasteText: return "Paste your text here..."
+        case .photo:     return "Pick a photo to extract text."
+        case .pdf:       return "Choose a PDF to extract text."
+        case .generate:  return "Tap Generate Text to create a passage you can edit."
+        case .explore:   return "Tap Fetch Article to pull a passage you can edit."
         }
     }
 
@@ -274,6 +441,30 @@ struct ReadingAddTextView: View {
                 RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
                     .stroke(accent.opacity(0.14), lineWidth: 1)
             )
+    }
+
+    private func exploreSourceBanner(label: String, isPlaceholder: Bool) -> some View {
+        let tint = isPlaceholder ? Color.orange : accent
+        let message = isPlaceholder
+            ? "Starter draft — edit before saving."
+            : "Source: \(label)."
+        return HStack(spacing: 8) {
+            Image(systemName: isPlaceholder ? "pencil.circle.fill" : "checkmark.circle.fill")
+                .font(.system(size: 13, weight: .bold))
+                .foregroundColor(tint)
+            Text(message)
+                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .foregroundColor(accentDark)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white.opacity(0.94))
+        .overlay(
+            RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
+                .stroke(tint.opacity(0.35), lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous))
     }
 
     private func messageBanner(_ text: String, isError: Bool) -> some View {

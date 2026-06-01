@@ -8,6 +8,7 @@ final class ReadingSetupViewModel: ObservableObject {
     @Published var selectedLanguage: GrammarLanguage = .english
     @Published var selections: [String: String] = [:]
     @Published var toggles: [String: Bool] = [:]
+    @Published var isStartingSession = false
 
     init(config: ReadingSetupConfig) {
         self.config = config
@@ -28,9 +29,6 @@ final class ReadingSetupViewModel: ObservableObject {
     }
 
     func start() {
-        #if DEBUG
-        print("[ReadingSetup] start \(config.title) language=\(selectedLanguage.title) selections=\(selections) toggles=\(toggles) — UI only, no-op")
-        #endif
-        // TODO: implement the reading session for \(config.title).
+        isStartingSession = true
     }
 }

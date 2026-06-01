@@ -72,16 +72,7 @@ struct ReadingFeaturedModeCardView: View {
 #Preview {
     ZStack {
         AppColors.appBackground.ignoresSafeArea()
-        ReadingFeaturedModeCardView(
-            mode: ReadingMode(
-                id: "generated-reading",
-                title: "Generated Reading",
-                subtitle: "Fresh AI texts at your level — read and learn.",
-                systemImage: "sparkles",
-                accentColor: Color(red: 0.42, green: 0.36, blue: 0.86),
-                blobColor: Color(red: 0.88, green: 0.86, blue: 0.98)
-            )
-        )
-        .padding(20)
+        ReadingFeaturedModeCardView(mode: ReadingMyTextsMode.homeCard)
+            .padding(20)
     }
 }

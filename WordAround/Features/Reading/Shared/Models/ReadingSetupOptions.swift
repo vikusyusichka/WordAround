@@ -19,6 +19,10 @@ enum ReadingLevel: ReadingDisplayOption {
         case .c1: return "C1"
         }
     }
+
+    static func from(title: String) -> ReadingLevel {
+        allCases.first { $0.title == title } ?? .b1
+    }
 }
 
 enum ReadingLength: ReadingDisplayOption {

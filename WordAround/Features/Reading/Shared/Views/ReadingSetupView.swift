@@ -73,6 +73,16 @@ struct ReadingSetupView: View {
         .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
+        .navigationDestination(isPresented: $viewModel.isStartingSession) {
+            ReadingPostSetupRouterView(
+                setup: viewModel.makeSessionSetup(),
+                onExitToSetup: { viewModel.isStartingSession = false },
+                onExitToReading: {
+                    viewModel.isStartingSession = false
+                    dismiss()
+                }
+            )
+        }
     }
 
     // MARK: - Section content
@@ -169,5 +179,5 @@ struct ReadingSetupView: View {
 }
 
 #Preview {
-    NavigationStack { ReadingSetupView(config: .generatedReading) }
+    NavigationStack { ReadingSetupView(config: .storyMode) }
 }

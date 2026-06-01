@@ -71,6 +71,45 @@ enum ReadingTextHighlightService {
         )
     }
 
+    static func applyingVocabularyHighlight(
+        to base: NSAttributedString,
+        terms: [String],
+        highlightColor: UIColor
+    ) -> NSAttributedString {
+        let cleanedTerms = terms
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { $0.count >= 2 }
+        guard !cleanedTerms.isEmpty else { return base }
+
+        let mutable = NSMutableAttributedString(attributedString: base)
+        let pattern = cleanedTerms
+            .map { NSRegularExpression.escapedPattern(for: $0) }
+            .joined(separator: "|")
+        guard let regex = try? NSRegularExpression(
+            pattern: "(?i)\\b(?:\(pattern))\\b",
+            options: []
+        ) else {
+            return base
+        }
+
+        let content = mutable.string
+        let nsContent = content as NSString
+        for match in regex.matches(in: content, range: NSRange(location: 0, length: nsContent.length)) {
+            mutable.addAttribute(.foregroundColor, value: highlightColor, range: match.range)
+            mutable.addAttribute(
+                .backgroundColor,
+                value: highlightColor.withAlphaComponent(0.18),
+                range: match.range
+            )
+            mutable.addAttribute(
+                .font,
+                value: UIFont.systemFont(ofSize: 16, weight: .semibold),
+                range: match.range
+            )
+        }
+        return mutable
+    }
+
     static func word(at characterIndex: Int, in content: String) -> String? {
         guard let range = wordRange(at: characterIndex, in: content) else { return nil }
         let nsContent = content as NSString

@@ -25,6 +25,7 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
     var characterCount: Int
     var status: ReadingLibraryItemStatus
     var readingTimeSeconds: Int?
+    var sourceMetadata: [String: String]
 
     var language: GrammarLanguage {
         get { GrammarLanguage(rawValue: languageCode) ?? .english }
@@ -55,7 +56,8 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         detectedLevel: EssayDifficulty? = nil,
         characterCount: Int = 0,
         status: ReadingLibraryItemStatus = .new,
-        readingTimeSeconds: Int? = nil
+        readingTimeSeconds: Int? = nil,
+        sourceMetadata: [String: String] = [:]
     ) {
         self.id = id
         self.title = title
@@ -81,6 +83,7 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         self.characterCount = characterCount > 0 ? characterCount : content.count
         self.status = status
         self.readingTimeSeconds = readingTimeSeconds
+        self.sourceMetadata = sourceMetadata
         if progress >= 1 || isCompleted {
             self.status = .completed
         } else if progress > 0 {
@@ -107,6 +110,7 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         case completedSessionsCount, averageScore
         case readingFocus, enabledQuestionTypes, assistance, sourceType
         case characterCount, status, readingTimeSeconds
+        case sourceMetadata
     }
 
     init(from decoder: Decoder) throws {
@@ -145,6 +149,7 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         characterCount = try container.decodeIfPresent(Int.self, forKey: .characterCount) ?? content.count
         status = try container.decodeIfPresent(ReadingLibraryItemStatus.self, forKey: .status) ?? .new
         readingTimeSeconds = try container.decodeIfPresent(Int.self, forKey: .readingTimeSeconds)
+        sourceMetadata = try container.decodeIfPresent([String: String].self, forKey: .sourceMetadata) ?? [:]
         clampProgress()
     }
 
@@ -174,6 +179,9 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         try container.encode(characterCount, forKey: .characterCount)
         try container.encode(status, forKey: .status)
         try container.encodeIfPresent(readingTimeSeconds, forKey: .readingTimeSeconds)
+        if !sourceMetadata.isEmpty {
+            try container.encode(sourceMetadata, forKey: .sourceMetadata)
+        }
     }
 }
 

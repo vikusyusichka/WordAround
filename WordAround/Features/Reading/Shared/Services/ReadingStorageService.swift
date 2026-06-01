@@ -21,8 +21,6 @@ final class ReadingStorageService: ReadingStorageServicing {
     }
 
     func fetchItems(for userId: String, mode: ReadingMode) async throws -> [ReadingLibraryItem] {
-        // Filter by mode in Firestore; sort locally so an optional `lastOpenedAt`
-        // ordering never requires a composite index or drops fieldless docs.
         let snapshot = try await collection(userId)
             .whereField("modeID", isEqualTo: mode.id)
             .getDocuments()

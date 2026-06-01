@@ -36,35 +36,9 @@ struct ReadingSetupConfig {
     let chips: (_ selections: [String: String], _ toggles: [String: Bool]) -> [String]
 }
 
-// MARK: - Per-mode configurations (mock UI data only)
+// MARK: - Per-mode configurations
 
 extension ReadingSetupConfig {
-
-    static let generatedReading = ReadingSetupConfig(
-        modeID: "generated-reading",
-        title: "Generated Reading",
-        subtitle: "A fresh text created for your level.",
-        accent: Color(red: 0.42, green: 0.36, blue: 0.86),
-        accentDark: Color(red: 0.28, green: 0.22, blue: 0.62),
-        previewTitle: "Generated Reading",
-        previewSubtitle: "A fresh text created for your level.",
-        previewIcon: "sparkles",
-        ctaTitle: "Generate Reading",
-        ctaIcon: "sparkles",
-        sections: [
-            Section(id: "level", title: "Reading Level", subtitle: "Choose text difficulty.",
-                    kind: .segmented(options: ReadingLevel.titles, columns: 0, defaultSelection: ReadingLevel.b1.title)),
-            Section(id: "topic", title: "Topic",
-                    kind: .segmented(options: ReadingTopicOption.titles, columns: 2, defaultSelection: ReadingTopicOption.random.title)),
-            Section(id: "size", title: "Reading Size",
-                    kind: .segmented(options: ReadingLength.titles, columns: 0, defaultSelection: ReadingLength.medium.title)),
-        ],
-        chips: { sel, _ in
-            let topic = sel["topic"] ?? ""
-            let topicChip = (topic == ReadingTopicOption.random.title) ? "Random topic" : topic
-            return [sel["level"] ?? "", sel["size"] ?? "", topicChip, "8 questions"]
-        }
-    )
 
     static let readingFromSets = ReadingSetupConfig(
         modeID: "reading-from-sets",
@@ -75,26 +49,10 @@ extension ReadingSetupConfig {
         previewTitle: "Reading From Set",
         previewSubtitle: "A reading built from your flashcard vocabulary.",
         previewIcon: "rectangle.stack.fill",
-        ctaTitle: "Generate Reading",
+        ctaTitle: "Create From Set",
         ctaIcon: "rectangle.stack.fill",
-        sections: [
-            Section(id: "set", title: "Choose Set",
-                    kind: .infoCard(title: "Travel Vocabulary", subtitle: "55 words", systemImage: "rectangle.stack.fill")),
-            Section(id: "style", title: "Generation Style",
-                    kind: .segmented(options: ReadingGenerationStyle.titles, columns: 2, defaultSelection: ReadingGenerationStyle.natural.title),
-                    helper: { ReadingGenerationStyle.from(title: $0).helperText }),
-            Section(id: "length", title: "Reading Length",
-                    kind: .segmented(options: ReadingLength.titles, columns: 0, defaultSelection: ReadingLength.medium.title)),
-        ],
-        chips: { sel, _ in
-            let short: String
-            switch ReadingGenerationStyle.from(title: sel["style"] ?? "") {
-            case .natural: short = "Natural"
-            case .strict: short = "Strict"
-            case .mixed: short = "Mixed"
-            }
-            return ["Travel Vocabulary", "55 words", short, sel["length"] ?? ""]
-        }
+        sections: [],
+        chips: { _, _ in [] }
     )
 
     static let storyMode = ReadingSetupConfig(
@@ -115,9 +73,20 @@ extension ReadingSetupConfig {
                     kind: .segmented(options: ReadingStoryLength.titles, columns: 0, defaultSelection: ReadingStoryLength.shortStory.title)),
             Section(id: "difficulty", title: "Difficulty",
                     kind: .segmented(options: ReadingLevel.titles, columns: 0, defaultSelection: ReadingLevel.b1.title)),
+            Section(id: "assistance", title: "Reading assistance",
+                    kind: .toggles([
+                        ToggleSpec(id: "translationOnTap", title: "Translate on tap", defaultOn: true),
+                        ToggleSpec(id: "highlightUnknownWords", title: "Highlight unknown words", defaultOn: true),
+                        ToggleSpec(id: "vocabularyHints", title: "Vocabulary hints", defaultOn: true),
+                        ToggleSpec(id: "readingTimer", title: "Reading timer", defaultOn: true)
+                    ])),
         ],
         chips: { sel, _ in
-            [sel["type"] ?? "", sel["length"] ?? "", sel["difficulty"] ?? "", "Choices"]
+            var chips = [sel["type"] ?? "", sel["length"] ?? "", sel["difficulty"] ?? ""]
+            if ReadingStoryLength.allCases.first(where: { $0.title == sel["length"] }) != .shortStory {
+                chips.append("Choices")
+            }
+            return chips
         }
     )
 
@@ -146,37 +115,11 @@ extension ReadingSetupConfig {
         }
     )
 
-    static let interactiveReading = ReadingSetupConfig(
-        modeID: "interactive-reading",
-        title: "Interactive Reading",
-        subtitle: "Tap words, answer questions, and explore.",
-        accent: AppColors.greenAccent,
-        accentDark: AppColors.greenTitle,
-        previewTitle: "Interactive Reading",
-        previewSubtitle: "Read, tap, choose, and answer as the text evolves.",
-        previewIcon: "hand.tap.fill",
-        ctaTitle: "Start Interactive Reading",
-        ctaIcon: "hand.tap.fill",
-        sections: [
-            Section(id: "mode", title: "Interaction Mode",
-                    kind: .segmented(options: ReadingInteractionMode.titles, columns: 2, defaultSelection: ReadingInteractionMode.mixed.title)),
-            Section(id: "complexity", title: "Complexity",
-                    kind: .segmented(options: ReadingComplexity.titles, columns: 0, defaultSelection: ReadingComplexity.balanced.title)),
-            Section(id: "length", title: "Length",
-                    kind: .segmented(options: ReadingLength.titles, columns: 0, defaultSelection: ReadingLength.short.title)),
-        ],
-        chips: { sel, _ in
-            [sel["mode"] ?? "", sel["complexity"] ?? "", sel["length"] ?? "", "15 interactions"]
-        }
-    )
-
     static func make(forModeID id: String) -> ReadingSetupConfig? {
         switch id {
-        case "generated-reading":   return generatedReading
         case "reading-from-sets":   return readingFromSets
         case "story-mode":          return storyMode
         case "speed-reading":       return speedReading
-        case "interactive-reading": return interactiveReading
         default:                    return nil
         }
     }

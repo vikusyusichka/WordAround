@@ -1,6 +1,5 @@
 import Foundation
 
-// TODO: Firestore sync can replace this implementation later.
 final class ReadingTextStorageService: ReadingTextStorageServicing, @unchecked Sendable {
     static let shared = ReadingTextStorageService()
 

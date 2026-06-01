@@ -46,6 +46,16 @@ final class ReadingSessionViewModel: ObservableObject {
 
     var translationSourceLanguage: GrammarLanguage { userText.language }
 
+    var vocabularyHighlightTerms: [String] {
+        guard userText.sourceType == .flashcardSet else { return [] }
+        guard let raw = userText.sourceMetadata["vocabularyTerms"],
+              let data = raw.data(using: .utf8),
+              let terms = try? JSONDecoder().decode([String].self, from: data) else {
+            return []
+        }
+        return terms
+    }
+
     var translationSourceTitle: String {
         translationSourceLanguage.title
     }

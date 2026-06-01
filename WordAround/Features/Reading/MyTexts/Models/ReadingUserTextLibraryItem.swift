@@ -2,12 +2,15 @@ import Foundation
 
 // MARK: - Bridge between Firestore `ReadingLibraryItem` and session `ReadingUserText`
 
+private let sourceMetadataPrefix = "source."
+
 extension ReadingUserText {
     init(libraryItem item: ReadingLibraryItem) {
         let level = EssayDifficulty(rawValue: item.difficulty)
             ?? EssayDifficulty(rawValue: item.detectedDifficulty)
             ?? .b1
         let detected = EssayDifficulty(rawValue: item.detectedDifficulty)
+        let metadata = Self.extractSourceMetadata(from: item.selections)
 
         self.init(
             id: item.id,
@@ -33,12 +36,21 @@ extension ReadingUserText {
             detectedLevel: detected,
             characterCount: item.characterCount,
             status: item.status,
-            readingTimeSeconds: item.readingTimeSeconds
+            readingTimeSeconds: item.readingTimeSeconds,
+            sourceMetadata: metadata
         )
     }
 
     func toLibraryItem(userId: String) -> ReadingLibraryItem {
-        ReadingLibraryItem(
+        var selections: [String: String] = [
+            "manualDifficulty": level.rawValue,
+            "detectedDifficulty": (detectedLevel ?? level).rawValue
+        ]
+        for (key, value) in sourceMetadata {
+            selections[sourceMetadataPrefix + key] = value
+        }
+
+        return ReadingLibraryItem(
             id: id,
             userId: userId,
             modeID: ReadingMode.myTextsID,
@@ -56,10 +68,7 @@ extension ReadingUserText {
             sourceType: sourceType,
             sourceId: nil,
             status: status,
-            selections: [
-                "manualDifficulty": level.rawValue,
-                "detectedDifficulty": (detectedLevel ?? level).rawValue
-            ],
+            selections: selections,
             toggles: assistance.asToggleDictionary(),
             languageCode: languageCode,
             wordCount: wordCount,
@@ -70,5 +79,13 @@ extension ReadingUserText {
             readingTimeSeconds: readingTimeSeconds,
             lastReadCharacterIndex: lastReadCharacterIndex
         )
+    }
+
+    private static func extractSourceMetadata(from selections: [String: String]) -> [String: String] {
+        var result: [String: String] = [:]
+        for (key, value) in selections where key.hasPrefix(sourceMetadataPrefix) {
+            result[String(key.dropFirst(sourceMetadataPrefix.count))] = value
+        }
+        return result
     }
 }

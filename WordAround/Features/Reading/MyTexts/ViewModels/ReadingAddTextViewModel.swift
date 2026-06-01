@@ -25,26 +25,53 @@ final class ReadingAddTextViewModel: ObservableObject {
     @Published var savedText: ReadingUserText?
     @Published var shouldStartSession = false
 
+    // MARK: - Generate Text inputs
+
+    @Published var generateTopic = ""
+    @Published var generateStyleTitle: String = MyTextsAIGenerationRequest.Style.informative.title
+    @Published var generateLengthTitle: String = ReadingLength.medium.title
+    @Published var isGenerating = false
+    @Published var generateErrorMessage: String?
+
+    // MARK: - Explore Reading inputs
+
+    @Published var exploreTopic = ""
+    @Published var exploreSourceTitle: String = MyTextsExploreRequest.SourcePreference.wikipedia.title
+    @Published var exploreLengthTitle: String = ReadingLength.medium.title
+    @Published var isExploring = false
+    @Published var exploreErrorMessage: String?
+    @Published private(set) var exploreSourceLabel: String?
+    @Published private(set) var exploreResultIsPlaceholder = false
+
+    // MARK: - Dependencies
+
     private let storage: ReadingMyTextsStorageServicing
     private let analyzer: ReadingTextAnalyzing
     private let detector: ReadingDifficultyDetector
     private let ocr: ReadingOCRServicing
     private let pdfImporter: ReadingPDFImportServicing
+    private let aiGenerator: MyTextsAIGenerating
+    private let explorer: MyTextsExploreReading
 
     private var sourceType: ReadingSourceType = .pastedText
+    private var pendingSourceMetadata: [String: String] = [:]
 
     init(
         storage: ReadingMyTextsStorageServicing = ReadingMyTextsStorageService.shared,
         analyzer: ReadingTextAnalyzing = ReadingTextAnalyzerService.shared,
         detector: ReadingDifficultyDetector = .shared,
         ocr: ReadingOCRServicing = ReadingOCRService.shared,
-        pdfImporter: ReadingPDFImportServicing = ReadingPDFImportService.shared
+        pdfImporter: ReadingPDFImportServicing = ReadingPDFImportService.shared,
+        aiGenerator: MyTextsAIGenerating = MyTextsAIGenerationService(),
+        explorer: MyTextsExploreReading = MyTextsExploreReadingService()
     ) {
         self.storage = storage
         self.analyzer = analyzer
         self.detector = detector
         self.ocr = ocr
         self.pdfImporter = pdfImporter
+        self.aiGenerator = aiGenerator
+        self.explorer = explorer
     }
 
     var wordCount: Int { analyzer.wordCount(for: editorText) }
@@ -66,9 +93,15 @@ final class ReadingAddTextViewModel: ObservableObject {
         !isSaving && wordCount >= 20 && !editorText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    var currentSource: ReadingTextImportSource {
+        ReadingTextImportSource.from(title: importSourceTitle)
+    }
+
     func clearValidation() {
         validationMessage = nil
         importErrorMessage = nil
+        generateErrorMessage = nil
+        exploreErrorMessage = nil
     }
 
     func setImportSource(_ title: String) {
@@ -95,6 +128,8 @@ final class ReadingAddTextViewModel: ObservableObject {
         importErrorMessage = nil
     }
 
+    // MARK: - Photo / PDF imports (unchanged)
+
     func importPhoto(_ item: PhotosPickerItem) async {
         isImporting = true
         importErrorMessage = nil
@@ -109,6 +144,7 @@ final class ReadingAddTextViewModel: ObservableObject {
             let text = try await ocr.extractText(from: image)
             applyImportedText(text, source: .photoImport)
             importSourceTitle = ReadingTextImportSource.photo.title
+            pendingSourceMetadata = ["importedAt": ISO8601DateFormatter().string(from: Date())]
         } catch let error as ReadingOCRError {
             importErrorMessage = error.errorDescription
         } catch {
@@ -125,6 +161,10 @@ final class ReadingAddTextViewModel: ObservableObject {
             let text = try pdfImporter.extractText(from: url)
             applyImportedText(text, source: .pdfImport)
             importSourceTitle = ReadingTextImportSource.pdf.title
+            pendingSourceMetadata = [
+                "importedAt": ISO8601DateFormatter().string(from: Date()),
+                "fileName": url.lastPathComponent
+            ]
         } catch let error as ReadingPDFImportError {
             importErrorMessage = error.errorDescription
         } catch {
@@ -141,12 +181,104 @@ final class ReadingAddTextViewModel: ObservableObject {
             let text = try await ocr.extractText(from: image)
             applyImportedText(text, source: .photoImport)
             importSourceTitle = ReadingTextImportSource.photo.title
+            pendingSourceMetadata = ["importedAt": ISO8601DateFormatter().string(from: Date())]
         } catch let error as ReadingOCRError {
             importErrorMessage = error.errorDescription
         } catch {
             importErrorMessage = "Could not read text from the photo."
         }
     }
+
+    // MARK: - Generate Text
+
+    var canGenerate: Bool {
+        !isGenerating && !generateTopic.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    func generateText() async {
+        guard canGenerate else { return }
+        isGenerating = true
+        generateErrorMessage = nil
+        defer { isGenerating = false }
+
+        let request = MyTextsAIGenerationRequest(
+            topic: generateTopic,
+            language: selectedLanguage,
+            level: resolvedLevel,
+            length: ReadingLength.allCases.first { $0.title == generateLengthTitle } ?? .medium,
+            style: MyTextsAIGenerationRequest.Style.from(title: generateStyleTitle),
+            focus: ReadingFocus.from(title: readingFocusTitle)
+        )
+
+        do {
+            let result = try await aiGenerator.generate(request)
+            editorText = result.body
+            if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                title = result.title
+            }
+            sourceType = .aiGenerated
+            pendingSourceMetadata = [
+                "topic": result.topic,
+                "sourceTitle": result.title,
+                "style": request.style.rawValue,
+                "generatedByAI": "true",
+                "generatedAt": ISO8601DateFormatter().string(from: Date())
+            ]
+        } catch let error as MyTextsAIGenerationError {
+            generateErrorMessage = error.errorDescription
+        } catch {
+            generateErrorMessage = "Could not generate that text. Try a different topic."
+        }
+    }
+
+    // MARK: - Explore Reading
+
+    var canExplore: Bool {
+        !isExploring && !exploreTopic.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    func exploreReading() async {
+        guard canExplore else { return }
+        isExploring = true
+        exploreErrorMessage = nil
+        defer { isExploring = false }
+
+        let request = MyTextsExploreRequest(
+            topic: exploreTopic,
+            language: selectedLanguage,
+            preference: MyTextsExploreRequest.SourcePreference.from(title: exploreSourceTitle),
+            length: ReadingLength.allCases.first { $0.title == exploreLengthTitle } ?? .medium
+        )
+
+        do {
+            let result = try await explorer.fetch(request)
+            editorText = result.body
+            if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                title = result.title
+            }
+            sourceType = .exploredArticle
+            exploreSourceLabel = result.sourceLabel
+            exploreResultIsPlaceholder = result.isPlaceholder
+            var metadata: [String: String] = [
+                "topic": result.topic,
+                "sourceTitle": result.title,
+                "preference": request.preference.rawValue,
+                "sourceLabel": result.sourceLabel,
+                "isPlaceholder": result.isPlaceholder ? "true" : "false",
+                "fetchedAt": ISO8601DateFormatter().string(from: result.fetchedAt)
+            ]
+            if let url = result.sourceURL {
+                metadata["originalSourceURL"] = url.absoluteString
+            }
+            pendingSourceMetadata = metadata
+        } catch let error as MyTextsExploreError {
+            exploreErrorMessage = error.errorDescription
+        } catch {
+            exploreErrorMessage = "Could not load that article. Try another topic."
+        }
+    }
+
+    // MARK: - Lifecycle
 
     func cancel() {
         savedText = nil
@@ -192,7 +324,8 @@ final class ReadingAddTextViewModel: ObservableObject {
             sourceType: sourceType,
             detectedLevel: detected,
             characterCount: characterCount,
-            status: startSession ? .inProgress : .new
+            status: startSession ? .inProgress : .new,
+            sourceMetadata: pendingSourceMetadata
         )
 
         do {

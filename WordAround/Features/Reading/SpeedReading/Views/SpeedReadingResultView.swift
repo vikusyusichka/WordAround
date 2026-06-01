@@ -1,90 +1,113 @@
 import SwiftUI
 
 struct SpeedReadingResultView: View {
-    let setup: ReadingSessionSetup
-    var onExitToSetup: () -> Void
-    var onExitToReading: () -> Void
+    let result: SpeedReadingResult
+    let configuration: SpeedReadingConfiguration
+    let accent: Color
+    let accentDark: Color
+    let onTryAgain: () -> Void
+    let onBackToLibrary: () -> Void
 
     var body: some View {
-        ZStack {
-            AppColors.appBackground.ignoresSafeArea()
+        VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
+            ReadingResultHeaderView(
+                icon: "bolt.fill",
+                title: "Speed Session Complete",
+                subtitle: "Your pacing and comprehension summary.",
+                accent: accent,
+                accentDark: accentDark
+            )
 
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-                    ReadingResultHeaderView(
-                        icon: "bolt.fill",
-                        title: "Speed Session Complete",
-                        subtitle: "Your pacing and comprehension summary.",
-                        accent: setup.accent,
-                        accentDark: setup.accentDark
+            SpeedReadingResultCardView(
+                result: result,
+                configuration: configuration,
+                accent: accent,
+                accentDark: accentDark
+            )
+
+            ReadingScoreCardView(
+                comprehensionPercent: result.comprehensionPercentInt,
+                accent: accent
+            )
+
+            if !result.mistakes.isEmpty {
+                ReadingSectionTitle(title: "Comprehension Check")
+                ForEach(result.mistakes) { mistake in
+                    ReadingMistakeReviewCard(
+                        question: mistake.prompt,
+                        yourAnswer: mistake.selectedAnswer,
+                        correctAnswer: mistake.correctAnswer,
+                        accent: accent
                     )
+                }
+            }
 
-                    ReadingResultSummaryCard(
-                        primaryValue: "232 WPM",
-                        primaryLabel: "Average pace",
-                        secondaryMetrics: [
-                            ("240 WPM", "Target"),
-                            ("78%", "Comprehension"),
-                            ("5 min", "Time spent")
-                        ],
-                        accent: setup.accent
-                    )
-
-                    ReadingSectionTitle(title: "Comprehension Check")
-                    ForEach(Array(ReadingPlaceholderData.speedComprehensionResults.enumerated()), id: \.offset) { _, item in
-                        HStack {
-                            Text(item.question)
-                                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                                .foregroundColor(AppColors.primaryBlueDark)
-                            Spacer()
-                            Image(systemName: item.correct ? "checkmark.circle.fill" : "xmark.circle.fill")
-                                .foregroundColor(item.correct ? setup.accent : Color(red: 0.95, green: 0.42, blue: 0.40))
-                        }
+            let feedbackLines = SpeedReadingMetricsService.feedback(
+                result: result,
+                configuration: configuration
+            )
+            if !feedbackLines.isEmpty {
+                ReadingSectionTitle(title: "Pacing Feedback")
+                ForEach(feedbackLines, id: \.self) { line in
+                    Text(line)
+                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                        .foregroundColor(AppColors.textSecondary)
                         .padding(14)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .background(
                             RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
                                 .fill(Color.white.opacity(0.94))
                         )
-                    }
-
-                    ReadingSectionTitle(title: "Pacing Feedback")
-                    ForEach(ReadingPlaceholderData.pacingFeedback, id: \.self) { feedback in
-                        Text(feedback)
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundColor(AppColors.textSecondary)
-                            .padding(14)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
-                                    .fill(Color.white.opacity(0.94))
-                            )
-                    }
-
-                    ReadingResultActions(
-                        primaryTitle: "Try Again",
-                        secondaryTitle: "Back to Reading",
-                        accent: setup.accent,
-                        accentDark: setup.accentDark,
-                        onPrimary: onExitToSetup,
-                        onSecondary: onExitToReading
-                    )
                 }
-                .frame(maxWidth: Layout.convContentMaxWidth)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, Layout.homeHorizontalPadding)
-                .padding(.top, Layout.homeTopSpacing)
-                .padding(.bottom, Layout.homeBottomSafeSpacing)
             }
+
+            ReadingResultActions(
+                primaryTitle: "Try Again",
+                secondaryTitle: "Back to Library",
+                accent: accent,
+                accentDark: accentDark,
+                onPrimary: onTryAgain,
+                onSecondary: onBackToLibrary
+            )
         }
-        .navigationBarBackButtonHidden(true)
-        .toolbar(.hidden, for: .navigationBar)
     }
 }
 
 #Preview {
-    SpeedReadingResultView(
-        setup: ReadingSetupViewModel(config: .speedReading).makeSessionSetup(),
-        onExitToSetup: {},
-        onExitToReading: {}
+    let sample = SpeedReadingResult(
+        base: ReadingResult(
+            sessionId: "s1",
+            textId: "t1",
+            comprehensionPercent: 78,
+            correctAnswers: 4,
+            totalQuestions: 5,
+            readingTimeSeconds: 305,
+            wordsPerMinute: 232,
+            mistakes: [
+                ReadingMistake(
+                    id: "m1",
+                    questionId: "q1",
+                    prompt: "What is the passage mostly about?",
+                    selectedAnswer: "Cycling rules",
+                    correctAnswer: "Reading efficiency",
+                    explanation: nil
+                )
+            ]
+        ),
+        targetWPM: 240,
+        timerViolations: 1,
+        rating: .balanced
     )
+    return ScrollView {
+        SpeedReadingResultView(
+            result: sample,
+            configuration: SpeedReadingConfiguration(target: .balanced, timer: .strict, length: .five),
+            accent: ReadingSetupConfig.speedReading.accent,
+            accentDark: ReadingSetupConfig.speedReading.accentDark,
+            onTryAgain: {},
+            onBackToLibrary: {}
+        )
+        .padding()
+    }
+    .background(AppColors.appBackground)
 }

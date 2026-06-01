@@ -5,6 +5,7 @@ struct ReadingModeLibraryView: View {
     @StateObject private var viewModel: ReadingModeLibraryViewModel
     @State private var renameTarget: ReadingLibraryItem?
     @State private var renameDraft = ""
+    @State private var deleteTarget: ReadingLibraryItem?
 
     init(mode: ReadingMode) {
         _viewModel = StateObject(wrappedValue: ReadingModeLibraryViewModel(mode: mode))
@@ -59,8 +60,19 @@ struct ReadingModeLibraryView: View {
         }
         .navigationDestination(item: $viewModel.selectedItem) { item in
             if viewModel.usesSetCreationFlow {
-                // Set-based readings reuse the existing reading session directly.
                 ReadingSessionView(item: item)
+            } else if viewModel.usesStoryItemFlow {
+                StorySessionView(
+                    item: item,
+                    onExitToSetup: { viewModel.selectedItem = nil },
+                    onExitToReading: { viewModel.selectedItem = nil }
+                )
+            } else if viewModel.usesSpeedItemFlow {
+                SpeedReadingCountdownView(
+                    item: item,
+                    onExitToSetup: { viewModel.selectedItem = nil },
+                    onExitToReading: { viewModel.selectedItem = nil }
+                )
             } else {
                 ReadingPostSetupRouterView(
                     setup: viewModel.sessionSetup(for: item),
@@ -75,6 +87,9 @@ struct ReadingModeLibraryView: View {
         .onChange(of: viewModel.isShowingSetCreation) { _, newValue in
             if newValue == false { Task { await viewModel.refresh() } }
         }
+        .onChange(of: viewModel.isShowingSetup) { _, newValue in
+            if newValue == false { Task { await viewModel.refresh() } }
+        }
         .alert("Rename reading", isPresented: Binding(
             get: { renameTarget != nil },
             set: { if !$0 { renameTarget = nil } }
@@ -87,6 +102,37 @@ struct ReadingModeLibraryView: View {
                 }
                 renameTarget = nil
             }
+        }
+        .confirmationDialog(
+            deleteTarget.map { "Delete \"\($0.title)\"?" } ?? "Delete this item?",
+            isPresented: Binding(
+                get: { deleteTarget != nil },
+                set: { if !$0 { deleteTarget = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let target = deleteTarget { viewModel.deleteItem(target) }
+                deleteTarget = nil
+            }
+            Button("Cancel", role: .cancel) { deleteTarget = nil }
+        } message: {
+            Text("This can't be undone.")
+        }
+        .fullScreenCover(item: $viewModel.presentedSet) { set in
+            FlashcardSetDetailView(set: set)
+        }
+        .alert(
+            "Set unavailable",
+            isPresented: Binding(
+                get: { viewModel.sourceSetUnavailableMessage != nil },
+                set: { if !$0 { viewModel.sourceSetUnavailableMessage = nil } }
+            ),
+            presenting: viewModel.sourceSetUnavailableMessage
+        ) { _ in
+            Button("OK", role: .cancel) { viewModel.sourceSetUnavailableMessage = nil }
+        } message: { message in
+            Text(message)
         }
     }
 
@@ -182,11 +228,14 @@ struct ReadingModeLibraryView: View {
                         accentDark: viewModel.accentDark,
                         systemImage: viewModel.icon,
                         onOpen: { viewModel.openItem(item) },
-                        onDelete: { viewModel.deleteItem(item) },
+                        onDelete: { deleteTarget = item },
                         onRename: viewModel.supportsRename ? {
                             renameTarget = item
                             renameDraft = item.title
-                        } : nil
+                        } : nil,
+                        onOpenSourceSet: viewModel.usesSetCreationFlow
+                            ? { viewModel.openSourceSet(for: item) }
+                            : nil
                     )
                 }
             }
@@ -197,19 +246,19 @@ struct ReadingModeLibraryView: View {
 
 #Preview("With items") {
     let mode = ReadingMode(
-        id: "generated-reading",
-        title: "Generated Reading",
-        subtitle: "Fresh AI texts at your level — read and learn.",
-        systemImage: "sparkles",
-        accentColor: ReadingSetupConfig.generatedReading.accent,
-        blobColor: Color(red: 0.88, green: 0.86, blue: 0.98)
+        id: "story-mode",
+        title: "Story Mode",
+        subtitle: "Read interactive stories with branching choices.",
+        systemImage: "books.vertical.fill",
+        accentColor: ReadingSetupConfig.storyMode.accent,
+        blobColor: AppColors.blobPink
     )
     let mock = MockReadingStorageService(items: [
-        ReadingLibraryItem(userId: "u", modeID: "generated-reading", title: "A Morning in the City",
+        ReadingLibraryItem(userId: "u", modeID: "story-mode", title: "A Morning in the City",
                            preview: "The streets were quiet as the first light touched the rooftops…",
                            difficulty: "B1", estimatedMinutes: 4, progress: 0.4,
                            comprehensionScore: 0.8, tags: ["Travel"], status: .inProgress),
-        ReadingLibraryItem(userId: "u", modeID: "generated-reading", title: "The Lighthouse Keeper",
+        ReadingLibraryItem(userId: "u", modeID: "story-mode", title: "The Lighthouse Keeper",
                            preview: "Every night he climbed the spiral stairs to light the lamp.",
                            difficulty: "B2", estimatedMinutes: 6, status: .new)
     ])

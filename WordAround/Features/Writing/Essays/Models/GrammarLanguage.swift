@@ -1,6 +1,6 @@
 import Foundation
 
-enum GrammarLanguage: String, CaseIterable, Identifiable, Equatable {
+enum GrammarLanguage: String, CaseIterable, Identifiable, Equatable, Codable {
     // Western European
     case english
     case spanish

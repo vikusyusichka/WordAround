@@ -40,7 +40,6 @@ struct ReadingScoringService: ReadingScoringServicing, Sendable {
         )
     }
 
-    // Legacy
     func score(session: ReadingSession, wordCount: Int) -> ReadingResult {
         score(session: session, answers: session.answers, readingTimeSeconds: session.readingTimeSeconds)
     }

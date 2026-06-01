@@ -70,13 +70,13 @@ struct ReadingLibraryEmptyStateView: View {
     ZStack {
         AppColors.appBackground.ignoresSafeArea()
         ReadingLibraryEmptyStateView(
-            title: "No generated readings yet",
-            subtitle: "Generate reading texts and practice sessions.",
-            systemImage: "sparkles",
-            accent: ReadingSetupConfig.generatedReading.accent,
-            accentDark: ReadingSetupConfig.generatedReading.accentDark,
-            addTitle: "Generate New",
-            addIcon: "sparkles",
+            title: "No stories yet",
+            subtitle: "Start a story and practise with branching choices.",
+            systemImage: "books.vertical.fill",
+            accent: ReadingSetupConfig.storyMode.accent,
+            accentDark: ReadingSetupConfig.storyMode.accentDark,
+            addTitle: "Start Story",
+            addIcon: "books.vertical.fill",
             onAdd: {}
         )
         .padding()

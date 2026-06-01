@@ -93,7 +93,6 @@ struct ReadingFromSetGenerationService: ReadingFromSetGenerating {
         let prompt = ReadingFromSetPromptBuilder.build(from: request)
         let maxTokens = max(600, request.effectiveTargetWordCount * 3)
         let raw = try await client.complete(prompt: prompt, task: "reading_from_set", maxTokens: maxTokens)
-        // Strip any markdown artifacts / placeholders so the saved text is clean.
         let cleaned = ReadingTextNormalizationService.normalize(raw)
         guard !cleaned.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw ReadingFromSetGenerationError.emptyResponse

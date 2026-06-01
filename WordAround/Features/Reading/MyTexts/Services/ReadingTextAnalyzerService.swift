@@ -101,7 +101,6 @@ struct ReadingTextAnalyzerService: ReadingTextAnalyzing, Sendable {
         return results
     }
 
-    // Legacy helpers
     func wordCount(in text: String) -> Int { wordCount(for: text) }
     func preview(from content: String, maxLength: Int = 120) -> String { preview(for: content, maxLength: maxLength) }
     func splitSentences(_ text: String) -> [String] { sentences(from: text) }

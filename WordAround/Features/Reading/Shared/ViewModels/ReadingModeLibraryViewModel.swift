@@ -15,16 +15,23 @@ final class ReadingModeLibraryViewModel: ObservableObject {
     @Published var isShowingSetCreation = false
 
     private let storage: ReadingStorageServicing
+    private let setService: FlashcardSetService
     private let currentUserId: () -> String?
     private var hasLoadedOnce = false
+
+    @Published var presentedSet: FlashcardSet?
+    @Published var sourceSetUnavailableMessage: String?
+    @Published private(set) var isLoadingSourceSet = false
 
     init(
         mode: ReadingMode,
         storage: ReadingStorageServicing = ReadingStorageService(),
+        setService: FlashcardSetService = FlashcardSetService(),
         currentUserId: @escaping () -> String? = { Auth.auth().currentUser?.uid }
     ) {
         self.mode = mode
         self.storage = storage
+        self.setService = setService
         self.currentUserId = currentUserId
     }
 
@@ -47,44 +54,36 @@ final class ReadingModeLibraryViewModel: ObservableObject {
 
     var addButtonTitle: String {
         switch mode.id {
-        case "generated-reading":   return "Generate Reading"
         case "reading-from-sets":   return "Create From Set"
         case "story-mode":          return "Start Story"
         case "speed-reading":       return "Start Speed Practice"
-        case "interactive-reading": return "Start Interactive Reading"
         default:                    return "Add"
         }
     }
 
     var addButtonIcon: String {
         switch mode.id {
-        case "generated-reading":   return "sparkles"
         case "reading-from-sets":   return "rectangle.stack.fill"
         case "story-mode":          return "books.vertical.fill"
         case "speed-reading":       return "bolt.fill"
-        case "interactive-reading": return "hand.tap.fill"
         default:                    return "plus"
         }
     }
 
     var emptyTitle: String {
         switch mode.id {
-        case "generated-reading":   return "No generated readings yet"
         case "reading-from-sets":   return "No set-based readings yet"
         case "story-mode":          return "No stories yet"
         case "speed-reading":       return "No speed sessions yet"
-        case "interactive-reading": return "No interactive readings yet"
         default:                    return "Nothing here yet"
         }
     }
 
     var emptySubtitle: String {
         switch mode.id {
-        case "generated-reading":   return "Generate reading texts and practice sessions from topics."
         case "reading-from-sets":   return "Create reading sessions from your flashcard sets."
         case "story-mode":          return "Start stories, unlock chapters, and continue reading."
         case "speed-reading":       return "Train faster reading with timed exercises."
-        case "interactive-reading": return "Create branching reading adventures with choices and progress."
         default:                    return "Tap add to get started."
         }
     }
@@ -177,7 +176,42 @@ final class ReadingModeLibraryViewModel: ObservableObject {
 
     var usesSetCreationFlow: Bool { mode.id == "reading-from-sets" }
 
-    var supportsRename: Bool { mode.id == "reading-from-sets" }
+    func openSourceSet(for item: ReadingLibraryItem) {
+        guard mode.id == "reading-from-sets" else { return }
+        guard let setId = item.sourceId, !setId.isEmpty else {
+            sourceSetUnavailableMessage = "This reading isn't linked to a flashcard set."
+            return
+        }
+        guard let userId = currentUserId() else {
+            sourceSetUnavailableMessage = "Sign in to open the linked flashcard set."
+            return
+        }
+        isLoadingSourceSet = true
+        Task {
+            defer { isLoadingSourceSet = false }
+            do {
+                let sets = try await setService.fetchSets(for: userId)
+                if let match = sets.first(where: { $0.id == setId }) {
+                    presentedSet = match
+                } else {
+                    sourceSetUnavailableMessage = "That flashcard set is no longer available."
+                }
+            } catch {
+                sourceSetUnavailableMessage = "Couldn't load the flashcard set. Check your connection."
+            }
+        }
+    }
+
+    var usesStoryItemFlow: Bool { mode.id == "story-mode" }
+
+    var usesSpeedItemFlow: Bool { mode.id == "speed-reading" }
+
+    var supportsRename: Bool {
+        switch mode.id {
+        case "reading-from-sets", "story-mode", "speed-reading": return true
+        default: return false
+        }
+    }
 
     func clearError() { errorMessage = nil }
 

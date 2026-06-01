@@ -3,12 +3,10 @@ import SwiftUI
 struct ReadingView: View {
     @StateObject private var viewModel = ReadingHomeViewModel()
 
-    @State private var openGenerated = false
     @State private var openMyTexts = false
     @State private var openFromSets = false
     @State private var openStory = false
     @State private var openSpeed = false
-    @State private var openInteractive = false
 
     private var columns: [GridItem] {
         [
@@ -34,18 +32,13 @@ struct ReadingView: View {
                     Button {
                         open(mode)
                     } label: {
-                        ReadingModeCardView(mode: mode, isFeatured: mode.id == "generated-reading")
+                        ReadingModeCardView(mode: mode)
                     }
                     .buttonStyle(.plain)
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        // Each mode opens its own library first. My Texts keeps its existing,
-        // richer library screen; the other modes share `ReadingModeLibraryView`.
-        .navigationDestination(isPresented: $openGenerated) {
-            library(for: "generated-reading")
-        }
         .navigationDestination(isPresented: $openMyTexts) {
             ReadingMyTextsView()
         }
@@ -58,9 +51,6 @@ struct ReadingView: View {
         .navigationDestination(isPresented: $openSpeed) {
             library(for: "speed-reading")
         }
-        .navigationDestination(isPresented: $openInteractive) {
-            library(for: "interactive-reading")
-        }
     }
 
     @ViewBuilder
@@ -72,12 +62,10 @@ struct ReadingView: View {
 
     private func open(_ mode: ReadingMode) {
         switch mode.id {
-        case "generated-reading":   openGenerated = true
         case "my-texts":            openMyTexts = true
         case "reading-from-sets":   openFromSets = true
         case "story-mode":          openStory = true
         case "speed-reading":       openSpeed = true
-        case "interactive-reading": openInteractive = true
         default:                    break
         }
     }

@@ -2,12 +2,15 @@ import SwiftUI
 
 enum ReadingFromSetSessionMapper {
     static func userText(from item: ReadingLibraryItem) -> ReadingUserText {
-        // Safety net: normalize again at display time in case an older item was
-        // saved before cleaning, or text was created elsewhere.
         let cleanText = ReadingTextNormalizationService.normalize(item.fullText)
         let wordCount = item.wordCount > 0
             ? item.wordCount
             : cleanText.split { $0.isWhitespace || $0.isNewline }.filter { !$0.isEmpty }.count
+        let metadata = item.selections.reduce(into: [String: String]()) { result, pair in
+            let prefix = "source."
+            guard pair.key.hasPrefix(prefix) else { return }
+            result[String(pair.key.dropFirst(prefix.count))] = pair.value
+        }
 
         return ReadingUserText(
             id: item.id,
@@ -26,7 +29,8 @@ enum ReadingFromSetSessionMapper {
             averageScore: item.comprehensionScore,
             readingFocus: ReadingFocus(rawValue: item.readingFocus) ?? .mainIdea,
             sourceType: .flashcardSet,
-            status: item.status
+            status: item.status,
+            sourceMetadata: metadata
         )
     }
 }

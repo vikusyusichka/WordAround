@@ -7,6 +7,7 @@ struct ReadingMyTextsView: View {
 
     @State private var renameTarget: ReadingUserText?
     @State private var renameDraft = ""
+    @State private var deleteTarget: ReadingUserText?
 
     private let accent = ReadingMyTextsTheme.accent
     private let accentDark = ReadingMyTextsTheme.accentDark
@@ -98,6 +99,22 @@ struct ReadingMyTextsView: View {
                 renameTarget = nil
             }
         }
+        .confirmationDialog(
+            deleteTarget.map { "Delete \"\($0.title)\"?" } ?? "Delete this text?",
+            isPresented: Binding(
+                get: { deleteTarget != nil },
+                set: { if !$0 { deleteTarget = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let target = deleteTarget { viewModel.deleteText(target) }
+                deleteTarget = nil
+            }
+            Button("Cancel", role: .cancel) { deleteTarget = nil }
+        } message: {
+            Text("This can't be undone.")
+        }
     }
 
     // MARK: - Content states
@@ -171,7 +188,7 @@ struct ReadingMyTextsView: View {
                         dateText: text.dateText,
                         actionTitle: text.actionTitle,
                         onAction: { viewModel.openText(text) },
-                        onDelete: { viewModel.deleteText(text) },
+                        onDelete: { deleteTarget = text },
                         onRename: {
                             renameTarget = text
                             renameDraft = text.title

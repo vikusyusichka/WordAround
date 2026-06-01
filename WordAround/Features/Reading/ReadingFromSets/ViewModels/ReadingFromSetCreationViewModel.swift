@@ -6,20 +6,17 @@ import FirebaseAuth
 final class ReadingFromSetCreationViewModel: ObservableObject {
     let mode: ReadingMode
 
-    // Sets + selection
     @Published private(set) var availableSets: [FlashcardSet] = []
     @Published private(set) var isLoadingSets = false
     @Published var isShowingSetPicker = false
     @Published private(set) var vocabulary: ReadingFromSetVocabulary?
 
-    // Configuration (reuses shared Reading option enums)
     @Published var difficulty: EssayDifficulty = .b1
     @Published var length: ReadingLength = .medium
     @Published var generationMode: ReadingGenerationStyle = .natural
     @Published var language: GrammarLanguage = .english
     @Published var readingFocus: ReadingFocus = .mainIdea
 
-    // Output state
     @Published private(set) var isGenerating = false
     @Published var errorMessage: String?
     @Published var createdItem: ReadingLibraryItem?
@@ -141,6 +138,19 @@ final class ReadingFromSetCreationViewModel: ObservableObject {
                     manualLevel: difficulty
                 )
 
+                var selections: [String: String] = [
+                    "setTitle": vocab.setTitle,
+                    "length": length.title,
+                    "style": generationMode.title,
+                    "wordCount": String(vocab.count)
+                ]
+                if let termsJSON = try? JSONEncoder().encode(vocab.terms),
+                   let termsString = String(data: termsJSON, encoding: .utf8) {
+                    selections["source.vocabularyTerms"] = termsString
+                }
+                selections["source.setId"] = vocab.setId
+                selections["source.setTitle"] = vocab.setTitle
+
                 let item = ReadingLibraryItem(
                     userId: userId,
                     modeID: mode.id,
@@ -153,12 +163,7 @@ final class ReadingFromSetCreationViewModel: ObservableObject {
                     sourceType: .flashcardSet,
                     sourceId: vocab.setId,
                     status: .new,
-                    selections: [
-                        "setTitle": vocab.setTitle,
-                        "length": length.title,
-                        "style": generationMode.title,
-                        "wordCount": String(vocab.count)
-                    ],
+                    selections: selections,
                     languageCode: language.rawValue,
                     wordCount: analysis.wordCount,
                     characterCount: analysis.normalizedContent.count,

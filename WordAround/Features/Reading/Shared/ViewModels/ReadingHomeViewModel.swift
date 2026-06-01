@@ -9,17 +9,8 @@ final class ReadingHomeViewModel: ObservableObject {
     @Published private(set) var minutesReadToday: Int = 6
     @Published private(set) var dailyGoalMinutes: Int = 15
 
-    // MARK: - Modes (mock placeholder)
-
+    // MARK: - Modes
     @Published private(set) var modes: [ReadingMode] = [
-        ReadingMode(
-            id: "generated-reading",
-            title: "Generated Reading",
-            subtitle: "Fresh AI texts at your level — read and learn.",
-            systemImage: "sparkles",
-            accentColor: ReadingHomeViewModel.indigo,
-            blobColor: ReadingHomeViewModel.indigoBlob
-        ),
         ReadingMyTextsMode.homeCard,
         ReadingMode(
             id: "reading-from-sets",
@@ -32,7 +23,7 @@ final class ReadingHomeViewModel: ObservableObject {
         ReadingMode(
             id: "story-mode",
             title: "Story Mode",
-            subtitle: "Read short stories that adapt to you.",
+            subtitle: "Read interactive stories with branching choices.",
             systemImage: "books.vertical.fill",
             accentColor: Color(red: 0.93, green: 0.40, blue: 0.60),
             blobColor: AppColors.blobPink
@@ -45,18 +36,9 @@ final class ReadingHomeViewModel: ObservableObject {
             accentColor: Color(red: 0.95, green: 0.42, blue: 0.40),
             blobColor: Color(red: 1.0, green: 0.90, blue: 0.90)
         ),
-        ReadingMode(
-            id: "interactive-reading",
-            title: "Interactive Reading",
-            subtitle: "Tap words, answer questions, and explore.",
-            systemImage: "hand.tap.fill",
-            accentColor: AppColors.greenAccent,
-            blobColor: AppColors.blobGreen
-        ),
     ]
 
-    // MARK: - Theme
-
+    // MARK: - Home tint
     static let indigo = Color(red: 0.42, green: 0.36, blue: 0.86)
     static let indigoBlob = Color(red: 0.88, green: 0.86, blue: 0.98)
 }

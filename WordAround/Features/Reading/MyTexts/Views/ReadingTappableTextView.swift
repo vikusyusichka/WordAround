@@ -6,6 +6,8 @@ struct ReadingTappableTextView: UIViewRepresentable {
     let selectedWordRange: NSRange?
     let accent: UIColor
     let baseTextColor: UIColor
+    var vocabularyTerms: [String] = []
+    var vocabularyColor: UIColor? = nil
     let onWordTap: (String, NSRange) -> Void
 
     func makeUIView(context: Context) -> UITextView {
@@ -38,10 +40,17 @@ struct ReadingTappableTextView: UIViewRepresentable {
     func updateUIView(_ textView: UITextView, context: Context) {
         context.coordinator.onWordTap = onWordTap
 
-        let base = ReadingTextHighlightService.plainNSAttributedString(
+        var base = ReadingTextHighlightService.plainNSAttributedString(
             for: content,
             baseColor: Color(baseTextColor)
         )
+        if !vocabularyTerms.isEmpty {
+            base = ReadingTextHighlightService.applyingVocabularyHighlight(
+                to: base,
+                terms: vocabularyTerms,
+                highlightColor: vocabularyColor ?? accent
+            )
+        }
         textView.attributedText = ReadingTextHighlightService.applyingSelectionHighlight(
             to: base,
             range: selectedWordRange,

@@ -5,6 +5,8 @@ struct ReadingResultView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let onReadAgain: () -> Void
     let onBackToLibrary: () -> Void
+    private let readAgainTitle: String
+    private let backButtonTitle: String
 
     private let accent: Color
     private let accentDark: Color
@@ -20,6 +22,8 @@ struct ReadingResultView: View {
         focusTitle: String = "",
         accent: Color = ReadingMyTextsTheme.accent,
         accentDark: Color = ReadingMyTextsTheme.accentDark,
+        readAgainTitle: String = "Read again",
+        backButtonTitle: String = "Back to My Texts",
         onReadAgain: @escaping () -> Void,
         onBackToLibrary: @escaping () -> Void
     ) {
@@ -31,6 +35,8 @@ struct ReadingResultView: View {
         ))
         self.accent = accent
         self.accentDark = accentDark
+        self.readAgainTitle = readAgainTitle
+        self.backButtonTitle = backButtonTitle
         self.onReadAgain = onReadAgain
         self.onBackToLibrary = onBackToLibrary
     }
@@ -126,7 +132,7 @@ struct ReadingResultView: View {
     private var actions: some View {
         VStack(spacing: 10) {
             ReadingPrimaryButton(
-                title: "Read again",
+                title: readAgainTitle,
                 icon: "arrow.clockwise",
                 accent: accent,
                 accentDark: accentDark,
@@ -134,7 +140,7 @@ struct ReadingResultView: View {
             )
 
             Button(action: onBackToLibrary) {
-                Text("Back to My Texts")
+                Text(backButtonTitle)
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
                     .frame(maxWidth: .infinity)

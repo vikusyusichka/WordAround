@@ -118,23 +118,14 @@ struct ReadingModeCardView: View {
     ZStack {
         AppColors.appBackground.ignoresSafeArea()
         LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+            ReadingModeCardView(mode: ReadingMyTextsMode.homeCard)
             ReadingModeCardView(
                 mode: ReadingMode(
-                    id: "generated-reading", title: "Generated Reading",
-                    subtitle: "Fresh AI texts at your level — read and learn.",
-                    systemImage: "sparkles",
-                    accentColor: Color(red: 0.42, green: 0.36, blue: 0.86),
-                    blobColor: Color(red: 0.88, green: 0.86, blue: 0.98)
-                ),
-                isFeatured: true
-            )
-            ReadingModeCardView(
-                mode: ReadingMode(
-                    id: "my-texts", title: "My Texts",
-                    subtitle: "Paste your own text and read it with help.",
-                    systemImage: "doc.text.fill",
-                    accentColor: Color(red: 0.13, green: 0.66, blue: 0.74),
-                    blobColor: Color(red: 0.80, green: 0.94, blue: 0.96)
+                    id: "story-mode", title: "Story Mode",
+                    subtitle: "Read interactive stories with branching choices.",
+                    systemImage: "books.vertical.fill",
+                    accentColor: Color(red: 0.93, green: 0.40, blue: 0.60),
+                    blobColor: AppColors.blobPink
                 )
             )
         }
