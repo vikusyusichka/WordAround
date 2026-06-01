@@ -449,6 +449,54 @@
 		FBBCA628C68FDD68747F0198 /* GrammarReviewPriority.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6059B873705BADEBC04207F /* GrammarReviewPriority.swift */; };
 		FC736D183A27D8BAD99B6D61 /* ReadingTextAnalyzerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A156FFF0999C3FCA57BF39CC /* ReadingTextAnalyzerService.swift */; };
 		FEB3D7678CFD9413AB7A3C97 /* ReadingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BDFD09977CB1A61DEB84E7 /* ReadingSessionView.swift */; };
+		B9FAF893287140F0942DC175 /* ListeningTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C1232408064B30850A8C35 /* ListeningTheme.swift */; };
+		1B262E83741B41FDB00BE498 /* ListeningMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8DE1307959846E0855EC43A /* ListeningMode.swift */; };
+		9668E15E10D94ABE9205FE11 /* ListeningQuestionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005B4A32DAB041E3932609E9 /* ListeningQuestionType.swift */; };
+		DE5C70BE9A00468891878E15 /* ListeningResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FF81CE177194A6A9D1F3F5E /* ListeningResult.swift */; };
+		B72807B044D74720ACC0BACC /* ListeningPlaceholderData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9813FE49E8784C1EBD5771F4 /* ListeningPlaceholderData.swift */; };
+		B73C425B71AA415DB5AF6149 /* ListeningProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D522E79F94034D85A7FAB82B /* ListeningProgressCardView.swift */; };
+		6BFE4C5F5F6C4B899C6E6538 /* ListeningModeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B229A584E74120A0C3BC1B /* ListeningModeCardView.swift */; };
+		8784EFCE6EA24DF1880ED290 /* ListeningSetupComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737ED59055BC436EA584F3E7 /* ListeningSetupComponents.swift */; };
+		8AB5994283354626BE734314 /* ListeningMetadataChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EFB278AC464F5E9F5F4D1A /* ListeningMetadataChip.swift */; };
+		5F129C3EDA5646FB9803E20E /* ListeningPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E011B019D946D886F3CD6C /* ListeningPrimaryButton.swift */; };
+		7D85055468874E2298A8D7B9 /* ListeningPreviewCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98C076C6074490A833D2E08 /* ListeningPreviewCard.swift */; };
+		F40EFC70309848E7962916B8 /* ListeningQuestionSettingsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7686D0B14CCE4A3999B84C8D /* ListeningQuestionSettingsCard.swift */; };
+		13044EF7D7174279927EEBD4 /* ListeningVoiceSettingsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AAEA47612B4FD4A15B531A /* ListeningVoiceSettingsCard.swift */; };
+		2C3F2F06DC944DC8835C8747 /* ListeningAudioPlayerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7EA967FB3549CBB2D65898 /* ListeningAudioPlayerCard.swift */; };
+		7F19DFD2E89B47BD80760193 /* ListeningContinueCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68AA013729048C39E18E50B /* ListeningContinueCardView.swift */; };
+		AE456C9EF21248E8AA9271DB /* ListeningSavedSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0036D0939DF647B19C40C649 /* ListeningSavedSessionCardView.swift */; };
+		0BAE233726374B3BBEE4A8AE /* ListeningEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA44D9EC7024DC59240EF25 /* ListeningEmptyStateView.swift */; };
+		240A0B607531491C916A46D3 /* ListeningStatisticsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D80291B4C649B28107C652 /* ListeningStatisticsCardView.swift */; };
+		180264B764E94DBBB68461B4 /* ListeningHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB3B77A63C343858CCDF0C5 /* ListeningHomeViewModel.swift */; };
+		CE5386A3ABEA49D986F047D9 /* ListeningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0289DECAB0844997971F2D17 /* ListeningView.swift */; };
+		D0089BB90C3744C0BDC49372 /* ListeningResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A934BCF784F70BC7809C2 /* ListeningResultView.swift */; };
+		344875F9C3164A6683796E64 /* ListenFromTextSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647254D3AD5432E9150BAC6 /* ListenFromTextSetupView.swift */; };
+		8931F4C4815F4A2AB91C7D30 /* ListenFromTextSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78E52B0CDF4AF0BC4E8CAD /* ListenFromTextSessionView.swift */; };
+		8008538E0D5E4DD1BC18F982 /* ImportAudioSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C64BE3E71B3407E81902B85 /* ImportAudioSetupView.swift */; };
+		504EFA0788534943B6A5787C /* ImportAudioProcessingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3227C467C1924DDAB564552E /* ImportAudioProcessingView.swift */; };
+		B1CBD82BD1184AD0B53844E5 /* ImportAudioSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66660DEE37C94706B6218963 /* ImportAudioSessionView.swift */; };
+		14C4A8AE12FE408E8B74009A /* VideoListeningSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B832C854A89241349F7ECB3C /* VideoListeningSetupView.swift */; };
+		685B9D554A444CDAA19C5B09 /* VideoListeningResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 577366441CF74CDE813AEA2C /* VideoListeningResultsView.swift */; };
+		CE4B87DC0E3F426D962CD4B7 /* VideoListeningSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBA833156F44C56A18F5F68 /* VideoListeningSessionView.swift */; };
+		ED5AB1CB82194FFC993972C5 /* SavedPracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6CDAA341DD4BB8B33BBB8F /* SavedPracticeView.swift */; };
+		9B857D5922204720B188A838 /* ListenFromTextSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF7E490D5054E2A8B922807 /* ListenFromTextSetup.swift */; };
+		E3E9E4690CE041949F3E63A1 /* ListenFromTextSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C3732321DD4BC084CF134C /* ListenFromTextSetupViewModel.swift */; };
+		02AE3496921F48C69C5C8710 /* ListenFromTextSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954459B358C14960A02B603C /* ListenFromTextSessionViewModel.swift */; };
+		D6ADE77D89774E428B5DC887 /* ImportAudioSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7346359B8C43C2BC05E3DA /* ImportAudioSetup.swift */; };
+		4CF52BFDBF7444A8AEFF816D /* ImportAudioSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE1CBF3B4EB4ECCBD9B7122 /* ImportAudioSetupViewModel.swift */; };
+		6F48218AD6654B1E895D8C68 /* ImportAudioProcessingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF07FDE0A55640D691F600BB /* ImportAudioProcessingViewModel.swift */; };
+		52503E2A6C4C4C8488C6BC00 /* ImportAudioSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B06DAF09184D518284FCF9 /* ImportAudioSessionViewModel.swift */; };
+		93CDF1E8AFEE4EB781C9DF64 /* VideoListeningSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F7D954566524D64AE24EA75 /* VideoListeningSetup.swift */; };
+		A9BF88551C494BAFB1196EF3 /* VideoListeningItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3BD12BC1E4801B80896F2 /* VideoListeningItem.swift */; };
+		551226CD294E46A9BD536ABC /* VideoListeningPreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33018855715746A583E6165D /* VideoListeningPreviewData.swift */; };
+		C3BBB32C73DA43DA8050BB66 /* VideoListeningSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03516F9656984791B1C10527 /* VideoListeningSetupViewModel.swift */; };
+		0FC2236B644E4640ABBC973B /* VideoListeningResultsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD84E049017749A48189FC8B /* VideoListeningResultsViewModel.swift */; };
+		8FE31BC7DC4342AAAC05E229 /* VideoListeningSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62BCCA9EEE94F46A32A0F8B /* VideoListeningSessionViewModel.swift */; };
+		80A02B2ADAC949478B08CA9A /* SavedPracticeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7B8F7DD55E4EFEB1730A57 /* SavedPracticeSession.swift */; };
+		DACAF48D71B94AEC9A0D74B5 /* SavedPracticePreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FBEAB3FF7E46A88C36F4C9 /* SavedPracticePreviewData.swift */; };
+		7EE0AA40B66F46439CA533D3 /* SavedPracticeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C772232981BC4AFA9919407C /* SavedPracticeViewModel.swift */; };
+		8E4EBC39EA83418DA1683F04 /* ListeningProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299152B6F07545FD93795BAC /* ListeningProtocols.swift */; };
+		B99F6DA76BB14DC88DECBC7D /* ListeningStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3242D6A68B264803A73CC063 /* ListeningStorageService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -890,6 +938,54 @@
 		A1B2C3D4E5F6789012345C01 /* MyTextsAIGenerationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MyTextsAIGenerationService.swift; path = WordAround/Features/Reading/MyTexts/Services/MyTextsAIGenerationService.swift; sourceTree = SOURCE_ROOT; };
 		A1B2C3D4E5F6789012345C03 /* MyTextsExploreReadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MyTextsExploreReadingService.swift; path = WordAround/Features/Reading/MyTexts/Services/MyTextsExploreReadingService.swift; sourceTree = SOURCE_ROOT; };
 		FFADC615DB3243729CADF8B2 /* ReadingQuestionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingQuestionService.swift; path = WordAround/Features/Reading/MyTexts/Services/ReadingQuestionService.swift; sourceTree = SOURCE_ROOT; };
+		B0C1232408064B30850A8C35 /* ListeningTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningTheme.swift; path = "WordAround/Features/Listening/Shared/Models/ListeningTheme.swift"; sourceTree = SOURCE_ROOT; };
+		B8DE1307959846E0855EC43A /* ListeningMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningMode.swift; path = "WordAround/Features/Listening/Shared/Models/ListeningMode.swift"; sourceTree = SOURCE_ROOT; };
+		005B4A32DAB041E3932609E9 /* ListeningQuestionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningQuestionType.swift; path = "WordAround/Features/Listening/Shared/Models/ListeningQuestionType.swift"; sourceTree = SOURCE_ROOT; };
+		3FF81CE177194A6A9D1F3F5E /* ListeningResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningResult.swift; path = "WordAround/Features/Listening/Shared/Models/ListeningResult.swift"; sourceTree = SOURCE_ROOT; };
+		9813FE49E8784C1EBD5771F4 /* ListeningPlaceholderData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningPlaceholderData.swift; path = "WordAround/Features/Listening/Shared/Models/ListeningPlaceholderData.swift"; sourceTree = SOURCE_ROOT; };
+		D522E79F94034D85A7FAB82B /* ListeningProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningProgressCardView.swift; path = "WordAround/Features/Listening/Shared/Components/ListeningProgressCardView.swift"; sourceTree = SOURCE_ROOT; };
+		28B229A584E74120A0C3BC1B /* ListeningModeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningModeCardView.swift; path = "WordAround/Features/Listening/Shared/Components/ListeningModeCardView.swift"; sourceTree = SOURCE_ROOT; };
+		737ED59055BC436EA584F3E7 /* ListeningSetupComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningSetupComponents.swift; path = "WordAround/Features/Listening/Shared/Components/ListeningSetupComponents.swift"; sourceTree = SOURCE_ROOT; };
+		88EFB278AC464F5E9F5F4D1A /* ListeningMetadataChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningMetadataChip.swift; path = "WordAround/Features/Listening/Shared/Components/ListeningMetadataChip.swift"; sourceTree = SOURCE_ROOT; };
+		71E011B019D946D886F3CD6C /* ListeningPrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningPrimaryButton.swift; path = "WordAround/Features/Listening/Shared/Components/ListeningPrimaryButton.swift"; sourceTree = SOURCE_ROOT; };
+		F98C076C6074490A833D2E08 /* ListeningPreviewCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningPreviewCard.swift; path = "WordAround/Features/Listening/VideoListening/Components/ListeningPreviewCard.swift"; sourceTree = SOURCE_ROOT; };
+		7686D0B14CCE4A3999B84C8D /* ListeningQuestionSettingsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningQuestionSettingsCard.swift; path = "WordAround/Features/Listening/Shared/Components/ListeningQuestionSettingsCard.swift"; sourceTree = SOURCE_ROOT; };
+		B0AAEA47612B4FD4A15B531A /* ListeningVoiceSettingsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningVoiceSettingsCard.swift; path = "WordAround/Features/Listening/ListenFromText/Components/ListeningVoiceSettingsCard.swift"; sourceTree = SOURCE_ROOT; };
+		0C7EA967FB3549CBB2D65898 /* ListeningAudioPlayerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningAudioPlayerCard.swift; path = "WordAround/Features/Listening/Shared/Components/ListeningAudioPlayerCard.swift"; sourceTree = SOURCE_ROOT; };
+		E68AA013729048C39E18E50B /* ListeningContinueCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningContinueCardView.swift; path = "WordAround/Features/Listening/SavedPractice/Components/ListeningContinueCardView.swift"; sourceTree = SOURCE_ROOT; };
+		0036D0939DF647B19C40C649 /* ListeningSavedSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningSavedSessionCardView.swift; path = "WordAround/Features/Listening/SavedPractice/Components/ListeningSavedSessionCardView.swift"; sourceTree = SOURCE_ROOT; };
+		9BA44D9EC7024DC59240EF25 /* ListeningEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningEmptyStateView.swift; path = "WordAround/Features/Listening/SavedPractice/Components/ListeningEmptyStateView.swift"; sourceTree = SOURCE_ROOT; };
+		90D80291B4C649B28107C652 /* ListeningStatisticsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningStatisticsCardView.swift; path = "WordAround/Features/Listening/Shared/Components/ListeningStatisticsCardView.swift"; sourceTree = SOURCE_ROOT; };
+		8EB3B77A63C343858CCDF0C5 /* ListeningHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningHomeViewModel.swift; path = "WordAround/Features/Listening/Shared/ViewModels/ListeningHomeViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		0289DECAB0844997971F2D17 /* ListeningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningView.swift; path = "WordAround/Features/Listening/Shared/Views/ListeningView.swift"; sourceTree = SOURCE_ROOT; };
+		C26A934BCF784F70BC7809C2 /* ListeningResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningResultView.swift; path = "WordAround/Features/Listening/Shared/Views/ListeningResultView.swift"; sourceTree = SOURCE_ROOT; };
+		2647254D3AD5432E9150BAC6 /* ListenFromTextSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListenFromTextSetupView.swift; path = "WordAround/Features/Listening/ListenFromText/Views/ListenFromTextSetupView.swift"; sourceTree = SOURCE_ROOT; };
+		FB78E52B0CDF4AF0BC4E8CAD /* ListenFromTextSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListenFromTextSessionView.swift; path = "WordAround/Features/Listening/ListenFromText/Views/ListenFromTextSessionView.swift"; sourceTree = SOURCE_ROOT; };
+		1C64BE3E71B3407E81902B85 /* ImportAudioSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImportAudioSetupView.swift; path = "WordAround/Features/Listening/ImportAudio/Views/ImportAudioSetupView.swift"; sourceTree = SOURCE_ROOT; };
+		3227C467C1924DDAB564552E /* ImportAudioProcessingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImportAudioProcessingView.swift; path = "WordAround/Features/Listening/ImportAudio/Views/ImportAudioProcessingView.swift"; sourceTree = SOURCE_ROOT; };
+		66660DEE37C94706B6218963 /* ImportAudioSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImportAudioSessionView.swift; path = "WordAround/Features/Listening/ImportAudio/Views/ImportAudioSessionView.swift"; sourceTree = SOURCE_ROOT; };
+		B832C854A89241349F7ECB3C /* VideoListeningSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoListeningSetupView.swift; path = "WordAround/Features/Listening/VideoListening/Views/VideoListeningSetupView.swift"; sourceTree = SOURCE_ROOT; };
+		577366441CF74CDE813AEA2C /* VideoListeningResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoListeningResultsView.swift; path = "WordAround/Features/Listening/VideoListening/Views/VideoListeningResultsView.swift"; sourceTree = SOURCE_ROOT; };
+		6EBA833156F44C56A18F5F68 /* VideoListeningSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoListeningSessionView.swift; path = "WordAround/Features/Listening/VideoListening/Views/VideoListeningSessionView.swift"; sourceTree = SOURCE_ROOT; };
+		8A6CDAA341DD4BB8B33BBB8F /* SavedPracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SavedPracticeView.swift; path = "WordAround/Features/Listening/SavedPractice/Views/SavedPracticeView.swift"; sourceTree = SOURCE_ROOT; };
+		2DF7E490D5054E2A8B922807 /* ListenFromTextSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListenFromTextSetup.swift; path = "WordAround/Features/Listening/ListenFromText/Models/ListenFromTextSetup.swift"; sourceTree = SOURCE_ROOT; };
+		68C3732321DD4BC084CF134C /* ListenFromTextSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListenFromTextSetupViewModel.swift; path = "WordAround/Features/Listening/ListenFromText/ViewModels/ListenFromTextSetupViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		954459B358C14960A02B603C /* ListenFromTextSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListenFromTextSessionViewModel.swift; path = "WordAround/Features/Listening/ListenFromText/ViewModels/ListenFromTextSessionViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		7D7346359B8C43C2BC05E3DA /* ImportAudioSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImportAudioSetup.swift; path = "WordAround/Features/Listening/ImportAudio/Models/ImportAudioSetup.swift"; sourceTree = SOURCE_ROOT; };
+		9AE1CBF3B4EB4ECCBD9B7122 /* ImportAudioSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImportAudioSetupViewModel.swift; path = "WordAround/Features/Listening/ImportAudio/ViewModels/ImportAudioSetupViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		DF07FDE0A55640D691F600BB /* ImportAudioProcessingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImportAudioProcessingViewModel.swift; path = "WordAround/Features/Listening/ImportAudio/ViewModels/ImportAudioProcessingViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		95B06DAF09184D518284FCF9 /* ImportAudioSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImportAudioSessionViewModel.swift; path = "WordAround/Features/Listening/ImportAudio/ViewModels/ImportAudioSessionViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		9F7D954566524D64AE24EA75 /* VideoListeningSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoListeningSetup.swift; path = "WordAround/Features/Listening/VideoListening/Models/VideoListeningSetup.swift"; sourceTree = SOURCE_ROOT; };
+		7AB3BD12BC1E4801B80896F2 /* VideoListeningItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoListeningItem.swift; path = "WordAround/Features/Listening/VideoListening/Models/VideoListeningItem.swift"; sourceTree = SOURCE_ROOT; };
+		33018855715746A583E6165D /* VideoListeningPreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoListeningPreviewData.swift; path = "WordAround/Features/Listening/VideoListening/Models/VideoListeningPreviewData.swift"; sourceTree = SOURCE_ROOT; };
+		03516F9656984791B1C10527 /* VideoListeningSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoListeningSetupViewModel.swift; path = "WordAround/Features/Listening/VideoListening/ViewModels/VideoListeningSetupViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		CD84E049017749A48189FC8B /* VideoListeningResultsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoListeningResultsViewModel.swift; path = "WordAround/Features/Listening/VideoListening/ViewModels/VideoListeningResultsViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		A62BCCA9EEE94F46A32A0F8B /* VideoListeningSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoListeningSessionViewModel.swift; path = "WordAround/Features/Listening/VideoListening/ViewModels/VideoListeningSessionViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		0F7B8F7DD55E4EFEB1730A57 /* SavedPracticeSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SavedPracticeSession.swift; path = "WordAround/Features/Listening/SavedPractice/Models/SavedPracticeSession.swift"; sourceTree = SOURCE_ROOT; };
+		56FBEAB3FF7E46A88C36F4C9 /* SavedPracticePreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SavedPracticePreviewData.swift; path = "WordAround/Features/Listening/SavedPractice/Models/SavedPracticePreviewData.swift"; sourceTree = SOURCE_ROOT; };
+		C772232981BC4AFA9919407C /* SavedPracticeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SavedPracticeViewModel.swift; path = "WordAround/Features/Listening/SavedPractice/ViewModels/SavedPracticeViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		299152B6F07545FD93795BAC /* ListeningProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningProtocols.swift; path = "WordAround/Features/Listening/Shared/Services/ListeningProtocols.swift"; sourceTree = SOURCE_ROOT; };
+		3242D6A68B264803A73CC063 /* ListeningStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListeningStorageService.swift; path = "WordAround/Features/Listening/Shared/Services/ListeningStorageService.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1915,6 +2011,7 @@
 			isa = PBXGroup;
 			children = (
 				35A219B7F43FDC00B4CD164C /* Speaking */,
+				3E0A24354FBC438D98C7F901 /* Listening */,
 				A1B2C3D4E5F6A1B2C3D4FA00 /* Reading */,
 				E309021F2FBA3E5B00C52238 /* Writing */,
 				E30A1DA72F9E07B800387BDC /* Folders */,
@@ -2529,6 +2626,264 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+
+		C7CEE3E73670429EB30BBE6B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2647254D3AD5432E9150BAC6 /* ListenFromTextSetupView.swift */,
+				FB78E52B0CDF4AF0BC4E8CAD /* ListenFromTextSessionView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		133E1584EE15477BBCCD2BB2 /* ListenFromText */ = {
+			isa = PBXGroup;
+			children = (
+				B0962EFB2C434202AB8E4F0B /* Models */,
+				5BF0F3E36C39409797CCBB38 /* ViewModels */,
+				5D4E1051BE40427D9C81C660 /* Components */,
+				C7CEE3E73670429EB30BBE6B /* Views */,
+			);
+			path = ListenFromText;
+			sourceTree = "<group>";
+		};
+		FB0B7B0417D24564ADFA5459 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1C64BE3E71B3407E81902B85 /* ImportAudioSetupView.swift */,
+				3227C467C1924DDAB564552E /* ImportAudioProcessingView.swift */,
+				66660DEE37C94706B6218963 /* ImportAudioSessionView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A69002296526407C86F46488 /* ImportAudio */ = {
+			isa = PBXGroup;
+			children = (
+				B492ACD712AA464D9B147758 /* Models */,
+				F44DEB560C0D49E9B1904C36 /* ViewModels */,
+				FB0B7B0417D24564ADFA5459 /* Views */,
+			);
+			path = ImportAudio;
+			sourceTree = "<group>";
+		};
+		7B4132F173EA44B8A912CD8F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B832C854A89241349F7ECB3C /* VideoListeningSetupView.swift */,
+				577366441CF74CDE813AEA2C /* VideoListeningResultsView.swift */,
+				6EBA833156F44C56A18F5F68 /* VideoListeningSessionView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		DFC87EBC72CA4637A84D7AF6 /* VideoListening */ = {
+			isa = PBXGroup;
+			children = (
+				951E2850EAEC44BFAB79D03D /* Models */,
+				E61F3B9992584B71942AEC6F /* ViewModels */,
+				D5F05B7E0DAF46A090A583F5 /* Components */,
+				7B4132F173EA44B8A912CD8F /* Views */,
+			);
+			path = VideoListening;
+			sourceTree = "<group>";
+		};
+		864765C10843417EB85096FD /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8A6CDAA341DD4BB8B33BBB8F /* SavedPracticeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6829D23C6F014E13A4E34437 /* SavedPractice */ = {
+			isa = PBXGroup;
+			children = (
+				B4339F5B0DBE4AC282CDB128 /* Models */,
+				86FD21D3A4FC424191B15AC7 /* ViewModels */,
+				9A30298CF47D432081514369 /* Components */,
+				864765C10843417EB85096FD /* Views */,
+			);
+			path = SavedPractice;
+			sourceTree = "<group>";
+		};
+		B91F62F61C4349E5916F38DD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1232408064B30850A8C35 /* ListeningTheme.swift */,
+				B8DE1307959846E0855EC43A /* ListeningMode.swift */,
+				005B4A32DAB041E3932609E9 /* ListeningQuestionType.swift */,
+				3FF81CE177194A6A9D1F3F5E /* ListeningResult.swift */,
+				9813FE49E8784C1EBD5771F4 /* ListeningPlaceholderData.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		4B38FBF807C143F191098700 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				D522E79F94034D85A7FAB82B /* ListeningProgressCardView.swift */,
+				28B229A584E74120A0C3BC1B /* ListeningModeCardView.swift */,
+				737ED59055BC436EA584F3E7 /* ListeningSetupComponents.swift */,
+				88EFB278AC464F5E9F5F4D1A /* ListeningMetadataChip.swift */,
+				71E011B019D946D886F3CD6C /* ListeningPrimaryButton.swift */,
+				7686D0B14CCE4A3999B84C8D /* ListeningQuestionSettingsCard.swift */,
+				0C7EA967FB3549CBB2D65898 /* ListeningAudioPlayerCard.swift */,
+				90D80291B4C649B28107C652 /* ListeningStatisticsCardView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		4ED47810489D4D9DB8EFCCB4 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				8EB3B77A63C343858CCDF0C5 /* ListeningHomeViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		F7736C75273D45B792313760 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0289DECAB0844997971F2D17 /* ListeningView.swift */,
+				C26A934BCF784F70BC7809C2 /* ListeningResultView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D3F29C60327B406AA886ABD7 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				B91F62F61C4349E5916F38DD /* Models */,
+				8D90D8FF784E459D97454997 /* Services */,
+				4ED47810489D4D9DB8EFCCB4 /* ViewModels */,
+				4B38FBF807C143F191098700 /* Components */,
+				F7736C75273D45B792313760 /* Views */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		3E0A24354FBC438D98C7F901 /* Listening */ = {
+			isa = PBXGroup;
+			children = (
+				D3F29C60327B406AA886ABD7 /* Shared */,
+				133E1584EE15477BBCCD2BB2 /* ListenFromText */,
+				A69002296526407C86F46488 /* ImportAudio */,
+				DFC87EBC72CA4637A84D7AF6 /* VideoListening */,
+				6829D23C6F014E13A4E34437 /* SavedPractice */,
+			);
+			path = Listening;
+			sourceTree = "<group>";
+		};
+
+		8D90D8FF784E459D97454997 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				299152B6F07545FD93795BAC /* ListeningProtocols.swift */,
+				3242D6A68B264803A73CC063 /* ListeningStorageService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+
+		B0962EFB2C434202AB8E4F0B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				2DF7E490D5054E2A8B922807 /* ListenFromTextSetup.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		5BF0F3E36C39409797CCBB38 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				68C3732321DD4BC084CF134C /* ListenFromTextSetupViewModel.swift */,
+				954459B358C14960A02B603C /* ListenFromTextSessionViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		5D4E1051BE40427D9C81C660 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B0AAEA47612B4FD4A15B531A /* ListeningVoiceSettingsCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		B492ACD712AA464D9B147758 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				7D7346359B8C43C2BC05E3DA /* ImportAudioSetup.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F44DEB560C0D49E9B1904C36 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				9AE1CBF3B4EB4ECCBD9B7122 /* ImportAudioSetupViewModel.swift */,
+				DF07FDE0A55640D691F600BB /* ImportAudioProcessingViewModel.swift */,
+				95B06DAF09184D518284FCF9 /* ImportAudioSessionViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		951E2850EAEC44BFAB79D03D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9F7D954566524D64AE24EA75 /* VideoListeningSetup.swift */,
+				7AB3BD12BC1E4801B80896F2 /* VideoListeningItem.swift */,
+				33018855715746A583E6165D /* VideoListeningPreviewData.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E61F3B9992584B71942AEC6F /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				03516F9656984791B1C10527 /* VideoListeningSetupViewModel.swift */,
+				CD84E049017749A48189FC8B /* VideoListeningResultsViewModel.swift */,
+				A62BCCA9EEE94F46A32A0F8B /* VideoListeningSessionViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		D5F05B7E0DAF46A090A583F5 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F98C076C6074490A833D2E08 /* ListeningPreviewCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		B4339F5B0DBE4AC282CDB128 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0F7B8F7DD55E4EFEB1730A57 /* SavedPracticeSession.swift */,
+				56FBEAB3FF7E46A88C36F4C9 /* SavedPracticePreviewData.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		86FD21D3A4FC424191B15AC7 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				C772232981BC4AFA9919407C /* SavedPracticeViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		9A30298CF47D432081514369 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E68AA013729048C39E18E50B /* ListeningContinueCardView.swift */,
+				0036D0939DF647B19C40C649 /* ListeningSavedSessionCardView.swift */,
+				9BA44D9EC7024DC59240EF25 /* ListeningEmptyStateView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2779,6 +3134,54 @@
 				A1B2C3D4E5F6A1B2C3D4FF02 /* SpeakingSetupComponents.swift in Sources */,
 				8EB5848FA440F4BB42CDF05B /* SpeakingView.swift in Sources */,
 				E30A1CE12F9A358000387BDC /* VerifyEmailView.swift in Sources */,
+				B9FAF893287140F0942DC175 /* ListeningTheme.swift in Sources */,
+				1B262E83741B41FDB00BE498 /* ListeningMode.swift in Sources */,
+				9668E15E10D94ABE9205FE11 /* ListeningQuestionType.swift in Sources */,
+				DE5C70BE9A00468891878E15 /* ListeningResult.swift in Sources */,
+				B72807B044D74720ACC0BACC /* ListeningPlaceholderData.swift in Sources */,
+				B73C425B71AA415DB5AF6149 /* ListeningProgressCardView.swift in Sources */,
+				6BFE4C5F5F6C4B899C6E6538 /* ListeningModeCardView.swift in Sources */,
+				8784EFCE6EA24DF1880ED290 /* ListeningSetupComponents.swift in Sources */,
+				8AB5994283354626BE734314 /* ListeningMetadataChip.swift in Sources */,
+				5F129C3EDA5646FB9803E20E /* ListeningPrimaryButton.swift in Sources */,
+				7D85055468874E2298A8D7B9 /* ListeningPreviewCard.swift in Sources */,
+				F40EFC70309848E7962916B8 /* ListeningQuestionSettingsCard.swift in Sources */,
+				13044EF7D7174279927EEBD4 /* ListeningVoiceSettingsCard.swift in Sources */,
+				2C3F2F06DC944DC8835C8747 /* ListeningAudioPlayerCard.swift in Sources */,
+				7F19DFD2E89B47BD80760193 /* ListeningContinueCardView.swift in Sources */,
+				AE456C9EF21248E8AA9271DB /* ListeningSavedSessionCardView.swift in Sources */,
+				0BAE233726374B3BBEE4A8AE /* ListeningEmptyStateView.swift in Sources */,
+				240A0B607531491C916A46D3 /* ListeningStatisticsCardView.swift in Sources */,
+				180264B764E94DBBB68461B4 /* ListeningHomeViewModel.swift in Sources */,
+				CE5386A3ABEA49D986F047D9 /* ListeningView.swift in Sources */,
+				D0089BB90C3744C0BDC49372 /* ListeningResultView.swift in Sources */,
+				344875F9C3164A6683796E64 /* ListenFromTextSetupView.swift in Sources */,
+				8931F4C4815F4A2AB91C7D30 /* ListenFromTextSessionView.swift in Sources */,
+				8008538E0D5E4DD1BC18F982 /* ImportAudioSetupView.swift in Sources */,
+				504EFA0788534943B6A5787C /* ImportAudioProcessingView.swift in Sources */,
+				B1CBD82BD1184AD0B53844E5 /* ImportAudioSessionView.swift in Sources */,
+				14C4A8AE12FE408E8B74009A /* VideoListeningSetupView.swift in Sources */,
+				685B9D554A444CDAA19C5B09 /* VideoListeningResultsView.swift in Sources */,
+				CE4B87DC0E3F426D962CD4B7 /* VideoListeningSessionView.swift in Sources */,
+				ED5AB1CB82194FFC993972C5 /* SavedPracticeView.swift in Sources */,
+				9B857D5922204720B188A838 /* ListenFromTextSetup.swift in Sources */,
+				E3E9E4690CE041949F3E63A1 /* ListenFromTextSetupViewModel.swift in Sources */,
+				02AE3496921F48C69C5C8710 /* ListenFromTextSessionViewModel.swift in Sources */,
+				D6ADE77D89774E428B5DC887 /* ImportAudioSetup.swift in Sources */,
+				4CF52BFDBF7444A8AEFF816D /* ImportAudioSetupViewModel.swift in Sources */,
+				6F48218AD6654B1E895D8C68 /* ImportAudioProcessingViewModel.swift in Sources */,
+				52503E2A6C4C4C8488C6BC00 /* ImportAudioSessionViewModel.swift in Sources */,
+				93CDF1E8AFEE4EB781C9DF64 /* VideoListeningSetup.swift in Sources */,
+				A9BF88551C494BAFB1196EF3 /* VideoListeningItem.swift in Sources */,
+				551226CD294E46A9BD536ABC /* VideoListeningPreviewData.swift in Sources */,
+				C3BBB32C73DA43DA8050BB66 /* VideoListeningSetupViewModel.swift in Sources */,
+				0FC2236B644E4640ABBC973B /* VideoListeningResultsViewModel.swift in Sources */,
+				8FE31BC7DC4342AAAC05E229 /* VideoListeningSessionViewModel.swift in Sources */,
+				80A02B2ADAC949478B08CA9A /* SavedPracticeSession.swift in Sources */,
+				DACAF48D71B94AEC9A0D74B5 /* SavedPracticePreviewData.swift in Sources */,
+				7EE0AA40B66F46439CA533D3 /* SavedPracticeViewModel.swift in Sources */,
+				8E4EBC39EA83418DA1683F04 /* ListeningProtocols.swift in Sources */,
+				B99F6DA76BB14DC88DECBC7D /* ListeningStorageService.swift in Sources */,
 				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,
 				E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */,
 				E30A1DB42F9E0C3D00387BDC /* FolderCardView.swift in Sources */,

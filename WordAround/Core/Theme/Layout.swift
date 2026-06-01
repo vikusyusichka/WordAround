@@ -1060,6 +1060,26 @@ extension Layout {
     static let readingModeFeaturedBadgeTextSize: CGFloat = isPadLike ? 12 : 10
 }
 
+// MARK: - Listening
+
+extension Layout {
+    static let listeningModeGridSpacing: CGFloat = isPadLike ? 14 : 10
+    static let listeningModeCardCornerRadius: CGFloat = isPadLike ? 26 : 20
+    static let listeningModeCardPadding: CGFloat = isPadLike ? 18 : 14
+    static let listeningModeCardMinHeight: CGFloat = isPadLike ? 178 : 156
+    static let listeningModeIconCircleSize: CGFloat = isPadLike ? 56 : 46
+    static let listeningModeIconSize: CGFloat = isPadLike ? 24 : 20
+    static let listeningModeTitleSize: CGFloat = isPadLike ? 18 : 15
+    static let listeningModeSubtitleSize: CGFloat = isPadLike ? 14 : 12
+    static let listeningModeArrowCircleSize: CGFloat = isPadLike ? 32 : 26
+    static let listeningModeArrowIconSize: CGFloat = isPadLike ? 14 : 11
+    static let listeningModeContentSpacing: CGFloat = 10
+    static let listeningModeTextSpacing: CGFloat = 4
+    static let listeningModeBlobSize: CGSize = CGSize(width: isPadLike ? 92 : 72, height: isPadLike ? 76 : 60)
+    static let listeningModeBlobOffsetX: CGFloat = isPadLike ? 18 : 14
+    static let listeningModeBlobOffsetY: CGFloat = isPadLike ? 14 : 10
+}
+
 // MARK: - AI Conversation
 
 extension Layout {

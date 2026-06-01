@@ -163,6 +163,8 @@ private extension HomeView {
                         SpeakingView()
                     } else if viewModel.selectedCategory == .reading {
                         ReadingView()
+                    } else if viewModel.selectedCategory == .listening {
+                        ListeningView()
                     } else if let category = viewModel.selectedCategory {
                         categoryPlaceholder(for: category)
                     } else {

@@ -144,7 +144,7 @@ final class HomeViewModel: ObservableObject {
             case .speaking:
                 return "Practice speaking skills."
             case .listening:
-                return "Train listening comprehension."
+                return "Train your ears to understand language naturally."
             case .reading:
                 return "Read and review language materials."
             case .writing:
