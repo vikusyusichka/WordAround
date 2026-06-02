@@ -27,12 +27,15 @@ final class ReadingSessionViewModel: ObservableObject {
     private let sessionService: ReadingSessionServicing
     private let analyzer: ReadingTextAnalyzing
     private let translationService: ReadingTranslationService
+    private let statsService: DailyPracticeStatsService
+    private var didRecordPracticeStats = false
 
     init(
         userText: ReadingUserText,
         sessionService: ReadingSessionServicing = ReadingSessionService.shared,
         analyzer: ReadingTextAnalyzing = ReadingTextAnalyzerService.shared,
-        translationService: ReadingTranslationService = ReadingTranslationService()
+        translationService: ReadingTranslationService = ReadingTranslationService(),
+        statsService: DailyPracticeStatsService = .shared
     ) {
         self.userText = userText
         self.assistance = userText.assistance
@@ -42,6 +45,7 @@ final class ReadingSessionViewModel: ObservableObject {
         self.sessionService = sessionService
         self.analyzer = analyzer
         self.translationService = translationService
+        self.statsService = statsService
     }
 
     var translationSourceLanguage: GrammarLanguage { userText.language }
@@ -176,6 +180,8 @@ final class ReadingSessionViewModel: ObservableObject {
         guard var activeSession = session else { return }
         activeSession.readingTimeSeconds = elapsedSeconds
 
+        recordPracticeStatsIfNeeded()
+
         let answers = buildAnswers()
         Task {
             let scored = await sessionService.completeSession(
@@ -189,6 +195,19 @@ final class ReadingSessionViewModel: ObservableObject {
             currentPhase = .completed
             navigateToResult = true
         }
+    }
+
+    private func recordPracticeStatsIfNeeded() {
+        guard !didRecordPracticeStats else { return }
+        guard elapsedSeconds > 0 else { return }
+        didRecordPracticeStats = true
+        let modeID: String = userText.sourceType == .flashcardSet ? "reading-from-sets" : "my-texts"
+        statsService.record(
+            skill: .reading,
+            value: elapsedSeconds,
+            sourceModeID: modeID,
+            sessionId: userText.id
+        )
     }
 
     private func recordAnswer(for question: ReadingQuestion) {

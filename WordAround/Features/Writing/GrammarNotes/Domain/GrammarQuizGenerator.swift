@@ -59,8 +59,6 @@ enum GrammarQuizGenerator {
         return questions
     }
 
-    // MARK: - Private
-
     private static func priority(_ type: GrammarNoteBlockType) -> Int {
         switch type {
         case .rule:       return 0
@@ -292,8 +290,6 @@ enum GrammarQuizGenerator {
         )
     }
 }
-
-// MARK: - String helper
 
 private extension String {
     var nilIfEmpty: String? { isEmpty ? nil : self }

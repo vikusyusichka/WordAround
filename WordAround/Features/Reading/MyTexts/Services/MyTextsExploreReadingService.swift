@@ -27,8 +27,6 @@ struct MyTextsExploreRequest: Equatable {
     let length: ReadingLength
 }
 
-// MARK: - Errors
-
 enum MyTextsExploreError: LocalizedError {
     case emptyTopic
     case notFound
@@ -49,8 +47,6 @@ enum MyTextsExploreError: LocalizedError {
     }
 }
 
-// MARK: - Result
-
 struct MyTextsExploreResult: Equatable {
     let title: String
     let body: String
@@ -60,8 +56,6 @@ struct MyTextsExploreResult: Equatable {
     let sourceLabel: String
     let isPlaceholder: Bool
 }
-
-// MARK: - Service
 
 protocol MyTextsExploreReading: Sendable {
     func fetch(_ request: MyTextsExploreRequest) async throws -> MyTextsExploreResult
@@ -87,8 +81,6 @@ struct MyTextsExploreReadingService: MyTextsExploreReading {
             return placeholder(topic: trimmed, language: request.language)
         }
     }
-
-    // MARK: - Wikipedia
 
     private struct WikipediaSummary: Decodable {
         let title: String
@@ -155,8 +147,6 @@ struct MyTextsExploreReadingService: MyTextsExploreReading {
         return "\(normalized).wikipedia.org"
     }
 
-    // MARK: - Placeholder
-
     private func placeholder(topic: String, language: GrammarLanguage) -> MyTextsExploreResult {
         let body = "Explore Reading is set up to fetch a public article about \"\(topic)\". A live source isn't wired for this option yet, so this is a starter draft you can edit before saving.\n\n"
             + "Try replacing this with a few paragraphs about the topic — what it is, why it matters, and one concrete example a reader of \(language.title) would find interesting."
@@ -171,8 +161,6 @@ struct MyTextsExploreReadingService: MyTextsExploreReading {
         )
     }
 }
-
-// MARK: - Mock (previews / tests)
 
 struct MockMyTextsExploreReadingService: MyTextsExploreReading {
     var simulatedDelayNanos: UInt64 = 0

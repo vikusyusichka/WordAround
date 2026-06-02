@@ -109,7 +109,6 @@ struct PronunciationTrainerView: View {
         }
     }
 
-
     private var topBar: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 4) {
@@ -166,7 +165,6 @@ struct PronunciationTrainerView: View {
         .clipShape(Capsule())
     }
 
-
     private var transcriptSection: some View {
         Group {
             if !viewModel.partialTranscript.isEmpty {
@@ -200,7 +198,6 @@ struct PronunciationTrainerView: View {
         .opacity(isPlaceholder ? 0.75 : 1)
     }
 
-
     private var regenerateRow: some View {
         HStack {
             Spacer()
@@ -220,7 +217,6 @@ struct PronunciationTrainerView: View {
             .opacity(viewModel.isLoadingItems ? 0.5 : 1)
         }
     }
-
 
     private func banner(_ message: String, isError: Bool) -> some View {
         HStack(alignment: .top, spacing: 10) {
@@ -252,7 +248,6 @@ struct PronunciationTrainerView: View {
                 .shadow(color: Color.black.opacity(0.06), radius: 11, x: 0, y: 4)
         )
     }
-
 
     private func handleMicTap() { Task { await viewModel.toggleListening() } }
     private func handleNext() { viewModel.goToNextItem() }

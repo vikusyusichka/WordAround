@@ -2,8 +2,6 @@ import SwiftUI
 
 enum ReadingPlaceholderData {
 
-    // MARK: - Article
-
     static let articleTitle = "A Morning in the City"
     static let articleBody = """
     Every morning, Maria walks through the bustling streets of Barcelona. The aroma of fresh bread fills the air as cafés open their doors. She passes colourful markets where vendors arrange ripe tomatoes and fragrant herbs.
@@ -14,8 +12,6 @@ enum ReadingPlaceholderData {
     """
 
     static let highlightedWords = ["bustling", "fragrant", "overwhelming", "intimate"]
-
-    // MARK: - Questions
 
     struct Question: Identifiable {
         let id: String
@@ -164,8 +160,6 @@ enum ReadingPlaceholderData {
         )
     ]
 
-    // MARK: - Vocabulary
-
     struct VocabularyItem: Identifiable {
         let id: String
         let word: String
@@ -179,8 +173,6 @@ enum ReadingPlaceholderData {
         VocabularyItem(id: "v2", word: "fragrant", translation: "ароматный", example: "Fragrant herbs filled the market air."),
         VocabularyItem(id: "v3", word: "intimate", translation: "уютный, близкий", example: "The corner felt intimate and personal.")
     ]
-
-    // MARK: - Mistakes
 
     struct Mistake: Identifiable {
         let id: String
@@ -204,8 +196,6 @@ enum ReadingPlaceholderData {
         )
     ]
 
-    // MARK: - Set words
-
     static let setName = "Travel Vocabulary"
     static let setWordCount = 55
     static let setWordsIncluded = 28
@@ -223,8 +213,6 @@ enum ReadingPlaceholderData {
 
     static let setHighlightedWords = ["luggage", "departure", "itinerary", "passport"]
 
-    // MARK: - Story
-
     static let storyChapterTitle = "The Hidden Map"
     static let storyText = """
     The old map was folded inside a leather journal Elena found in the attic. Its edges were worn, but the ink still traced a path through mountains no one in her village remembered.
@@ -241,8 +229,6 @@ enum ReadingPlaceholderData {
     ]
 
     static let storyRecap = "Elena found a mysterious map and met a stranger on a forest trail who warned her about the path ahead."
-
-    // MARK: - Speed reading
 
     static let speedChunks: [String] = [
         "Every morning, Maria walks through the bustling streets of Barcelona. The aroma of fresh bread fills the air as cafés open their doors.",
@@ -263,8 +249,6 @@ enum ReadingPlaceholderData {
         "Try shorter sessions for accuracy"
     ]
 
-    // MARK: - Interactive
-
     static let interactiveParagraph = """
     The scientist worked quickly in the laboratory. Each experiment required careful attention, but she moved with confident precision. Nearby, a colleague watched the results appear on the screen.
     """
@@ -276,8 +260,6 @@ enum ReadingPlaceholderData {
         ("Tap the word", "Tap the word that means \"quickly\".", ["quickly", "careful", "laboratory"]),
         ("Order events", "Put the events in order.", ["Experiment runs", "Results appear", "Colleague watches"])
     ]
-
-    // MARK: - Result metrics
 
     struct ResultMetrics {
         let primaryValue: String

@@ -4,15 +4,9 @@ struct GrammarReviewSummaryView: View {
     let summary: GrammarReviewSummary
     let isLoading: Bool
     let errorMessage: String?
-    /// Number of cards the upcoming session will surface. This comes from
-    /// the pre-built `GrammarReviewQueueBuilder.Result` so the card and the
-    /// session are guaranteed to agree.
     let queueCount: Int
-    /// Estimated minutes badge in the header — usually `max(1, count * 2)`.
     let estimatedMinutes: Int
     let isAddingRecommendation: Bool
-    /// Which pool the upcoming session will use. `nil` means the queue is
-    /// empty and the card shows the "Nothing due" hint.
     let effectivePool: GrammarReviewSourcePool?
     let onStart: () -> Void
     let onRetry: () -> Void
@@ -39,8 +33,6 @@ struct GrammarReviewSummaryView: View {
         self.onRetry = onRetry
     }
 
-    /// Count of notes in the effective pool — drives the headline subtitle.
-    /// Mirrors `GrammarReviewViewModel.effectiveCount`.
     private var effectiveCount: Int { queueCount }
 
     var body: some View {
@@ -68,8 +60,6 @@ struct GrammarReviewSummaryView: View {
         )
         .shadow(color: Color.black.opacity(0.05), radius: 14, x: 0, y: 8)
     }
-
-    // MARK: - Header
 
     private var header: some View {
         HStack(spacing: 12) {
@@ -115,11 +105,6 @@ struct GrammarReviewSummaryView: View {
         return pool.homeCardSubtitle(count: effectiveCount)
     }
 
-    // MARK: - Source row
-
-    /// Single pill showing the pool the upcoming session will use plus the
-    /// count of notes inside it. Replaces the old "Manual + Recent" dual
-    /// pill row — sessions only ever draw from one pool now.
     private var sourceRow: some View {
         guard let pool = effectivePool, effectiveCount > 0 else {
             return AnyView(EmptyView())
@@ -164,8 +149,6 @@ struct GrammarReviewSummaryView: View {
         }
     }
 
-    // MARK: - Start button
-
     private var startButton: some View {
         Button(action: onStart) {
             HStack(spacing: 8) {
@@ -181,8 +164,6 @@ struct GrammarReviewSummaryView: View {
         }
         .buttonStyle(.plain)
     }
-
-    // MARK: - Empty state
 
     private var emptyRow: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -202,8 +183,6 @@ struct GrammarReviewSummaryView: View {
                 .lineSpacing(2)
         }
     }
-
-    // MARK: - Loading / Error
 
     private var loadingRow: some View {
         HStack(spacing: 10) {
@@ -241,8 +220,6 @@ struct GrammarReviewSummaryView: View {
         }
     }
 
-    // MARK: - Background
-
     private var cardBackground: some View {
         ZStack(alignment: .topTrailing) {
             Color.white.opacity(0.92)
@@ -253,8 +230,6 @@ struct GrammarReviewSummaryView: View {
         }
     }
 }
-
-// MARK: - Previews
 
 #Preview("Manual") {
     GrammarReviewSummaryView(

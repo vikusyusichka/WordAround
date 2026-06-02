@@ -35,18 +35,12 @@ final class ReadingModeLibraryViewModel: ObservableObject {
         self.currentUserId = currentUserId
     }
 
-    // MARK: - Derived state
-
     var isEmpty: Bool { items.isEmpty && errorMessage == nil }
     var savedCountText: String { items.count == 1 ? "1 saved" : "\(items.count) saved" }
-
-    // MARK: - Theme (reuses the mode's setup accent)
 
     private var setupConfig: ReadingSetupConfig? { ReadingSetupConfig.make(forModeID: mode.id) }
     var accent: Color { setupConfig?.accent ?? mode.accentColor }
     var accentDark: Color { setupConfig?.accentDark ?? mode.accentColor }
-
-    // MARK: - Copy
 
     var title: String { mode.title }
     var subtitle: String { mode.subtitle }
@@ -88,8 +82,6 @@ final class ReadingModeLibraryViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Loading
-
     func loadItems() async {
         guard PracticeLibraryLoadCoordinator.begin(
             hasLoadedOnce: &hasLoadedOnce,
@@ -117,8 +109,6 @@ final class ReadingModeLibraryViewModel: ObservableObject {
     }
 
     func refresh() async { await loadItems() }
-
-    // MARK: - Actions
 
     func deleteItem(_ item: ReadingLibraryItem) {
         guard let userId = currentUserId() else { return }

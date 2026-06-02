@@ -101,8 +101,6 @@ final class ReadingTextStorageService: ReadingTextStorageServicing, @unchecked S
         }
     }
 
-    // MARK: - Sync helpers (legacy / internal)
-
     func fetchAll() -> [ReadingUserText] {
         queue.sync { Self.sort(loadTexts()) }
     }
@@ -168,8 +166,6 @@ final class ReadingTextStorageService: ReadingTextStorageServicing, @unchecked S
             }
         }
     }
-
-    // MARK: - Private
 
     private func run<T>(_ work: @escaping () throws -> T) async throws -> T {
         try await withCheckedThrowingContinuation { continuation in

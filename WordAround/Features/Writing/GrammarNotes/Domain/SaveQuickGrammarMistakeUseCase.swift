@@ -1,17 +1,5 @@
 import Foundation
 
-/// Assembles a mistake `GrammarNote` from a `QuickGrammarMistakeDraft` + target
-/// topic + user settings, checks for an existing duplicate via `savedIssueKey`,
-/// and saves a new note when there isn't one.
-///
-/// Single responsibility: take a draft + target topic → produce either a
-/// freshly created note or surface a pre-existing duplicate.
-///
-/// Callers (ViewModels) keep:
-/// - resolving which topic should receive the mistake (Home looks up in
-///   `topics`, Topic uses its own `topic`)
-/// - updating local UI state after the save
-/// - error message localization
 @MainActor
 struct SaveQuickGrammarMistakeUseCase {
     enum Outcome: Equatable {
@@ -111,8 +99,6 @@ struct SaveQuickGrammarMistakeUseCase {
         let saved = try await noteService.createAndReturnNote(note)
         return .created(saved)
     }
-
-    // MARK: - Helpers (consolidated from both ViewModels)
 
     private static let whitespaceRegex = try! NSRegularExpression(pattern: "\\s+")
 

@@ -123,7 +123,6 @@ final class CloudflareShadowingPhraseClient {
     }
 }
 
-
 struct ShadowingRecentPhraseStore {
 
     static let shared = ShadowingRecentPhraseStore()

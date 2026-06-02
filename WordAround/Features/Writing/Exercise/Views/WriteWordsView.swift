@@ -125,8 +125,6 @@ struct WriteWordsView: View {
         }
     }
 
-    // MARK: - Result
-
     private var resultType: WriteWordsResultType {
         if viewModel.isRoundCompleted {
             return .win
@@ -139,8 +137,6 @@ struct WriteWordsView: View {
             return .timeoutLose
         }
     }
-
-    // MARK: - Top bar
 
     private var topBar: some View {
         HStack {
@@ -179,8 +175,6 @@ struct WriteWordsView: View {
             .buttonStyle(.plain)
         }
     }
-
-    // MARK: - Bottom mode bar
 
     private var bottomModeBar: some View {
         HStack {
@@ -236,8 +230,6 @@ struct WriteWordsView: View {
             y: LayoutConstants.Common.smallSpacing(metrics)
         )
     }
-
-    // MARK: - Helpers
 
     @MainActor
     private func hideKeyboard() {

@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// Detail preview shown after a template is selected from
-/// `GrammarTemplateLibraryView`. Displays included blocks (note template)
-/// or included notes (topic template), plus a single "Use Template" CTA.
 struct GrammarTemplatePreviewView: View {
 
     enum PreviewKind {
@@ -42,8 +39,6 @@ struct GrammarTemplatePreviewView: View {
         .presentationDragIndicator(.visible)
     }
 
-    // MARK: - Header
-
     private var header: some View {
         HStack(alignment: .top, spacing: 14) {
             ZStack {
@@ -78,8 +73,6 @@ struct GrammarTemplatePreviewView: View {
         }
     }
 
-    // MARK: - Meta
-
     private var metaRow: some View {
         HStack(spacing: 8) {
             badge(text: difficulty, systemImage: "graduationcap.fill", tint: tint)
@@ -104,8 +97,6 @@ struct GrammarTemplatePreviewView: View {
         .background(tint.opacity(0.10))
         .clipShape(Capsule())
     }
-
-    // MARK: - Included blocks (note template)
 
     private func includedBlocksSection(_ blocks: [GrammarNoteBlock]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -150,8 +141,6 @@ struct GrammarTemplatePreviewView: View {
         return block.type.subtitle
     }
 
-    // MARK: - Included notes (topic template)
-
     private func includedNotesSection(_ notes: [GrammarNoteTemplate]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             sectionLabel("Included notes (\(notes.count))")
@@ -183,8 +172,6 @@ struct GrammarTemplatePreviewView: View {
         }
     }
 
-    // MARK: - CTA
-
     private var useTemplateButton: some View {
         Button(action: onUse) {
             Text("Use Template")
@@ -197,8 +184,6 @@ struct GrammarTemplatePreviewView: View {
         }
         .buttonStyle(.plain)
     }
-
-    // MARK: - Helpers
 
     private func sectionLabel(_ text: String) -> some View {
         Text(text)

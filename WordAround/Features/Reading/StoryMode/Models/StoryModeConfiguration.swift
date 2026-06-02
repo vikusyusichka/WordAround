@@ -14,8 +14,6 @@ struct StoryModeConfiguration: Equatable, Codable, Hashable {
         "\(storyType.title) — \(storyLength.title)"
     }
 
-    // MARK: - Init from ReadingSessionSetup
-
     init(from setup: ReadingSessionSetup) {
         self.language = setup.language
         self.storyType = ReadingStoryType.allCases.first {
@@ -26,8 +24,6 @@ struct StoryModeConfiguration: Equatable, Codable, Hashable {
         } ?? .shortStory
         self.difficultyTitle = setup.selection("difficulty", default: ReadingLevel.b1.title)
     }
-
-    // MARK: - Direct init (previews / tests)
 
     init(
         language: GrammarLanguage = .english,
@@ -40,8 +36,6 @@ struct StoryModeConfiguration: Equatable, Codable, Hashable {
         self.storyLength = storyLength
         self.difficultyTitle = difficultyTitle
     }
-
-    // MARK: - Serialisation into ReadingLibraryItem.selections
 
     var asSelections: [String: String] {
         [
@@ -60,8 +54,6 @@ struct StoryModeConfiguration: Equatable, Codable, Hashable {
         return StoryModeConfiguration(language: lang, storyType: type_, storyLength: length, difficultyTitle: diff)
     }
 }
-
-// MARK: - ReadingStoryType / ReadingStoryLength Codable conformance
 
 extension ReadingStoryType: Codable {
     public init(from decoder: Decoder) throws {

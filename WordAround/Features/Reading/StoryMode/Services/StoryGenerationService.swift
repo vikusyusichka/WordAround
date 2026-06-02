@@ -20,8 +20,6 @@ enum StoryGenerationError: LocalizedError {
     }
 }
 
-// MARK: - AI client
-
 protocol StoryAIClienting: Sendable {
     func complete(prompt: String, task: String, maxTokens: Int) async throws -> String
 }
@@ -84,8 +82,6 @@ struct CloudflareStoryAIClient: StoryAIClienting {
     }
 }
 
-// MARK: - Service
-
 protocol StoryGenerating: Sendable {
     func generateFirstChapter(for session: StorySession) async throws -> StoryChapter
     func generateNextChapter(for session: StorySession, selectedChoice: StoryChoice) async throws -> StoryChapter
@@ -112,8 +108,6 @@ struct StoryGenerationService: StoryGenerating {
         return StoryChapter(chapterIndex: session.chapters.count + 1, text: text, choices: choices)
     }
 
-    // MARK: - Text
-
     private func generateText(prompt: String) async throws -> String {
         let raw = try await client.complete(prompt: prompt, task: "story_generation", maxTokens: 1100)
         let cleaned = ReadingTextNormalizationService.normalize(raw)
@@ -122,8 +116,6 @@ struct StoryGenerationService: StoryGenerating {
         }
         return cleaned
     }
-
-    // MARK: - Choices
 
     private func makeChoices(chapterText: String, configuration: StoryModeConfiguration) async throws -> [StoryChoice] {
         guard configuration.storyLength != .shortStory else { return [] }
@@ -170,8 +162,6 @@ struct StoryGenerationService: StoryGenerating {
         StoryChoice(label: "Look for another way", iconName: "arrow.turn.up.right")
     ]
 }
-
-// MARK: - Mock (previews / tests)
 
 struct MockStoryGenerationService: StoryGenerating {
     var simulatedDelayNanos: UInt64 = 0

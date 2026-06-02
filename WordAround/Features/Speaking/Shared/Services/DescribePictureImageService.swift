@@ -1,6 +1,5 @@
 import Foundation
 
-
 enum DescribePictureImageError: LocalizedError {
     case notConfigured
     case network(String)
@@ -21,11 +20,9 @@ enum DescribePictureImageError: LocalizedError {
     }
 }
 
-
 protocol DescribePictureImageProviding {
     func fetchRandomImage() async throws -> DescribePictureImage
 }
-
 
 enum DescribePictureImageConfiguration {
 
@@ -49,7 +46,6 @@ enum DescribePictureImageConfiguration {
         return MockDescribePictureImageService()
     }
 }
-
 
 final class DescribePictureImageService: DescribePictureImageProviding {
 
@@ -139,7 +135,6 @@ final class DescribePictureImageService: DescribePictureImageProviding {
         )
     }
 }
-
 
 final class MockDescribePictureImageService: DescribePictureImageProviding {
     private let samples: [DescribePictureImage]

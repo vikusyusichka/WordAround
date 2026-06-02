@@ -4,9 +4,7 @@ struct LanguageSelectorView: View {
     let selectedLanguage: GrammarLanguage
     let onSelect: (GrammarLanguage) -> Void
 
-    /// Optional label above the selected language. Defaults to `"Language"`.
     var label: String = "Language"
-    /// Languages hidden from the dropdown (e.g. the text's source language).
     var excludedLanguages: Set<GrammarLanguage> = []
     var accent: Color = AppColors.primaryBlue
     var accentDark: Color = AppColors.primaryBlueDark

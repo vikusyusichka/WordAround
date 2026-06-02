@@ -75,6 +75,8 @@ final class AIConversationViewModel: ObservableObject {
     private let topicService: SpeakingTopicGenerationService
 
     private var hasStarted = false
+    private var didRecordPracticeStats = false
+    private let statsService: DailyPracticeStatsService
     private var permissionsRequested = false
 
     private var lastSubmittedTranscript: String = ""
@@ -88,7 +90,8 @@ final class AIConversationViewModel: ObservableObject {
         synthesizer: SpeechSynthesisService? = nil,
         conversationService: SpeakingConversationService? = nil,
         topicService: SpeakingTopicGenerationService? = nil,
-        feedbackService: SpeakingFeedbackService? = nil
+        feedbackService: SpeakingFeedbackService? = nil,
+        statsService: DailyPracticeStatsService = .shared
     ) {
         self.setup = setup
         self.recognizer = recognizer ?? SpeechRecognitionService()
@@ -97,6 +100,7 @@ final class AIConversationViewModel: ObservableObject {
             ?? SpeakingConversationService(client: GeminiSpeakingAIClient())
         self.topicService = topicService ?? SpeakingTopicGenerationService()
         self.feedbackService = feedbackService ?? SpeakingFeedbackService()
+        self.statsService = statsService
         self.remainingSeconds = setup.length.minutes * 60
 
         wireRecognizerCallbacks()
@@ -191,9 +195,24 @@ final class AIConversationViewModel: ObservableObject {
         clearHint()
         state = .idle
 
+        recordPracticeStatsIfNeeded()
+
         if conversationFeedback == nil && !isGeneratingFeedback {
             beginFeedbackGeneration()
         }
+    }
+
+    private func recordPracticeStatsIfNeeded() {
+        guard hasStarted, !didRecordPracticeStats else { return }
+        let total = setup.length.minutes * 60
+        let practiced = max(0, total - remainingSeconds)
+        guard practiced > 0 else { return }
+        didRecordPracticeStats = true
+        statsService.record(
+            skill: .speaking,
+            value: practiced,
+            sourceModeID: "ai-conversation"
+        )
     }
 
     func resetConversation() {
@@ -211,6 +230,7 @@ final class AIConversationViewModel: ObservableObject {
         triedTopicTitlesLoaded = false
         messages.removeAll()
         hasStarted = false
+        didRecordPracticeStats = false
         errorMessage = nil
         didUseFallbackReply = false
         usedFallbackTopic = false
@@ -725,7 +745,6 @@ final class AIConversationViewModel: ObservableObject {
         usedFallbackTopic = false
     }
 }
-
 
 extension AIConversationViewModel: SpeakingTopicPickable {}
 extension AIConversationViewModel: SpeakingResultProvidable {}

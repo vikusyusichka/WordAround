@@ -1,19 +1,10 @@
 import Foundation
 
-// MARK: - Protocol
-
-/// Abstraction over the backend that turns a `GrammarQuizAIRequest`
-/// into an AI-generated `GrammarQuizAIResponseDTO`.
-/// The iOS app never holds an OpenAI / Anthropic API key directly —
-/// requests go to a backend (e.g. Firebase Cloud Function) which owns
-/// the key and the prompt.
 protocol GrammarQuizAIClient {
     func generateQuizQuestions(
         request: GrammarQuizAIRequest
     ) async throws -> GrammarQuizAIResponseDTO
 }
-
-// MARK: - Errors
 
 enum GrammarQuizAIClientError: LocalizedError, Equatable {
     case notConfigured
@@ -34,8 +25,6 @@ enum GrammarQuizAIClientError: LocalizedError, Equatable {
         }
     }
 }
-
-// MARK: - HTTP client
 
 /// POSTs `{ "prompt": "..." }` to a configured Cloudflare Worker which
 /// owns the Gemini API key and forwards the prompt server-side, then
@@ -65,18 +54,9 @@ final class GrammarQuizAIHTTPClient: GrammarQuizAIClient {
         self.timeout = timeout
     }
 
-    // Wire DTOs — kept private. The Worker contract is intentionally
-    // minimal (prompt in, text out) so the iOS app never depends on
-    // Gemini's evolving response shape.
-    //
-    // `responseMimeType` is forwarded to Gemini's `generationConfig` —
-    // we always ask for application/json since quiz answers MUST decode
-    // into `GrammarQuizAIResponseDTO`.
     private struct WorkerRequest: Encodable {
         let prompt: String
         let responseMimeType: String?
-        // Task hint for the Worker's AI Provider Router (ANALYSIS chain).
-        // Names a TASK TYPE, never a provider.
         let task: String?
     }
 
@@ -88,8 +68,6 @@ final class GrammarQuizAIHTTPClient: GrammarQuizAIClient {
     func generateQuizQuestions(
         request: GrammarQuizAIRequest
     ) async throws -> GrammarQuizAIResponseDTO {
-        // 1. Convert the structured request into a single prompt string
-        //    the Worker can forward verbatim to Gemini.
         let prompt = GrammarQuizAIPromptBuilder.buildPrompt(from: request)
 
         var urlRequest = URLRequest(url: endpointURL, timeoutInterval: timeout)
@@ -109,8 +87,6 @@ final class GrammarQuizAIHTTPClient: GrammarQuizAIClient {
             throw GrammarQuizAIClientError.network(error.localizedDescription)
         }
 
-        // 2. Network round-trip — any URLSession failure flows back as
-        //    `.network(...)` so the UI can offer "Use Smart Local".
         let data: Data
         let response: URLResponse
         do {
@@ -126,8 +102,6 @@ final class GrammarQuizAIHTTPClient: GrammarQuizAIClient {
             throw GrammarQuizAIClientError.http(http.statusCode)
         }
 
-        // 3. Worker envelope → unwrap `text`, then parse the embedded
-        //    JSON. The Worker may also surface a top-level `error`.
         let envelope: WorkerResponse
         do {
             envelope = try JSONDecoder().decode(WorkerResponse.self, from: data)
@@ -142,10 +116,6 @@ final class GrammarQuizAIHTTPClient: GrammarQuizAIClient {
             throw GrammarQuizAIClientError.invalidResponse
         }
 
-        // 4. Strip Markdown fences, unwrap double-encoded strings, and
-        //    extract the first balanced `{…}` from any stray prose. The
-        //    shared `AIResponseTextCleaner` is used by both the Quiz AI
-        //    and Essay AI paths so behavior stays consistent.
         let jsonString = AIResponseTextCleaner.normalizedJSON(from: text)
         guard let jsonData = jsonString.data(using: .utf8) else {
             #if DEBUG
@@ -166,11 +136,6 @@ final class GrammarQuizAIHTTPClient: GrammarQuizAIClient {
     }
 }
 
-// MARK: - Unconfigured client
-
-/// Used when no backend endpoint is set. Throws a clear, user-facing
-/// `notConfigured` error so the UI can surface "AI quiz generation
-/// is not configured yet."
 struct UnconfiguredGrammarQuizAIClient: GrammarQuizAIClient {
     func generateQuizQuestions(
         request: GrammarQuizAIRequest

@@ -25,15 +25,11 @@ final class ReadingAddTextViewModel: ObservableObject {
     @Published var savedText: ReadingUserText?
     @Published var shouldStartSession = false
 
-    // MARK: - Generate Text inputs
-
     @Published var generateTopic = ""
     @Published var generateStyleTitle: String = MyTextsAIGenerationRequest.Style.informative.title
     @Published var generateLengthTitle: String = ReadingLength.medium.title
     @Published var isGenerating = false
     @Published var generateErrorMessage: String?
-
-    // MARK: - Explore Reading inputs
 
     @Published var exploreTopic = ""
     @Published var exploreSourceTitle: String = MyTextsExploreRequest.SourcePreference.wikipedia.title
@@ -42,8 +38,6 @@ final class ReadingAddTextViewModel: ObservableObject {
     @Published var exploreErrorMessage: String?
     @Published private(set) var exploreSourceLabel: String?
     @Published private(set) var exploreResultIsPlaceholder = false
-
-    // MARK: - Dependencies
 
     private let storage: ReadingMyTextsStorageServicing
     private let analyzer: ReadingTextAnalyzing
@@ -128,8 +122,6 @@ final class ReadingAddTextViewModel: ObservableObject {
         importErrorMessage = nil
     }
 
-    // MARK: - Photo / PDF imports (unchanged)
-
     func importPhoto(_ item: PhotosPickerItem) async {
         isImporting = true
         importErrorMessage = nil
@@ -189,8 +181,6 @@ final class ReadingAddTextViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Generate Text
-
     var canGenerate: Bool {
         !isGenerating && !generateTopic.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
@@ -230,8 +220,6 @@ final class ReadingAddTextViewModel: ObservableObject {
             generateErrorMessage = "Could not generate that text. Try a different topic."
         }
     }
-
-    // MARK: - Explore Reading
 
     var canExplore: Bool {
         !isExploring && !exploreTopic.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -277,8 +265,6 @@ final class ReadingAddTextViewModel: ObservableObject {
             exploreErrorMessage = "Could not load that article. Try another topic."
         }
     }
-
-    // MARK: - Lifecycle
 
     func cancel() {
         savedText = nil

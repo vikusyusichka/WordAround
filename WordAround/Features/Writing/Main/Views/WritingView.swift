@@ -7,15 +7,26 @@ struct WritingView: View {
 
     var onOpenWriteSets: () -> Void = {}
 
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad
+    private var columns: [GridItem] {
+        [
+            GridItem(.flexible(), spacing: Layout.readingModeGridSpacing),
+            GridItem(.flexible(), spacing: Layout.readingModeGridSpacing)
+        ]
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: isPadLike ? 24 : 18) {
-            WritingGoalCardView(goal: viewModel.goal)
+        VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
+            WritingProgressSummaryCardView(
+                currentWords: viewModel.currentWordsToday,
+                totalWords: viewModel.targetWords
+            )
 
-            VStack(spacing: isPadLike ? 16 : 12) {
+            Text("Practice modes")
+                .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
+                .foregroundColor(AppColors.primaryBlueDark)
+                .padding(.top, Layout.homeSectionTitleTopPadding)
+
+            LazyVGrid(columns: columns, spacing: Layout.readingModeGridSpacing) {
                 ForEach(viewModel.menuItems) { item in
                     Button {
                         handleMenuAction(item.action)
@@ -27,6 +38,7 @@ struct WritingView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .onAppear { viewModel.refreshDailyProgress() }
         .navigationDestination(isPresented: $openEssays) {
             EssayPracticeView()
         }

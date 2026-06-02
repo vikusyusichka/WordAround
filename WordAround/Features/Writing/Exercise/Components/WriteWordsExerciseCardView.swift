@@ -23,7 +23,6 @@ struct WriteWordsExerciseCardView: View {
     var body: some View {
         VStack(spacing: LayoutConstants.WriteWords.exerciseSpacing(metrics)) {
 
-            // MARK: Header — prompt word only, no hint label
             VStack(spacing: LayoutConstants.WriteWords.exerciseHeaderSpacing(metrics)) {
                 Text(viewModel.displayTitle)
                     .font(.system(size: LayoutConstants.Typography.bodySmall(metrics), weight: .semibold, design: .rounded))
@@ -40,7 +39,6 @@ struct WriteWordsExerciseCardView: View {
 
             Spacer(minLength: LayoutConstants.Common.smallSpacing(metrics))
 
-            // MARK: Answer input with hint overlay
             WriteWordsAnswerInputView(
                 text: $viewModel.typedAnswer,
                 isCorrect: viewModel.isCorrect,
@@ -53,10 +51,8 @@ struct WriteWordsExerciseCardView: View {
 
             Spacer(minLength: LayoutConstants.Common.smallSpacing(metrics))
 
-            // MARK: Feedback badge — correct shown live, incorrect only after Next tap
             feedbackView
 
-            // MARK: Next button
             Button {
                 viewModel.attemptNext()
             } label: {
@@ -78,7 +74,6 @@ struct WriteWordsExerciseCardView: View {
             .disabled(viewModel.isInteractionLocked)
             .opacity(viewModel.isInteractionLocked ? 0.58 : 1)
 
-            // MARK: Secondary buttons
             HStack(spacing: LayoutConstants.WriteWords.secondaryButtonSpacing(metrics)) {
                 secondaryButton(title: "Hint", icon: "lightbulb") {
                     viewModel.revealNextHint()
@@ -95,8 +90,6 @@ struct WriteWordsExerciseCardView: View {
         .clipShape(RoundedRectangle(cornerRadius: LayoutConstants.WriteWords.exerciseCornerRadius(metrics), style: .continuous))
         .shadow(color: Color.black.opacity(0.07), radius: Layout.cardCornerRadius + LayoutConstants.Common.hairline * 2, x: 0, y: Layout.topPaddingPhone + LayoutConstants.Common.hairline * 2)
     }
-
-    // MARK: - Feedback
 
     @ViewBuilder
     private var feedbackView: some View {
@@ -135,8 +128,6 @@ struct WriteWordsExerciseCardView: View {
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: viewModel.validationState)
     }
-
-    // MARK: - Secondary button
 
     private func secondaryButton(title: String, icon: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {

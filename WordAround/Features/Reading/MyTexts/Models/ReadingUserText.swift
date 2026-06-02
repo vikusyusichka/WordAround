@@ -99,8 +99,6 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         }
     }
 
-    // MARK: - Codable (legacy field support)
-
     enum CodingKeys: String, CodingKey {
         case id, title, content, languageCode, level
         case detectedLevel
@@ -184,8 +182,6 @@ struct ReadingUserText: Identifiable, Codable, Equatable, Hashable {
         }
     }
 }
-
-// MARK: - Display helpers
 
 extension ReadingUserText {
     var languageTitle: String { language.title }

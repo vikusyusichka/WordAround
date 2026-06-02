@@ -36,8 +36,6 @@ struct ReadingSetupConfig {
     let chips: (_ selections: [String: String], _ toggles: [String: Bool]) -> [String]
 }
 
-// MARK: - Per-mode configurations
-
 extension ReadingSetupConfig {
 
     static let readingFromSets = ReadingSetupConfig(

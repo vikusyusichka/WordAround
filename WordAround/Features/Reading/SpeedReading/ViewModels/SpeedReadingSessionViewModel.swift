@@ -14,8 +14,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
         case error(String)
     }
 
-    // MARK: - Published state
-
     @Published private(set) var session: SpeedReadingSession?
     @Published private(set) var phase: Phase = .loading
     @Published private(set) var loadingStepIndex = 0
@@ -34,8 +32,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
 
     @Published private(set) var result: SpeedReadingResult?
     @Published var errorMessage: String?
-
-    // MARK: - Inputs
 
     private enum Source {
         case new(SpeedReadingConfiguration)
@@ -61,8 +57,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
         "Calculating pace…",
         "Building reading session…"
     ]
-
-    // MARK: - Init
 
     init(
         setup: ReadingSessionSetup,
@@ -111,8 +105,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
         self.analyzer = analyzer
         self.currentUserId = currentUserId
     }
-
-    // MARK: - Derived display
 
     var configuration: SpeedReadingConfiguration {
         if let session { return session.configuration }
@@ -196,8 +188,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
     }
 
     var sessionTitle: String { session?.title ?? "Speed Reading" }
-
-    // MARK: - Loading + countdown
 
     func load() async {
         guard !hasLoaded else { return }
@@ -305,8 +295,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Reading
-
     func beginReading() {
         guard hasChunks else {
             phase = .error("This reading came back empty. Try generating again.")
@@ -382,8 +370,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Questions
-
     func selectAnswer(_ answer: String) {
         guard let question = currentQuestion else { return }
         selectedAnswers[question.id] = answer
@@ -397,8 +383,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
     func submitAnswers() async {
         await computeAndPersistResult()
     }
-
-    // MARK: - Result
 
     private func computeAndPersistResult() async {
         timer.stop()
@@ -440,6 +424,13 @@ final class SpeedReadingSessionViewModel: ObservableObject {
         working.updatedAt = Date()
         session = working
 
+        DailyPracticeStatsService.shared.record(
+            skill: .reading,
+            value: max(1, elapsedSeconds),
+            sourceModeID: "speed-reading",
+            sessionId: working.id
+        )
+
         phase = .results
         await persist(session: working, userId: currentUserId())
     }
@@ -457,8 +448,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Retry / lifecycle
-
     func retry() async {
         errorMessage = nil
         hasLoaded = false
@@ -472,8 +461,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
         loadingStepTask?.cancel()
     }
 
-    // MARK: - Persistence
-
     private func persist(session: SpeedReadingSession, userId: String?) async {
         guard let userId else { return }
         do {
@@ -484,8 +471,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
             #endif
         }
     }
-
-    // MARK: - Helpers
 
     private func readableMessage(for error: Error) -> String {
         if let localized = error as? LocalizedError, let description = localized.errorDescription {
@@ -505,8 +490,6 @@ final class SpeedReadingSessionViewModel: ObservableObject {
         )
     }
 }
-
-// MARK: - EssayDifficulty helper
 
 private extension EssayDifficulty {
     static func from(title: String) -> EssayDifficulty? {

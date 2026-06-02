@@ -3,49 +3,92 @@ import SwiftUI
 struct WritingMenuCardView: View {
     let item: WritingMenuItem
 
-    private var isPadLike: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad
-    }
+    private let corner = Layout.readingModeCardCornerRadius
 
     var body: some View {
-        HStack(spacing: isPadLike ? 18 : 14) {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(LinearGradient(colors: item.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(width: isPadLike ? 62 : 50, height: isPadLike ? 62 : 50)
-                .overlay(
-                    Image(systemName: item.systemImage)
-                        .font(.system(size: isPadLike ? 25 : 21, weight: .semibold))
-                        .foregroundColor(.white)
+        ZStack(alignment: .bottomTrailing) {
+            RoundedRectangle(cornerRadius: corner, style: .continuous)
+                .fill(Color.white)
+
+            StatBlobShape()
+                .fill(item.blobColor.opacity(0.72))
+                .frame(
+                    width: Layout.readingModeBlobSize.width,
+                    height: Layout.readingModeBlobSize.height
                 )
+                .offset(x: Layout.readingModeBlobOffsetX, y: Layout.readingModeBlobOffsetY)
 
-            VStack(alignment: .leading, spacing: 5) {
-                Text(item.title)
-                    .font(.system(size: isPadLike ? 18 : 16, weight: .bold, design: .rounded))
-                    .foregroundColor(AppColors.primaryBlueDark)
+            VStack(alignment: .leading, spacing: 0) {
+                iconCircle
 
-                Text(item.subtitle)
-                    .font(.system(size: isPadLike ? 14 : 12, weight: .medium, design: .rounded))
-                    .foregroundColor(AppColors.textSecondary)
-                    .lineSpacing(2)
+                Spacer(minLength: Layout.readingModeContentSpacing)
+
+                VStack(alignment: .leading, spacing: Layout.readingModeTextSpacing) {
+                    Text(item.title)
+                        .font(.system(size: Layout.readingModeTitleSize, weight: .bold, design: .rounded))
+                        .foregroundColor(AppColors.primaryBlueDark)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.85)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(item.subtitle)
+                        .font(.system(size: Layout.readingModeSubtitleSize, weight: .medium, design: .rounded))
+                        .foregroundColor(AppColors.textSecondary)
+                        .lineLimit(3)
+                        .minimumScaleFactor(0.85)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: Layout.readingModeContentSpacing)
+
+                HStack {
+                    Spacer()
+                    arrowCircle
+                }
             }
-
-            Spacer(minLength: 8)
-
-            Image(systemName: "chevron.right")
-                .font(.system(size: isPadLike ? 16 : 14, weight: .semibold))
-                .foregroundColor(AppColors.textSecondary.opacity(0.75))
+            .padding(Layout.readingModeCardPadding)
+            .frame(maxWidth: .infinity, minHeight: Layout.readingModeCardMinHeight, alignment: .topLeading)
         }
-        .padding(.horizontal, isPadLike ? 22 : 18)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(height: isPadLike ? 94 : 80)
-        .background(Color.white.opacity(0.94))
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .shadow(color: Color.black.opacity(0.055), radius: 18, x: 0, y: 10)
+        .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: corner, style: .continuous)
+                .stroke(Color.white.opacity(0.92), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.055), radius: 10, x: 0, y: 4)
+        .contentShape(Rectangle())
+    }
+
+    private var iconCircle: some View {
+        ZStack {
+            Circle()
+                .fill(item.accentColor.opacity(0.12))
+                .frame(width: Layout.readingModeIconCircleSize, height: Layout.readingModeIconCircleSize)
+            Image(systemName: item.systemImage)
+                .font(.system(size: Layout.readingModeIconSize, weight: .semibold))
+                .foregroundColor(item.accentColor)
+        }
+    }
+
+    private var arrowCircle: some View {
+        ZStack {
+            Circle()
+                .fill(item.accentColor.opacity(0.12))
+                .frame(width: Layout.readingModeArrowCircleSize, height: Layout.readingModeArrowCircleSize)
+            Image(systemName: "arrow.right")
+                .font(.system(size: Layout.readingModeArrowIconSize, weight: .semibold))
+                .foregroundColor(item.accentColor)
+        }
     }
 }
 
 #Preview {
-    WritingMenuCardView(item: WritingViewModel().menuItems[0])
-        .padding()
-        .background(AppColors.appBackground)
+    ZStack {
+        AppColors.appBackground.ignoresSafeArea()
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+            ForEach(WritingViewModel().menuItems) { item in
+                WritingMenuCardView(item: item)
+            }
+        }
+        .padding(20)
+    }
 }

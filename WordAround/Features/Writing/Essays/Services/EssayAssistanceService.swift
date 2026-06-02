@@ -33,8 +33,6 @@ final class EssayAssistanceService {
         self.timeoutInterval = timeoutInterval
     }
 
-    // MARK: - Translation
-
     func translate(
         text: String,
         sourceLanguage: GrammarLanguage,
@@ -56,16 +54,12 @@ final class EssayAssistanceService {
             targetCode: targetLanguage.apiCode
         )
 
-        // MyMemory sometimes returns the original word unchanged or a brand name
-        // for single-word lookups. Validate before returning.
         guard let validated = validateTranslationResult(result, originalText: trimmed) else {
             throw EssayAssistanceServiceError.emptyResult
         }
 
         return validated
     }
-
-    // MARK: - Synonyms
 
     func synonyms(
         for word: String,
@@ -78,28 +72,16 @@ final class EssayAssistanceService {
             throw EssayAssistanceServiceError.emptyResult
         }
 
-        // Strategy — avoids the MyMemory single-word failure:
-        //
-        // 1. If source is English: find synonyms directly via Datamuse rel_syn.
-        // 2. If source is non-English:
-        //    a. Try Datamuse "means-like" (`ml`) on the original word.
-        //       Datamuse understands many common non-English words natively.
-        //    b. If that returns nothing, translate to English with quality validation,
-        //       then find synonyms for the English word.
-        // 3. If target is not English, translate the resulting synonym list in parallel.
-
         let englishSynonyms: [String]
 
         if sourceLanguage == .english {
             englishSynonyms = try await requestSynonyms(for: trimmed)
         } else {
-            // Try means-like first — completely avoids MyMemory for the input word
             let meansLike = (try? await requestMeansLike(for: trimmed)) ?? []
 
             if !meansLike.isEmpty {
                 englishSynonyms = meansLike
             } else {
-                // Fallback: translate to English, then find synonyms
                 let englishWord = try await translateWordReliably(trimmed, from: sourceLanguage)
                 englishSynonyms = try await requestSynonyms(for: englishWord)
             }
@@ -109,7 +91,6 @@ final class EssayAssistanceService {
         if targetLanguage == .english {
             finalResults = englishSynonyms
         } else {
-            // Translate synonyms to target language in parallel (not sequential)
             finalResults = await translateSynonymsInParallel(
                 Array(englishSynonyms.prefix(8)),
                 targetCode: targetLanguage.apiCode
@@ -124,9 +105,6 @@ final class EssayAssistanceService {
         return unique.map { EssayAssistanceItem(word: trimmed, result: $0, detail: nil) }
     }
 
-    // MARK: - Private: Datamuse
-
-    /// Standard English synonym lookup via `rel_syn`.
     private func requestSynonyms(for word: String) async throws -> [String] {
         let results = try await datamuseRequest(queryItems: [
             URLQueryItem(name: "rel_syn", value: word),
@@ -136,9 +114,6 @@ final class EssayAssistanceService {
         return results
     }
 
-    /// "Means like" — Datamuse understands many non-English words via this param
-    /// and returns conceptually-similar English words.
-    /// Much more reliable for non-English single words than MyMemory.
     private func requestMeansLike(for word: String) async throws -> [String] {
         return try await datamuseRequest(queryItems: [
             URLQueryItem(name: "ml", value: word),
@@ -173,10 +148,6 @@ final class EssayAssistanceService {
             .filter { !$0.isEmpty }
     }
 
-    // MARK: - Private: MyMemory translation
-
-    /// Translates a single word to English with quality validation.
-    /// Throws `.emptyResult` if MyMemory returns garbage (brand name, unchanged word, etc.)
     private func translateWordReliably(
         _ word: String,
         from sourceLanguage: GrammarLanguage
@@ -225,7 +196,6 @@ final class EssayAssistanceService {
 
         let decoded = try JSONDecoder().decode(MyMemoryResponse.self, from: data)
 
-        // responseStatus 200 = OK; 403/429/etc = quota exceeded or error
         guard decoded.responseStatus == 200 else {
             throw EssayAssistanceServiceError.serverError(decoded.responseStatus)
         }
@@ -240,10 +210,6 @@ final class EssayAssistanceService {
         return translated
     }
 
-    // MARK: - Private: Parallel translation
-
-    /// Translates a list of English synonyms to the target language concurrently.
-    /// Individual failures are silently dropped so partial results still display.
     private func translateSynonymsInParallel(
         _ synonyms: [String],
         targetCode: String
@@ -267,21 +233,6 @@ final class EssayAssistanceService {
         }
     }
 
-    // MARK: - Private: Validation
-
-    /// Guards against MyMemory's known failure modes for single-word lookups:
-    ///
-    /// • Returns the original word unchanged (no real translation found).
-    ///   Example: "suave" ES→EN → "suave"
-    ///
-    /// • Returns a brand/product name instead of a translation.
-    ///   Example: "suave" ES→EN → "Body Wash"  (Suave is a US haircare brand)
-    ///
-    /// Heuristics:
-    ///   1. Reject if result == input (case-insensitive).
-    ///   2. For single-word input: reject if result is 3+ words
-    ///      (brand expansions are almost always multi-word).
-    ///   3. Reject results containing digits.
     private func validateTranslationResult(
         _ result: String,
         originalText: String
@@ -289,21 +240,16 @@ final class EssayAssistanceService {
         let trimmed = result.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
 
-        // Rule 1: unchanged
         if trimmed.caseInsensitiveCompare(originalText) == .orderedSame { return nil }
 
-        // Rule 2: too many words for a single-word input
         let inputWords = originalText.split { $0.isWhitespace }.filter { !$0.isEmpty }.count
         let resultWords = trimmed.split { $0.isWhitespace }.filter { !$0.isEmpty }.count
         if inputWords == 1 && resultWords > 2 { return nil }
 
-        // Rule 3: contains digits
         if trimmed.contains(where: { $0.isNumber }) { return nil }
 
         return trimmed
     }
-
-    // MARK: - Private: Utilities
 
     private func deduplicated(_ words: [String]) -> [String] {
         var seen = Set<String>()
@@ -313,8 +259,6 @@ final class EssayAssistanceService {
             .sorted()
     }
 }
-
-// MARK: - Private response models
 
 private struct MyMemoryResponse: Decodable {
     let responseData: MyMemoryResponseData
@@ -329,12 +273,7 @@ private struct DatamuseWord: Decodable {
     let word: String
 }
 
-// MARK: - GrammarLanguage API code
-
 private extension GrammarLanguage {
-    /// ISO 639-1 code used by MyMemory + Datamuse. Derived from
-    /// `shortTitle` (which is the ISO code, uppercased) so adding a new
-    /// language case auto-propagates without touching this file.
     var apiCode: String {
         shortTitle.lowercased()
     }

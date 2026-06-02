@@ -15,7 +15,6 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
         }.value
     }
 
-
     private static func build(
         text: String,
         enabledTypes: Set<ListeningQuestionType>,
@@ -64,7 +63,6 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
 
         return Array(questions.prefix(maxQuestions))
     }
-
 
     private static func makeMainIdea(sentences: [String]) -> ListeningQuestion? {
         let lead = sentences.first ?? ""
@@ -166,7 +164,6 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
             explanation: "This altered statement does not match the passage."
         )
     }
-
 
     static func sentences(from text: String) -> [String] {
         var result: [String] = []

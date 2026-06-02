@@ -87,8 +87,6 @@ struct ReadingFromSetCreationView: View {
         }
     }
 
-    // MARK: - Set card
-
     private var setCard: some View {
         Button {
             viewModel.presentSetPicker()
@@ -135,8 +133,6 @@ struct ReadingFromSetCreationView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Vocabulary preview
-
     private var vocabularyPreview: some View {
         sectionCard(title: "Vocabulary") {
             VStack(alignment: .leading, spacing: 10) {
@@ -158,8 +154,6 @@ struct ReadingFromSetCreationView: View {
             }
         }
     }
-
-    // MARK: - Config
 
     private var configSection: some View {
         VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
@@ -195,8 +189,6 @@ struct ReadingFromSetCreationView: View {
             }
         }
     }
-
-    // MARK: - Building blocks
 
     @ViewBuilder
     private func sectionCard<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {

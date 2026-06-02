@@ -5,10 +5,6 @@ struct CreateGrammarTopicSheet: View {
     let errorMessage: String?
     let onCancel: () -> Void
     let onCreate: (_ title: String, _ description: String, _ languageCode: String, _ languageName: String, _ icon: String, _ colorHex: String) -> Void
-    /// Optional handler invoked when the user picks a topic template from the
-    /// library. The owner (HomeView/HomeViewModel) is responsible for the
-    /// batch Firestore writes. Defaults to `nil` so existing callers that
-    /// only support blank creation keep working unchanged.
     let onUseTemplate: ((GrammarTopicTemplate) -> Void)?
 
     @State private var title = ""
@@ -103,22 +99,13 @@ struct CreateGrammarTopicSheet: View {
                 onCancel: { isTemplateLibraryPresented = false }
             )
         }
-        // Reset the local submit lock as soon as the parent finishes the
-        // attempt (isCreating goes back to false) OR the parent surfaces
-        // an error message — whichever comes first.
         .onChange(of: isCreating) { _, creating in
             if !creating { didSubmit = false }
         }
         .onChange(of: errorMessage) { _, message in
-            // Only reset on a new error appearing — not on clearing during a
-            // fresh attempt. The VM always toggles isCreating true→false now,
-            // so the .onChange(of: isCreating) handler covers the success path.
             guard message != nil else { return }
             didSubmit = false
         }
-        // Safety net — see comment in QuickGrammarNoteSheet. Force-clear
-        // after 12 s so the user is never trapped in an infinite spinner
-        // even if a race or hang prevents the normal reset paths from firing.
         .task(id: didSubmit) {
             guard didSubmit else { return }
             try? await Task.sleep(nanoseconds: 12_000_000_000)
@@ -126,9 +113,6 @@ struct CreateGrammarTopicSheet: View {
         }
     }
 
-    /// "Use template" banner shown above the blank-create form. Tapping it
-    /// opens `GrammarTemplateLibraryView` in topic mode. Disabled while a
-    /// blank creation is in flight to avoid double-create races.
     private var templateBanner: some View {
         Button {
             isTemplateLibraryPresented = true

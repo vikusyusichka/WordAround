@@ -4,9 +4,6 @@ struct DifficultySelectorView: View {
     let selectedDifficulty: EssayDifficulty
     let onSelect: (EssayDifficulty) -> Void
 
-    /// Optional theme override. When omitted the selector keeps its
-    /// original blue look — every existing call site is unchanged.
-    /// Free Speaking opts into green by passing greenAccent / greenTitle.
     var accent: Color = AppColors.primaryBlue
     var accentDark: Color = AppColors.primaryBlueDark
 

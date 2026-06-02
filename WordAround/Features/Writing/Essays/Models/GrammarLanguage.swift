@@ -1,7 +1,6 @@
 import Foundation
 
 enum GrammarLanguage: String, CaseIterable, Identifiable, Equatable, Codable {
-    // Western European
     case english
     case spanish
     case french
@@ -13,7 +12,6 @@ enum GrammarLanguage: String, CaseIterable, Identifiable, Equatable, Codable {
     case galician
     case esperanto
 
-    // Slavic
     case polish
     case ukrainian
     case russian
@@ -24,19 +22,16 @@ enum GrammarLanguage: String, CaseIterable, Identifiable, Equatable, Codable {
     case slovenian
     case bulgarian
 
-    // Other European
     case romanian
     case hungarian
     case greek
     case turkish
 
-    // Nordic
     case swedish
     case danish
     case norwegian
     case finnish
 
-    // Baltic
     case lithuanian
     case latvian
     case estonian
@@ -140,7 +135,6 @@ enum GrammarLanguage: String, CaseIterable, Identifiable, Equatable, Codable {
         case .danish:     return "da-DK"
         case .norwegian:  return "nb"
         // Not supported by LanguageTool — kept as ISO 639-1 so AI prompts
-        // and translation services can still use a stable code.
         case .czech:      return "cs"
         case .croatian:   return "hr"
         case .serbian:    return "sr"
@@ -155,11 +149,6 @@ enum GrammarLanguage: String, CaseIterable, Identifiable, Equatable, Codable {
         }
     }
 
-    /// `true` when LanguageTool can reliably grammar-check this language.
-    /// When `false`, the UI shows "Grammar checking is currently unavailable
-    /// for this language." instead of issuing a doomed request. AI
-    /// generation, translation, and synonyms continue to work because they
-    /// use different providers.
     var supportsGrammarCheck: Bool {
         switch self {
         case .czech, .croatian, .serbian, .slovenian, .bulgarian,

@@ -1,15 +1,5 @@
 import Foundation
 
-/// Assembles a `GrammarNote` from a fully-validated input (topic, title,
-/// optional template, etc.) and saves it through `GrammarNoteServicing`.
-///
-/// Single responsibility: take a validated draft → produce a saved note.
-///
-/// Callers (ViewModels) keep:
-/// - input validation (title/preview length, required fields)
-/// - `@Published` UI state (`isCreatingNote`, `errorMessage`)
-/// - updating the local notes list after the save
-/// - error message localization
 @MainActor
 struct CreateGrammarNoteUseCase {
     struct Input {
@@ -81,9 +71,6 @@ struct CreateGrammarNoteUseCase {
         return note
     }
 
-    // MARK: - Helpers (moved verbatim from GrammarNotesTopicViewModel)
-
-    /// Builds fresh blocks from a template, assigning new ids and contiguous order.
     private static func makeBlocks(from template: GrammarNoteTemplate?, date: Date) -> [GrammarNoteBlock] {
         guard let template else { return [] }
         return template.blocks.enumerated().map { index, block in
@@ -102,9 +89,6 @@ struct CreateGrammarNoteUseCase {
         }
     }
 
-    /// Joins non-empty text/secondaryText/item lines with newlines. Matches the
-    /// existing `GrammarNotesTopicViewModel` behavior exactly (notably it does
-    /// NOT include `imageCaption`, to preserve saved-field semantics).
     private static func makePlainText(from blocks: [GrammarNoteBlock]) -> String {
         blocks.flatMap { block -> [String] in
             var parts: [String] = []

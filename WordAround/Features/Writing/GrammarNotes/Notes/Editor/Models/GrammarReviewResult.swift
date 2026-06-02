@@ -1,7 +1,5 @@
 import Foundation
 
-/// User self-rating after seeing a review item. Drives the lightweight
-/// scheduling logic in `GrammarReviewItem.applying(result:at:)`.
 enum GrammarReviewResult: String, Codable, CaseIterable, Identifiable, Equatable {
     case forgot
     case hard
@@ -28,8 +26,6 @@ enum GrammarReviewResult: String, Codable, CaseIterable, Identifiable, Equatable
         }
     }
 
-    /// Distance until the next review. Kept simple — fixed intervals, not
-    /// SM-2. Returned as a `TimeInterval` so callers can offset from `now`.
     var nextInterval: TimeInterval {
         switch self {
         case .forgot: return 4 * 60 * 60          // 4 hours
@@ -39,7 +35,6 @@ enum GrammarReviewResult: String, Codable, CaseIterable, Identifiable, Equatable
         }
     }
 
-    /// Whether this rating counts as a correct recall.
     var isCorrect: Bool {
         switch self {
         case .easy, .good: return true

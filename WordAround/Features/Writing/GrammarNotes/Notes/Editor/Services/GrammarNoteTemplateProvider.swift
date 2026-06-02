@@ -1,13 +1,8 @@
 import Foundation
 
-/// Static library of note templates. Topic templates live in
-/// `GrammarTemplateProvider`; this file is the canonical source for the
-/// 7 generic note templates used by `CreateGrammarNoteSheet`,
-/// `GrammarNoteEditorView`'s empty state, and topic-template authoring.
 struct GrammarNoteTemplateProvider {
     static let shared = GrammarNoteTemplateProvider()
 
-    // `let` so the array is built once, not on every access.
     let templates: [GrammarNoteTemplate] = [
         GrammarNoteTemplate(
             id: "grammar-rule",
@@ -120,8 +115,6 @@ struct GrammarNoteTemplateProvider {
         )
     ]
 
-    // MARK: - Filtering
-
     func templates(for noteType: GrammarNoteType? = nil) -> [GrammarNoteTemplate] {
         guard let noteType, noteType != .standard else { return templates }
         return templates.filter { $0.noteType == noteType }
@@ -164,7 +157,6 @@ struct GrammarNoteTemplateProvider {
         return result
     }
 
-    // MARK: - Private
     private static func ordered(_ blocks: [GrammarNoteBlock]) -> [GrammarNoteBlock] {
         blocks.enumerated().map { index, block in
             var copy = block; copy.order = index; return copy

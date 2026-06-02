@@ -1,5 +1,4 @@
 import SwiftUI
-// MARK: - Backward Compatible Lose Wrapper
 
 struct WriteWordsLoseScreenView: View {
     let stats: WriteWordsLoseStats

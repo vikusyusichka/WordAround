@@ -43,13 +43,9 @@ final class ReadingFromSetCreationViewModel: ObservableObject {
         self.currentUserId = currentUserId
     }
 
-    // MARK: - Theme
-
     private var config: ReadingSetupConfig { ReadingSetupConfig.readingFromSets }
     var accent: Color { config.accent }
     var accentDark: Color { config.accentDark }
-
-    // MARK: - Derived
 
     var hasSet: Bool { vocabulary != nil }
     var wordCount: Int { vocabulary?.count ?? 0 }
@@ -60,8 +56,6 @@ final class ReadingFromSetCreationViewModel: ObservableObject {
     let generationModeOptions: [ReadingGenerationStyle] = [.natural, .strict, .mixed]
     let lengthOptions: [ReadingLength] = [.short, .medium, .long]
     let difficultyOptions: [EssayDifficulty] = [.a1, .a2, .b1, .b2, .c1]
-
-    // MARK: - Sets
 
     func loadSets() async {
         guard let userId = currentUserId() else {
@@ -94,8 +88,6 @@ final class ReadingFromSetCreationViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
     }
-
-    // MARK: - Generation
 
     func generate() {
         guard let vocab = vocabulary else {

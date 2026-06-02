@@ -39,8 +39,6 @@ struct SpeedReadingSessionView: View {
         }
     }
 
-    // MARK: - Reading layout
-
     private var readingLayout: some View {
         ZStack(alignment: .bottom) {
             ScrollView(.vertical, showsIndicators: false) {
@@ -83,8 +81,6 @@ struct SpeedReadingSessionView: View {
             }
         }
     }
-
-    // MARK: - Header
 
     private var header: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -142,8 +138,6 @@ struct SpeedReadingSessionView: View {
         return min(max(remaining, 0), 1)
     }
 
-    // MARK: - Reading section
-
     private var readingSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             ReadingSessionTextCardView(
@@ -185,8 +179,6 @@ struct SpeedReadingSessionView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Questions section
-
     @ViewBuilder
     private var questionsSection: some View {
         if let question = viewModel.currentQuestion {
@@ -212,8 +204,6 @@ struct SpeedReadingSessionView: View {
         }
     }
 
-    // MARK: - Result section
-
     @ViewBuilder
     private var resultSection: some View {
         if let result = viewModel.result {
@@ -237,8 +227,6 @@ struct SpeedReadingSessionView: View {
                 .padding(40)
         }
     }
-
-    // MARK: - Bottom bar
 
     @ViewBuilder
     private var bottomBar: some View {
@@ -271,8 +259,6 @@ struct SpeedReadingSessionView: View {
             EmptyView()
         }
     }
-
-    // MARK: - Error
 
     private func errorState(_ message: String) -> some View {
         VStack(spacing: 16) {

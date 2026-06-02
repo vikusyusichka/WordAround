@@ -1,18 +1,9 @@
 import Foundation
 import FirebaseFirestore
 
-// MARK: - Protocol
-
-/// `Sendable` so VMs can capture the service in `Task.detached` closures
-/// without Swift 6 strict-concurrency complaints. Firestore is already
-/// thread-safe, so implementing classes use `@unchecked Sendable`.
 protocol GrammarReviewServicing: Sendable {
     func fetchDueReviewItems(ownerUID: String, limit: Int) async throws -> [GrammarReviewItem]
     func fetchDueSummary(ownerUID: String) async throws -> GrammarReviewSummary
-    /// All review items of a given source (e.g. all mistakes the user has
-    /// saved) — NOT filtered by due date. Used by the Home highlights
-    /// sections so they can surface "Mistakes to Fix" / "Weak Quiz Areas"
-    /// regardless of when the spaced-repetition algorithm scheduled them.
     func fetchItemsBySource(
         ownerUID: String,
         sourceType: GrammarReviewSourceType,
@@ -23,10 +14,6 @@ protocol GrammarReviewServicing: Sendable {
     func deleteReviewItem(id: String, ownerUID: String) async throws
 }
 
-// MARK: - Summary value
-
-/// Lightweight counts used by `GrammarReviewSummaryView` to render the
-/// home-screen card without pulling full items.
 struct GrammarReviewSummary: Equatable {
     var dueTotal: Int = 0
     var dueNotes: Int = 0
@@ -49,20 +36,9 @@ struct GrammarReviewSummary: Equatable {
     }
 }
 
-// MARK: - Live implementation
-
-/// Backs review-item persistence. Uses a flat per-user collection
-/// (`users/{uid}/grammarReviewItems/{id}`) so a single query returns
-/// everything due regardless of topic.
-///
-/// Firestore index: if Firestore complains about a missing composite
-/// index for `dueAt`, just an ascending single-field index on `dueAt`
-/// suffices — we only filter by `<= now` and order by the same field.
 final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
 
     private let db = Firestore.firestore()
-
-    // MARK: Fetch
 
     func fetchDueReviewItems(ownerUID: String, limit: Int) async throws -> [GrammarReviewItem] {
         let snapshot = try await reviewCollection(ownerUID: ownerUID)
@@ -78,8 +54,6 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
         sourceType: GrammarReviewSourceType,
         limit: Int
     ) async throws -> [GrammarReviewItem] {
-        // Filter by `sourceType` and order by recency so the Home cards
-        // show the most relevant items first. Single composite-friendly
         // query — Firestore's auto-suggested index covers it.
         let snapshot = try await reviewCollection(ownerUID: ownerUID)
             .whereField("sourceType", isEqualTo: sourceType.rawValue)
@@ -90,8 +64,6 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
     }
 
     func fetchDueSummary(ownerUID: String) async throws -> GrammarReviewSummary {
-        // Same query as `fetchDueReviewItems`, just capped slightly higher so
-        // the home card can show realistic numbers without paging.
         let snapshot = try await reviewCollection(ownerUID: ownerUID)
             .whereField("dueAt", isLessThanOrEqualTo: Timestamp(date: Date()))
             .order(by: "dueAt", descending: false)
@@ -100,8 +72,6 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
         let items = snapshot.documents.compactMap { makeItem(from: $0.data(), id: $0.documentID) }
         return GrammarReviewSummary.from(items: items)
     }
-
-    // MARK: Write
 
     func createOrUpdateReviewItem(_ item: GrammarReviewItem) async throws {
         let document = reviewCollection(ownerUID: item.ownerUID).document(item.id)
@@ -114,7 +84,6 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
            let existing = makeItem(from: data, id: snapshot.documentID) {
             // Upsert metadata from the new source snapshot, but preserve learning
             // history. Without this, tapping "Add to Review" twice quietly resets
-            // reviewCount/streaks. Naturally, because one button needed a plot arc.
             itemToWrite.reviewCount = existing.reviewCount
             itemToWrite.correctStreak = existing.correctStreak
             itemToWrite.incorrectStreak = existing.incorrectStreak
@@ -140,13 +109,9 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
         try await reviewCollection(ownerUID: ownerUID).document(id).delete()
     }
 
-    // MARK: - Paths
-
     private func reviewCollection(ownerUID: String) -> CollectionReference {
         db.collection("users").document(ownerUID).collection("grammarReviewItems")
     }
-
-    // MARK: - Mapping
 
     private func dictionary(from item: GrammarReviewItem) -> [String: Any] {
         var data: [String: Any] = [
@@ -211,8 +176,6 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
         return value as? Date
     }
 }
-
-// MARK: - Mock (previews / tests)
 
 struct MockGrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
     var items: [GrammarReviewItem] = []

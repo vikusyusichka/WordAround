@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 struct SpeakingSetupPressStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -139,7 +138,6 @@ struct SpeakingSetupStartButton: View {
         .speakingActionBarWidth()
     }
 }
-
 
 extension View {
     func speakingActionBarWidth() -> some View {

@@ -48,8 +48,6 @@ struct GrammarNoteQuizView: View {
         }
     }
 
-    // MARK: - Header
-
     private var quizHeader: some View {
         HStack(spacing: 12) {
             Button(action: onBack) {
@@ -96,8 +94,6 @@ struct GrammarNoteQuizView: View {
         .padding(.bottom, 12)
     }
 
-    // MARK: - Question card
-
     private func questionCard(_ q: GrammarQuizQuestion) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
@@ -128,8 +124,6 @@ struct GrammarNoteQuizView: View {
         )
         .shadow(color: Color.black.opacity(0.05), radius: 14, x: 0, y: 7)
     }
-
-    // MARK: - Answer area
 
     @ViewBuilder
     private func answerArea(_ q: GrammarQuizQuestion) -> some View {
@@ -286,8 +280,6 @@ struct GrammarNoteQuizView: View {
         }
     }
 
-    // MARK: - Feedback
-
     @ViewBuilder
     private func resultFeedback(_ q: GrammarQuizQuestion) -> some View {
         let answer = quizVM.sessionAnswers[q.id] ?? ""
@@ -329,8 +321,6 @@ struct GrammarNoteQuizView: View {
         .background(isCorrect ? Color.green.opacity(0.07) : CreateSetTheme.red.accent.opacity(0.07))
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
-
-    // MARK: - Buttons
 
     private var submitButton: some View {
         Button {
@@ -374,8 +364,6 @@ struct GrammarNoteQuizView: View {
         }
         .buttonStyle(.plain)
     }
-
-    // MARK: - Logic
 
     private func submitAnswer(_ q: GrammarQuizQuestion) {
         let answer = currentInput.trimmingCharacters(in: .whitespacesAndNewlines)

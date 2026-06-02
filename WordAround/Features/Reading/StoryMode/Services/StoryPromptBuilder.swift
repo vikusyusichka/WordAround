@@ -2,8 +2,6 @@ import Foundation
 
 enum StoryPromptBuilder {
 
-    // MARK: - Chapter text
-
     static func firstChapterPrompt(configuration: StoryModeConfiguration) -> String {
         var lines: [String] = []
         lines.append("Write the opening \(unitNoun(for: configuration)) of an interactive \(configuration.storyType.title.lowercased()) story in \(configuration.language.title).")
@@ -32,8 +30,6 @@ enum StoryPromptBuilder {
         return lines.joined(separator: "\n")
     }
 
-    // MARK: - Choices
-
     static func choicesPrompt(chapterText: String, configuration: StoryModeConfiguration, count: Int) -> String {
         var lines: [String] = []
         lines.append("Based on the \(configuration.storyType.title.lowercased()) story passage below, suggest exactly \(count) distinct things the main character could do next.")
@@ -44,8 +40,6 @@ enum StoryPromptBuilder {
         lines.append(chapterText)
         return lines.joined(separator: "\n")
     }
-
-    // MARK: - Story memory
 
     private static func storyMemory(for session: StorySession) -> String {
         let recents = session.chapters.suffix(3)
@@ -58,8 +52,6 @@ enum StoryPromptBuilder {
             return line
         }.joined(separator: "\n")
     }
-
-    // MARK: - Instruction fragments
 
     private static func unitNoun(for configuration: StoryModeConfiguration) -> String {
         switch configuration.storyLength {

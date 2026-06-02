@@ -31,8 +31,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         topics.filter { !$0.isMistakesTopic }.isEmpty
     }
 
-    // MARK: - Init
-
     init(
         ownerUID: String,
         service: GrammarNoteTopicServicing? = nil,
@@ -50,15 +48,12 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         bindSearch()
     }
 
-    // MARK: - Topic loading
-
     func loadTopics() async {
         guard !ownerUID.isEmpty else {
             errorMessage = "User session is not available. Please sign in again."
             return
         }
 
-        // Phase 1: show cached topics immediately — no spinner needed
         if topics.isEmpty {
             if let cached = try? await service.fetchTopics(for: ownerUID, source: .cache),
                !cached.isEmpty {
@@ -66,7 +61,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             }
         }
 
-        // Phase 2: server refresh; show spinner only when cache was empty
         let needsSpinner = topics.isEmpty
         if needsSpinner { isLoading = true }
         defer { isLoading = false }
@@ -83,8 +77,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Topic creation
-
     func createTopic(
         title: String,
         description: String,
@@ -95,10 +87,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
     ) async -> Bool {
         guard !isCreatingTopic else { return false }
 
-        // Flip the loading flag FIRST so the sheet's spinner always observes
-        // a true → false transition, even on early validation bail-out.
-        // Otherwise an early `return false` would never publish a state
-        // change and the parent button could appear "stuck" to the user.
         isCreatingTopic = true
         errorMessage = nil
         defer { isCreatingTopic = false }
@@ -166,20 +154,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Topic from template
-
-    /// Creates a topic from a `GrammarTopicTemplate` together with all its
-    /// starter notes. Reuses `isCreatingTopic` so the existing
-    /// `CreateGrammarTopicSheet` spinner / disabled-button logic and the
-    /// double-tap guard apply unchanged.
-    ///
-    /// Behavior:
-    /// - Honors `allowQuickQuizzes`: quiz blocks are stripped before any write.
-    /// - Creates one topic doc, then per-note docs sequentially (Firestore
-    ///   service handles best-effort topic counter increments).
-    /// - Locally updates the topics list with the correct `notesCount` so the
-    ///   home screen reflects the result without a global reload.
-    /// - Returns the created topic on success, `nil` on failure.
     func createTopicFromTemplate(
         _ template: GrammarTopicTemplate,
         settings: GrammarNotesSettingsStore
@@ -226,7 +200,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         print("[CreateTopicFromTemplate] writing topic \(topicID) with \(effectiveTemplate.noteTemplates.count) notes")
         #endif
 
-        // 1. Topic document.
         do {
             try await service.createTopic(topic)
         } catch {
@@ -237,9 +210,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             return nil
         }
 
-        // 2. Note documents — sequential awaits keep ordering deterministic
-        //    and avoid hammering Firestore. Each note write is best-effort:
-        //    a single note failure won't roll back the topic.
         var savedCount = 0
         for (index, noteTemplate) in effectiveTemplate.noteTemplates.enumerated() {
             let blocks = noteTemplate.blocks.enumerated().map { i, block -> GrammarNoteBlock in
@@ -297,19 +267,15 @@ final class GrammarNotesHomeViewModel: ObservableObject {
                 #if DEBUG
                 print("[CreateTopicFromTemplate] note \(index + 1) failed (continuing):", error)
                 #endif
-                // Continue — partial success is better than rolling everything back.
             }
         }
 
-        // 3. Local state — reflect the correct count without a full reload.
         var localTopic = topic
         localTopic.notesCount = savedCount
         updateTopics(sortTopics(topics + [localTopic]))
 
         return localTopic
     }
-
-    // MARK: - Static helpers (topic-template path)
 
     private static func plainText(from blocks: [GrammarNoteBlock]) -> String {
         blocks.flatMap { block -> [String] in
@@ -342,21 +308,10 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Reordering (edit mode)
-
-    /// Reorders topics in place from edit mode. `.moveDisabled(...)` on the
-    /// row blocks dragging the Common Mistakes topic, but SwiftUI will still
-    /// allow other rows to be dropped above it — so we explicitly re-pin
-    /// the mistakes topic to position 0 here. New `sortIndex` values are
-    /// assigned 0..n based on the final visual order and persisted in a
-    /// single batch.
     func moveTopics(from source: IndexSet, to destination: Int) {
         var reordered = topics
         reordered.move(fromOffsets: source, toOffset: destination)
 
-        // Re-pin the mistakes topic to position 0 if it slipped down. This
-        // keeps the "protected system topic" contract intact regardless of
-        // how the user drag-and-drops around it.
         if let mistakesIndex = reordered.firstIndex(where: { $0.isMistakesTopic }),
            mistakesIndex != 0 {
             let mistakes = reordered.remove(at: mistakesIndex)
@@ -390,23 +345,15 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Quick Note creation
-
     func createQuickNote(draft: QuickGrammarNoteDraft) async -> GrammarNote? {
         guard !isCreatingQuickNote else { return nil }
 
-        // 1. Flip the loading flag FIRST so the sheet always observes a
-        //    true → false transition (even if we bail out early below).
-        //    Without this, an early `return nil` would leave `didSubmitSave`
-        //    stuck `true` in the sheet and the spinner would never clear.
         isCreatingQuickNote = true
         quickNoteError = nil
         defer { isCreatingQuickNote = false }
 
-        // Let SwiftUI render the spinner state before any synchronous bail-out.
         await Task.yield()
 
-        // 2. Validate required inputs.
         guard !ownerUID.isEmpty else {
             quickNoteError = "User session is not available. Please sign in again."
             #if DEBUG
@@ -422,7 +369,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             return nil
         }
 
-        // 3. Save.
         #if DEBUG
         print("[QuickNote] saving to users/\(ownerUID)/grammarNoteTopics/\(matchedTopic.id)/notes")
         #endif
@@ -447,16 +393,12 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Quick Mistake creation
-
     func createQuickMistake(
         draft: QuickGrammarMistakeDraft,
         settings: GrammarNotesSettingsStore
     ) async -> GrammarNote? {
         guard !isCreatingQuickMistake else { return nil }
 
-        // Set the loading flag immediately so the sheet always observes the
-        // true → false transition, even on early validation bail-out.
         isCreatingQuickMistake = true
         quickMistakeError = nil
         defer { isCreatingQuickMistake = false }
@@ -471,7 +413,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             return nil
         }
 
-        // Resolve target topic
         let targetTopic: GrammarNoteTopic
         if settings.groupMistakesByTopic,
            let found = topics.first(where: { $0.id == draft.topic.id }) {
@@ -521,8 +462,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             return nil
         }
     }
-
-    // MARK: - Private helpers
 
     private func getOrCreateMistakesTopic() async -> GrammarNoteTopic? {
         if let existing = topics.first(where: { $0.isMistakesTopic }) { return existing }
@@ -613,9 +552,6 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         topics.sorted { lhs, rhs in
             if lhs.isPinned != rhs.isPinned { return lhs.isPinned && !rhs.isPinned }
             if lhs.isMistakesTopic != rhs.isMistakesTopic { return lhs.isMistakesTopic && !rhs.isMistakesTopic }
-            // User-defined order wins over recency when available. Newly
-            // created topics (no sortIndex) surface above already-reordered
-            // ones so they still appear at the top of the list.
             switch (lhs.sortIndex, rhs.sortIndex) {
             case let (l?, r?):
                 if l != r { return l < r }

@@ -105,7 +105,6 @@ struct DebateModeView: View {
         }
     }
 
-
     private var messageList: some View {
         VStack(alignment: .leading, spacing: Layout.convMessageGroupSpacing) {
             ForEach(viewModel.messages) { message in
@@ -130,7 +129,6 @@ struct DebateModeView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .animation(.easeInOut(duration: 0.22), value: viewModel.currentHint)
     }
-
 
     private var topBar: some View {
         ZStack {
@@ -195,7 +193,6 @@ struct DebateModeView: View {
         .animation(.easeInOut(duration: 0.18), value: isWarning)
     }
 
-
     private func banner(_ message: String, icon: String, tint: Color) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: icon)
@@ -224,7 +221,6 @@ struct DebateModeView: View {
                 .shadow(color: Color.black.opacity(0.06), radius: 11, x: 0, y: 4)
         )
     }
-
 
     private func handleMicTap() {
         Task { await viewModel.toggleListening() }

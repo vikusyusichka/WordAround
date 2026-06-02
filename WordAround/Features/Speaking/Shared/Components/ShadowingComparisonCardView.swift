@@ -33,7 +33,6 @@ struct ShadowingComparisonCardView: View {
         )
     }
 
-
     private var assessingState: some View {
         HStack(spacing: 12) {
             ProgressView().tint(accent)
@@ -44,7 +43,6 @@ struct ShadowingComparisonCardView: View {
         }
         .padding(.vertical, 6)
     }
-
 
     private func scoreGrid(_ a: PronunciationAssessmentResult) -> some View {
         VStack(spacing: 10) {
@@ -79,7 +77,6 @@ struct ShadowingComparisonCardView: View {
         )
     }
 
-
     private func recognizedSection(_ a: PronunciationAssessmentResult) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Recognized")
@@ -91,7 +88,6 @@ struct ShadowingComparisonCardView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
-
 
     @ViewBuilder
     private func weakWordsSection(_ a: PronunciationAssessmentResult) -> some View {
@@ -137,7 +133,6 @@ struct ShadowingComparisonCardView: View {
         .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(accent.opacity(0.08)))
     }
 
-
     private func legacyAccuracy(_ attempt: ShadowingAttempt) -> some View {
         HStack(spacing: 14) {
             ZStack {
@@ -158,7 +153,6 @@ struct ShadowingComparisonCardView: View {
         }
     }
 
-
     private var estimateWarning: some View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: "info.circle.fill")
@@ -171,7 +165,6 @@ struct ShadowingComparisonCardView: View {
             Spacer(minLength: 0)
         }
     }
-
 
     private func scoreColor(_ pct: Int) -> Color {
         switch pct {

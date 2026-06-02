@@ -1,10 +1,5 @@
 import SwiftUI
 
-/// Reusable template picker. Drives `CreateGrammarTopicSheet` (topic mode)
-/// and `CreateGrammarNoteSheet` / editor empty state (note mode).
-///
-/// Stays a "dumb" view: it does not save anything. The owning view receives
-/// the user's choice via `onSelect` and handles persistence.
 struct GrammarTemplateLibraryView: View {
 
     enum Kind {
@@ -35,8 +30,6 @@ struct GrammarTemplateLibraryView: View {
         self.onCancel = onCancel
     }
 
-    // MARK: - Filter options
-
     private let languages: [(code: String?, label: String)] = [
         (nil,  "All languages"),
         ("en", "English"),
@@ -52,8 +45,6 @@ struct GrammarTemplateLibraryView: View {
         ("B1", "B1"),
         ("B2", "B2")
     ]
-
-    // MARK: - Body
 
     var body: some View {
         NavigationStack {
@@ -127,8 +118,6 @@ struct GrammarTemplateLibraryView: View {
         }
     }
 
-    // MARK: - Search
-
     private var searchField: some View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
@@ -156,8 +145,6 @@ struct GrammarTemplateLibraryView: View {
                 .stroke(Color.white.opacity(0.72), lineWidth: 1)
         )
     }
-
-    // MARK: - Filters
 
     private var filtersRow: some View {
         VStack(spacing: 8) {
@@ -206,8 +193,6 @@ struct GrammarTemplateLibraryView: View {
         }
         .buttonStyle(ScaleButtonStyle())
     }
-
-    // MARK: - Cards
 
     @ViewBuilder
     private var cardsList: some View {
@@ -302,8 +287,6 @@ private struct ScaleButtonStyle: ButtonStyle {
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
-
-// MARK: - Previews
 
 #Preview("Topic library") {
     GrammarTemplateLibraryView(

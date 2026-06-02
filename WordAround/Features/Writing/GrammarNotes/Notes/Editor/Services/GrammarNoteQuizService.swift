@@ -1,16 +1,12 @@
 import Foundation
 import FirebaseFirestore
 
-// MARK: - Protocol
-
 protocol GrammarNoteQuizServicing {
     func fetchQuizzes(ownerUID: String, topicId: String, noteId: String) async throws -> [GrammarNoteQuiz]
     func createQuiz(_ quiz: GrammarNoteQuiz) async throws
     func updateQuiz(_ quiz: GrammarNoteQuiz) async throws
     func deleteQuiz(id: String, ownerUID: String, topicId: String, noteId: String) async throws
 }
-
-// MARK: - Live implementation
 
 final class GrammarNoteQuizService: GrammarNoteQuizServicing {
 
@@ -57,8 +53,6 @@ final class GrammarNoteQuizService: GrammarNoteQuizServicing {
         }
     }
 
-    // MARK: - Firestore paths
-
     private func quizzesCollection(ownerUID: String, topicId: String, noteId: String) -> CollectionReference {
         db.collection("users").document(ownerUID)
             .collection("grammarNoteTopics").document(topicId)
@@ -71,8 +65,6 @@ final class GrammarNoteQuizService: GrammarNoteQuizServicing {
             .collection("grammarNoteTopics").document(topicId)
             .collection("notes").document(noteId)
     }
-
-    // MARK: - Mapping
 
     private func makeQuiz(from data: [String: Any], id: String) -> GrammarNoteQuiz? {
         guard
@@ -147,8 +139,6 @@ final class GrammarNoteQuizService: GrammarNoteQuizServicing {
         return value as? Date
     }
 }
-
-// MARK: - Mock
 
 struct MockGrammarNoteQuizService: GrammarNoteQuizServicing {
     var quizzes: [GrammarNoteQuiz] = []

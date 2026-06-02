@@ -10,8 +10,6 @@ protocol ReadingStorageServicing {
     func updateLastOpened(itemId: String, mode: ReadingMode, for userId: String) async throws
 }
 
-// MARK: - Live (Firestore)
-
 final class ReadingStorageService: ReadingStorageServicing {
 
     private let db = Firestore.firestore()
@@ -69,8 +67,6 @@ final class ReadingStorageService: ReadingStorageServicing {
         }
     }
 }
-
-// MARK: - Mock (previews / tests, no Firebase)
 
 final class MockReadingStorageService: ReadingStorageServicing {
     private var items: [ReadingLibraryItem]

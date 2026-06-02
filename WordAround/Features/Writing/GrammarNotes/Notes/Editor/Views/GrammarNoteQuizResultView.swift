@@ -40,8 +40,6 @@ struct GrammarNoteQuizResultView: View {
         .navigationBarBackButtonHidden(true)
     }
 
-    // MARK: - Score card
-
     private var scoreCard: some View {
         VStack(spacing: 16) {
             ZStack {
@@ -81,8 +79,6 @@ struct GrammarNoteQuizResultView: View {
         .shadow(color: Color.black.opacity(0.05), radius: 14, x: 0, y: 7)
     }
 
-    // MARK: - Incorrect
-
     private var incorrectSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             sectionHeader("Incorrect", systemImage: "xmark.circle.fill", color: CreateSetTheme.red.accent)
@@ -93,8 +89,6 @@ struct GrammarNoteQuizResultView: View {
             }
         }
     }
-
-    // MARK: - Correct
 
     private var correctSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -164,8 +158,6 @@ struct GrammarNoteQuizResultView: View {
             .background(color.opacity(0.10))
             .clipShape(Capsule())
     }
-
-    // MARK: - Actions
 
     private var actionButtons: some View {
         VStack(spacing: 10) {

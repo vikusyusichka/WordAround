@@ -1,11 +1,5 @@
 import Foundation
 
-/// Local, static topic template. Used by `GrammarTemplateLibraryView` and
-/// `GrammarNotesHomeViewModel.createTopicFromTemplate(...)` to spawn a topic
-/// with a curated set of starter notes.
-///
-/// NOT stored in Firestore — only the produced `GrammarNoteTopic` and the
-/// included `GrammarNote`s are persisted.
 struct GrammarTopicTemplate: Identifiable, Codable, Equatable {
     let id: String
     let title: String
@@ -47,8 +41,6 @@ struct GrammarTopicTemplate: Identifiable, Codable, Equatable {
 
     var noteCount: Int { noteTemplates.count }
 
-    /// Returns a copy with quiz blocks stripped from all included note
-    /// templates — used when `allowQuickQuizzes == false`.
     func withoutQuizBlocks() -> GrammarTopicTemplate {
         GrammarTopicTemplate(
             id: id,

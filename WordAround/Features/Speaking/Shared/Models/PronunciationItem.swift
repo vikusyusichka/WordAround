@@ -1,6 +1,5 @@
 import Foundation
 
-
 enum PronunciationItemType: String, Equatable {
     case word          // a single difficult word
     case minimalPair   // two contrasting words "ship / sheep"
@@ -26,7 +25,6 @@ enum PronunciationItemType: String, Equatable {
     }
 }
 
-
 enum PronunciationDifficulty: String, CaseIterable, Identifiable, Equatable {
     case easy
     case balanced
@@ -42,7 +40,6 @@ enum PronunciationDifficulty: String, CaseIterable, Identifiable, Equatable {
         }
     }
 }
-
 
 enum PronunciationFocus: String, CaseIterable, Identifiable, Equatable {
     case vowels
@@ -83,7 +80,6 @@ enum PronunciationFocus: String, CaseIterable, Identifiable, Equatable {
         }
     }
 }
-
 
 struct PronunciationItem: Identifiable, Equatable {
     let id: UUID

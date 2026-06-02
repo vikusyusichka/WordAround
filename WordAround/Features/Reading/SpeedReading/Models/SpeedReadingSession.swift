@@ -17,8 +17,6 @@ struct SpeedReadingSession: Identifiable, Equatable {
     var lastOpenedAt: Date?
     var history: [SpeedReadingResult]
 
-    // MARK: - Init
-
     init(
         id: String = UUID().uuidString,
         userId: String,
@@ -47,8 +45,6 @@ struct SpeedReadingSession: Identifiable, Equatable {
         self.history = history
     }
 
-    // MARK: - Derived
-
     var hasGeneratedContent: Bool {
         !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
@@ -69,8 +65,6 @@ struct SpeedReadingSession: Identifiable, Equatable {
             history = Array(history.prefix(Self.historyLimit))
         }
     }
-
-    // MARK: - Library item bridge
 
     func toLibraryItem() -> ReadingLibraryItem {
         var selections = configuration.asSelections
@@ -149,8 +143,6 @@ struct SpeedReadingSession: Identifiable, Equatable {
         )
     }
 
-    // MARK: - Chunk serialisation
-
     private static func encodeChunks(_ chunks: [String], fallback: String) -> String {
         if chunks.isEmpty { return fallback }
         let envelope = ChunksEnvelope(chunks: chunks)
@@ -173,8 +165,6 @@ struct SpeedReadingSession: Identifiable, Equatable {
     }
 
     private struct ChunksEnvelope: Codable { let chunks: [String] }
-
-    // MARK: - History serialisation
 
     private static func encode(history: [SpeedReadingResult]) -> String? {
         guard !history.isEmpty else { return nil }

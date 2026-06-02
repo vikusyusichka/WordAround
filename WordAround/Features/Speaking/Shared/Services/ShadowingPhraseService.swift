@@ -1,6 +1,5 @@
 import Foundation
 
-
 enum ShadowingPhraseError: LocalizedError {
     case noPhrases
     case notConfigured
@@ -19,13 +18,11 @@ enum ShadowingPhraseError: LocalizedError {
     }
 }
 
-
 struct ShadowingPhraseBatch {
     let phrases: [ShadowingPhrase]
     let usedFallback: Bool
     let fallbackReason: String?
 }
-
 
 protocol ShadowingPhraseProviding {
     func phrases(
@@ -47,7 +44,6 @@ extension ShadowingPhraseProviding {
     }
 }
 
-
 enum ShadowingPhraseAIConfiguration {
     static let workerPath = "/api/shadowing/phrases"
 
@@ -60,7 +56,6 @@ enum ShadowingPhraseAIConfiguration {
         return components.url
     }
 }
-
 
 final class ShadowingPhraseService: ShadowingPhraseProviding {
 
@@ -135,7 +130,6 @@ final class ShadowingPhraseService: ShadowingPhraseProviding {
         #endif
         return ShadowingPhraseBatch(phrases: fallback, usedFallback: true, fallbackReason: reason)
     }
-
 
     private struct Entry { let text: String; let translation: String? }
 
@@ -459,7 +453,6 @@ final class ShadowingPhraseService: ShadowingPhraseProviding {
         }
     }
 }
-
 
 final class MockShadowingPhraseService: ShadowingPhraseProviding {
     func phrases(

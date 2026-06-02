@@ -1,9 +1,5 @@
 import Foundation
 
-/// Local, deterministic quiz question generator.
-/// Thin wrapper around the existing `GrammarQuizGenerator` so the ViewModel
-/// can call any generator through the same `GrammarQuizQuestionGenerating`
-/// protocol. Does not perform any network or AI calls.
 struct LocalGrammarQuizQuestionGenerator: GrammarQuizQuestionGenerating {
 
     func generateQuestions(

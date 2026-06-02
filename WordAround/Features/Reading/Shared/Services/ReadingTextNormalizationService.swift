@@ -22,8 +22,6 @@ enum ReadingTextNormalizationService {
         return result.isEmpty ? [text.trimmingCharacters(in: .whitespacesAndNewlines)].filter { !$0.isEmpty } : result
     }
 
-    // MARK: - Steps
-
     private static func removeAIBoilerplate(_ text: String) -> String {
         var lines = text.components(separatedBy: "\n")
         let prefixes = [
@@ -123,8 +121,6 @@ enum ReadingTextNormalizationService {
         if !tail.isEmpty { sentences.append(tail) }
         return sentences
     }
-
-    // MARK: - Regex helper
 
     private static func replace(pattern: String, in text: String, with template: String) -> String {
         guard let regex = try? NSRegularExpression(pattern: pattern) else { return text }

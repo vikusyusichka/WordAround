@@ -62,8 +62,6 @@ struct ReadingModeCardView: View {
         .contentShape(Rectangle())
     }
 
-    // MARK: - Pieces
-
     @ViewBuilder
     private var background: some View {
         let shape = RoundedRectangle(cornerRadius: corner, style: .continuous)
@@ -105,8 +103,6 @@ struct ReadingModeCardView: View {
             .background(Color.white.opacity(0.20))
             .clipShape(Capsule())
     }
-
-    // MARK: - Colors
 
     private var titleColor: Color { isFeatured ? .white : AppColors.primaryBlueDark }
     private var subtitleColor: Color { isFeatured ? Color.white.opacity(0.92) : AppColors.textSecondary }

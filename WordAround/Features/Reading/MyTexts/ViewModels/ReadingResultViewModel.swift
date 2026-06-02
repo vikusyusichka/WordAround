@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 
-
 @MainActor
 final class ReadingResultViewModel: ObservableObject {
     let result: ReadingResult

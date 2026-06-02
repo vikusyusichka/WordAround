@@ -10,7 +10,6 @@ final class DebateConversationService {
         self.recentHistoryLimit = recentHistoryLimit
     }
 
-
     func requestOpening(
         language: GrammarLanguage,
         level: EssayDifficulty,
@@ -51,7 +50,6 @@ final class DebateConversationService {
         )
         return try await client.generateReply(prompt: prompt)
     }
-
 
     static func buildOpeningPrompt(
         language: GrammarLanguage,
@@ -146,7 +144,6 @@ final class DebateConversationService {
         case .surpriseMe: return "take a side on"
         }
     }
-
 
     static func fallbackOpening(for language: GrammarLanguage, topicTitle: String) -> String {
         switch language {

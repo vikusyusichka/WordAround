@@ -1,14 +1,5 @@
 import Foundation
 
-/// Assembles a `GrammarNote` from a `QuickGrammarNoteDraft` + topic and saves
-/// it through `GrammarNoteServicing`.
-///
-/// Single responsibility: take a draft + topic → produce a saved note.
-///
-/// Callers (ViewModels) keep:
-/// - choosing which topic receives the note
-/// - updating local UI state after the save
-/// - error message localization
 @MainActor
 struct CreateQuickGrammarNoteUseCase {
     private let noteService: GrammarNoteServicing

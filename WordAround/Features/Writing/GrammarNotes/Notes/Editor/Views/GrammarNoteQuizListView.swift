@@ -92,8 +92,6 @@ struct GrammarNoteQuizListView: View {
         }
     }
 
-    // MARK: - List screen
-
     private var listScreen: some View {
         ZStack {
             AppColors.appBackground.ignoresSafeArea()
@@ -162,8 +160,6 @@ struct GrammarNoteQuizListView: View {
         }
         .buttonStyle(ScaleButtonStyle())
     }
-
-    // MARK: - List content
 
     @ViewBuilder
     private var listContent: some View {
@@ -302,8 +298,6 @@ struct GrammarNoteQuizListView: View {
         .clipShape(Capsule())
     }
 
-    // MARK: - Loading / empty / error
-
     private var loadingState: some View {
         VStack(spacing: 12) {
             ProgressView()
@@ -377,8 +371,6 @@ struct GrammarNoteQuizListView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    // MARK: - Helpers
-
     private func startQuiz(_ quiz: GrammarNoteQuiz) {
         guard !quiz.questions.isEmpty else { return }
         quizVM.startQuiz(quiz)
@@ -399,8 +391,6 @@ private struct ScaleButtonStyle: ButtonStyle {
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
-
-// MARK: - Preview
 
 #Preview("Quiz List") {
     GrammarNoteQuizListView(

@@ -37,7 +37,6 @@ struct DescribePictureImageCardView: View {
         }
     }
 
-
     @ViewBuilder
     private var imageSurface: some View {
         ZStack {
@@ -90,7 +89,6 @@ struct DescribePictureImageCardView: View {
                 .padding(.horizontal, 24)
         }
     }
-
 
     private var refreshButton: some View {
         Button(action: onRefresh) {

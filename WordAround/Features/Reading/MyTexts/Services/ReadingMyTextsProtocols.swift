@@ -1,8 +1,6 @@
 import Foundation
 import UIKit
 
-// MARK: - Storage
-
 protocol ReadingMyTextsStorageServicing: Sendable {
     func currentUserId() -> String?
     func fetchTexts() async throws -> [ReadingUserText]
@@ -17,8 +15,6 @@ protocol ReadingMyTextsStorageServicing: Sendable {
     func migrateLocalTextsIfNeeded() async
 }
 
-// MARK: - Questions
-
 protocol ReadingQuestionGenerating: Sendable {
     func generateQuestions(
         for text: ReadingUserText,
@@ -27,8 +23,6 @@ protocol ReadingQuestionGenerating: Sendable {
         maxQuestions: Int
     ) async -> [ReadingQuestion]
 }
-
-// MARK: - Session
 
 protocol ReadingSessionServicing: Sendable {
     func createSession(from text: ReadingUserText) async -> ReadingSession
@@ -49,8 +43,6 @@ protocol ReadingTextAnalyzing: Sendable {
     func sentences(from content: String) -> [String]
 }
 
-// MARK: - Import
-
 protocol ReadingOCRServicing: Sendable {
     func extractText(from image: UIImage) async throws -> String
 }
@@ -58,8 +50,6 @@ protocol ReadingOCRServicing: Sendable {
 protocol ReadingPDFImportServicing: Sendable {
     func extractText(from url: URL) throws -> String
 }
-
-// MARK: - Legacy local storage (migration only)
 
 protocol ReadingTextStorageServicing: Sendable {
     func fetchTexts() async throws -> [ReadingUserText]

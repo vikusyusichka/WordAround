@@ -1,19 +1,11 @@
 import Foundation
 import Combine
 
-// MARK: - Phase
-
-/// The active step in a review card's lifecycle.
 enum GrammarReviewSessionPhase: Equatable {
-    /// Showing the source block. User taps Continue to proceed.
     case source
-    /// Showing the quiz question. User answers, then result is revealed.
     case question
-    /// Showing result / explanation. Rating buttons are visible.
     case result
 }
-
-// MARK: - ViewModel
 
 /// Drives the multi-phase review session.
 ///
@@ -26,13 +18,9 @@ enum GrammarReviewSessionPhase: Equatable {
 @MainActor
 final class GrammarReviewSessionViewModel: ObservableObject {
 
-    // MARK: - Published state
-
     @Published private(set) var cards: [GrammarReviewSessionCard] = []
     @Published private(set) var currentIndex: Int = 0
     @Published private(set) var phase: GrammarReviewSessionPhase = .source
-    /// Which source pool the active session is using. Drives the badge on
-    /// every card. `nil` while loading or after an empty result.
     @Published private(set) var sourcePool: GrammarReviewSourcePool?
 
     @Published private(set) var isLoading = false
@@ -46,13 +34,7 @@ final class GrammarReviewSessionViewModel: ObservableObject {
     /// false and the session treats them as "self-rated".
     @Published private(set) var lastAnswerCorrect: Bool = false
     @Published private(set) var lastUserAnswer: String = ""
-    /// True when the current card was answered with an auto-graded question
-    /// type and the answer matched. Used by the session summary to count
-    /// `correctAnswerCount` strictly — short-answer questions don't count
-    /// toward correct/incorrect even though they're "answered".
     @Published private(set) var lastAnswerWasAutoGraded: Bool = false
-
-    // MARK: - Stats
 
     @Published private(set) var totalReviewed: Int = 0
     /// Correct quiz answers — counted only for auto-graded question types.
@@ -65,13 +47,9 @@ final class GrammarReviewSessionViewModel: ObservableObject {
     @Published private(set) var goodCount: Int = 0
     @Published private(set) var easyCount: Int = 0
 
-    // MARK: - Dependencies
-
     private let ownerUID: String
     private let reviewService: GrammarReviewServicing
     private let queueBuilder: GrammarReviewQueueBuilder
-
-    // MARK: - Init
 
     init(
         ownerUID: String,
@@ -82,8 +60,6 @@ final class GrammarReviewSessionViewModel: ObservableObject {
         self.reviewService = reviewService
         self.queueBuilder = queueBuilder
     }
-
-    // MARK: - Computed
 
     var currentCard: GrammarReviewSessionCard? {
         guard !cards.isEmpty, currentIndex >= 0, currentIndex < cards.count else { return nil }
@@ -97,24 +73,10 @@ final class GrammarReviewSessionViewModel: ObservableObject {
         return Double(min(currentIndex + 1, cards.count)) / Double(cards.count)
     }
 
-    /// Total rated items where the user answered the quiz wrong OR rated as
-    /// Forgot without an auto-graded answer. Used for the summary.
     var incorrectCount: Int { incorrectAnswerCount + forgotCountWithoutQuiz }
 
-    /// Internal counter: how many Forgot ratings happened on a card where
-    /// the quiz was a short-answer (i.e. not auto-graded). These count
-    /// toward "incorrect" because the user explicitly said they forgot.
     @Published private(set) var forgotCountWithoutQuiz: Int = 0
 
-    // MARK: - Session start
-
-    /// **Preferred entry point.** Starts the session from a queue that was
-    /// already built by `GrammarReviewViewModel`. The session NEVER
-    /// rebuilds — it just consumes the cards it was handed.
-    ///
-    /// This is the single source of truth that fixes the "card shows 1
-    /// item, session shows Nothing reviewed" inconsistency: the card and
-    /// the session share the exact same `GrammarReviewQueueBuilder.Result`.
     func startSession(prebuilt: GrammarReviewQueueBuilder.Result) {
         guard !isLoading else { return }
         resetStats()
@@ -134,9 +96,6 @@ final class GrammarReviewSessionViewModel: ObservableObject {
         }
     }
 
-    /// Legacy entry point — builds the queue on the fly. Kept for callers
-    /// that don't pre-build (tests, previews). Production code should use
-    /// `startSession(prebuilt:)` so the home card and session share state.
     func startSession(
         recentlyOpened: [GrammarReviewRecommendation],
         recentlyEdited: [GrammarReviewRecommendation]
@@ -163,8 +122,6 @@ final class GrammarReviewSessionViewModel: ObservableObject {
         }
     }
 
-    /// Legacy entry point with pre-fetched pools. Same semantics as the
-    /// async variant above.
     func startSession(
         manualItems: [GrammarReviewItem],
         recentlyOpened: [GrammarReviewRecommendation],
@@ -196,18 +153,11 @@ final class GrammarReviewSessionViewModel: ObservableObject {
         startSession(prebuilt: result)
     }
 
-    // MARK: - Phase transitions
-
-    /// Called when the user taps "Continue" in the `.source` phase. Always
-    /// advances to `.question` — every card has a question.
     func continueFromSource() {
         guard case .source = phase else { return }
         phase = .question
     }
 
-    /// Called when the user submits an answer in the `.question` phase.
-    /// Records correctness for auto-graded questions; short-answer questions
-    /// fall through to `.result` without auto-grading.
     func submitAnswer(_ answer: String) {
         guard case .question = phase,
               let question = currentCard?.question else { return }
@@ -230,20 +180,24 @@ final class GrammarReviewSessionViewModel: ObservableObject {
         lastAnswerCorrect = isCorrect
         lastAnswerWasAutoGraded = autoGraded
 
-        // Track quiz-level correctness independently from the rating step.
         // The spec is strict: "incorrect" in the summary means an actually
         // wrong auto-graded answer, not just a low recall rating.
         if autoGraded {
-            if isCorrect { correctAnswerCount += 1 }
-            else         { incorrectAnswerCount += 1 }
+            if isCorrect {
+                correctAnswerCount += 1
+                DailyPracticeStatsService.shared.record(
+                    skill: .writing,
+                    value: 1,
+                    sourceModeID: "grammar-notes"
+                )
+            } else {
+                incorrectAnswerCount += 1
+            }
         }
 
         phase = .result
     }
 
-    // MARK: - Rating
-
-    /// Saves the rating and advances to the next card.
     func rate(_ result: GrammarReviewResult) async {
         guard !isRating else { return }
         guard let card = currentCard else { return }
@@ -265,8 +219,6 @@ final class GrammarReviewSessionViewModel: ObservableObject {
         case .forgot:
             forgotCount += 1
             // Spec: "Do not count Forgot as incorrect unless no quiz answer
-            // exists." Auto-graded answers already counted via
-            // submitAnswer(); only count Forgot here for short-answer cards.
             if !lastAnswerWasAutoGraded {
                 forgotCountWithoutQuiz += 1
             }
@@ -278,8 +230,6 @@ final class GrammarReviewSessionViewModel: ObservableObject {
             easyCount += 1
         }
     }
-
-    // MARK: - Navigation
 
     func skipCurrent() {
         advance()
@@ -296,8 +246,6 @@ final class GrammarReviewSessionViewModel: ObservableObject {
             isFinished = true
         }
     }
-
-    // MARK: - Reset
 
     func reset() {
         cards = []

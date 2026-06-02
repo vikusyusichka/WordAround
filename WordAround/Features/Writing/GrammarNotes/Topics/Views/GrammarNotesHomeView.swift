@@ -5,9 +5,7 @@ struct GrammarNotesHomeView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: GrammarNotesHomeViewModel
     @StateObject private var settings = GrammarNotesSettingsStore()
-    /// Powers the Review Today summary card on the home screen.
     @StateObject private var reviewVM: GrammarReviewViewModel
-    /// Powers the active review session sheet.
     @StateObject private var sessionVM: GrammarReviewSessionViewModel
     @State private var isCreateSheetPresented = false
     @State private var isSettingsPresented = false
@@ -110,9 +108,6 @@ struct GrammarNotesHomeView: View {
                 viewModel: sessionVM,
                 onDismiss: { isReviewSessionPresented = false },
                 onOpenNote: { note in
-                    // Dismiss the session sheet first so the navigation
-                    // destination opens cleanly. Setting editorNote inside
-                    // the same tick would race with the dismissal animation.
                     isReviewSessionPresented = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         editorNote = note
@@ -129,12 +124,6 @@ struct GrammarNotesHomeView: View {
         }
     }
 
-    // MARK: - Review summary card
-
-    /// Always shown — the empty state (`Nothing due. Open a note…`) is part
-    /// of the card itself, so new users still see the hint without us
-    /// special-casing visibility. The count and pool both come from the
-    /// pre-built `previewQueue` so the card and session can never disagree.
     @ViewBuilder
     private var reviewSummaryCard: some View {
         let queue = reviewVM.previewQueue
@@ -153,10 +142,6 @@ struct GrammarNotesHomeView: View {
     }
 
     private func startReviewSession() {
-        // Single source of truth: hand the exact queue the home card just
-        // counted to the session. The session never rebuilds. If the queue
-        // is empty (which means the card was already showing the empty
-        // state), don't present the sheet at all.
         let queue = reviewVM.previewQueue
 
         #if DEBUG
@@ -174,8 +159,6 @@ struct GrammarNotesHomeView: View {
         isReviewSessionPresented = true
     }
 
-    // MARK: - Mistakes to Fix
-
     @ViewBuilder
     private var mistakesToFixSection: some View {
         if !reviewVM.mistakeHighlights.isEmpty {
@@ -188,8 +171,6 @@ struct GrammarNotesHomeView: View {
         }
     }
 
-    // MARK: - Weak Quiz Areas
-
     @ViewBuilder
     private var weakQuizAreasSection: some View {
         if !reviewVM.quizHighlights.isEmpty {
@@ -201,8 +182,6 @@ struct GrammarNotesHomeView: View {
             )
         }
     }
-
-    // MARK: - Highlights renderer
 
     private func highlightsSection(
         title: String,
@@ -274,8 +253,6 @@ struct GrammarNotesHomeView: View {
         }
         .buttonStyle(.plain)
     }
-
-    // MARK: - Sheets
 
     private var createTopicSheet: some View {
         CreateGrammarTopicSheet(
@@ -354,8 +331,6 @@ struct GrammarNotesHomeView: View {
         case .newNote:     break
         }
     }
-
-    // MARK: - Header / Search / Content
 
     private var headerView: some View {
         VStack(spacing: isPadLike ? 18 : 14) {
@@ -473,11 +448,6 @@ struct GrammarNotesHomeView: View {
         }
     }
 
-    /// Edit button is only meaningful once the user has at least one
-    /// non-mistakes topic to reorder/delete. Hiding it for empty states
-    /// avoids dead UI and keeps the original layout in onboarding. Stays
-    /// visible while editing so the user can always tap "Done" — even if
-    /// they just deleted the last editable topic.
     private var canShowEditButton: Bool {
         isEditingTopics || viewModel.topics.contains(where: { !$0.isMistakesTopic })
     }
@@ -523,11 +493,6 @@ struct GrammarNotesHomeView: View {
         }
     }
 
-    /// Edit-mode list: switches to a `List` so SwiftUI gives us drag handles
-    /// and standard delete affordances. Uses the full `topics` array (not
-    /// `filteredTopics`) so the user can reorder across search results
-    /// without the indices going stale. The Common Mistakes topic is locked
-    /// in place via `.moveDisabled` + `.deleteDisabled`.
     private var editableTopicsList: some View {
         let editingTopics = viewModel.topics
         let rowSpacing: CGFloat = isPadLike ? 14 : 12

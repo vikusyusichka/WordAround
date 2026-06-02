@@ -12,8 +12,6 @@ final class StorySessionViewModel: ObservableObject {
         case results
     }
 
-    // MARK: - Published state
-
     @Published private(set) var session: StorySession?
     @Published private(set) var phase: Phase = .reading
     @Published private(set) var questions: [ReadingQuestion] = []
@@ -41,8 +39,6 @@ final class StorySessionViewModel: ObservableObject {
     @Published var translationTargetLanguage: GrammarLanguage
     @Published private(set) var elapsedSeconds = 0
 
-    // MARK: - Dependencies
-
     private enum Source {
         case new(StoryModeConfiguration)
         case existing(StorySession)
@@ -62,8 +58,6 @@ final class StorySessionViewModel: ObservableObject {
     private var timerCancellable: AnyCancellable?
     private var translationTask: Task<Void, Never>?
     private var hasLoaded = false
-
-    // MARK: - Init
 
     init(
         setup: ReadingSessionSetup,
@@ -145,8 +139,6 @@ final class StorySessionViewModel: ObservableObject {
         self.hasLoaded = true
     }
 
-    // MARK: - Derived display
-
     var accent: Color { ReadingSetupConfig.storyMode.accent }
     var accentDark: Color { ReadingSetupConfig.storyMode.accentDark }
 
@@ -221,8 +213,6 @@ final class StorySessionViewModel: ObservableObject {
         case .none:         return "arrow.right"
         }
     }
-
-    // MARK: - Loading
 
     func load() async {
         guard !hasLoaded else { return }
@@ -310,8 +300,6 @@ final class StorySessionViewModel: ObservableObject {
 
     }
 
-    // MARK: - Reading → Questions
-
     func startQuestions() {
         guard hasQuestions else { return }
         clearTranslation()
@@ -371,8 +359,6 @@ final class StorySessionViewModel: ObservableObject {
         await completeChapter(scorePercent: 0, readingTimeSeconds: elapsedSeconds)
     }
 
-    // MARK: - Chapter completion + progress
-
     private func completeChapter(scorePercent: Double, readingTimeSeconds: Int) async {
         guard var current = session, let userId = currentUserId() else { return }
         let index = clampedCurrentIndex(in: current)
@@ -387,6 +373,13 @@ final class StorySessionViewModel: ObservableObject {
         current.progress.totalWordsRead += analyzer.wordCount(for: current.chapters[index].text)
         applyProgressMetrics(to: &current)
         current.updatedAt = Date()
+
+        DailyPracticeStatsService.shared.record(
+            skill: .reading,
+            value: readingTimeSeconds,
+            sourceModeID: "story-mode",
+            sessionId: current.id
+        )
 
         hasCompletedChapter = true
         session = current
@@ -415,8 +408,6 @@ final class StorySessionViewModel: ObservableObject {
             session.status = .inProgress
         }
     }
-
-    // MARK: - Choices → next chapter
 
     func selectChoice(_ choice: StoryChoice) async {
         guard !isGeneratingNextChapter else { return }       // no double generation
@@ -523,15 +514,11 @@ final class StorySessionViewModel: ObservableObject {
         try? await storageService.updateProgress(current, toggles: assistance.asToggleDictionary(), for: userId)
     }
 
-    // MARK: - Lifecycle
-
     func onDisappear() {
         stopTimer()
         translationTask?.cancel()
         Task { await saveProgress() }
     }
-
-    // MARK: - Answers
 
     private func buildAnswers() -> [ReadingAnswer] {
         questions.compactMap { question in
@@ -552,8 +539,6 @@ final class StorySessionViewModel: ObservableObject {
         value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 
-    // MARK: - Timer
-
     private func startTimer() {
         guard timerCancellable == nil else { return }
         timerCancellable = Timer.publish(every: 1, on: .main, in: .common)
@@ -565,8 +550,6 @@ final class StorySessionViewModel: ObservableObject {
         timerCancellable?.cancel()
         timerCancellable = nil
     }
-
-    // MARK: - Translation (reuses ReadingTranslationService)
 
     func handleWordTap(_ word: String, range: NSRange) {
         guard assistance.translationOnTap || assistance.highlightUnknownWords else { return }
@@ -628,8 +611,6 @@ final class StorySessionViewModel: ObservableObject {
             translationError = (error as? LocalizedError)?.errorDescription ?? "Translation unavailable."
         }
     }
-
-    // MARK: - Errors
 
     private func readableMessage(for error: Error) -> String {
         if let localized = error as? LocalizedError, let description = localized.errorDescription {

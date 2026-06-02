@@ -41,8 +41,6 @@ struct MyTextsAIGenerationRequest: Equatable {
     }
 }
 
-// MARK: - Errors
-
 enum MyTextsAIGenerationError: LocalizedError {
     case notConfigured
     case network(String)
@@ -63,15 +61,11 @@ enum MyTextsAIGenerationError: LocalizedError {
     }
 }
 
-// MARK: - Result
-
 struct MyTextsAIGenerationResult: Equatable {
     let title: String
     let body: String
     let topic: String
 }
-
-// MARK: - AI client (Cloudflare worker; same endpoint other modes use)
 
 protocol MyTextsAIClienting: Sendable {
     func complete(prompt: String, task: String, maxTokens: Int) async throws -> String
@@ -126,8 +120,6 @@ struct CloudflareMyTextsAIClient: MyTextsAIClienting {
     }
 }
 
-// MARK: - Service
-
 protocol MyTextsAIGenerating: Sendable {
     func generate(_ request: MyTextsAIGenerationRequest) async throws -> MyTextsAIGenerationResult
 }
@@ -152,8 +144,6 @@ struct MyTextsAIGenerationService: MyTextsAIGenerating {
         return MyTextsAIGenerationResult(title: title, body: cleaned, topic: trimmedTopic)
     }
 }
-
-// MARK: - Prompt builder
 
 enum MyTextsAIPromptBuilder {
     static func prompt(for request: MyTextsAIGenerationRequest) -> String {
@@ -218,8 +208,6 @@ enum MyTextsAIPromptBuilder {
     }
 }
 
-// MARK: - Mock (previews / tests)
-
 struct MockMyTextsAIGenerationService: MyTextsAIGenerating {
     var simulatedDelayNanos: UInt64 = 0
     var error: Error? = nil
@@ -233,8 +221,6 @@ struct MockMyTextsAIGenerationService: MyTextsAIGenerating {
         return MyTextsAIGenerationResult(title: topic.capitalizingFirstLetter(), body: body, topic: topic)
     }
 }
-
-// MARK: - String helper
 
 private extension String {
     func capitalizingFirstLetter() -> String {

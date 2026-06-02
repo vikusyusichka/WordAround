@@ -5,7 +5,6 @@ import Combine
 @MainActor
 final class FreeSpeakingViewModel: ObservableObject {
 
-
     @Published private(set) var messages: [SpeakingConversationMessage] = []
     @Published private(set) var transcriptChunks: [String] = []
     @Published private(set) var partialTranscript: String = ""
@@ -29,7 +28,6 @@ final class FreeSpeakingViewModel: ObservableObject {
 
     @Published private(set) var remainingSeconds: Int = 0
 
-
     let setup: SpeakingConversationSetup
 
     var onTimerFinished: (() -> Void)?
@@ -46,13 +44,14 @@ final class FreeSpeakingViewModel: ObservableObject {
         return nil
     }
 
-
     private let recognizer: SpeechRecognitionService
     private let topicService: SpeakingTopicGenerationService
     private let feedbackService: SpeakingFeedbackService
     private let recentTitlesStore = SpeakingRecentTopicTitlesStore.shared
 
     private var hasStarted = false
+    private var didRecordPracticeStats = false
+    private let statsService: DailyPracticeStatsService
     private var permissionsRequested = false
     private var lastSubmittedTranscript: String = ""
 
@@ -63,17 +62,18 @@ final class FreeSpeakingViewModel: ObservableObject {
     private var triedTopicTitles: [String] = []
     private var triedTopicTitlesLoaded = false
 
-
     init(
         setup: SpeakingConversationSetup,
         recognizer: SpeechRecognitionService? = nil,
         topicService: SpeakingTopicGenerationService? = nil,
-        feedbackService: SpeakingFeedbackService? = nil
+        feedbackService: SpeakingFeedbackService? = nil,
+        statsService: DailyPracticeStatsService = .shared
     ) {
         self.setup = setup
         self.recognizer = recognizer ?? SpeechRecognitionService()
         self.topicService = topicService ?? SpeakingTopicGenerationService()
         self.feedbackService = feedbackService ?? SpeakingFeedbackService()
+        self.statsService = statsService
         self.remainingSeconds = setup.length.minutes * 60
         wireRecognizerCallbacks()
     }
@@ -83,7 +83,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         feedbackTask?.cancel()
         topicGenerationTask?.cancel()
     }
-
 
     func startSession() {
         guard !hasStarted else { return }
@@ -103,9 +102,24 @@ final class FreeSpeakingViewModel: ObservableObject {
         partialTranscript = ""
         state = .idle
 
+        recordPracticeStatsIfNeeded()
+
         if conversationFeedback == nil && !isGeneratingFeedback {
             beginFeedbackGeneration()
         }
+    }
+
+    private func recordPracticeStatsIfNeeded() {
+        guard hasStarted, !didRecordPracticeStats else { return }
+        let total = setup.length.minutes * 60
+        let practiced = max(0, total - remainingSeconds)
+        guard practiced > 0 else { return }
+        didRecordPracticeStats = true
+        statsService.record(
+            skill: .speaking,
+            value: practiced,
+            sourceModeID: "free-speaking"
+        )
     }
 
     func resetSession() {
@@ -124,6 +138,7 @@ final class FreeSpeakingViewModel: ObservableObject {
         messages.removeAll()
         transcriptChunks.removeAll()
         hasStarted = false
+        didRecordPracticeStats = false
         errorMessage = nil
         permissionsDenied = false
         lastSubmittedTranscript = ""
@@ -131,7 +146,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         context = nil
         usedFallbackTopic = false
     }
-
 
     func startTimer() {
         timerTask?.cancel()
@@ -162,7 +176,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         state = .idle
         onTimerFinished?()
     }
-
 
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
@@ -291,7 +304,6 @@ final class FreeSpeakingViewModel: ObservableObject {
     func clearError() {
         errorMessage = nil
     }
-
 
     private func startAutoTopicGeneration() {
         topicGenerationTask?.cancel()
@@ -438,7 +450,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         startTimer()
     }
 
-
     private func beginFeedbackGeneration() {
         let snapshotLanguage = setup.language
         let snapshotLevel = setup.level
@@ -481,7 +492,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         }
     }
 }
-
 
 extension FreeSpeakingViewModel: SpeakingTopicPickable {}
 extension FreeSpeakingViewModel: SpeakingResultProvidable {}

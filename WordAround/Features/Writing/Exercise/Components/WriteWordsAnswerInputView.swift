@@ -23,7 +23,6 @@ struct WriteWordsAnswerInputView: View {
             RoundedRectangle(cornerRadius: LayoutConstants.WriteWords.answerInputCornerRadius(metrics), style: .continuous)
                 .stroke(borderColor, lineWidth: LayoutConstants.Common.hairline)
 
-            // Hint letters — semi-transparent, only visible when text field is empty
             if let hint = hintOverlay, text.isEmpty {
                 Text(hint)
                     .font(.system(size: LayoutConstants.WriteWords.answerInputFontSize(metrics), weight: .bold, design: .rounded))

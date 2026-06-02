@@ -97,17 +97,9 @@ struct QuickGrammarNoteSheet: View {
             didSubmitSave = false
         }
         .onChange(of: errorMessage) { _, message in
-            // Reset on a NEW error (transition to non-nil). The same-error-
-            // twice edge case is now covered by the VM (which always flips
-            // isCreating true→false) plus the watchdog below.
             guard message != nil else { return }
             didSubmitSave = false
         }
-        // Safety watchdog: if `didSubmitSave` ever stays `true` while the
-        // parent never publishes `isCreating == true` (e.g. the Task was
-        // cancelled, the parent VM returned synchronously, or onChange
-        // missed a coalesced transition), force-reset after a generous
-        // timeout so the user is never trapped in an infinite spinner.
         .task(id: didSubmitSave) {
             guard didSubmitSave else { return }
             try? await Task.sleep(nanoseconds: 12_000_000_000) // 12s
@@ -440,10 +432,6 @@ extension GrammarQuickTopicOption {
         lhs.id == rhs.id
     }
 }
-
-// `GrammarQuickPrimaryButtonStyle` and `GrammarQuickSecondaryButtonStyle`
-// were extracted to `GrammarQuickButtonStyles.swift` (same group) and are
-// reused across both this sheet and `QuickGrammarMistakeSheet`.
 
 #Preview {
     QuickGrammarNoteSheet(

@@ -7,15 +7,11 @@ struct StorySessionView: View {
     @StateObject private var viewModel: StorySessionViewModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    // MARK: - Init (new story from setup)
-
     init(setup: ReadingSessionSetup, onExitToSetup: @escaping () -> Void, onExitToReading: @escaping () -> Void) {
         self.onExitToSetup = onExitToSetup
         self.onExitToReading = onExitToReading
         _viewModel = StateObject(wrappedValue: StorySessionViewModel(setup: setup))
     }
-
-    // MARK: - Init (existing story from library)
 
     init(item: ReadingLibraryItem, onExitToSetup: @escaping () -> Void, onExitToReading: @escaping () -> Void) {
         self.onExitToSetup = onExitToSetup
@@ -75,8 +71,6 @@ struct StorySessionView: View {
         }
     }
 
-    // MARK: - Loading / error
-
     private var loadingState: some View {
         VStack(spacing: 18) {
             ProgressView()
@@ -120,8 +114,6 @@ struct StorySessionView: View {
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
         }
     }
-
-    // MARK: - Session content
 
     private var sessionContent: some View {
         ZStack(alignment: .bottom) {
@@ -280,8 +272,6 @@ struct StorySessionView: View {
         }
     }
 
-    // MARK: - Bottom bar
-
     @ViewBuilder
     private var bottomBar: some View {
         switch viewModel.phase {
@@ -355,8 +345,6 @@ struct StorySessionView: View {
             }
         }
     }
-
-    // MARK: - Helpers
 
     private var sessionSubtitle: String {
         "\(viewModel.typeTitle) • \(viewModel.chapterProgressText)"

@@ -1,7 +1,5 @@
 import Foundation
 
-// MARK: - Errors
-
 enum GrammarQuizValidationError: LocalizedError, Equatable {
     case empty
     case invalidQuestion(index: Int, reason: String)
@@ -16,17 +14,6 @@ enum GrammarQuizValidationError: LocalizedError, Equatable {
     }
 }
 
-// MARK: - Validator
-
-/// Normalizes and validates a batch of `GrammarQuizQuestion` before
-/// they are persisted. AI-generated and manually authored questions
-/// are both run through this so we never trust untyped input.
-///
-/// On success returns a fresh, ordered array with:
-///  - trimmed text / answers
-///  - unique non-empty IDs
-///  - sequential `order` values
-///  - options normalized for each question type
 enum GrammarQuizQuestionValidator {
 
     static func validate(_ questions: [GrammarQuizQuestion]) throws -> [GrammarQuizQuestion] {
@@ -39,7 +26,6 @@ enum GrammarQuizQuestionValidator {
         for (index, raw) in questions.enumerated() {
             var q = raw
 
-            // Text + correct answer must both be non-empty after trimming.
             let trimmedText = q.questionText.trimmingCharacters(in: .whitespacesAndNewlines)
             let trimmedAnswer = q.correctAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmedText.isEmpty else {
@@ -54,7 +40,6 @@ enum GrammarQuizQuestionValidator {
                 .trimmingCharacters(in: .whitespacesAndNewlines)
                 .nonEmptyOrNil
 
-            // Per-type rules.
             switch q.type {
             case .multipleChoice:
                 let opts = q.options
@@ -72,7 +57,6 @@ enum GrammarQuizQuestionValidator {
                         reason: "options must contain the correct answer"
                     )
                 }
-                // De-duplicate options while preserving order.
                 var seen = Set<String>()
                 q.options = opts.filter { opt in
                     let key = opt.lowercased()
@@ -92,7 +76,6 @@ enum GrammarQuizQuestionValidator {
                 q.options = ["True", "False"]
 
             case .fillGap:
-                // Must contain a blank — either underscore(s) or an explicit marker.
                 if !trimmedText.contains("_") {
                     throw GrammarQuizValidationError.invalidQuestion(
                         index: index,
@@ -105,7 +88,6 @@ enum GrammarQuizQuestionValidator {
                 q.options = []
             }
 
-            // Ensure unique non-empty id and sequential order.
             if q.id.isEmpty || seenIDs.contains(q.id) {
                 q.id = UUID().uuidString
             }
@@ -118,8 +100,6 @@ enum GrammarQuizQuestionValidator {
         return normalized
     }
 }
-
-// MARK: - File-private helpers
 
 private extension String {
     var nonEmptyOrNil: String? { isEmpty ? nil : self }

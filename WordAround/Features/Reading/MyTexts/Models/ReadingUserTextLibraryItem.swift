@@ -1,7 +1,5 @@
 import Foundation
 
-// MARK: - Bridge between Firestore `ReadingLibraryItem` and session `ReadingUserText`
-
 private let sourceMetadataPrefix = "source."
 
 extension ReadingUserText {

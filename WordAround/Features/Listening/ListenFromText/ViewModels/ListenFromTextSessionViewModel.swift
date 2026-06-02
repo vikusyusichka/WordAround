@@ -62,7 +62,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         }
     }
 
-
     func onAppear() {
         guard !didStart else { return }
         didStart = true
@@ -80,7 +79,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         }
     }
 
-
     private func generateQuestions() {
         isGeneratingQuestions = true
         Task {
@@ -96,7 +94,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
             self.persist(status: .inProgress)
         }
     }
-
 
     var isPlaying: Bool { playbackState == .playing }
 
@@ -140,7 +137,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         startTimer()
     }
 
-
     private func startTimer() {
         stopTimer()
         let timer = Timer(timeInterval: 1.0, repeats: true) { [weak self] _ in
@@ -161,7 +157,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         playbackElapsed += 1
         progress = min(playbackElapsed / estimatedDuration, 1.0)
     }
-
 
     func selectAnswer(questionID: String, optionIndex: Int) {
         guard !hasCheckedAnswers else { return }
@@ -213,7 +208,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         showResult = true
     }
 
-
     var timerText: String { formatTime(elapsedSeconds) }
     var durationText: String { formatTime(Int(estimatedDuration)) }
     var currentTimeText: String { formatTime(Int(estimatedDuration * progress)) }
@@ -221,7 +215,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
     func formatTime(_ seconds: Int) -> String {
         String(format: "%d:%02d", seconds / 60, seconds % 60)
     }
-
 
     private func persist(status: ListeningSessionStatus, result: ListeningResult? = nil) {
         let session = ListeningPersistedSession(

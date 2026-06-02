@@ -37,9 +37,7 @@ struct GrammarNoteBlock: Identifiable, Codable, Equatable {
     }
 }
 
-// MARK: - Helpers
 extension GrammarNoteBlock {
-    /// Returns a copy with `updatedAt` set to now.
     func touching() -> GrammarNoteBlock {
         var copy = self
         copy.updatedAt = Date()

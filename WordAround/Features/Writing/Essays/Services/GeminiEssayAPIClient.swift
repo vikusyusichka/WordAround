@@ -1,12 +1,5 @@
 import Foundation
 
-/// User-facing errors produced by the Essay AI client.
-///
-/// Note: this file is named `GeminiEssayAPIClient` for historical reasons —
-/// the iOS app NO LONGER calls Gemini directly. All traffic now flows
-/// through the Cloudflare Worker proxy and the Gemini key lives ONLY as
-/// a Wrangler secret. The class name is kept stable to minimize diff
-/// surface across the rest of the codebase.
 enum GeminiEssayAIClientError: LocalizedError {
     case workerNotConfigured
     case invalidResponse
@@ -33,17 +26,6 @@ enum GeminiEssayAIClientError: LocalizedError {
     }
 }
 
-/// `EssayAIClient` implementation that POSTs prompts to the Cloudflare
-/// Worker proxy. Reuses the same Worker URL as the Grammar Notes quiz
-/// client so the iOS app only has ONE Gemini-facing endpoint to manage.
-///
-/// Wire contract (matches the Worker exactly):
-///   Request  → `{ "prompt": "<full prompt>", "responseMimeType": "application/json" }`
-///   Response → `{ "text": "<model output>" }`
-///
-/// All parsing flows through `AIResponseTextCleaner` so Markdown fences,
-/// double-encoded JSON strings, and stray prose around the JSON do not
-/// break the feature.
 final class GeminiEssayAIClient: EssayAIClient {
 
     private let session: URLSession
@@ -60,13 +42,9 @@ final class GeminiEssayAIClient: EssayAIClient {
         self.timeoutInterval = timeoutInterval
     }
 
-    // MARK: - Wire DTOs
-
     private struct WorkerRequest: Encodable {
         let prompt: String
         let responseMimeType: String?
-        // Task hint for the Worker's AI Provider Router (ANALYSIS chain).
-        // Names a TASK TYPE, never a provider.
         let task: String?
     }
 
@@ -74,8 +52,6 @@ final class GeminiEssayAIClient: EssayAIClient {
         let text: String?
         let error: String?
     }
-
-    // MARK: - Public API
 
     func generateSuggestedTask(
         language: GrammarLanguage,
@@ -161,13 +137,6 @@ final class GeminiEssayAIClient: EssayAIClient {
         return try await requestJSON(prompt: prompt, responseType: EssayGeneratedHint.self, task: "essay_hints")
     }
 
-    // MARK: - Response contracts
-
-    /// Single-line JSON contract that mirrors the working
-    /// `GrammarQuizAIPromptBuilder.responseContract`. Gemini's JSON mode
-    /// behaves much more reliably when the schema is one compact line
-    /// rather than a pretty-printed multi-line example with placeholder
-    /// values (those get echoed back verbatim more often than not).
     private static let essayTaskResponseContract: String = """
     Return ONLY a JSON object that matches:
     {"title":"<short topic title in target language>","task":"<one-paragraph essay prompt in target language>","detectedLevel":"A1|A2|B1|B2|C1|Native","estimatedTimeMinutes":12,"wordLimitMin":90,"wordLimitMax":150,"quickTips":["<2-5 word tip>","<2-5 word tip>","<2-5 word tip>"]}
@@ -180,12 +149,6 @@ final class GeminiEssayAIClient: EssayAIClient {
     Do not wrap the JSON in markdown or prose.
     """
 
-    // MARK: - Transport
-
-    /// Sends the prompt to the Worker, asks for JSON-shaped output, and
-    /// decodes the embedded `text` into `T`. Uses `AIResponseTextCleaner`
-    /// to survive Markdown fences, double-encoded strings, and prose
-    /// around the JSON.
     private func requestJSON<T: Decodable>(
         prompt: String,
         responseType: T.Type,
@@ -305,11 +268,6 @@ final class GeminiEssayAIClient: EssayAIClient {
         }
     }
 
-    // MARK: - Helpers
-
-    /// Picks the friendliest error message we can from a non-2xx Worker
-    /// response: the Worker's `{ "error": "..." }` field if present,
-    /// otherwise the raw body as text.
     private static func workerErrorMessage(from data: Data) -> String {
         guard !data.isEmpty else { return "" }
 

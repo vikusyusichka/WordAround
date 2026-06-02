@@ -120,8 +120,8 @@ struct ConversationScenarioPickerView: View {
         action: @escaping () -> Void
     ) -> some View {
         Button {
+            action()
             withAnimation(.easeInOut(duration: 0.2)) {
-                action()
                 isExpanded = false
             }
         } label: {

@@ -1,6 +1,5 @@
 import Foundation
 
-
 protocol ListeningQuestionGenerating {
     func generateQuestions(
         from text: String,
@@ -10,7 +9,6 @@ protocol ListeningQuestionGenerating {
         count: Int
     ) async -> [ListeningQuestion]
 }
-
 
 @MainActor
 protocol ListeningSpeechSynthesizing: AnyObject {
@@ -24,7 +22,6 @@ protocol ListeningSpeechSynthesizing: AnyObject {
     func resume()
     func stop()
 }
-
 
 enum ListeningTranscriptionError: LocalizedError, Equatable {
     case permissionDenied
@@ -51,7 +48,6 @@ protocol ListeningAudioTranscribing {
     func transcribe(fileURL: URL, localeIdentifier: String) async throws -> String
 }
 
-
 @MainActor
 protocol ListeningAudioPlaying: AnyObject {
     var onProgress: ((TimeInterval, TimeInterval) -> Void)? { get set }
@@ -67,7 +63,6 @@ protocol ListeningAudioPlaying: AnyObject {
     func setRate(_ rate: Float)
     func stop()
 }
-
 
 protocol ListeningSessionStoring {
     func fetchSessions() async -> [ListeningPersistedSession]

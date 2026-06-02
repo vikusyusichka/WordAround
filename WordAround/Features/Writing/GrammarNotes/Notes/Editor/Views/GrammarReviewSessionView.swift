@@ -12,9 +12,6 @@ import SwiftUI
 struct GrammarReviewSessionView: View {
     @ObservedObject var viewModel: GrammarReviewSessionViewModel
     let onDismiss: () -> Void
-    /// Optional callback to surface the underlying `GrammarNote` for "Open
-    /// full note" actions. The host sheet decides whether to dismiss the
-    /// session and push the editor. When `nil`, the action is hidden.
     var onOpenNote: ((GrammarNote) -> Void)? = nil
 
     @State private var currentInput = ""
@@ -41,14 +38,10 @@ struct GrammarReviewSessionView: View {
             } else if let card = viewModel.currentCard {
                 sessionContent(card)
             } else {
-                // No cards + not finished = session hasn't started yet.
-                // Show loading so the brief gap before startSession completes is seamless.
                 loadingState
             }
         }
     }
-
-    // MARK: - Active session
 
     @ViewBuilder
     private func sessionContent(_ card: GrammarReviewSessionCard) -> some View {
@@ -84,8 +77,6 @@ struct GrammarReviewSessionView: View {
             if case .source = newPhase { currentInput = "" }
         }
     }
-
-    // MARK: - Header
 
     private var header: some View {
         HStack {
@@ -124,8 +115,6 @@ struct GrammarReviewSessionView: View {
             .opacity(viewModel.phase == .result ? 0 : 1)
         }
     }
-
-    // MARK: - Progress
 
     private var progressSection: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -168,18 +157,12 @@ struct GrammarReviewSessionView: View {
             .clipShape(Capsule())
     }
 
-    // MARK: - Source phase
-
     @ViewBuilder
     private func sourcePhase(_ card: GrammarReviewSessionCard) -> some View {
-        // Badges
         badgeRow(card)
 
-        // Source content card
         sourceCard(card)
 
-        // Continue button — every card always has a question, so the CTA
-        // unambiguously leads to the answer step.
         Button {
             viewModel.continueFromSource()
         } label: {
@@ -200,8 +183,6 @@ struct GrammarReviewSessionView: View {
     }
 
     private func badgeRow(_ card: GrammarReviewSessionCard) -> some View {
-        // Two rows of badges so an iPhone portrait width doesn't truncate
-        // the source pool / source type / language / block-type pills.
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
                 badge(
@@ -296,8 +277,6 @@ struct GrammarReviewSessionView: View {
             Spacer(minLength: 0)
         }
     }
-
-    // MARK: - Question phase
 
     @ViewBuilder
     private func questionPhase(_ card: GrammarReviewSessionCard) -> some View {
@@ -454,8 +433,6 @@ struct GrammarReviewSessionView: View {
         .disabled(!canSubmit)
     }
 
-    // MARK: - Result phase
-
     @ViewBuilder
     private func resultPhase(_ card: GrammarReviewSessionCard) -> some View {
         resultFeedbackCard(question: card.question, card: card)
@@ -496,7 +473,6 @@ struct GrammarReviewSessionView: View {
 
         return VStack(alignment: .leading, spacing: 12) {
             if isShortAnswer {
-                // Short answer: show their answer + the reference answer
                 HStack(spacing: 8) {
                     Image(systemName: "text.magnifyingglass")
                         .font(.system(size: 16, weight: .bold))
@@ -529,7 +505,6 @@ struct GrammarReviewSessionView: View {
                 }
 
             } else {
-                // Auto-graded: show correct / incorrect
                 HStack(spacing: 8) {
                     Image(systemName: isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
                         .font(.system(size: 18, weight: .bold))
@@ -625,8 +600,6 @@ struct GrammarReviewSessionView: View {
         .disabled(viewModel.isRating)
     }
 
-    // MARK: - Shared helpers
-
     private func badge(text: String, systemImage: String, tint: Color) -> some View {
         HStack(spacing: 5) {
             Image(systemName: systemImage)
@@ -649,8 +622,6 @@ struct GrammarReviewSessionView: View {
         case .quiz:    return Color(red: 0.55, green: 0.35, blue: 0.85)
         }
     }
-
-    // MARK: - Loading / Error
 
     private var loadingState: some View {
         VStack(spacing: 14) {
@@ -687,8 +658,6 @@ struct GrammarReviewSessionView: View {
     }
 }
 
-// MARK: - GrammarReviewResult interval label
-
 private extension GrammarReviewResult {
     var nextIntervalLabel: String {
         switch self {
@@ -699,8 +668,6 @@ private extension GrammarReviewResult {
         }
     }
 }
-
-// MARK: - Previews
 
 #Preview("Loading state") {
     let vm = GrammarReviewSessionViewModel(

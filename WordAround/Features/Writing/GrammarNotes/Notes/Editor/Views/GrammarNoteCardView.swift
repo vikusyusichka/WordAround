@@ -4,9 +4,6 @@ struct GrammarNoteCardView: View {
     let note: GrammarNote
     var isCompact: Bool = false
     var onQuizTap: (() -> Void)? = nil
-    /// Optional contextual snippet shown when the parent screen has an
-    /// active search query and this note matched on inner content (not just
-    /// the title/preview). Trimmed to ~120 chars by the indexer.
     var searchSnippet: String? = nil
 
     var body: some View {
@@ -38,7 +35,6 @@ struct GrammarNoteCardView: View {
         .shadow(color: Color.black.opacity(0.055), radius: 14, x: 0, y: 8)
     }
 
-    // MARK: - Sub-views
     private var noteTypeIcon: some View {
         ZStack {
             Circle()
@@ -81,9 +77,6 @@ struct GrammarNoteCardView: View {
         }
     }
 
-    /// Matched-content snippet shown under the preview when the parent
-    /// screen has an active search query. Uses a soft accented background
-    /// so the match is visible at-a-glance without overpowering the card.
     private func snippetRow(_ snippet: String) -> some View {
         HStack(alignment: .top, spacing: 6) {
             Image(systemName: "text.magnifyingglass")

@@ -20,8 +20,6 @@ enum SpeedReadingGenerationError: LocalizedError {
     }
 }
 
-// MARK: - AI client
-
 protocol SpeedReadingAIClienting: Sendable {
     func complete(prompt: String, task: String, maxTokens: Int) async throws -> String
 }
@@ -84,8 +82,6 @@ struct CloudflareSpeedReadingAIClient: SpeedReadingAIClienting {
     }
 }
 
-// MARK: - Service
-
 struct SpeedReadingGenerated: Equatable {
     let text: String
     let chunks: [String]
@@ -118,8 +114,6 @@ struct SpeedReadingGenerationService: SpeedReadingGenerating {
         let chunks = Self.makeChunks(from: cleaned, configuration: configuration, analyzer: analyzer)
         return SpeedReadingGenerated(text: cleaned, chunks: chunks)
     }
-
-    // MARK: - Chunking
 
     static func makeChunks(
         from text: String,
@@ -170,8 +164,6 @@ struct SpeedReadingGenerationService: SpeedReadingGenerating {
     }
 }
 
-// MARK: - Prompt builder
-
 enum SpeedReadingPromptBuilder {
     static func prompt(for configuration: SpeedReadingConfiguration) -> String {
         let language = configuration.language.title
@@ -192,8 +184,6 @@ enum SpeedReadingPromptBuilder {
         return lines.joined(separator: "\n")
     }
 }
-
-// MARK: - Mock (previews / tests)
 
 struct MockSpeedReadingGenerationService: SpeedReadingGenerating {
     var simulatedDelayNanos: UInt64 = 0

@@ -1,7 +1,5 @@
 import SwiftUI
 
-// MARK: - Session header
-
 struct ReadingSessionHeaderView: View {
     let title: String
     let subtitle: String
@@ -66,8 +64,6 @@ struct ReadingSessionHeaderView: View {
     }
 }
 
-// MARK: - Progress
-
 struct ReadingProgressBar: View {
     let progress: Double
     var accent: Color
@@ -85,8 +81,6 @@ struct ReadingProgressBar: View {
         .frame(height: 8)
     }
 }
-
-// MARK: - Session text card
 
 struct ReadingSessionTextCardView: View {
     var title: String? = nil
@@ -187,8 +181,6 @@ struct ReadingSessionTextCardView: View {
         }
     }
 }
-
-// MARK: - Question & answers
 
 struct ReadingQuestionCardView: View {
     let title: String
@@ -306,8 +298,6 @@ struct ReadingQuestionOptionsGrid<OptionContent: View>: View {
     }
 }
 
-// MARK: - Bottom action bar
-
 struct ReadingBottomActionBar: View {
     var leadingTitle: String? = nil
     var centerTitle: String
@@ -370,8 +360,6 @@ struct ReadingContinueButton: View {
         ReadingPrimaryButton(title: title, icon: icon, accent: accent, accentDark: accentDark, action: action)
     }
 }
-
-// MARK: - Word chip & choice card
 
 struct ReadingWordChip: View {
     let word: String
@@ -448,8 +436,6 @@ struct ReadingChoiceCard: View {
     }
 }
 
-// MARK: - Timer & pace
-
 struct ReadingTimerCard: View {
     let timeText: String
     var label: String = "Remaining"
@@ -518,8 +504,6 @@ struct ReadingPaceCard: View {
         )
     }
 }
-
-// MARK: - Result components
 
 struct ReadingResultHeaderView: View {
     let icon: String

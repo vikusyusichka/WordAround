@@ -129,7 +129,6 @@ struct ShadowingView: View {
         }
     }
 
-
     private var topBar: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 4) {
@@ -188,7 +187,6 @@ struct ShadowingView: View {
         .background(AppColors.textSecondary.opacity(0.10))
         .clipShape(Capsule())
     }
-
 
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -250,7 +248,6 @@ struct ShadowingView: View {
         )
     }
 
-
     private var regenerateRow: some View {
         HStack {
             Spacer()
@@ -272,7 +269,6 @@ struct ShadowingView: View {
             .opacity(viewModel.isLoadingPhrases ? 0.5 : 1)
         }
     }
-
 
     private func banner(_ message: String, isError: Bool) -> some View {
         HStack(alignment: .top, spacing: 10) {
@@ -304,7 +300,6 @@ struct ShadowingView: View {
                 .shadow(color: Color.black.opacity(0.06), radius: 11, x: 0, y: 4)
         )
     }
-
 
     private func handleMicTap() {
         Task { await viewModel.toggleListening() }

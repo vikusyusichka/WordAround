@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Post-session summary. Shown when the last review card is rated.
 struct GrammarReviewSessionSummaryView: View {
     let totalReviewed: Int
     let correctCount: Int
@@ -35,8 +34,6 @@ struct GrammarReviewSessionSummaryView: View {
         }
     }
 
-    // MARK: - Icon
-
     private var iconView: some View {
         ZStack {
             Circle()
@@ -51,8 +48,6 @@ struct GrammarReviewSessionSummaryView: View {
         }
         .frame(width: 96, height: 96)
     }
-
-    // MARK: - Title
 
     private var titleSection: some View {
         VStack(spacing: 6) {
@@ -87,8 +82,6 @@ struct GrammarReviewSessionSummaryView: View {
         return "Keep going — repetition builds memory. You'll get there."
     }
 
-    // MARK: - Stats grid
-
     private var statsGrid: some View {
         HStack(spacing: 10) {
             statTile(value: totalReviewed, label: "Reviewed", tint: AppColors.primaryBlue)
@@ -113,8 +106,6 @@ struct GrammarReviewSessionSummaryView: View {
         .background(tint.opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
-
-    // MARK: - Rating breakdown
 
     private var ratingBreakdown: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -155,8 +146,6 @@ struct GrammarReviewSessionSummaryView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
-    // MARK: - Next review hint
-
     private var nextReviewHint: some View {
         HStack(spacing: 10) {
             Image(systemName: "clock.fill")
@@ -188,8 +177,6 @@ struct GrammarReviewSessionSummaryView: View {
         return "Items are scheduled based on your ratings."
     }
 
-    // MARK: - Done button
-
     private var doneButton: some View {
         Button(action: onDone) {
             Text("Back to Grammar Notes")
@@ -204,8 +191,6 @@ struct GrammarReviewSessionSummaryView: View {
         .buttonStyle(.plain)
     }
 }
-
-// MARK: - Previews
 
 #Preview("Good session") {
     GrammarReviewSessionSummaryView(

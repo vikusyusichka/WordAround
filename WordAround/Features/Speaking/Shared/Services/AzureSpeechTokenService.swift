@@ -1,6 +1,5 @@
 import Foundation
 
-
 enum AzureSpeechTokenError: LocalizedError {
     case notConfigured
     case network(String)
@@ -17,7 +16,6 @@ enum AzureSpeechTokenError: LocalizedError {
     }
 }
 
-
 /// Azure subscription key never lives in the app — the Worker holds it as a secret.
 protocol AzureSpeechTokenProviding {
     func fetchToken() async throws -> AzureSpeechToken
@@ -32,7 +30,6 @@ struct AzureSpeechToken: Equatable {
     var isFresh: Bool { Date().timeIntervalSince(fetchedAt) < 8 * 60 }
 }
 
-
 enum AzureSpeechTokenConfiguration {
     static let workerPath = "/api/speech/azure-token"
 
@@ -45,7 +42,6 @@ enum AzureSpeechTokenConfiguration {
         return components.url
     }
 }
-
 
 final class AzureSpeechTokenService: AzureSpeechTokenProviding {
 

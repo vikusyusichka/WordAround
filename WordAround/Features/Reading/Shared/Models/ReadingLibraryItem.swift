@@ -127,8 +127,6 @@ struct ReadingLibraryItem: Identifiable, Codable, Equatable, Hashable {
     }
 }
 
-// MARK: - Display helpers
-
 extension ReadingLibraryItem {
     var isCompleted: Bool { status == .completed || progress >= 1 }
     var progressPercent: Int { Int((min(max(progress, 0), 1) * 100).rounded()) }

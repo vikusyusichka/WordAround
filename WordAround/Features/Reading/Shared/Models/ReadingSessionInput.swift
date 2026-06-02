@@ -43,8 +43,6 @@ struct ReadingSessionInput: Equatable {
     }
 }
 
-// MARK: - Bridges to the existing shared reading models
-
 extension ReadingSessionInput {
     func asUserText(analyzer: ReadingTextAnalyzing = ReadingTextAnalyzerService.shared) -> ReadingUserText {
         let wordCount = analyzer.wordCount(for: fullText)

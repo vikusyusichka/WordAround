@@ -1,14 +1,7 @@
 import Foundation
 
-/// Builds the structured request payload that the backend AI endpoint
-/// will turn into an LLM prompt. The backend owns the actual prompt
-/// engineering and API-key handling. This builder only assembles the
-/// note content and quiz parameters in a deterministic, validated way.
 enum GrammarQuizAIPromptBuilder {
 
-    /// Backend-facing instruction text. The backend can prepend this to
-    /// its system prompt or use it as a contract for what shape the LLM
-    /// must produce. Kept here so the iOS app and backend agree on rules.
     static let responseContract: String = """
     Return ONLY a JSON object that matches:
     {"questions":[{"type":"multipleChoice|trueFalse|fillGap|shortAnswer", \
@@ -63,13 +56,6 @@ enum GrammarQuizAIPromptBuilder {
         )
     }
 
-    /// Collapses a `GrammarQuizAIRequest` into a single prompt string that
-    /// the Cloudflare Worker forwards verbatim to Gemini.
-    ///
-    /// The prompt always ends with `responseContract`, so Gemini knows the
-    /// exact JSON shape to emit. iOS then decodes that JSON back into
-    /// `GrammarQuizAIResponseDTO` — no Gemini-specific wire types leak
-    /// through to the rest of the app.
     static func buildPrompt(from request: GrammarQuizAIRequest) -> String {
         var lines: [String] = []
         lines.append("You are a grammar quiz generator for a language-learning app.")
@@ -104,10 +90,6 @@ enum GrammarQuizAIPromptBuilder {
     }
 }
 
-// MARK: - File-private string helper
-
 private extension String {
-    /// Returns `nil` if the string is empty, otherwise the string itself.
-    /// File-private to avoid colliding with similar helpers in other files.
     var nonEmptyOrNil: String? { isEmpty ? nil : self }
 }

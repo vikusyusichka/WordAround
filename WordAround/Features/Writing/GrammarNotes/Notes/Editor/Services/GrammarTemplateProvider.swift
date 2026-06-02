@@ -1,15 +1,7 @@
 import Foundation
 
-/// Top-level template provider exposing both:
-///  - `topicTemplates`: curated topic packs (Spanish A1, English Tenses, etc.)
-///  - `noteTemplates`: generic note templates (delegated to `GrammarNoteTemplateProvider`)
-///
-/// Static, local-only. Nothing here is persisted to Firestore directly;
-/// producing a topic/note from a template uses the regular services.
 struct GrammarTemplateProvider {
     static let shared = GrammarTemplateProvider()
-
-    // MARK: - Topic templates
 
     let topicTemplates: [GrammarTopicTemplate] = [
         Self.spanishA1Essentials,
@@ -19,13 +11,9 @@ struct GrammarTemplateProvider {
         Self.customBlankTopic
     ]
 
-    // MARK: - Note templates (delegated)
-
     var noteTemplates: [GrammarNoteTemplate] {
         GrammarNoteTemplateProvider.shared.templates
     }
-
-    // MARK: - Filtering — topics
 
     func topicTemplates(languageCode: String?) -> [GrammarTopicTemplate] {
         guard let languageCode, !languageCode.isEmpty else { return topicTemplates }
@@ -60,8 +48,6 @@ struct GrammarTemplateProvider {
         return result
     }
 
-    // MARK: - Note templates pass-through filtering
-
     func noteTemplates(
         noteType: GrammarNoteType? = nil,
         languageCode: String? = nil,
@@ -75,8 +61,6 @@ struct GrammarTemplateProvider {
             searchQuery: searchQuery
         )
     }
-
-    // MARK: - Built-in topic packs
 
     private static let spanishA1Essentials = GrammarTopicTemplate(
         id: "topic-spanish-a1-essentials",
@@ -476,8 +460,6 @@ struct GrammarTemplateProvider {
         noteTemplates: [],
         tags: ["blank"]
     )
-
-    // MARK: - Private helpers
 
     private static func ordered(_ templates: [GrammarNoteTemplate]) -> [GrammarNoteTemplate] {
         templates.map { template in

@@ -60,8 +60,6 @@ struct ReadingLibraryItemCardView: View {
         }
     }
 
-    // MARK: - Pieces
-
     private var header: some View {
         HStack(alignment: .top, spacing: 12) {
             ZStack {

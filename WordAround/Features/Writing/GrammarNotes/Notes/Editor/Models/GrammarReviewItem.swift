@@ -1,13 +1,5 @@
 import Foundation
 
-/// A single thing the user wants to review later — typically backed by a
-/// grammar note, a saved mistake, or a quiz that scored poorly.
-///
-/// Stored under a flat `users/{uid}/grammarReviewItems/{id}` collection so a
-/// single Firestore query returns everything due today regardless of topic.
-/// Source documents (notes, quizzes) live elsewhere — review items keep
-/// just enough denormalized preview metadata to render the summary card
-/// without fetching them.
 struct GrammarReviewItem: Identifiable, Codable, Equatable {
     let id: String
     let ownerUID: String
@@ -26,9 +18,6 @@ struct GrammarReviewItem: Identifiable, Codable, Equatable {
     var reviewCount: Int
     var correctStreak: Int
     var incorrectStreak: Int
-    /// Cumulative count of times the user rated this item as Forgot. Used by
-    /// the session summary and could feed future "weakest items first"
-    /// scheduling. Defaults to 0 for legacy documents.
     var mistakeCount: Int
     var createdAt: Date
     var updatedAt: Date
@@ -80,10 +69,6 @@ struct GrammarReviewItem: Identifiable, Codable, Equatable {
 
 extension GrammarReviewItem {
 
-    // MARK: - Deterministic ids
-
-    /// Stable id for note-sourced items. Reusing it on every save guarantees
-    /// the "Add to Review" action is idempotent — no duplicates.
     static func id(forNoteTopicId topicId: String, noteId: String) -> String {
         "note_\(topicId)_\(noteId)"
     }
@@ -96,10 +81,6 @@ extension GrammarReviewItem {
         "quiz_\(topicId)_\(noteId)_\(quizId)"
     }
 
-    // MARK: - Scheduling
-
-    /// Returns a copy of `self` with scheduling fields advanced according to
-    /// `result`. Kept tiny on purpose: the task explicitly forbids SM-2.
     func applying(result: GrammarReviewResult, at now: Date = Date()) -> GrammarReviewItem {
         var copy = self
         copy.lastReviewedAt = now
@@ -124,8 +105,6 @@ extension GrammarReviewItem {
         return copy
     }
 }
-
-// MARK: - Preview helpers
 
 extension GrammarReviewItem {
 

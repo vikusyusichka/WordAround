@@ -5,13 +5,11 @@ import Combine
 @MainActor
 final class PronunciationTrainerViewModel: ObservableObject {
 
-
     @Published private(set) var items: [PronunciationItem] = []
     @Published private(set) var currentItemIndex = 0
     @Published private(set) var isLoadingItems = false
     @Published private(set) var itemGenerationError: String?
     @Published private(set) var usedFallbackItems = false
-
 
     @Published private(set) var userTranscript = ""
     @Published private(set) var partialTranscript = ""
@@ -20,18 +18,15 @@ final class PronunciationTrainerViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published private(set) var permissionsDenied = false
 
-
     @Published private(set) var currentAssessment: PronunciationAssessmentResult?
     @Published private(set) var isAssessingPronunciation = false
     @Published private(set) var assessmentError: String?
     @Published private(set) var attempts: [PronunciationAttempt] = []
 
-
     @Published private(set) var messages: [SpeakingConversationMessage] = []
     @Published private(set) var conversationFeedback: SpeakingConversationFeedback?
     @Published private(set) var isGeneratingFeedback = false
     @Published private(set) var feedbackError: String?
-
 
     var currentItem: PronunciationItem? {
         guard items.indices.contains(currentItemIndex) else { return nil }
@@ -61,12 +56,10 @@ final class PronunciationTrainerViewModel: ObservableObject {
 
     var hasAttemptForCurrentItem: Bool { currentAssessment != nil }
 
-
     let setup: SpeakingConversationSetup
     let difficulty: PronunciationDifficulty
     let focus: PronunciationFocus
     var onSessionEnded: (() -> Void)?
-
 
     private let recognizer: SpeechRecognitionService
     private let synthesizer: SpeechSynthesisService
@@ -77,6 +70,9 @@ final class PronunciationTrainerViewModel: ObservableObject {
 
     private var hasStarted = false
     private var hasEnded = false
+    private var sessionStartedAt: Date?
+    private var didRecordPracticeStats = false
+    private let statsService: DailyPracticeStatsService
     private var permissionsRequested = false
     private var lastSubmittedTranscript = ""
     private var isPlayingExample = false
@@ -93,7 +89,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         )
     )
 
-
     init(
         setup: SpeakingConversationSetup,
         difficulty: PronunciationDifficulty,
@@ -103,7 +98,8 @@ final class PronunciationTrainerViewModel: ObservableObject {
         contentService: PronunciationContentProviding? = nil,
         feedbackService: SpeakingFeedbackService? = nil,
         pronunciationAssessor: PronunciationAssessing? = nil,
-        fallbackAssessor: PronunciationAssessing? = nil
+        fallbackAssessor: PronunciationAssessing? = nil,
+        statsService: DailyPracticeStatsService = .shared
     ) {
         self.setup = setup
         self.difficulty = difficulty
@@ -114,6 +110,7 @@ final class PronunciationTrainerViewModel: ObservableObject {
         self.feedbackService = feedbackService ?? SpeakingFeedbackService()
         self.pronunciationAssessor = pronunciationAssessor ?? PronunciationAssessmentConfiguration.makeAzureAssessor()
         self.fallbackAssessor = fallbackAssessor ?? PronunciationAssessmentConfiguration.makeFallbackAssessor()
+        self.statsService = statsService
         wireRecognizerCallbacks()
         wireSynthesizerCallbacks()
     }
@@ -123,11 +120,11 @@ final class PronunciationTrainerViewModel: ObservableObject {
         assessmentTask?.cancel()
     }
 
-
     func startSession() {
         guard !hasStarted else { return }
         hasStarted = true
         hasEnded = false
+        sessionStartedAt = Date()
 
         #if DEBUG
         print("[PronunciationVM] startSession lang=\(setup.language.title) level=\(setup.level.rawValue) difficulty=\(difficulty.rawValue) focus=\(focus.promptValue)")
@@ -150,9 +147,23 @@ final class PronunciationTrainerViewModel: ObservableObject {
         partialTranscript = ""
         state = .idle
 
+        recordPracticeStatsIfNeeded()
+
         if conversationFeedback == nil && !isGeneratingFeedback {
             beginFeedbackGeneration()
         }
+    }
+
+    private func recordPracticeStatsIfNeeded() {
+        guard hasStarted, !didRecordPracticeStats, let start = sessionStartedAt else { return }
+        let practiced = Int(Date().timeIntervalSince(start))
+        guard practiced > 0 else { return }
+        didRecordPracticeStats = true
+        statsService.record(
+            skill: .speaking,
+            value: practiced,
+            sourceModeID: "pronunciation"
+        )
     }
 
     func resetSession() {
@@ -182,8 +193,9 @@ final class PronunciationTrainerViewModel: ObservableObject {
         state = .idle
         hasStarted = false
         hasEnded = false
+        sessionStartedAt = nil
+        didRecordPracticeStats = false
     }
-
 
     func loadFreshItems(forceRefresh: Bool) {
         guard !isLoadingItems else { return }
@@ -236,7 +248,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         loadFreshItems(forceRefresh: true)
     }
 
-
     func playCurrentItem() {
         guard let item = currentItem else { return }
         speak(item.text, label: "item")
@@ -264,7 +275,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         state = .speaking
         synthesizer.speak(text, localeIdentifier: setup.speechLocaleIdentifier)
     }
-
 
     func toggleListening() async {
         switch state {
@@ -336,7 +346,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
             assessCurrentAttempt(referenceText: item.text, recognizedText: trimmed)
         }
     }
-
 
     func assessCurrentAttempt(referenceText: String, recognizedText: String) {
         let languageCode = setup.speechLocaleIdentifier
@@ -423,7 +432,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         messages.append(SpeakingConversationMessage(role: .user, text: recognizedText))
     }
 
-
     func retryCurrentItem() {
         #if DEBUG
         print("[PronunciationVM] retry item index=\(currentItemIndex)")
@@ -473,7 +481,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
 
     func clearError() { errorMessage = nil }
 
-
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
             self?.partialTranscript = text
@@ -515,7 +522,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         }
     }
 
-
     private func beginFeedbackGeneration() {
         let snapshotLanguage = setup.language
         let snapshotLevel = setup.level
@@ -548,6 +554,5 @@ final class PronunciationTrainerViewModel: ObservableObject {
         }
     }
 }
-
 
 extension PronunciationTrainerViewModel: SpeakingResultProvidable {}

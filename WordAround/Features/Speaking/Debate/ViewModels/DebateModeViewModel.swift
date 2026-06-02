@@ -5,7 +5,6 @@ import Combine
 @MainActor
 final class DebateModeViewModel: ObservableObject {
 
-
     @Published private(set) var messages: [SpeakingConversationMessage] = []
     @Published private(set) var partialTranscript: String = ""
     @Published private(set) var state: SpeakingConversationState = .idle
@@ -23,7 +22,6 @@ final class DebateModeViewModel: ObservableObject {
     @Published private(set) var feedbackError: String?
 
     @Published private(set) var remainingSeconds: Int = 0
-
 
     let setup: SpeakingConversationSetup
     let requestedSide: DebateSide
@@ -43,16 +41,16 @@ final class DebateModeViewModel: ObservableObject {
 
     var onDebateEnded: (() -> Void)?
 
-
     private let recognizer: SpeechRecognitionService
     private let synthesizer: SpeechSynthesisService
     private let debateService: DebateConversationService
     private let topicService: SpeakingTopicGenerationService
     private let feedbackService: SpeakingFeedbackService
 
-
     private var hasStarted = false
     private var hasEnded = false
+    private var didRecordPracticeStats = false
+    private let statsService: DailyPracticeStatsService
     private var permissionsRequested = false
 
     private var lastSubmittedTranscript = ""
@@ -67,7 +65,6 @@ final class DebateModeViewModel: ObservableObject {
     private var feedbackTask: Task<Void, Never>?
     private var hintAutoHideTask: Task<Void, Never>?
 
-
     init(
         setup: SpeakingConversationSetup,
         side: DebateSide,
@@ -75,7 +72,8 @@ final class DebateModeViewModel: ObservableObject {
         synthesizer: SpeechSynthesisService? = nil,
         debateService: DebateConversationService? = nil,
         topicService: SpeakingTopicGenerationService? = nil,
-        feedbackService: SpeakingFeedbackService? = nil
+        feedbackService: SpeakingFeedbackService? = nil,
+        statsService: DailyPracticeStatsService = .shared
     ) {
         self.setup = setup
         self.requestedSide = side
@@ -85,6 +83,7 @@ final class DebateModeViewModel: ObservableObject {
             ?? DebateConversationService(client: GeminiSpeakingAIClient())
         self.topicService = topicService ?? SpeakingTopicGenerationService()
         self.feedbackService = feedbackService ?? SpeakingFeedbackService()
+        self.statsService = statsService
         self.remainingSeconds = setup.length.minutes * 60
 
         wireRecognizerCallbacks()
@@ -97,7 +96,6 @@ final class DebateModeViewModel: ObservableObject {
         feedbackTask?.cancel()
         hintAutoHideTask?.cancel()
     }
-
 
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
@@ -128,7 +126,6 @@ final class DebateModeViewModel: ObservableObject {
         }
     }
 
-
     func startDebate() {
         guard !hasStarted else { return }
         hasStarted = true
@@ -156,9 +153,24 @@ final class DebateModeViewModel: ObservableObject {
         clearHint()
         state = .idle
 
+        recordPracticeStatsIfNeeded()
+
         if conversationFeedback == nil && !isGeneratingFeedback {
             beginFeedbackGeneration()
         }
+    }
+
+    private func recordPracticeStatsIfNeeded() {
+        guard hasStarted, !didRecordPracticeStats else { return }
+        let total = setup.length.minutes * 60
+        let practiced = max(0, total - remainingSeconds)
+        guard practiced > 0 else { return }
+        didRecordPracticeStats = true
+        statsService.record(
+            skill: .speaking,
+            value: practiced,
+            sourceModeID: "debate-mode"
+        )
     }
 
     func resetDebate() {
@@ -173,6 +185,7 @@ final class DebateModeViewModel: ObservableObject {
         isGeneratingTopic = false
         hasStarted = false
         hasEnded = false
+        didRecordPracticeStats = false
         errorMessage = nil
         didUseFallbackReply = false
         usedFallbackTopic = false
@@ -180,7 +193,6 @@ final class DebateModeViewModel: ObservableObject {
         lastGeminiSendAt = nil
         remainingSeconds = setup.length.minutes * 60
     }
-
 
     private func generateTopicAndOpen() {
         isGeneratingTopic = true
@@ -253,7 +265,6 @@ final class DebateModeViewModel: ObservableObject {
         }
     }
 
-
     func toggleListening() async {
         if isGeneratingTopic { return }
         switch state {
@@ -301,7 +312,6 @@ final class DebateModeViewModel: ObservableObject {
         lastGeminiSendAt = Date()
         sendUserTranscript(trimmed)
     }
-
 
     func sendUserTranscript(_ text: String) {
         clearHint()
@@ -385,7 +395,6 @@ final class DebateModeViewModel: ObservableObject {
         synthesizer.speak(text, localeIdentifier: setup.speechLocaleIdentifier)
     }
 
-
     func requestHint() {
         if case .processing = state { return }
         if case .listening = state { return }
@@ -419,7 +428,6 @@ final class DebateModeViewModel: ObservableObject {
         }
     }
 
-
     func startTimer() {
         timerTask?.cancel()
         remainingSeconds = setup.length.minutes * 60
@@ -450,7 +458,6 @@ final class DebateModeViewModel: ObservableObject {
         endDebate()
         onDebateEnded?()
     }
-
 
     private func beginFeedbackGeneration() {
         let language = setup.language
@@ -487,6 +494,5 @@ final class DebateModeViewModel: ObservableObject {
         usedFallbackTopic = false
     }
 }
-
 
 extension DebateModeViewModel: SpeakingResultProvidable {}

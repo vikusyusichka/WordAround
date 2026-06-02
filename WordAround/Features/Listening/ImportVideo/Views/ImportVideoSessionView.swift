@@ -116,7 +116,6 @@ struct ImportVideoSessionView: View {
         }
     }
 
-
     @ViewBuilder
     private var questionsArea: some View {
         if viewModel.supportsQuestions {
@@ -214,7 +213,6 @@ struct ImportVideoSessionView: View {
             }
         }
     }
-
 
     private func infoCard(icon: String, title: String, message: String) -> some View {
         infoCardContent(icon: icon, title: title, message: message)

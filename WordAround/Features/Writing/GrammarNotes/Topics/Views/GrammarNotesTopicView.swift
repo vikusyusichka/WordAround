@@ -83,8 +83,6 @@ struct GrammarNotesTopicView: View {
             quickMistakeSheet
         }
         .sheet(item: $quizNote) { note in
-            // Note opened from badge has empty contentBlocks (preview-load).
-            // Creation is available from the full editor (where blocks are loaded).
             GrammarNoteQuizListView(
                 note: note,
                 ownerUID: viewModel.topic.ownerUID,
@@ -97,8 +95,6 @@ struct GrammarNotesTopicView: View {
             await viewModel.loadNotesIfNeeded()
         }
         .onAppear {
-            // Re-appear from editor: refresh previews from cache so edited
-            // titles/previewText are reflected without a server round-trip.
             Task { await viewModel.refreshFromCacheIfNeeded() }
         }
     }
@@ -121,10 +117,6 @@ struct GrammarNotesTopicView: View {
                     )
                     if let saved {
                         isCreateSheetPresented = false
-                        // Restore the full "New Note" flow: after metadata is
-                        // saved, jump straight into the rich editor so the user
-                        // can add blocks (rules, examples, images, etc.) without
-                        // an extra tap on the new card.
                         editorNote = saved
                     }
                 }
@@ -326,8 +318,6 @@ struct GrammarNotesTopicView: View {
         }
     }
 
-    // MARK: - Edit mode
-
     private var hasEditableNotes: Bool {
         !viewModel.notes.isEmpty
     }
@@ -338,11 +328,6 @@ struct GrammarNotesTopicView: View {
         }
     }
 
-    /// Edit-mode notes list. Switches to a `List` so SwiftUI gives us drag
-    /// handles and standard delete affordances. Uses the full `notes`
-    /// array (not the filtered/grouped one) so reorder indices stay stable
-    /// regardless of the active filter — the filter chips resume normal
-    /// behavior the moment the user taps "Done".
     private var editableNotesList: some View {
         let editingNotes = viewModel.notes
         let rowSpacing: CGFloat = isPadLike ? 13 : 11

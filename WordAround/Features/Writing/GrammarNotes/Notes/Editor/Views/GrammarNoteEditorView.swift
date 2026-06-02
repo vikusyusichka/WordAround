@@ -7,10 +7,6 @@ struct GrammarNoteEditorView: View {
     @State private var isTemplateSheetPresented = false
     @State private var isCreateQuizSheetPresented = false
     @State private var isQuizListSheetPresented = false
-    /// When non-nil, prompts the user to decide whether the chosen template
-    /// should replace or be appended to the existing note content. Only
-    /// surfaces when the note already has blocks; for empty notes we apply
-    /// directly without a confirmation dialog.
     @State private var pendingTemplate: GrammarNoteTemplate? = nil
 
     private let allowsQuiz: Bool
@@ -64,9 +60,6 @@ struct GrammarNoteEditorView: View {
                 }
             }
 
-            // Inline confirmation for "Add to Review". Lives at the bottom
-            // so it never overlaps the title field. Auto-dismisses via the
-            // VM, but the user can also keep typing — it's non-blocking.
             if let toast = viewModel.reviewToast {
                 VStack {
                     Spacer()
@@ -93,10 +86,6 @@ struct GrammarNoteEditorView: View {
         .navigationBarBackButtonHidden(true)
         .task {
             await viewModel.loadBlocks()
-            // Record the open AFTER blocks load so the local recommendation
-            // cache stores a snapshot with the latest title/preview. Stamps
-            // the note locally (UserDefaults) AND in Firestore so the
-            // Review Today "Recently opened" pool stays cross-device.
             viewModel.recordOpened()
         }
         .sheet(isPresented: $isAddBlockSheetPresented) {
@@ -130,8 +119,6 @@ struct GrammarNoteEditorView: View {
                 onDismiss: { isQuizListSheetPresented = false }
             )
         }
-        // Asks the user how to apply a template when the note already has
-        // blocks — prevents silent overwrites.
         .confirmationDialog(
             pendingTemplate.map { "Apply \"\($0.title)\"?" } ?? "Apply template?",
             isPresented: Binding(
@@ -160,11 +147,9 @@ struct GrammarNoteEditorView: View {
         }
     }
 
-    // MARK: - Header
     private var header: some View {
         HStack(spacing: 12) {
             Button {
-                // Dismiss immediately; onDisappear handles the final save
                 dismiss()
             } label: {
                 Image(systemName: "chevron.left")
@@ -242,7 +227,6 @@ struct GrammarNoteEditorView: View {
         .padding(.bottom, 10)
     }
 
-    // MARK: - Toolbar
     private var toolbarCard: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 9) {
@@ -289,7 +273,6 @@ struct GrammarNoteEditorView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Blocks loading state
     private var blocksLoadingState: some View {
         VStack(spacing: 12) {
             ProgressView()
@@ -303,7 +286,6 @@ struct GrammarNoteEditorView: View {
         .padding(.vertical, 48)
     }
 
-    // MARK: - Empty state
     private var emptyEditorState: some View {
         VStack(alignment: .leading, spacing: 14) {
             ZStack {
@@ -349,10 +331,6 @@ struct GrammarNoteEditorView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Template sheet
-    /// Hosts `GrammarTemplateLibraryView` in note mode. When a template is
-    /// picked we either apply it immediately (empty note) or stash it into
-    /// `pendingTemplate` to ask the user whether to replace or append.
     private var templateSheet: some View {
         GrammarTemplateLibraryView(
             kind: .note,
@@ -366,16 +344,13 @@ struct GrammarNoteEditorView: View {
     }
 
     private func handleTemplateSelection(_ template: GrammarNoteTemplate) {
-        // Empty note → just apply (replace mode is a no-op for empty arrays).
         if viewModel.blocks.isEmpty {
             viewModel.applyTemplate(template, mode: .replace, allowsQuiz: allowsQuiz)
         } else {
-            // Non-empty → ask user before mutating their existing content.
             pendingTemplate = template
         }
     }
 
-    // MARK: - Helpers
     private var statusColor: Color {
         switch viewModel.saveState {
         case .failed: return CreateSetTheme.red.accent

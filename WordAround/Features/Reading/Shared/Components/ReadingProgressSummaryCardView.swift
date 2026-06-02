@@ -13,7 +13,7 @@ struct ReadingProgressSummaryCardView: View {
             unit: "min",
             subtitle: "of reading practice",
             progress: Double(currentMinutes) / Double(max(totalMinutes, 1)),
-            tint: ReadingHomeViewModel.indigo,
+            tint: AppColors.primaryBlue,
             backgroundColor: AppColors.goalBackground,
             progressBackgroundColor: AppColors.goalProgressBackground,
             titleColor: AppColors.primaryBlueDark,
@@ -21,7 +21,7 @@ struct ReadingProgressSummaryCardView: View {
             subtitleColor: AppColors.textSecondary,
             iconSystemName: "book.fill",
             iconBackground: .white,
-            blobColor: ReadingHomeViewModel.indigoBlob
+            blobColor: Color(red: 0.82, green: 0.86, blue: 0.98)
         )
     }
 }

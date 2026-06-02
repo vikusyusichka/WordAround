@@ -5,11 +5,9 @@ import Combine
 @MainActor
 final class DescribePictureViewModel: ObservableObject {
 
-
     @Published private(set) var currentImage: DescribePictureImage?
     @Published private(set) var isLoadingImage = false
     @Published private(set) var imageError: String?
-
 
     @Published private(set) var transcriptChunks: [String] = []
     @Published private(set) var partialTranscript: String = ""
@@ -19,7 +17,6 @@ final class DescribePictureViewModel: ObservableObject {
 
     @Published private(set) var messages: [SpeakingConversationMessage] = []
 
-
     @Published private(set) var remainingSeconds: Int = 0
     @Published private(set) var conversationFeedback: SpeakingConversationFeedback?
     @Published private(set) var isGeneratingFeedback = false
@@ -28,7 +25,6 @@ final class DescribePictureViewModel: ObservableObject {
     var isListening: Bool { state == .listening }
     var isGeneratingFeedbackValue: Bool { isGeneratingFeedback }
     var speakingFeedback: SpeakingConversationFeedback? { conversationFeedback }
-
 
     let setup: SpeakingConversationSetup
     var onTimerFinished: (() -> Void)?
@@ -42,12 +38,13 @@ final class DescribePictureViewModel: ObservableObject {
 
     var hasTranscript: Bool { !transcriptChunks.isEmpty || !partialTranscript.isEmpty }
 
-
     private let recognizer: SpeechRecognitionService
     private let feedbackService: SpeakingFeedbackService
     private let imageProvider: DescribePictureImageProviding
 
     private var hasStarted = false
+    private var didRecordPracticeStats = false
+    private let statsService: DailyPracticeStatsService
     private var permissionsRequested = false
     private var lastSubmittedTranscript = ""
 
@@ -65,17 +62,18 @@ final class DescribePictureViewModel: ObservableObject {
         )
     )
 
-
     init(
         setup: SpeakingConversationSetup,
         recognizer: SpeechRecognitionService? = nil,
         feedbackService: SpeakingFeedbackService? = nil,
-        imageProvider: DescribePictureImageProviding? = nil
+        imageProvider: DescribePictureImageProviding? = nil,
+        statsService: DailyPracticeStatsService = .shared
     ) {
         self.setup = setup
         self.recognizer = recognizer ?? SpeechRecognitionService()
         self.feedbackService = feedbackService ?? SpeakingFeedbackService()
         self.imageProvider = imageProvider ?? DescribePictureImageConfiguration.makeProvider()
+        self.statsService = statsService
         self.remainingSeconds = setup.length.minutes * 60
         wireRecognizerCallbacks()
     }
@@ -85,7 +83,6 @@ final class DescribePictureViewModel: ObservableObject {
         feedbackTask?.cancel()
         imageTask?.cancel()
     }
-
 
     func startSession() {
         guard !hasStarted else { return }
@@ -105,9 +102,24 @@ final class DescribePictureViewModel: ObservableObject {
         partialTranscript = ""
         state = .idle
 
+        recordPracticeStatsIfNeeded()
+
         if conversationFeedback == nil && !isGeneratingFeedback {
             beginFeedbackGeneration()
         }
+    }
+
+    private func recordPracticeStatsIfNeeded() {
+        guard hasStarted, !didRecordPracticeStats else { return }
+        let total = setup.length.minutes * 60
+        let practiced = max(0, total - remainingSeconds)
+        guard practiced > 0 else { return }
+        didRecordPracticeStats = true
+        statsService.record(
+            skill: .speaking,
+            value: practiced,
+            sourceModeID: "describe-picture"
+        )
     }
 
     func resetSession() {
@@ -121,6 +133,7 @@ final class DescribePictureViewModel: ObservableObject {
         transcriptChunks.removeAll()
         partialTranscript = ""
         hasStarted = false
+        didRecordPracticeStats = false
         errorMessage = nil
         permissionsDenied = false
         lastSubmittedTranscript = ""
@@ -128,7 +141,6 @@ final class DescribePictureViewModel: ObservableObject {
         currentImage = nil
         imageError = nil
     }
-
 
     func loadRandomImage() {
         guard !isLoadingImage else {
@@ -185,7 +197,6 @@ final class DescribePictureViewModel: ObservableObject {
         state = .idle
     }
 
-
     func startTimer() {
         timerTask?.cancel()
         remainingSeconds = setup.length.minutes * 60
@@ -215,7 +226,6 @@ final class DescribePictureViewModel: ObservableObject {
         state = .idle
         onTimerFinished?()
     }
-
 
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
@@ -333,7 +343,6 @@ final class DescribePictureViewModel: ObservableObject {
         errorMessage = nil
     }
 
-
     private func beginFeedbackGeneration() {
         let snapshotLanguage = setup.language
         let snapshotLevel = setup.level
@@ -373,6 +382,5 @@ final class DescribePictureViewModel: ObservableObject {
         }
     }
 }
-
 
 extension DescribePictureViewModel: SpeakingResultProvidable {}

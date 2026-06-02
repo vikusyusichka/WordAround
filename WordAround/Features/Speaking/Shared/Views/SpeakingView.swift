@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SpeakingView: View {
+    @StateObject private var viewModel = SpeakingHomeViewModel()
     @State private var openAIConversation = false
     @State private var openFreeSpeaking = false
     @State private var openDescribePicture = false
@@ -19,7 +20,10 @@ struct SpeakingView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-            SpeakingProgressCardView(currentMinutes: 7, totalMinutes: 15)
+            SpeakingProgressCardView(
+                currentMinutes: viewModel.minutesSpokenToday,
+                totalMinutes: viewModel.dailyGoalMinutes
+            )
 
             Text("Practice modes")
                 .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
@@ -50,6 +54,7 @@ struct SpeakingView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .onAppear { viewModel.refreshDailyProgress() }
         .navigationDestination(isPresented: $openAIConversation) {
             AIConversationSetupView(onExitToSpeaking: { openAIConversation = false })
         }

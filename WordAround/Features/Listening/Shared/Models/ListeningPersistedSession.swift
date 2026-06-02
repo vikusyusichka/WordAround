@@ -132,7 +132,6 @@ struct ListeningPersistedSession: Identifiable, Codable, Equatable {
         )
     }
 
-
     func makeTextSetup() -> ListeningSessionSetup {
         ListeningSessionSetup(
             modeID: modeID,

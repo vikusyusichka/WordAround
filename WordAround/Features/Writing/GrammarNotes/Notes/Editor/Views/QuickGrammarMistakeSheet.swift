@@ -104,11 +104,6 @@ struct QuickGrammarMistakeSheet: View {
             }
         }
         .onChange(of: errorMessage) { _, message in
-            // Only reset on a NEW error (transition to non-nil). Resetting on
-            // every change would clobber `didSaveSuccessfully` when the VM
-            // clears `errorMessage = nil` at the start of a fresh attempt.
-            // The repeated-same-error edge case is now covered by the VM
-            // (which always flips isCreating true→false) and the watchdog.
             guard message != nil else { return }
             didSubmitSave = false
             didSaveSuccessfully = false
@@ -120,10 +115,6 @@ struct QuickGrammarMistakeSheet: View {
             }
             didSubmitSave = false
         }
-        // Safety watchdog — see comment in `QuickGrammarNoteSheet`. Guards
-        // against any race where `didSubmitSave` could otherwise get stuck
-        // (e.g. early return in the VM before `isCreating` was observed true,
-        // identical errorMessage in a row, or a cancelled Task).
         .task(id: didSubmitSave) {
             guard didSubmitSave else { return }
             try? await Task.sleep(nanoseconds: 12_000_000_000) // 12s

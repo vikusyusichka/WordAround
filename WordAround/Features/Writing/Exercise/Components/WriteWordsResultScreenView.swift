@@ -1,14 +1,10 @@
 import SwiftUI
 
-// MARK: - Result Type
-
 enum WriteWordsResultType: Equatable {
     case win
     case timeoutLose
     case wrongAnswerLose
 }
-
-// MARK: - Reusable Result Screen
 
 struct WriteWordsResultScreenView: View {
     let resultType: WriteWordsResultType

@@ -88,7 +88,6 @@ struct ShadowingSetupView: View {
         }
     }
 
-
     private var categoryGrid: some View {
         LazyVGrid(columns: columns, spacing: 10) {
             ForEach(categories) { category in
@@ -122,7 +121,6 @@ struct ShadowingSetupView: View {
             }
         }
     }
-
 
     private var previewCard: some View {
         HStack(spacing: 14) {

@@ -24,8 +24,6 @@ struct ReadingQuestionService: ReadingQuestionGenerating, Sendable {
         }.value
     }
 
-    // MARK: - Builder
-
     private static func build(
         content: String,
         title: String,

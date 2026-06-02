@@ -82,7 +82,6 @@ final class ImportVideoSessionViewModel: ObservableObject {
         self.translationTarget = resolvedTranslator.defaultTargetLanguage(for: setup.language)
     }
 
-
     var supportsQuestions: Bool { setup.addQuestions && transcription.hasUsableTranscript }
     var hasSubtitles: Bool { !cues.isEmpty }
     var hasCheckedAnswers: Bool { phase == .checkedAnswers }
@@ -94,7 +93,6 @@ final class ImportVideoSessionViewModel: ObservableObject {
         setup.durationSeconds > 0 ? Int(setup.durationSeconds) : max(watchedSeconds, 1)
     }
     var metadataLine: String { setup.metadataLine }
-
 
     func onAppear() {
         guard !didStart else { return }
@@ -158,13 +156,11 @@ final class ImportVideoSessionViewModel: ObservableObject {
         }
     }
 
-
     func markVideoFinished() {
         guard phase == .watching else { return }
         phase = .watched
         persist(status: .inProgress)
     }
-
 
     private func generateQuestions() {
         isGeneratingQuestions = true
@@ -201,7 +197,6 @@ final class ImportVideoSessionViewModel: ObservableObject {
         phase = .checkedAnswers
         persist(status: .inProgress)
     }
-
 
     var bottomButtonTitle: String? {
         switch phase {
@@ -250,7 +245,6 @@ final class ImportVideoSessionViewModel: ObservableObject {
         showResult = true
     }
 
-
     func selectWord(_ word: String) {
         let cleaned = word.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         guard !cleaned.isEmpty else { return }
@@ -293,7 +287,6 @@ final class ImportVideoSessionViewModel: ObservableObject {
     }
 
     var canTranslate: Bool { !(selectedWord?.isEmpty ?? true) && !isTranslating }
-
 
     func loadSetsIfNeeded() {
         guard availableSets.isEmpty, !isLoadingSets else { return }
@@ -357,7 +350,6 @@ final class ImportVideoSessionViewModel: ObservableObject {
         }
     }
 
-
     func makeShadowingPayload() -> ListeningShadowingPayload {
         let cuePhrases = cues
             .map(\.text)
@@ -373,7 +365,6 @@ final class ImportVideoSessionViewModel: ObservableObject {
     }
 
     func startShadowing() { showShadowing = true }
-
 
     private func persist(status: ListeningSessionStatus, result: ListeningResult? = nil) {
         let session = ListeningPersistedSession(

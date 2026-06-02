@@ -1,8 +1,5 @@
 import Foundation
 
-/// User-facing creation mode shown in `CreateGrammarQuizSheet`.
-/// Selects which generator (or no generator) the ViewModel will use
-/// to produce the questions for a new quiz.
 enum GrammarQuizCreationMode: String, CaseIterable, Identifiable, Codable, Equatable {
     case manual
     case smartLocal
@@ -10,7 +7,6 @@ enum GrammarQuizCreationMode: String, CaseIterable, Identifiable, Codable, Equat
 
     var id: String { rawValue }
 
-    /// Long display title, used as accessible label / subtitle headline.
     var title: String {
         switch self {
         case .manual:      return "Manual"
@@ -19,7 +15,6 @@ enum GrammarQuizCreationMode: String, CaseIterable, Identifiable, Codable, Equat
         }
     }
 
-    /// Short label used in segmented controls / compact pickers.
     var shortTitle: String {
         switch self {
         case .manual:      return "Manual"
@@ -44,9 +39,6 @@ enum GrammarQuizCreationMode: String, CaseIterable, Identifiable, Codable, Equat
         }
     }
 
-    /// CTA button title in `CreateGrammarQuizSheet` save button.
-    /// The mode itself already tells the user how questions are produced —
-    /// so the button just states the user-facing action.
     var ctaTitle: String {
         switch self {
         case .manual:      return "Create Quiz"

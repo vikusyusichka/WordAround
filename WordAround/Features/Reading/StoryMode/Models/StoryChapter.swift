@@ -36,8 +36,6 @@ struct StoryChapter: Identifiable, Codable, Equatable, Hashable {
         self.readingTimeSeconds = readingTimeSeconds
     }
 
-    // MARK: - Codable (additive fields decode safely from older payloads)
-
     enum CodingKeys: String, CodingKey {
         case id, chapterIndex, title, text, choices, madeChoice
         case isCompleted, completedAt, scorePercent, readingTimeSeconds
@@ -58,8 +56,6 @@ struct StoryChapter: Identifiable, Codable, Equatable, Hashable {
         readingTimeSeconds = try c.decodeIfPresent(Int.self, forKey: .readingTimeSeconds)
     }
 
-    // MARK: - Display helpers
-
     var displayTitle: String { "Chapter \(chapterIndex)" }
 
     var summary: String {
@@ -68,8 +64,6 @@ struct StoryChapter: Identifiable, Codable, Equatable, Hashable {
         return String(trimmed.prefix(200)) + "…"
     }
 }
-
-// MARK: - Shared reading adapter
 
 extension StoryChapter {
     func toReadingSessionInput(storySession: StorySession) -> ReadingSessionInput {

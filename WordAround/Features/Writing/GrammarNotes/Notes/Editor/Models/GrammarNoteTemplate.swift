@@ -33,15 +33,10 @@ struct GrammarNoteTemplate: Identifiable, Codable, Equatable {
         self.difficulty = difficulty
     }
 
-    /// `true` if this template includes a quiz block (used to honor
-    /// `GrammarNotesSettingsStore.allowQuickQuizzes`).
     var hasQuizBlock: Bool {
         blocks.contains { $0.type == .quiz }
     }
 
-    /// Returns a copy with quiz blocks removed and order re-sequenced.
-    /// Use when `allowQuickQuizzes == false` so we never insert quiz
-    /// blocks the user has opted out of.
     func withoutQuizBlocks() -> GrammarNoteTemplate {
         let filtered = blocks
             .filter { $0.type != .quiz }

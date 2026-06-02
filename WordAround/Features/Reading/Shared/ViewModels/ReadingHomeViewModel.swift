@@ -4,12 +4,23 @@ import Combine
 @MainActor
 final class ReadingHomeViewModel: ObservableObject {
 
-    // MARK: - Progress (mock placeholder)
+    @Published private(set) var minutesReadToday: Int = 0
+    let dailyGoalMinutes: Int
 
-    @Published private(set) var minutesReadToday: Int = 6
-    @Published private(set) var dailyGoalMinutes: Int = 15
+    private let statsService: DailyPracticeStatsService
 
-    // MARK: - Modes
+    init(statsService: DailyPracticeStatsService = .shared) {
+        self.statsService = statsService
+        self.dailyGoalMinutes = statsService.defaultGoal(skill: .reading)
+    }
+
+    func refreshDailyProgress() {
+        Task {
+            let seconds = await statsService.totalToday(skill: .reading)
+            minutesReadToday = seconds / 60
+        }
+    }
+
     @Published private(set) var modes: [ReadingMode] = [
         ReadingMyTextsMode.homeCard,
         ReadingMode(
@@ -38,7 +49,6 @@ final class ReadingHomeViewModel: ObservableObject {
         ),
     ]
 
-    // MARK: - Home tint
     static let indigo = Color(red: 0.42, green: 0.36, blue: 0.86)
     static let indigoBlob = Color(red: 0.88, green: 0.86, blue: 0.98)
 }

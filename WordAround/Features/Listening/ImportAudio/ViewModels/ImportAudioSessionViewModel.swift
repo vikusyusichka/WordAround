@@ -66,13 +66,11 @@ final class ImportAudioSessionViewModel: ObservableObject {
         }
     }
 
-
     func onAppear() {
         guard !didLoad else { return }
         didLoad = true
 
         // Validate the file exists before loading — storedFileName can be empty
-        // if the session was saved before the audio was copied (e.g. force-quit).
         let url = setup.audioURL
         guard !setup.storedFileName.isEmpty,
               FileManager.default.fileExists(atPath: url.path) else {
@@ -93,7 +91,6 @@ final class ImportAudioSessionViewModel: ObservableObject {
         player.stop()
         if !showResult { persist(status: .inProgress) }
     }
-
 
     var isPlaying: Bool { playbackState == .playing }
 
@@ -116,7 +113,6 @@ final class ImportAudioSessionViewModel: ObservableObject {
         player.play()
         playbackState = .playing
     }
-
 
     func selectAnswer(questionID: String, optionIndex: Int) {
         guard !hasCheckedAnswers else { return }
@@ -167,7 +163,6 @@ final class ImportAudioSessionViewModel: ObservableObject {
         showResult = true
     }
 
-
     var timerText: String { formatTime(elapsedSeconds) }
     var currentTimeText: String { formatTime(Int(currentTime)) }
     var durationText: String { setup.durationText }
@@ -176,7 +171,6 @@ final class ImportAudioSessionViewModel: ObservableObject {
     func formatTime(_ seconds: Int) -> String {
         String(format: "%d:%02d", seconds / 60, seconds % 60)
     }
-
 
     private func persist(status: ListeningSessionStatus, result: ListeningResult? = nil) {
         let session = ListeningPersistedSession(

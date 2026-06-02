@@ -1,24 +1,14 @@
 import Foundation
 import Combine
 
-// MARK: - UserDefaults convenience helpers (file-private)
-
 private let _ud = UserDefaults.standard
 
 private func boolSetting(_ key: String, default def: Bool) -> Bool {
     _ud.object(forKey: key) != nil ? _ud.bool(forKey: key) : def
 }
 
-// MARK: - Store
-
-/// Persists all Grammar Notes user preferences.
-/// Views observe it via `@StateObject`; ViewModels read it at save-time.
-/// Uses @Published + UserDefaults so ObservableObject conformance works
-/// correctly in Swift 6 (unlike @AppStorage inside a class).
 @MainActor
 final class GrammarNotesSettingsStore: ObservableObject {
-
-    // MARK: - Quick capture
 
     @Published var opensEditorAfterQuickSave: Bool = boolSetting("grammarNotes.opensEditorAfterQuickSave", default: true) {
         didSet { _ud.set(opensEditorAfterQuickSave, forKey: "grammarNotes.opensEditorAfterQuickSave") }
@@ -27,8 +17,6 @@ final class GrammarNotesSettingsStore: ObservableObject {
     @Published var allowQuickQuizzes: Bool = boolSetting("grammarNotes.allowQuickQuizzes", default: true) {
         didSet { _ud.set(allowQuickQuizzes, forKey: "grammarNotes.allowQuickQuizzes") }
     }
-
-    // MARK: - Mistake notes
 
     @Published var includeOriginalSentence: Bool = boolSetting("grammarNotes.includeOriginalSentence", default: true) {
         didSet { _ud.set(includeOriginalSentence, forKey: "grammarNotes.includeOriginalSentence") }
@@ -54,8 +42,6 @@ final class GrammarNotesSettingsStore: ObservableObject {
         didSet { _ud.set(saveGrammarMistakesAutomatically, forKey: "grammarNotes.saveGrammarMistakesAutomatically") }
     }
 
-    // MARK: - Appearance
-
     @Published var showsMistakeHighlights: Bool = boolSetting("grammarNotes.showsMistakeHighlights", default: true) {
         didSet { _ud.set(showsMistakeHighlights, forKey: "grammarNotes.showsMistakeHighlights") }
     }
@@ -67,8 +53,6 @@ final class GrammarNotesSettingsStore: ObservableObject {
     @Published var usesCompactCards: Bool = boolSetting("grammarNotes.usesCompactCards", default: false) {
         didSet { _ud.set(usesCompactCards, forKey: "grammarNotes.usesCompactCards") }
     }
-
-    // MARK: - Learning helpers
 
     @Published var showsHelperTips: Bool = boolSetting("grammarNotes.showsHelperTips", default: true) {
         didSet { _ud.set(showsHelperTips, forKey: "grammarNotes.showsHelperTips") }

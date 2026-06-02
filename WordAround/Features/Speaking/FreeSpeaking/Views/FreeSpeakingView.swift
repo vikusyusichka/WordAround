@@ -115,7 +115,6 @@ struct FreeSpeakingView: View {
         }
     }
 
-
     private var topBar: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 4) {
@@ -197,7 +196,6 @@ struct FreeSpeakingView: View {
         .animation(.easeInOut(duration: 0.18), value: isWarning)
     }
 
-
     @ViewBuilder
     private var topicCard: some View {
         if viewModel.isGeneratingTopic && viewModel.context == nil {
@@ -221,7 +219,6 @@ struct FreeSpeakingView: View {
         if let category = viewModel.context?.category { chips.append(category) }
         return chips
     }
-
 
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -287,7 +284,6 @@ struct FreeSpeakingView: View {
         )
     }
 
-
     private func fallbackBanner(_ message: String) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "exclamationmark.triangle.fill")
@@ -307,7 +303,6 @@ struct FreeSpeakingView: View {
                 .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 3)
         )
     }
-
 
     private func handleMicTap() {
         if isRecording {

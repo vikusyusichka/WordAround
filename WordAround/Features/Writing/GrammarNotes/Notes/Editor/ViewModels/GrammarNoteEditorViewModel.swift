@@ -5,7 +5,6 @@ import SwiftUI
 @MainActor
 final class GrammarNoteEditorViewModel: ObservableObject {
 
-    // MARK: - Save State
     enum SaveState: Equatable {
         case idle
         case saving
@@ -22,18 +21,14 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Published
     @Published private(set) var note: GrammarNote
     @Published var title: String
     @Published var blocks: [GrammarNoteBlock]
     @Published private(set) var saveState: SaveState = .idle
     @Published private(set) var errorMessage: String?
     @Published private(set) var isLoadingBlocks = false
-    /// Transient "Added to Review" toast bubble shown in the editor.
-    /// Cleared automatically after a short delay so it never lingers.
     @Published private(set) var reviewToast: String?
 
-    // MARK: - Private
     let ownerUID: String
     let topicId: String
     private let noteService: GrammarNoteServicing
@@ -44,7 +39,6 @@ final class GrammarNoteEditorViewModel: ObservableObject {
 
     private static let autosaveDelay: UInt64 = 1_200_000_000 // 1.2 s in nanoseconds
 
-    // MARK: - Init / deinit
     init(
         note: GrammarNote,
         ownerUID: String,
@@ -67,7 +61,6 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         reviewToastTask?.cancel()
     }
 
-    // MARK: - Public mutations
     func addBlock(_ type: GrammarNoteBlockType) {
         var block = GrammarNoteBlock(type: type, order: blocks.count)
         switch type {
@@ -82,25 +75,15 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         scheduleAutosave()
     }
 
-    /// Mode used when applying a template to an existing note.
     enum TemplateApplyMode {
-        /// Replace all current blocks with the template's blocks.
         case replace
-        /// Append the template's blocks after the current ones.
         case append
     }
 
-    /// Default `replace` mode preserved for existing callers.
     func applyTemplate(_ template: GrammarNoteTemplate) {
         applyTemplate(template, mode: .replace, allowsQuiz: true)
     }
 
-    /// Applies a note template either by replacing or appending its blocks.
-    /// Quiz blocks are filtered out when `allowsQuiz == false` so the
-    /// `allowQuickQuizzes` setting is honored consistently.
-    ///
-    /// Autosave is triggered once after the in-memory mutation — there is
-    /// no parallel save path or duplicate write.
     func applyTemplate(
         _ template: GrammarNoteTemplate,
         mode: TemplateApplyMode,
@@ -133,8 +116,6 @@ final class GrammarNoteEditorViewModel: ObservableObject {
                 return copy
             }
             blocks.append(contentsOf: appended)
-            // Keep the user's existing noteType/templateId; appending is
-            // additive and should not silently rewrite top-level metadata.
         }
 
         if templateSource.hasQuizBlock {
@@ -175,13 +156,6 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         note.hasQuiz = value
     }
 
-    // MARK: - Add to Review
-
-    /// Creates (or upserts) a normal-priority review item for this note.
-    /// Idempotent — `GrammarReviewItem.id(forNoteTopicId:noteId:)` is
-    /// deterministic so tapping the action twice never duplicates anything.
-    /// Surfaces a transient toast and falls back to a silent error in
-    /// release builds; never blocks the editor or autosave.
     func addToReview() {
         let snapshot = note
         let item = GrammarReviewItem(
@@ -201,8 +175,6 @@ final class GrammarNoteEditorViewModel: ObservableObject {
             updatedAt: Date()
         )
 
-        // Show toast immediately so the user feels the action even before
-        // the Firestore round-trip resolves.
         showReviewToast("Added to Review")
 
         let service = reviewService
@@ -232,7 +204,6 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Block loading (lazy — called when the note was opened from a list preview)
     func loadBlocks() async {
         guard !isLoadingBlocks, !hasLoadedBlocks else { return }
         guard blocks.isEmpty else { hasLoadedBlocks = true; return }
@@ -254,14 +225,11 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         hasLoadedBlocks = true
     }
 
-    // MARK: - Save
     func saveNow() async {
         autosaveTask?.cancel()
         await performSave()
     }
 
-    /// Saves only if there are unsaved changes; called on editor dismissal to
-    /// avoid a redundant Firestore write when state is already `.saved`.
     func saveIfDirty() async {
         guard saveState != .saved else { return }
         await saveNow()
@@ -277,12 +245,10 @@ final class GrammarNoteEditorViewModel: ObservableObject {
                 guard !Task.isCancelled else { return }
                 await self.performSave()
             } catch {
-                // Task was cancelled — no-op
             }
         }
     }
 
-    // MARK: - Private helpers
     private func performSave() async {
         let now = Date()
         let cleanTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -294,9 +260,6 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         updatedNote.plainTextContent = Self.makePlainText(from: cleanedBlocks)
         updatedNote.previewText = Self.makePreviewText(from: cleanedBlocks, fallback: updatedNote.previewText)
         updatedNote.hasQuiz = updatedNote.hasQuiz || cleanedBlocks.contains { $0.type == .quiz }
-        // Re-index searchable content on every save so the topic-screen
-        // search never goes stale after edits. Costs ~a few hundred µs
-        // on the main actor — negligible vs. the Firestore round-trip.
         updatedNote.searchableText = GrammarNoteSearchIndexer.makeSearchableText(
             title: updatedNote.title,
             previewText: updatedNote.previewText,
@@ -314,9 +277,6 @@ final class GrammarNoteEditorViewModel: ObservableObject {
             blocks = cleanedBlocks
             saveState = .saved
             errorMessage = nil
-            // Stamp this note in the "Recently edited" UserDefaults cache so
-            // Review Today can surface it as a Priority 3 source. Static
-            // helper hops to the main actor internally — safe to call here.
             GrammarReviewViewModel.recordEditedNote(updatedNote)
         } catch {
             saveState = .failed(error.localizedDescription)
@@ -324,13 +284,6 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Review tracking
-
-    /// Records this note as the most-recently-opened in the local cache so
-    /// the Review Today "Recently opened" pool can surface it. Also fires a
-    /// best-effort single-field Firestore write to keep the stamp
-    /// cross-device — failures are silent because this is non-critical
-    /// telemetry.
     func recordOpened() {
         let snapshot = note
         GrammarReviewViewModel.recordOpenedNote(snapshot)
@@ -357,7 +310,6 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         blocks = Self.reindexed(blocks)
     }
 
-    // MARK: - Static text helpers
     private static func reindexed(_ blocks: [GrammarNoteBlock]) -> [GrammarNoteBlock] {
         blocks.enumerated().map { index, block in
             guard block.order != index else { return block }

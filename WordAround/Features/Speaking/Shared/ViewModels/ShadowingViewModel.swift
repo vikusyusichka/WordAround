@@ -5,18 +5,15 @@ import Combine
 @MainActor
 final class ShadowingViewModel: ObservableObject {
 
-
     @Published private(set) var phrases: [ShadowingPhrase] = []
     @Published private(set) var currentPhraseIndex = 0
     @Published private(set) var isLoadingPhrases = false
     @Published private(set) var phraseGenerationError: String?
     @Published private(set) var usedFallbackPhrases = false
 
-
     @Published private(set) var currentAssessment: PronunciationAssessmentResult?
     @Published private(set) var isAssessingPronunciation = false
     @Published private(set) var assessmentError: String?
-
 
     @Published private(set) var userTranscript = ""
     @Published private(set) var partialTranscript = ""
@@ -25,16 +22,13 @@ final class ShadowingViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published private(set) var permissionsDenied = false
 
-
     @Published private(set) var attempts: [ShadowingAttempt] = []
     @Published private(set) var currentAttemptResult: ShadowingAttempt?
-
 
     @Published private(set) var messages: [SpeakingConversationMessage] = []
     @Published private(set) var conversationFeedback: SpeakingConversationFeedback?
     @Published private(set) var isGeneratingFeedback = false
     @Published private(set) var feedbackError: String?
-
 
     var currentPhrase: ShadowingPhrase? {
         guard phrases.indices.contains(currentPhraseIndex) else { return nil }
@@ -65,7 +59,6 @@ final class ShadowingViewModel: ObservableObject {
 
     var hasAttemptForCurrentPhrase: Bool { currentAttemptResult != nil }
 
-
     let setup: SpeakingConversationSetup
     let category: ShadowingCategory
     var onSessionEnded: (() -> Void)?
@@ -74,7 +67,6 @@ final class ShadowingViewModel: ObservableObject {
         guard let preloadedPhrases else { return false }
         return !preloadedPhrases.isEmpty
     }
-
 
     private let preloadedPhrases: [ShadowingPhrase]?
     private let recognizer: SpeechRecognitionService
@@ -86,6 +78,9 @@ final class ShadowingViewModel: ObservableObject {
 
     private var hasStarted = false
     private var hasEnded = false
+    private var sessionStartedAt: Date?
+    private var didRecordPracticeStats = false
+    private let statsService: DailyPracticeStatsService
     private var permissionsRequested = false
     private var lastSubmittedTranscript = ""
     private var feedbackTask: Task<Void, Never>?
@@ -101,7 +96,6 @@ final class ShadowingViewModel: ObservableObject {
         )
     )
 
-
     init(
         setup: SpeakingConversationSetup,
         category: ShadowingCategory,
@@ -111,7 +105,8 @@ final class ShadowingViewModel: ObservableObject {
         phraseService: ShadowingPhraseProviding? = nil,
         feedbackService: SpeakingFeedbackService? = nil,
         pronunciationAssessor: PronunciationAssessing? = nil,
-        fallbackAssessor: PronunciationAssessing? = nil
+        fallbackAssessor: PronunciationAssessing? = nil,
+        statsService: DailyPracticeStatsService = .shared
     ) {
         self.setup = setup
         self.category = category
@@ -122,6 +117,7 @@ final class ShadowingViewModel: ObservableObject {
         self.feedbackService = feedbackService ?? SpeakingFeedbackService()
         self.pronunciationAssessor = pronunciationAssessor ?? PronunciationAssessmentConfiguration.makeAzureAssessor()
         self.fallbackAssessor = fallbackAssessor ?? PronunciationAssessmentConfiguration.makeFallbackAssessor()
+        self.statsService = statsService
         wireRecognizerCallbacks()
         wireSynthesizerCallbacks()
     }
@@ -131,11 +127,11 @@ final class ShadowingViewModel: ObservableObject {
         assessmentTask?.cancel()
     }
 
-
     func startSession() {
         guard !hasStarted else { return }
         hasStarted = true
         hasEnded = false
+        sessionStartedAt = Date()
 
         #if DEBUG
         print("[ShadowingVM] startSession lang=\(setup.language.title) level=\(setup.level.rawValue) category=\(category.rawValue)")
@@ -170,9 +166,23 @@ final class ShadowingViewModel: ObservableObject {
         partialTranscript = ""
         state = .idle
 
+        recordPracticeStatsIfNeeded()
+
         if conversationFeedback == nil && !isGeneratingFeedback {
             beginFeedbackGeneration()
         }
+    }
+
+    private func recordPracticeStatsIfNeeded() {
+        guard hasStarted, !didRecordPracticeStats, let start = sessionStartedAt else { return }
+        let practiced = Int(Date().timeIntervalSince(start))
+        guard practiced > 0 else { return }
+        didRecordPracticeStats = true
+        statsService.record(
+            skill: .speaking,
+            value: practiced,
+            sourceModeID: "shadowing"
+        )
     }
 
     func resetSession() {
@@ -205,8 +215,9 @@ final class ShadowingViewModel: ObservableObject {
         state = .idle
         hasStarted = false
         hasEnded = false
+        sessionStartedAt = nil
+        didRecordPracticeStats = false
     }
-
 
     func loadFreshPhrases(forceRefresh: Bool) {
         guard !usesPreloadedPhrases else { return }
@@ -260,7 +271,6 @@ final class ShadowingViewModel: ObservableObject {
         loadFreshPhrases(forceRefresh: true)
     }
 
-
     func playTargetPhrase() {
         guard let phrase = currentPhrase else { return }
 
@@ -278,7 +288,6 @@ final class ShadowingViewModel: ObservableObject {
         state = .speaking
         synthesizer.speak(phrase.text, localeIdentifier: setup.speechLocaleIdentifier)
     }
-
 
     func toggleListening() async {
         switch state {
@@ -361,7 +370,6 @@ final class ShadowingViewModel: ObservableObject {
         state = .idle
     }
 
-
     func assessCurrentAttempt(referenceText: String, recognizedText: String) {
         let languageCode = setup.speechLocaleIdentifier
         let realAssessor = pronunciationAssessor
@@ -426,7 +434,6 @@ final class ShadowingViewModel: ObservableObject {
         }
     }
 
-
     func compareAttempt(target: ShadowingPhrase, userTranscript: String) -> ShadowingAttempt {
         let attempt = ShadowingComparison.evaluate(phrase: target, userTranscript: userTranscript)
         #if DEBUG
@@ -441,7 +448,6 @@ final class ShadowingViewModel: ObservableObject {
         attempts.append(attempt)
         messages.append(SpeakingConversationMessage(role: .user, text: attempt.userTranscript))
     }
-
 
     func retryCurrentPhrase() {
         #if DEBUG
@@ -496,7 +502,6 @@ final class ShadowingViewModel: ObservableObject {
         errorMessage = nil
     }
 
-
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
             self?.partialTranscript = text
@@ -539,7 +544,6 @@ final class ShadowingViewModel: ObservableObject {
         }
     }
 
-
     private func beginFeedbackGeneration() {
         let snapshotLanguage = setup.language
         let snapshotLevel = setup.level
@@ -572,6 +576,5 @@ final class ShadowingViewModel: ObservableObject {
         }
     }
 }
-
 
 extension ShadowingViewModel: SpeakingResultProvidable {}

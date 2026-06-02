@@ -74,12 +74,6 @@ struct GeneratedEssayTask: Codable, Equatable, Identifiable {
         )
     }
 
-    /// Accepts the integer either as a JSON number (`12`) or as a JSON
-    /// string (`"12"`). Gemini in `responseMimeType: application/json`
-    /// mode occasionally emits numeric fields as strings (especially in
-    /// non-English target languages), and the default
-    /// `decodeIfPresent(Int.self, ...)` rejects that with a typeMismatch
-    /// error that bubbles up and fails the entire decode.
     private static func decodeInt(
         from container: KeyedDecodingContainer<CodingKeys>,
         key: CodingKeys
@@ -97,9 +91,6 @@ struct GeneratedEssayTask: Codable, Equatable, Identifiable {
         return nil
     }
 
-    /// Accepts the tips either as a JSON array of strings or as a single
-    /// comma- / semicolon- / newline-separated string. Same robustness
-    /// goal as `decodeInt(from:key:)`.
     private static func decodeStringArray(
         from container: KeyedDecodingContainer<CodingKeys>,
         key: CodingKeys

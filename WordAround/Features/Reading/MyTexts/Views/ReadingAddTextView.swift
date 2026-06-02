@@ -97,8 +97,6 @@ struct ReadingAddTextView: View {
         }
     }
 
-    // MARK: - Header
-
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
             ReadingSetupHeaderView(
@@ -167,8 +165,6 @@ struct ReadingAddTextView: View {
         }
     }
 
-    // MARK: - Generate Text section
-
     private var generateSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             sectionHeader(title: "Generate Text", subtitle: "Create a reading text from a topic.")
@@ -225,8 +221,6 @@ struct ReadingAddTextView: View {
             .opacity(viewModel.canGenerate ? 1 : 0.55)
         }
     }
-
-    // MARK: - Explore Reading section
 
     private var exploreSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -311,8 +305,6 @@ struct ReadingAddTextView: View {
             .frame(height: 48)
             .background(fieldBackground)
     }
-
-    // MARK: - Editor / standard sections
 
     private var titleField: some View {
         ReadingSetupSectionCard(title: "Title", accentDark: accentDark) {
@@ -412,8 +404,6 @@ struct ReadingAddTextView: View {
         .opacity(viewModel.canSave ? 1 : 0.55)
         .disabled(!viewModel.canSave || viewModel.isSaving)
     }
-
-    // MARK: - Helpers
 
     private func saveAndStart() async {
         await viewModel.save(startSession: true)

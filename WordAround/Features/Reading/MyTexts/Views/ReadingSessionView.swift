@@ -18,8 +18,6 @@ struct ReadingSessionView: View {
     }
 }
 
-// MARK: - Session content
-
 private struct ReadingSessionContentView: View {
     let userText: ReadingUserText
     let onExit: () -> Void

@@ -71,7 +71,6 @@ final class SpeakingConversationService {
         """
     }
 
-
     func requestHint(
         mode: SpeakingHintMode,
         language: GrammarLanguage,

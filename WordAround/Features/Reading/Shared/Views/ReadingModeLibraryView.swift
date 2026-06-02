@@ -136,8 +136,6 @@ struct ReadingModeLibraryView: View {
         }
     }
 
-    // MARK: - Header
-
     private var headerCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             ReadingSetupHeaderView(
@@ -176,8 +174,6 @@ struct ReadingModeLibraryView: View {
             viewModel.handleAddTapped()
         }
     }
-
-    // MARK: - Content states
 
     @ViewBuilder
     private var content: some View {

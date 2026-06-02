@@ -12,8 +12,6 @@ struct StorySession: Identifiable, Equatable {
     var updatedAt: Date
     var lastOpenedAt: Date?
 
-    // MARK: - Init
-
     init(
         id: String = UUID().uuidString,
         userId: String,
@@ -38,8 +36,6 @@ struct StorySession: Identifiable, Equatable {
         self.lastOpenedAt = lastOpenedAt
     }
 
-    // MARK: - Derived
-
     var currentChapter: StoryChapter? {
         guard !chapters.isEmpty else { return nil }
         let index = min(max(progress.currentChapterIndex, 0), chapters.count - 1)
@@ -49,8 +45,6 @@ struct StorySession: Identifiable, Equatable {
     var hasGeneratedContent: Bool {
         chapters.contains { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
     }
-
-    // MARK: - Conversion to/from ReadingLibraryItem
 
     func toLibraryItem(toggles: [String: Bool] = [:]) -> ReadingLibraryItem {
         ReadingLibraryItem(
@@ -102,8 +96,6 @@ struct StorySession: Identifiable, Equatable {
         )
     }
 
-    // MARK: - Chapter serialisation (JSON in ReadingLibraryItem.fullText)
-
     private static func encodeChapters(_ chapters: [StoryChapter]) -> String {
         guard !chapters.isEmpty else { return "" }
         let encoder = JSONEncoder()
@@ -117,8 +109,6 @@ struct StorySession: Identifiable, Equatable {
         guard trimmed.hasPrefix("["), let data = trimmed.data(using: .utf8) else { return [] }
         return (try? JSONDecoder().decode([StoryChapter].self, from: data)) ?? []
     }
-
-    // MARK: - Private helpers
 
     private var storyPreview: String {
         if let chapter = currentChapter, !chapter.text.isEmpty {

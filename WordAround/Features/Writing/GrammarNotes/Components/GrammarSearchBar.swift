@@ -1,16 +1,5 @@
 import SwiftUI
 
-/// Reusable search bar shared by `GrammarNotesHomeView` and
-/// `GrammarNotesTopicView`. Both previously contained a verbatim 36-line copy
-/// of this view; only the placeholder string differed.
-///
-/// Preserves pixel-perfect visuals:
-/// - `HStack(spacing: 12)` with magnifier icon, text field, and an inline
-///   "x.circle.fill" clear button that appears only when `text` is non-empty.
-/// - Height `64` on iPad-like / `56` on phones; horizontal padding `18` / `14`.
-/// - `theme.fieldBackground` fill, `theme.softBorderColor` 1pt stroke,
-///   `theme.shadowColor` shadow (radius 14, y 8).
-/// - Corner radius `22` / `18` on iPad / phone.
 struct GrammarSearchBar: View {
     let placeholder: String
     @Binding var text: String

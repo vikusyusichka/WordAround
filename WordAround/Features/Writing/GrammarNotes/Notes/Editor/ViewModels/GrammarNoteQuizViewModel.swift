@@ -4,19 +4,15 @@ import Combine
 @MainActor
 final class GrammarNoteQuizViewModel: ObservableObject {
 
-    // MARK: - List state
     @Published private(set) var quizzes: [GrammarNoteQuiz] = []
     @Published private(set) var isLoading = false
     @Published private(set) var hasLoaded = false
     @Published var listError: String?
 
-    // MARK: - Session state
     @Published private(set) var activeQuiz: GrammarNoteQuiz?
     @Published private(set) var currentQuestionIndex = 0
     @Published private(set) var sessionAnswers: [String: String] = [:]
     @Published private(set) var sessionFinished = false
-
-    // MARK: - Create state
 
     enum CreateQuizState: Equatable {
         case idle
@@ -39,8 +35,6 @@ final class GrammarNoteQuizViewModel: ObservableObject {
     }
 
     @Published private(set) var createState: CreateQuizState = .idle
-
-    // MARK: - Computed
 
     var hasAnyQuiz: Bool { !quizzes.isEmpty }
 
@@ -77,15 +71,11 @@ final class GrammarNoteQuizViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Private
-
     let ownerUID: String
     let topicId: String
     let noteId: String
     private let service: GrammarNoteQuizServicing
     private let reviewService: GrammarReviewServicing
-
-    // MARK: - Init
 
     init(
         ownerUID: String,
@@ -101,8 +91,6 @@ final class GrammarNoteQuizViewModel: ObservableObject {
         self.reviewService = reviewService
     }
 
-    // MARK: - Load
-
     func loadQuizzes() async {
         guard !isLoading else { return }
         isLoading = true
@@ -117,16 +105,6 @@ final class GrammarNoteQuizViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Create
-
-    /// Creates a quiz using the selected mode and persists it through
-    /// `GrammarNoteQuizService`. Returns the saved quiz on success or
-    /// `nil` if generation / validation / save failed.
-    ///
-    /// Updates `createState` so the calling sheet can render a single
-    /// loading / error indicator. `note.hasQuiz` is only flipped to
-    /// `true` server-side by `GrammarNoteQuizService.createQuiz` after
-    /// the Firestore write succeeds — never optimistically here.
     func createQuiz(
         title: String,
         note: GrammarNote,
@@ -145,14 +123,9 @@ final class GrammarNoteQuizViewModel: ObservableObject {
             return nil
         }
 
-        // Resolve generators on the main actor (this method's isolation).
-        // The defaults can't be evaluated at the call site because some of
-        // them (Apple Intelligence client) require `@MainActor`. Building
-        // them here keeps Swift 6 strict concurrency happy.
         let local = localGenerator ?? LocalGrammarQuizQuestionGenerator()
         let ai    = aiGenerator    ?? AIGrammarQuizQuestionGenerator()
 
-        // 1. Produce raw questions per mode.
         let rawQuestions: [GrammarQuizQuestion]
         do {
             switch mode {
@@ -180,7 +153,6 @@ final class GrammarNoteQuizViewModel: ObservableObject {
             return nil
         }
 
-        // 2. Validate / normalize.
         let validated: [GrammarQuizQuestion]
         do {
             validated = try GrammarQuizQuestionValidator.validate(rawQuestions)
@@ -189,7 +161,6 @@ final class GrammarNoteQuizViewModel: ObservableObject {
             return nil
         }
 
-        // 3. Save through Firestore.
         createState = .saving
         let quiz = GrammarNoteQuiz(
             ownerUID: note.ownerUID,
@@ -214,8 +185,6 @@ final class GrammarNoteQuizViewModel: ObservableObject {
         createState = .idle
     }
 
-    // MARK: - Delete
-
     func deleteQuiz(_ quiz: GrammarNoteQuiz) async {
         listError = nil
         do {
@@ -227,8 +196,6 @@ final class GrammarNoteQuizViewModel: ObservableObject {
             listError = error.localizedDescription
         }
     }
-
-    // MARK: - Session
 
     func startQuiz(_ quiz: GrammarNoteQuiz) {
         activeQuiz = quiz
@@ -251,15 +218,7 @@ final class GrammarNoteQuizViewModel: ObservableObject {
 
     func finishQuiz() {
         sessionFinished = true
-        // Low-score quizzes become high-priority review items so the user
-        // sees them again on Review Today. Idempotent via deterministic id.
-        // Failures are swallowed — the result screen MUST show regardless.
         if let quiz = activeQuiz, scorePercentage < 70 {
-            // Build the review item on the current MainActor isolation so
-            // the detached Task only ships a Sendable value across. With
-            // `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, constructing
-            // the struct inside the detached closure would be MainActor
-            // and trigger Swift 6 strict-concurrency errors.
             let title = quiz.title.isEmpty ? "Quiz" : quiz.title
             let preview = quiz.sourceNoteTitle.isEmpty
                 ? "Scored \(scorePercentage)% — revisit this quiz."

@@ -93,7 +93,6 @@ struct FreeSpeakingSetupView: View {
         }
     }
 
-
     private var previewCard: some View {
         FreeSpeakingTopicCardView(
             title: "AI-generated topic",

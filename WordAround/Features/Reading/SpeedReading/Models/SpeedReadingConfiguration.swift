@@ -74,8 +74,6 @@ struct SpeedReadingConfiguration: Equatable, Hashable, Codable {
         [target.title, timer.title, length.title, "\(wpmTarget) WPM"]
     }
 
-    // MARK: - From / to setup
-
     init(
         language: GrammarLanguage = .english,
         target: ReadingSpeedTarget = .balanced,
@@ -100,8 +98,6 @@ struct SpeedReadingConfiguration: Equatable, Hashable, Codable {
         )
     }
 
-    // MARK: - Library item bridge
-
     var asSelections: [String: String] {
         [
             "target": target.title,
@@ -122,14 +118,10 @@ struct SpeedReadingConfiguration: Equatable, Hashable, Codable {
         )
     }
 
-    // MARK: - Display
-
     var generatedTitle: String {
         "Speed \(length.title) • \(target.title)"
     }
 }
-
-// MARK: - Codable conformance for the setup enums
 
 extension ReadingSpeedTarget: Codable {
     public init(from decoder: Decoder) throws {

@@ -6,10 +6,8 @@ struct CreateGrammarQuizSheet: View {
     let onCreated: () -> Void
     let onCancel: () -> Void
 
-    // MARK: - View model (owns Firebase calls + generators)
     @StateObject private var quizVM: GrammarNoteQuizViewModel
 
-    // MARK: - Form state
     @State private var title = ""
     @State private var mode: GrammarQuizCreationMode = .smartLocal
     @State private var questionCount = 5
@@ -18,26 +16,17 @@ struct CreateGrammarQuizSheet: View {
     @State private var hasAppeared = false
     @Namespace private var modePickerNamespace
 
-    // Local-mode preview state
     @State private var previewQuestions: [GrammarQuizQuestion] = []
     @State private var hasPreviewed = false
     @State private var previewError: String?
     @State private var isPreviewing = false
 
-    // Manual-mode state
     @State private var manualQuestions: [GrammarQuizQuestion] = []
     @State private var isAddingQuestion = false
 
     private let counts = [3, 5, 10]
     private let aiConfigured: Bool
 
-    // MARK: - Init
-
-    /// `@MainActor` because the `aiConfigured` default reads from
-    /// `GrammarQuizAIConfiguration.isConfigured`, which is MainActor
-    /// (it pokes Apple Intelligence availability). SwiftUI Views are
-    /// already MainActor in practice — the annotation just makes it
-    /// explicit for Swift 6 strict concurrency.
     @MainActor
     init(
         note: GrammarNote,
@@ -64,8 +53,6 @@ struct CreateGrammarQuizSheet: View {
         )
     }
 
-    // MARK: - Derived
-
     private var allowedTypesArray: [GrammarQuizQuestionType] {
         GrammarQuizQuestionType.allCases.filter { selectedTypes.contains($0) }
     }
@@ -75,8 +62,6 @@ struct CreateGrammarQuizSheet: View {
         if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return false }
         switch mode {
         case .manual:      return !manualQuestions.isEmpty
-        // Require a generated preview before save so the user always sees
-        // the exact questions that will be persisted (Preview → Save flow).
         case .smartLocal:  return !selectedTypes.isEmpty && hasPreviewed && !previewQuestions.isEmpty
         case .aiGenerated: return !selectedTypes.isEmpty
         }
@@ -85,8 +70,6 @@ struct CreateGrammarQuizSheet: View {
     private var errorMessage: String? {
         quizVM.createState.errorMessage ?? previewError
     }
-
-    // MARK: - Body
 
     var body: some View {
         NavigationStack {
@@ -152,17 +135,12 @@ struct CreateGrammarQuizSheet: View {
             }
         }
         .onChange(of: mode) { _, _ in
-            // Reset transient state when switching modes so stale errors
-            // from another mode never leak.
             previewError = nil
             hasPreviewed = false
             previewQuestions = []
             quizVM.resetCreateState()
         }
     }
-
-
-    // MARK: - Header
 
     private var sheetHeader: some View {
         HStack {
@@ -204,8 +182,6 @@ struct CreateGrammarQuizSheet: View {
         .padding(.bottom, 8)
     }
 
-    // MARK: - Title
-
     private var titleSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             sectionLabel("Quiz Title")
@@ -224,8 +200,6 @@ struct CreateGrammarQuizSheet: View {
                 .shadow(color: AppColors.primaryBlue.opacity(0.04), radius: 12, x: 0, y: 6)
         }
     }
-
-    // MARK: - Mode
 
     private var modeSection: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -261,7 +235,6 @@ struct CreateGrammarQuizSheet: View {
             )
         }
     }
-
 
     private var customModePicker: some View {
         HStack(spacing: 0) {
@@ -302,8 +275,6 @@ struct CreateGrammarQuizSheet: View {
         )
     }
 
-    // MARK: - Per-mode content
-
     @ViewBuilder
     private var modeContent: some View {
         switch mode {
@@ -312,8 +283,6 @@ struct CreateGrammarQuizSheet: View {
         case .aiGenerated: aiConfigSection
         }
     }
-
-    // MARK: - Smart Local
 
     private var localConfigSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -354,8 +323,6 @@ struct CreateGrammarQuizSheet: View {
         }
     }
 
-    // MARK: - AI
-
     private var aiConfigSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             questionCountField
@@ -373,9 +340,6 @@ struct CreateGrammarQuizSheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
 
-            // Subtle, low-key status hint — never the loudest element on the
-            // screen. Pulls its copy from `GrammarQuizAIConfiguration` so the
-            // backend-vs-on-device wording stays consistent across the app.
             HStack(alignment: .center, spacing: 6) {
                 Image(systemName: aiConfigured ? "sparkles" : "info.circle")
                     .font(.system(size: 10, weight: .bold))
@@ -388,8 +352,6 @@ struct CreateGrammarQuizSheet: View {
             .padding(.top, 2)
         }
     }
-
-    // MARK: - Manual
 
     private var manualSection: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -464,8 +426,6 @@ struct CreateGrammarQuizSheet: View {
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
-    // MARK: - Shared count + type fields
-
     private var questionCountField: some View {
         VStack(alignment: .leading, spacing: 8) {
             sectionLabel("Number of Questions")
@@ -538,8 +498,6 @@ struct CreateGrammarQuizSheet: View {
         .buttonStyle(QuizScaleButtonStyle())
     }
 
-    // MARK: - Preview list (local mode)
-
     private var previewQuestionsList: some View {
         VStack(alignment: .leading, spacing: 8) {
             sectionLabel("Preview (\(previewQuestions.count))")
@@ -582,8 +540,6 @@ struct CreateGrammarQuizSheet: View {
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
-    // MARK: - Submit
-
     private var submitButton: some View {
         Button {
             submit()
@@ -614,12 +570,8 @@ struct CreateGrammarQuizSheet: View {
         .disabled(!canSubmit)
     }
 
-    // MARK: - Error + fallback
-
     private var shouldOfferLocalFallback: Bool {
         guard let message = errorMessage else { return false }
-        // Offer fallback for any AI error except "not configured" which
-        // already has its own messaging.
         let lower = message.lowercased()
         return !lower.contains("not configured")
     }
@@ -659,14 +611,6 @@ struct CreateGrammarQuizSheet: View {
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
-    // MARK: - Actions
-
-    /// Two-step preview generator. Does NOT save and does NOT touch
-    /// Firestore. The user always sees a single "Generate Quiz" button —
-    /// behind it we try the deterministic local generator first (zero
-    /// network), and if it can't produce enough questions we silently
-    /// fall back to the AI generator. Either way the user just sees a
-    /// preview they can then save.
     private func generatePreview() async {
         guard !isPreviewing else { return }
         previewError = nil
@@ -676,7 +620,6 @@ struct CreateGrammarQuizSheet: View {
         defer { isPreviewing = false }
         quizVM.resetCreateState()
 
-        // Step 1 — local first. Deterministic, fast, no network.
         do {
             previewQuestions = try GrammarQuizGenerator.generate(
                 from: blocks,
@@ -688,12 +631,8 @@ struct CreateGrammarQuizSheet: View {
             #if DEBUG
             print("[QuizPreview] local failed, trying AI:", error)
             #endif
-            // Fall through to AI fallback below.
         }
 
-        // Step 2 — AI fallback. Triggered when the note has too little
-        // content for the deterministic rules to produce a usable quiz.
-        // We don't expose the mode switch to the user; this is silent.
         let aiGen = AIGrammarQuizQuestionGenerator()
         do {
             let aiQuestions = try await aiGen.generateQuestions(
@@ -708,8 +647,6 @@ struct CreateGrammarQuizSheet: View {
                 previewQuestions = aiQuestions
             }
         } catch {
-            // Both generators failed — surface a single friendly error.
-            // The local generator's message is more actionable so prefer it.
             previewError = "Couldn't build a quiz from this note. Add a rule, an example, or a few more sentences and try again."
             #if DEBUG
             print("[QuizPreview] AI fallback also failed:", error)
@@ -719,9 +656,6 @@ struct CreateGrammarQuizSheet: View {
 
     private func submit() {
         previewError = nil
-        // Smart Local now persists exactly what the user saw in the preview.
-        // We pass the previewed questions through the `manualQuestions` path
-        // so the VM skips the generator and validates/saves the same array.
         let effectiveMode: GrammarQuizCreationMode
         let effectiveManualQuestions: [GrammarQuizQuestion]
         if mode == .smartLocal, hasPreviewed, !previewQuestions.isEmpty {
@@ -748,8 +682,6 @@ struct CreateGrammarQuizSheet: View {
         }
     }
 
-    // MARK: - Helpers
-
     private func sectionLabel(_ text: String) -> some View {
         Text(text)
             .font(.system(size: 12, weight: .black, design: .rounded))
@@ -758,8 +690,6 @@ struct CreateGrammarQuizSheet: View {
             .tracking(0.6)
     }
 }
-
-// MARK: - Press animation
 
 private struct QuizScaleButtonStyle: ButtonStyle {
     var scale: CGFloat = 0.97
@@ -771,8 +701,6 @@ private struct QuizScaleButtonStyle: ButtonStyle {
             .animation(.spring(response: 0.18, dampingFraction: 0.82), value: configuration.isPressed)
     }
 }
-
-// MARK: - Add Manual Question Sheet
 
 private struct AddManualQuizQuestionSheet: View {
     let order: Int
@@ -797,8 +725,6 @@ private struct AddManualQuizQuestionSheet: View {
 
     private var canAdd: Bool { validationError == nil }
 
-    /// Inline validation message tailored to the current question type.
-    /// `nil` means the form is valid. Only surfaces after the user taps Add.
     private var validationError: String? {
         let trimmedQuestion = questionText.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmedQuestion.isEmpty { return "Question text is required." }
@@ -819,7 +745,6 @@ private struct AddManualQuizQuestionSheet: View {
                 return "Correct answer must match one of the options."
             }
         case .trueFalse:
-            // tfAnswer always carries True / False, never empty.
             break
         case .fillGap:
             if !trimmedQuestion.contains("_") {
@@ -879,8 +804,6 @@ private struct AddManualQuizQuestionSheet: View {
                     .animation(.easeInOut(duration: 0.18), value: didAttemptSubmit)
                     .animation(.easeInOut(duration: 0.18), value: type)
                 }
-                // Interactive keyboard dismissal stops the suggestion bar
-                // from floating over inputs while the user scrolls the form.
                 .scrollDismissesKeyboard(.interactively)
             }
             .safeAreaInset(edge: .top) {
@@ -890,9 +813,6 @@ private struct AddManualQuizQuestionSheet: View {
                     .padding(.bottom, 6)
                     .background(AppColors.appBackground)
             }
-            // Keyboard accessory: gives the user a one-tap way to dismiss
-            // the keyboard so the autocomplete strip never blocks the
-            // explanation field at the bottom of the form.
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -903,9 +823,6 @@ private struct AddManualQuizQuestionSheet: View {
         }
         .presentationDetents([.large])
         .onChange(of: type) { _, _ in
-            // Switching type retires the previous validation surface so the
-            // user is not shown stale "missing option" errors after they
-            // moved to e.g. short-answer mode.
             didAttemptSubmit = false
         }
     }
@@ -926,7 +843,6 @@ private struct AddManualQuizQuestionSheet: View {
         .background(CreateSetTheme.red.accent.opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
-
 
     private var manualQuestionHeader: some View {
         HStack {
@@ -1121,8 +1037,6 @@ private struct AddManualQuizQuestionSheet: View {
         }
     }
 }
-
-// MARK: - Previews
 
 #Preview("Create Quiz – Smart Local") {
     CreateGrammarQuizSheet(

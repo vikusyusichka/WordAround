@@ -1,15 +1,11 @@
 import SwiftUI
 import Combine
 
-// MARK: - Training Mode
-
 enum WriteWordsTrainingMode: String, CaseIterable, Identifiable {
     case wordToTranslation = "Word → Translation"
     case translationToWord = "Translation → Word"
     var id: String { rawValue }
 }
-
-// MARK: - Difficulty
 
 enum WriteWordsDifficulty: String, CaseIterable, Identifiable {
     case easy   = "Easy"
@@ -35,15 +31,11 @@ enum WriteWordsDifficulty: String, CaseIterable, Identifiable {
     }
 }
 
-// MARK: - Validation State
-
 enum WriteWordsValidationState: Equatable {
     case idle
     case correct
     case incorrect
 }
-
-// MARK: - Navigation / Game Over State
 
 enum WriteWordsNavigationState: Equatable {
     case active
@@ -75,12 +67,8 @@ struct WriteWordsWrongAnswerDetails: Equatable {
     let correctAnswer: String
 }
 
-// MARK: - ViewModel
-
 @MainActor
 final class WriteWordsViewModel: ObservableObject {
-
-    // MARK: Published
 
     @Published var currentIndex: Int = 0
     @Published var typedAnswer: String = ""
@@ -102,15 +90,11 @@ final class WriteWordsViewModel: ObservableObject {
     @Published private(set) var gameOverUserAnswer: String = ""
     @Published private(set) var gameOverWord: String = ""
 
-    // Timer (Hard mode)
     @Published private(set) var secondsRemaining: Int = 0
     @Published private(set) var timerProgress: CGFloat = 1
     @Published private(set) var isTimerExpired: Bool = false
 
-    // Skip tracking (Medium mode)
     @Published var skippedCount: Int = 0
-
-    // MARK: Private
 
     private enum TimerConstants {
         static let shortWordLimit = 4
@@ -131,10 +115,11 @@ final class WriteWordsViewModel: ObservableObject {
     private var delayedAdvanceTask: Task<Void, Never>?
     private var timerStartedAt: Date?
     private var timerDuration: TimeInterval = TimerConstants.extraLongWordDuration
+    private let statsService: DailyPracticeStatsService
+    private var didRecordPracticeStats = false
 
-    // MARK: Init
-
-    init(set: FlashcardSet? = nil) {
+    init(set: FlashcardSet? = nil, statsService: DailyPracticeStatsService = .shared) {
+        self.statsService = statsService
         if let set, !set.cards.isEmpty {
             self.exercises = set.cards.map { card in
                 WriteWordsExercise(
@@ -161,13 +146,9 @@ final class WriteWordsViewModel: ObservableObject {
         delayedAdvanceTask?.cancel()
     }
 
-    // MARK: - Computed: exercise
-
     var exercise: WriteWordsExercise {
         exercises[safe: currentIndex] ?? exercises[0]
     }
-
-    // MARK: - Computed: display
 
     var displayWord: String {
         switch trainingMode {
@@ -189,8 +170,6 @@ final class WriteWordsViewModel: ObservableObject {
         case .translationToWord: return exercise.sourceLanguageWord
         }
     }
-
-    // MARK: - Computed: progress
 
     var totalCount: Int { exercises.count }
     var totalWords: Int { totalCount }
@@ -228,8 +207,6 @@ final class WriteWordsViewModel: ObservableObject {
         )
     }
 
-    // MARK: - Computed: hint
-
     var maxHintLetters: Int {
         switch difficulty {
         case .easy:   return correctAnswer.count
@@ -246,8 +223,6 @@ final class WriteWordsViewModel: ObservableObject {
     var isHintAvailable: Bool {
         difficulty != .hard && hintRevealedCount < maxHintLetters
     }
-
-    // MARK: - Computed: skip
 
     var maxSkipsAllowed: Int {
         switch difficulty {
@@ -271,16 +246,12 @@ final class WriteWordsViewModel: ObservableObject {
         return "\(remaining) skip\(remaining == 1 ? "" : "s") left"
     }
 
-    // MARK: - Computed: timer
-
     var isHardTimerVisible: Bool {
         difficulty == .hard
     }
 
     var modeTitle: String { trainingMode.rawValue }
     var difficultyTitle: String { difficulty.rawValue }
-
-    // MARK: - Intent: validate on keystroke
 
     func validateAnswer() {
         guard !isInteractionLocked else { return }
@@ -289,8 +260,6 @@ final class WriteWordsViewModel: ObservableObject {
             validationState = .idle
         }
     }
-
-    // MARK: - Intent: Next button
 
     @discardableResult
     func attemptNext() -> Bool {
@@ -316,8 +285,6 @@ final class WriteWordsViewModel: ObservableObject {
         return false
     }
 
-    // MARK: - Intent: Skip
-
     func skip() {
         guard !isInteractionLocked, canSkip else { return }
         skippedWords += 1
@@ -327,15 +294,11 @@ final class WriteWordsViewModel: ObservableObject {
         advanceToNext()
     }
 
-    // MARK: - Intent: Hint
-
     func revealNextHint() {
         guard !isInteractionLocked, isHintAvailable else { return }
         hintRevealedCount += 1
         hintsUsed += 1
     }
-
-    // MARK: - Intent: Settings
 
     func selectTrainingMode(_ mode: WriteWordsTrainingMode) {
         guard mode != trainingMode else { return }
@@ -348,8 +311,6 @@ final class WriteWordsViewModel: ObservableObject {
         difficulty = level
         resetFullSession()
     }
-
-    // MARK: - Timer lifecycle
 
     func startTimerIfNeeded() {
         guard difficulty == .hard else {
@@ -420,8 +381,6 @@ final class WriteWordsViewModel: ObservableObject {
         triggerGameOver(reason: .timeout)
     }
 
-    // MARK: - Round navigation
-
     func restartRound() {
         resetFullSession()
     }
@@ -451,6 +410,8 @@ final class WriteWordsViewModel: ObservableObject {
         gameOverCorrectAnswer = correctAnswer
         gameOverUserAnswer = typedAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
         gameOverWord = displayWord
+
+        recordPracticeStatsIfNeeded()
     }
 
     private func timerDuration(for answer: String) -> TimeInterval {
@@ -473,8 +434,6 @@ final class WriteWordsViewModel: ObservableObject {
         timerProgress = 1
         isTimerExpired = false
     }
-
-    // MARK: - Private
 
     private func scheduleAdvance(after delay: UInt64) {
         delayedAdvanceTask?.cancel()
@@ -512,6 +471,18 @@ final class WriteWordsViewModel: ObservableObject {
         validationState = .idle
         hintRevealedCount = 0
         isRoundCompleted = true
+        recordPracticeStatsIfNeeded()
+    }
+
+    private func recordPracticeStatsIfNeeded() {
+        guard !didRecordPracticeStats else { return }
+        guard completedWords > 0 else { return }
+        didRecordPracticeStats = true
+        statsService.record(
+            skill: .writing,
+            value: completedWords,
+            sourceModeID: "write-from-sets"
+        )
     }
 
     private func resetAnswerState() {
@@ -537,6 +508,7 @@ final class WriteWordsViewModel: ObservableObject {
         gameOverUserAnswer = ""
         gameOverWord = ""
         navigationState = .active
+        didRecordPracticeStats = false
         resetAnswerState()
         startTimerIfNeeded()
     }
@@ -550,8 +522,6 @@ final class WriteWordsViewModel: ObservableObject {
             .joined(separator: " ")
     }
 }
-
-// MARK: - Safe subscript
 
 private extension Array {
     subscript(safe index: Int) -> Element? {

@@ -1,6 +1,5 @@
 import Foundation
 
-
 enum ShadowingCategory: String, CaseIterable, Identifiable, Equatable {
     case daily
     case travel
@@ -40,7 +39,6 @@ enum ShadowingCategory: String, CaseIterable, Identifiable, Equatable {
         }
     }
 }
-
 
 struct ShadowingPhrase: Identifiable, Equatable {
     let id: UUID

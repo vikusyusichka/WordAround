@@ -116,7 +116,6 @@ struct DescribePictureView: View {
         }
     }
 
-
     private var topBar: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 4) {
@@ -183,7 +182,6 @@ struct DescribePictureView: View {
         .animation(.easeInOut(duration: 0.18), value: isWarning)
     }
 
-
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Transcript")
@@ -246,7 +244,6 @@ struct DescribePictureView: View {
         )
     }
 
-
     private func hintBubble(_ text: String) -> some View {
         HStack(spacing: 10) {
             Image(systemName: "lightbulb.fill")
@@ -289,7 +286,6 @@ struct DescribePictureView: View {
                 .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 3)
         )
     }
-
 
     private func handleMicTap() {
         if isRecording {

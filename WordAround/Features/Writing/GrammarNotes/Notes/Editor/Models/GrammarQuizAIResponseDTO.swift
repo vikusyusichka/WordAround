@@ -1,7 +1,5 @@
 import Foundation
 
-// MARK: - Request payload sent to the backend
-
 /// JSON payload sent to the backend AI quiz endpoint.
 /// The backend is responsible for prompting the LLM and returning a
 /// `GrammarQuizAIResponseDTO`. The iOS app never sees an API key.
@@ -23,10 +21,6 @@ struct GrammarQuizAIRequest: Codable, Equatable {
     }
 }
 
-// MARK: - Response payload returned by the backend
-
-/// JSON the backend returns. We never trust the contents blindly —
-/// `GrammarQuizQuestionValidator` re-checks every field before saving.
 struct GrammarQuizAIResponseDTO: Codable, Equatable {
     let questions: [Question]
 

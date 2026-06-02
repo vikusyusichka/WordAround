@@ -4,12 +4,10 @@ import Foundation
 import MicrosoftCognitiveServicesSpeech
 #endif
 
-
 enum PronunciationAudioInput {
     case audioFile(URL)
     case recognizedText(String)
 }
-
 
 enum PronunciationAssessmentError: LocalizedError {
     case notImplemented(String)
@@ -25,7 +23,6 @@ enum PronunciationAssessmentError: LocalizedError {
     }
 }
 
-
 protocol PronunciationAssessing {
     func assessPronunciation(
         audioInput: PronunciationAudioInput,
@@ -33,7 +30,6 @@ protocol PronunciationAssessing {
         languageCode: String
     ) async throws -> PronunciationAssessmentResult
 }
-
 
 /// Azure Speech SDK not wired yet; throws `.notImplemented` until audio assessment lands.
 final class AzurePronunciationAssessmentService: PronunciationAssessing {
@@ -73,7 +69,6 @@ final class AzurePronunciationAssessmentService: PronunciationAssessing {
         #endif
     }
 }
-
 
 struct TranscriptSimilarityPronunciationAssessor: PronunciationAssessing {
 
@@ -125,7 +120,6 @@ struct TranscriptSimilarityPronunciationAssessor: PronunciationAssessing {
         )
     }
 }
-
 
 enum PronunciationAssessmentConfiguration {
     static func makeAzureAssessor() -> PronunciationAssessing {

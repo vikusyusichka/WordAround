@@ -1,42 +1,26 @@
 import Foundation
 import FirebaseFirestore
 
-// MARK: - Protocol
 protocol GrammarNoteServicing {
     func fetchNotes(ownerUID: String, topicId: String) async throws -> [GrammarNote]
-    /// Lightweight fetch: returns notes without contentBlocks (for list/card display).
     func fetchNotePreviews(ownerUID: String, topicId: String, source: FirestoreSource) async throws -> [GrammarNote]
-    /// Fetches a single fully-populated note (including contentBlocks).
     func fetchNote(id: String, ownerUID: String, topicId: String) async throws -> GrammarNote?
     func fetchNoteBySavedIssueKey(ownerUID: String, topicId: String, savedIssueKey: String) async throws -> GrammarNote?
     func createNote(_ note: GrammarNote) async throws
-    /// Creates a note and returns it (useful when the caller needs the saved note for navigation).
     func createAndReturnNote(_ note: GrammarNote) async throws -> GrammarNote
     func updateNote(_ note: GrammarNote) async throws
     func uploadNoteImage(data: Data, ownerUID: String, topicId: String, noteId: String) async throws -> String
     func deleteNote(id: String, ownerUID: String, topicId: String) async throws
     func togglePinned(note: GrammarNote) async throws
     func toggleFavorite(note: GrammarNote) async throws
-    /// Targeted single-field update — avoids writing the full document.
     func setNotePinned(id: String, ownerUID: String, topicId: String, isPinned: Bool) async throws
     func setNoteFavorite(id: String, ownerUID: String, topicId: String, isFavorite: Bool) async throws
-    /// Targeted update for the denormalized search blob. Used for the
-    /// one-shot backfill on old notes that were saved before the search
-    /// indexer existed. Does NOT touch `updatedAt` so backfill writes
-    /// stay invisible in lists sorted by recency.
     func setSearchableText(id: String, ownerUID: String, topicId: String, searchableText: String) async throws
-    /// Persists a user-defined ordering for notes inside a single topic.
-    /// Used by edit-mode reorders. Writes happen in a single batch and do
-    /// NOT touch `updatedAt` so reorder-only changes don't reshuffle other
-    /// "recently updated" UI.
     func updateNoteSortIndices(
         ownerUID: String,
         topicId: String,
         indices: [(id: String, sortIndex: Int)]
     ) async throws
-    /// Stamps `recentlyOpenedAt` on a single note. Fire-and-forget single-field
-    /// write — does NOT touch `updatedAt` so the lists sorted by recency
-    /// don't shuffle just because the user peeked at a note.
     func setNoteRecentlyOpenedAt(
         id: String,
         ownerUID: String,
@@ -51,12 +35,10 @@ extension GrammarNoteServicing {
     }
 }
 
-// MARK: - Live implementation
 final class GrammarNoteService: GrammarNoteServicing {
 
     private let db = Firestore.firestore()
 
-    // MARK: Fetch
     func fetchNotes(ownerUID: String, topicId: String) async throws -> [GrammarNote] {
         let snapshot = try await notesCollection(ownerUID: ownerUID, topicId: topicId).getDocuments()
         return sortNotes(snapshot.documents.compactMap(makeNote(from:)))
@@ -84,15 +66,8 @@ final class GrammarNoteService: GrammarNoteServicing {
         return makeNote(from: document)
     }
 
-    // MARK: Create / Update
     func createNote(_ note: GrammarNote) async throws {
         try await writeNote(note)
-        // Best-effort: the topic count is denormalized metadata. If the
-        // counter update fails (e.g. topic doc missing, permission edge case,
-        // transient error), the note is still saved correctly — we MUST NOT
-        // rethrow here, or the caller will see "save failed" and retry,
-        // creating a duplicate note. The list view auto-corrects the count
-        // from the actual notes collection on next load.
         await bestEffortIncrementTopicNotesCount(
             ownerUID: note.ownerUID,
             topicId: note.topicId
@@ -104,16 +79,13 @@ final class GrammarNoteService: GrammarNoteServicing {
         return note
     }
 
-    /// Full update — stamps `updatedAt` automatically.
     func updateNote(_ note: GrammarNote) async throws {
         var stamped = note
         stamped.updatedAt = Date()
         try await writeNote(stamped)
     }
 
-    // MARK: Image upload (stub)
     func uploadNoteImage(data: Data, ownerUID: String, topicId: String, noteId: String) async throws -> String {
-        // Intended path: users/{ownerUID}/grammarNotes/{topicId}/{noteId}/images/{imageId}.jpg
         throw NSError(
             domain: "GrammarNoteService",
             code: -1,
@@ -121,17 +93,14 @@ final class GrammarNoteService: GrammarNoteServicing {
         )
     }
 
-    // MARK: Delete
     func deleteNote(id: String, ownerUID: String, topicId: String) async throws {
         try await notesCollection(ownerUID: ownerUID, topicId: topicId).document(id).delete()
-        // Best-effort decrement — see comment in `createNote`.
         await bestEffortDecrementTopicNotesCount(
             ownerUID: ownerUID,
             topicId: topicId
         )
     }
 
-    // MARK: Toggle helpers (now use targeted field updates)
     func togglePinned(note: GrammarNote) async throws {
         try await setNotePinned(id: note.id, ownerUID: note.ownerUID, topicId: note.topicId, isPinned: !note.isPinned)
     }
@@ -155,8 +124,6 @@ final class GrammarNoteService: GrammarNoteServicing {
     }
 
     func setSearchableText(id: String, ownerUID: String, topicId: String, searchableText: String) async throws {
-        // Single-field write — keeps backfills cheap and avoids touching
-        // any other note metadata.
         try await notesCollection(ownerUID: ownerUID, topicId: topicId).document(id).updateData([
             "searchableText": searchableText
         ])
@@ -185,21 +152,17 @@ final class GrammarNoteService: GrammarNoteServicing {
         topicId: String,
         openedAt: Date
     ) async throws {
-        // Single-field write — does NOT touch `updatedAt`. Simply opening a
-        // note should not push it to the top of the "recently updated" list.
         try await notesCollection(ownerUID: ownerUID, topicId: topicId).document(id).updateData([
             "recentlyOpenedAt": Timestamp(date: openedAt)
         ])
     }
 
-    // MARK: - Private write helpers
     private func writeNote(_ note: GrammarNote) async throws {
         try await notesCollection(ownerUID: note.ownerUID, topicId: note.topicId)
             .document(note.id)
             .setData(dictionary(from: note), merge: true)
     }
 
-    // MARK: - Firestore paths
     private func notesCollection(ownerUID: String, topicId: String) -> CollectionReference {
         db.collection("users")
             .document(ownerUID)
@@ -222,9 +185,6 @@ final class GrammarNoteService: GrammarNoteServicing {
         ])
     }
 
-    /// Best-effort topic counter update — swallows errors so a denormalized
-    /// counter cannot fail an otherwise-successful note write. Errors are
-    /// logged in DEBUG so the developer can still investigate.
     private func bestEffortIncrementTopicNotesCount(ownerUID: String, topicId: String) async {
         do {
             try await updateTopicNotesCount(ownerUID: ownerUID, topicId: topicId, delta: 1)
@@ -245,9 +205,6 @@ final class GrammarNoteService: GrammarNoteServicing {
         }
     }
 
-    // MARK: - Firestore ↔ Model mapping
-
-    /// Full decode including contentBlocks — used when opening the editor.
     private func makeNote(from document: QueryDocumentSnapshot) -> GrammarNote? {
         makeNote(from: document.data(), id: document.documentID)
     }
@@ -296,7 +253,6 @@ final class GrammarNoteService: GrammarNoteServicing {
         )
     }
 
-    /// Preview decode — skips contentBlocks for fast list display.
     private func makeNotePreview(from document: QueryDocumentSnapshot) -> GrammarNote? {
         let data = document.data()
 
@@ -337,8 +293,6 @@ final class GrammarNoteService: GrammarNoteServicing {
             createdAt:        dateValue(data["createdAt"])    ?? updatedAt,
             updatedAt:        updatedAt,
             lastEditedAt:     dateValue(data["lastEditedAt"]) ?? updatedAt,
-            // Preview docs persist `searchableText` so list search works
-            // without ever fetching `contentBlocks` from Firestore.
             searchableText:   data["searchableText"] as? String ?? "",
             sortIndex:        data["sortIndex"]     as? Int,
             recentlyOpenedAt: dateValue(data["recentlyOpenedAt"])
@@ -346,8 +300,6 @@ final class GrammarNoteService: GrammarNoteServicing {
     }
 
     private func dictionary(from note: GrammarNote) -> [String: Any] {
-        // If callers forgot to populate `searchableText`, build it now so we
-        // never persist an empty index when the note has real content.
         let searchable = note.searchableText.isEmpty
             ? GrammarNoteSearchIndexer.makeSearchableText(for: note)
             : note.searchableText
@@ -432,9 +384,6 @@ final class GrammarNoteService: GrammarNoteServicing {
         notes.sorted { lhs, rhs in
             if lhs.isPinned   != rhs.isPinned   { return lhs.isPinned   }
             if lhs.isFavorite != rhs.isFavorite { return lhs.isFavorite }
-            // Honor user-defined ordering when available; newly created
-            // notes (no sortIndex) surface above already-reordered ones via
-            // the (nil, _?) branch.
             switch (lhs.sortIndex, rhs.sortIndex) {
             case let (l?, r?):
                 if l != r { return l < r }
@@ -447,7 +396,6 @@ final class GrammarNoteService: GrammarNoteServicing {
     }
 }
 
-// MARK: - Mock
 struct MockGrammarNoteService: GrammarNoteServicing {
     var notes: [GrammarNote] = []
 

@@ -115,8 +115,6 @@ struct SpeedReadingCountdownView: View {
         }
     }
 
-    // MARK: - Center content
-
     @ViewBuilder
     private var centerContent: some View {
         switch viewModel.phase {

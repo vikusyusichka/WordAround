@@ -32,7 +32,6 @@ struct ImportVideoWordTranslationSheet: View {
         .tint(accentDark)
     }
 
-
     private var translationCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 10) {
@@ -99,7 +98,6 @@ struct ImportVideoWordTranslationSheet: View {
         }
     }
 
-
     private var setPickerCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -148,7 +146,6 @@ struct ImportVideoWordTranslationSheet: View {
         }
     }
 
-
     private var createSetCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
@@ -184,7 +181,6 @@ struct ImportVideoWordTranslationSheet: View {
             if newValue != nil { mode = .setPicker }
         }
     }
-
 
     private func field<Content: View>(_ title: String, @ViewBuilder _ content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 6) {

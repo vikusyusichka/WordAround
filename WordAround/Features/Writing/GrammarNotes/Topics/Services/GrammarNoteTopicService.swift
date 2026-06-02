@@ -8,10 +8,6 @@ protocol GrammarNoteTopicServicing {
     func ensureDefaultMistakesTopic(ownerUID: String) async throws -> GrammarNoteTopic
     func updateTopic(_ topic: GrammarNoteTopic) async throws
     func deleteTopic(id: String, ownerUID: String) async throws
-    /// Persists a user-defined ordering by writing the supplied `sortIndex`
-    /// values in a single batch. Used by edit-mode reorders. Best-effort:
-    /// callers should keep their local array up to date so the UI reflects
-    /// the requested order even if persistence fails.
     func updateTopicSortIndices(ownerUID: String, indices: [(id: String, sortIndex: Int)]) async throws
 }
 
@@ -23,9 +19,6 @@ extension GrammarNoteTopicServicing {
 
 final class GrammarNoteTopicService: GrammarNoteTopicServicing {
     private let db = Firestore.firestore()
-
-    // `fetchTopics(for:)` is provided by the protocol extension default,
-    // which forwards to `fetchTopics(for:source: .default)` below.
 
     func fetchTopics(for ownerUID: String, source: FirestoreSource) async throws -> [GrammarNoteTopic] {
         let snapshot = try await topicsCollection(ownerUID: ownerUID).getDocuments(source: source)
@@ -157,11 +150,6 @@ final class GrammarNoteTopicService: GrammarNoteTopicServicing {
                 return lhs.isMistakesTopic && !rhs.isMistakesTopic
             }
 
-            // Honor user-defined ordering when present, fall back to recency
-            // for legacy documents and newly created topics without a
-            // sortIndex. Mixing: items without a sortIndex surface above
-            // reordered ones so freshly created topics keep appearing at
-            // the top of the list.
             switch (lhs.sortIndex, rhs.sortIndex) {
             case let (l?, r?):
                 if l != r { return l < r }

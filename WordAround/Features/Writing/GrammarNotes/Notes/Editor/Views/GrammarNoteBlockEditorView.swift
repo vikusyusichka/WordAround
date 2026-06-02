@@ -41,7 +41,6 @@ struct GrammarNoteBlockEditorView: View {
         }
     }
 
-    // MARK: - Header
     private var header: some View {
         HStack(spacing: 8) {
             Image(systemName: draft.type.systemImage)
@@ -66,7 +65,6 @@ struct GrammarNoteBlockEditorView: View {
         }
     }
 
-    // MARK: - Content
     @ViewBuilder
     private var content: some View {
         switch draft.type {
@@ -141,7 +139,6 @@ struct GrammarNoteBlockEditorView: View {
         }
     }
 
-    // MARK: - List editor
     private var listEditor: some View {
         VStack(alignment: .leading, spacing: 8) {
             ForEach(Array(draft.items.indices), id: \.self) { index in
@@ -194,7 +191,6 @@ struct GrammarNoteBlockEditorView: View {
         }
     }
 
-    // MARK: - Image editor
     private var imageEditor: some View {
         VStack(alignment: .leading, spacing: 10) {
             if let imageURL = draft.imageURL, !imageURL.isEmpty {
@@ -244,11 +240,6 @@ struct GrammarNoteBlockEditorView: View {
         }
     }
 
-    // MARK: - Shared text editor
-    /// `TextEditor` has no native placeholder support, so we layer a light
-    /// hint behind the editor that disappears as soon as the user types.
-    /// Heights are tuned to the block role — short for warnings / rules,
-    /// taller for paragraphs / comparisons.
     private func editor(
         text: Binding<String>,
         minHeight: CGFloat,
@@ -276,7 +267,6 @@ struct GrammarNoteBlockEditorView: View {
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
-    // MARK: - Styling
     private var background: some View {
         let overlay = tint.opacity(draft.type == .paragraph ? 0.03 : 0.08)
         return Color.white.opacity(0.92).overlay(overlay)

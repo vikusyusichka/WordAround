@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// Compact card showing one template (topic or note) inside
-/// `GrammarTemplateLibraryView`. The card reads the visual tint either from
-/// an explicit hex (topic templates) or from the note type's tint color.
 struct GrammarTemplateCardView: View {
     let title: String
     let description: String
@@ -11,8 +8,6 @@ struct GrammarTemplateCardView: View {
     let difficulty: String
     let estimatedMinutes: Int
     let tags: [String]
-    /// When non-nil, this card is a topic template and shows the number of
-    /// included notes (e.g. "5 notes").
     let includedNotesCount: Int?
     let isSelected: Bool
 
@@ -112,8 +107,6 @@ struct GrammarTemplateCardView: View {
         .clipShape(Capsule())
     }
 }
-
-// MARK: - Preview
 
 #Preview("Topic template card") {
     VStack(spacing: 12) {

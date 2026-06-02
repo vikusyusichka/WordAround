@@ -1,14 +1,5 @@
 import Foundation
 
-/// Which pool of notes the active review session is drawing from.
-///
-/// Review Today picks the first non-empty pool, in priority order:
-///   1. `.manual`          – items the user explicitly added via "Add to Review"
-///   2. `.recentlyOpened`  – notes the user opened in the editor recently
-///   3. `.recentlyEdited`  – notes the user edited recently
-///
-/// The pool drives the source badge on every review card and the headline
-/// subtitle on the Review Today home card.
 enum GrammarReviewSourcePool: String, Codable, Equatable, Identifiable {
     case manual
     case recentlyOpened
@@ -16,8 +7,6 @@ enum GrammarReviewSourcePool: String, Codable, Equatable, Identifiable {
 
     var id: String { rawValue }
 
-    /// Short label used in card badges. Kept compact on purpose so iPhone
-    /// portrait widths don't overflow the badge row.
     var title: String {
         switch self {
         case .manual:          return "Manual"
@@ -34,8 +23,6 @@ enum GrammarReviewSourcePool: String, Codable, Equatable, Identifiable {
         }
     }
 
-    /// Headline subtitle for the Review Today home card.
-    /// `count` reflects how many notes the upcoming session will surface.
     func homeCardSubtitle(count: Int) -> String {
         guard count > 0 else { return "Nothing due. Open a note to add it to review." }
         switch self {

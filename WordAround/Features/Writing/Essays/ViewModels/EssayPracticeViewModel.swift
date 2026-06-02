@@ -5,8 +5,6 @@ import FirebaseAuth
 @MainActor
 final class EssayPracticeViewModel: ObservableObject {
 
-    // MARK: - Nested types
-
     enum ValidationState: Equatable {
         case empty
         case belowMinimum(Int)
@@ -39,8 +37,6 @@ final class EssayPracticeViewModel: ObservableObject {
         case error(String)
     }
 
-    // MARK: - Topic / task state
-
     @Published var topicMode: EssayTopicMode = .suggested {
         didSet { clearFeedback() }
     }
@@ -58,13 +54,9 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published var hintGenerationError: String?
     @Published var usedTaskTitles: [String] = []
 
-    // MARK: - Essay state
-
     @Published var essayText: String {
         didSet { updateWritingState() }
     }
-
-    // MARK: - Settings
 
     @Published var selectedLanguage: GrammarLanguage {
         didSet {
@@ -87,8 +79,6 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published var translationSourceLanguage: GrammarLanguage
     @Published var assistanceSourceLanguage: GrammarLanguage
 
-    // MARK: - Grammar feedback state
-
     @Published private(set) var wordCount: Int = 0
     @Published private(set) var grammarIssues: [GrammarIssue] = []
     @Published private(set) var isLoading = false
@@ -98,19 +88,12 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published private(set) var score: EssayScore?
     @Published private(set) var grammarIssueSaveStates: [String: SaveGrammarMistakeConfirmationSheet.SaveState] = [:]
 
-    /// Drives the optional `SaveGrammarMistakeConfirmationSheet` via
-    /// `.sheet(item:)`. Set when the user taps Save and the global setting
-    /// `askBeforeSavingMistakes` is on. Cleared by `dismissPendingMistakeIssue()`.
     @Published var pendingMistakeIssue: GrammarIssue? = nil
-
-    // MARK: - Assistance usage
 
     @Published private(set) var usedHints: Int = 0
     @Published private(set) var usedTranslations: Int = 0
     @Published private(set) var usedSynonyms: Int = 0
     @Published private(set) var shownHintItems: [EssaySetHintItem] = []
-
-    // MARK: - Set selection
 
     @Published var isSetSelectionPresented: Bool = false
     @Published var selectedHintSet: FlashcardSet?
@@ -121,15 +104,11 @@ final class EssayPracticeViewModel: ObservableObject {
     @Published private(set) var isLoadingSets: Bool = false
     @Published private(set) var setSelectionError: String?
 
-    // MARK: - Assistance modal state
-
     @Published var activeAssistanceModal: EssayAssistanceModalType? = nil
     @Published var assistanceInputText: String = ""
     @Published private(set) var assistanceResultItems: [EssayAssistanceItem] = []
     @Published private(set) var assistanceResultMessage: String? = nil
     @Published private(set) var isAssistanceLoading = false
-
-    // MARK: - Services
 
     private let topics: [EssayTopic]
     private let grammarService: GrammarChecking
@@ -139,15 +118,17 @@ final class EssayPracticeViewModel: ObservableObject {
     private let flashcardSetService = FlashcardSetService()
     private let grammarMistakeSaveService = GrammarMistakeSaveService()
     private let grammarNotesSettingsStore = GrammarNotesSettingsStore()
+    private let statsService: DailyPracticeStatsService
 
-    /// Guards against re-running auto-save on the same grammar check result.
-    /// Reset at the start of every new `checkGrammar` and on `clearFeedback`.
+    /// Highest essay word count already recorded against today's writing
+    /// progress for this session. We only credit the *delta* on each successful
+    /// grammar check so re-checking the same text never inflates the dashboard;
+    /// reset whenever the essay is cleared / topic changes.
+    private var lastRecordedWordCount: Int = 0
+
     private var didAutoSaveCurrentCheck = false
 
-    /// Stored so it can be cancelled when the modal closes or a new request starts.
     private var assistanceTask: Task<Void, Never>?
-
-    // MARK: - Init
 
     init(
         topics: [EssayTopic]? = nil,
@@ -155,13 +136,15 @@ final class EssayPracticeViewModel: ObservableObject {
         generationService: EssayGenerationServicing? = nil,
         availableSets: [FlashcardSet] = [],
         selectedLanguage: GrammarLanguage = .english,
-        selectedDifficulty: EssayDifficulty = .b1
+        selectedDifficulty: EssayDifficulty = .b1,
+        statsService: DailyPracticeStatsService = .shared
     ) {
         let resolvedTopics = topics ?? EssayTopic.predefined
         self.topics = resolvedTopics.isEmpty ? [.fallback] : resolvedTopics
         self.currentTopic = resolvedTopics.randomElement() ?? .fallback
         self.grammarService = grammarService ?? GrammarCheckService()
         self.generationService = generationService ?? EssayGenerationService()
+        self.statsService = statsService
         self.availableSets = availableSets.filter { !$0.cards.isEmpty }
         self.selectedLanguage = selectedLanguage
         self.selectedDifficulty = selectedDifficulty
@@ -175,8 +158,6 @@ final class EssayPracticeViewModel: ObservableObject {
             Task { await loadAvailableSets() }
         }
     }
-
-    // MARK: - Computed properties
 
     var canCheckGrammar: Bool {
         !isLoading && validationState.allowsGrammarCheck
@@ -230,8 +211,6 @@ final class EssayPracticeViewModel: ObservableObject {
         GrammarLanguage.allCases.filter { $0 != selectedLanguage }
     }
 
-    // MARK: - Task generation
-
     func generateSuggestedTask() async {
         guard !isGeneratingTask else { return }
         isGeneratingTask = true
@@ -271,8 +250,6 @@ final class EssayPracticeViewModel: ObservableObject {
 
         isGeneratingTask = false
     }
-
-    // MARK: - Hints
 
     func requestHint() async {
         guard canUseHint else {
@@ -330,8 +307,6 @@ final class EssayPracticeViewModel: ObservableObject {
         Task { await requestHint() }
     }
 
-    // MARK: - Topic selection
-
     func selectRandomTopic() {
         currentTask = nil
         let nextTopic = topics
@@ -371,8 +346,6 @@ final class EssayPracticeViewModel: ObservableObject {
         selectedDifficulty = difficulty
     }
 
-    // MARK: - Translate modal
-
     func openTranslateModal() {
         cancelAssistanceTaskIfNeeded()
         assistanceInputText = ""
@@ -394,8 +367,6 @@ final class EssayPracticeViewModel: ObservableObject {
         cancelAssistanceTaskIfNeeded()
         assistanceTask = Task { await _performTranslation() }
     }
-
-    // MARK: - Synonym modal
 
     func openSynonymModal() {
         cancelAssistanceTaskIfNeeded()
@@ -419,8 +390,6 @@ final class EssayPracticeViewModel: ObservableObject {
         assistanceTask = Task { await _performSynonymSearch() }
     }
 
-    // MARK: - Close modal
-
     func closeAssistanceModal() {
         cancelAssistanceTaskIfNeeded()
         activeAssistanceModal = nil
@@ -428,8 +397,6 @@ final class EssayPracticeViewModel: ObservableObject {
         clearAssistanceResults()
         isAssistanceLoading = false
     }
-
-    // MARK: - Set selection
 
     func openSetSelection() {
         isSetSelectionPresented = true
@@ -500,11 +467,10 @@ final class EssayPracticeViewModel: ObservableObject {
         selectedEssaySetHints = []
     }
 
-    // MARK: - Essay lifecycle
-
     func resetEssay() {
         essayText = ""
         score = nil
+        lastRecordedWordCount = 0
         resetAssistanceUsage()
         clearFeedback()
     }
@@ -541,8 +507,6 @@ final class EssayPracticeViewModel: ObservableObject {
         isLoading = true
         errorState = nil
         feedbackState = .loading
-        // New grammar check → reset the auto-save guard so it can run once for
-        // the upcoming result set.
         didAutoSaveCurrentCheck = false
 
         do {
@@ -555,10 +519,7 @@ final class EssayPracticeViewModel: ObservableObject {
             grammarIssueSaveStates = [:]
             feedbackState = issues.isEmpty ? .emptyResult : .success
             calculateScoreAfterGrammarCheck()
-            // Fire-and-forget auto-save so feedback shows immediately while
-            // Firestore writes happen in the background. The guard inside
-            // `saveAllGrammarIssuesIfAutoSaveEnabled` ensures it runs once per
-            // check result set.
+            recordWritingPracticeStats()
             triggerAutoSaveIfEnabled()
         } catch {
             let message = (error as? LocalizedError)?.errorDescription ?? "Grammar check failed. Try again."
@@ -569,11 +530,6 @@ final class EssayPracticeViewModel: ObservableObject {
         isLoading = false
     }
 
-    /// Spawns a non-blocking task that auto-saves all issues if the global
-    /// setting is enabled. Safe to call multiple times — the per-call guard
-    /// (`didAutoSaveCurrentCheck`) ensures we never run twice for the same
-    /// grammar check result set, and per-issue state guards prevent duplicate
-    /// Firestore writes.
     private func triggerAutoSaveIfEnabled() {
         guard !didAutoSaveCurrentCheck else { return }
         guard grammarNotesSettingsStore.saveGrammarMistakesAutomatically else { return }
@@ -582,6 +538,17 @@ final class EssayPracticeViewModel: ObservableObject {
         Task { [weak self] in
             await self?.saveAllGrammarIssuesIfAutoSaveEnabled()
         }
+    }
+
+    private func recordWritingPracticeStats() {
+        let delta = wordCount - lastRecordedWordCount
+        guard delta > 0 else { return }
+        lastRecordedWordCount = wordCount
+        statsService.record(
+            skill: .writing,
+            value: delta,
+            sourceModeID: "essays"
+        )
     }
 
     func calculateScoreAfterGrammarCheck() {
@@ -598,16 +565,10 @@ final class EssayPracticeViewModel: ObservableObject {
         score = scoringService.score(input: input)
     }
 
-
-    // MARK: - Save grammar issues to Grammar Notes
-
     func saveState(for issue: GrammarIssue) -> SaveGrammarMistakeConfirmationSheet.SaveState {
         grammarIssueSaveStates[issueSaveStateKey(issue)] ?? .idle
     }
 
-    /// Entry point from `GrammarIssueCardView`. Decides whether to show the
-    /// confirmation sheet (driven by the global setting) or save directly.
-    /// Never blocks the UI; the actual Firestore write happens in a Task.
     func requestSaveGrammarIssue(_ issue: GrammarIssue) {
         let state = saveState(for: issue)
         guard state != .saving, state != .saved, state != .duplicate else { return }
@@ -619,9 +580,6 @@ final class EssayPracticeViewModel: ObservableObject {
         }
     }
 
-    /// Confirms the pending save initiated from `SaveGrammarMistakeConfirmationSheet`.
-    /// The sheet stays presented so the user sees the success/duplicate/failure
-    /// state; they dismiss it manually.
     func confirmSavePendingIssue() async {
         guard let issue = pendingMistakeIssue else { return }
         await saveGrammarIssueToNotes(issue)
@@ -675,9 +633,6 @@ final class EssayPracticeViewModel: ObservableObject {
         }
     }
 
-    /// Auto-save path. Reads from `GrammarNotesSettingsStore` (single source
-    /// of truth) — NOT a stray UserDefaults key. The per-issue state guard
-    /// prevents duplicate writes if this is somehow re-entered.
     func saveAllGrammarIssuesIfAutoSaveEnabled() async {
         guard grammarNotesSettingsStore.saveGrammarMistakesAutomatically else { return }
 
@@ -697,8 +652,6 @@ final class EssayPracticeViewModel: ObservableObject {
         hintGenerationError = nil
     }
 
-    // MARK: - Static helpers
-
     static func countWords(in text: String) -> Int {
         text
             .split { $0.isWhitespace || $0.isNewline }
@@ -706,9 +659,6 @@ final class EssayPracticeViewModel: ObservableObject {
             .count
     }
 
-    // MARK: - Private: Assistance execution
-
-    /// Internal translate implementation — always called inside a stored `assistanceTask`.
     private func _performTranslation() async {
         let text = assistanceInputText.trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -733,7 +683,6 @@ final class EssayPracticeViewModel: ObservableObject {
             return
         }
 
-        // Clear results and start loading atomically — no flash of stale data
         assistanceResultItems = []
         assistanceResultMessage = nil
         isAssistanceLoading = true
@@ -745,7 +694,6 @@ final class EssayPracticeViewModel: ObservableObject {
                 targetLanguage: selectedLanguage
             )
 
-            // Only write results if this task is still active (not cancelled)
             guard !Task.isCancelled else { return }
 
             assistanceResultItems = [
@@ -762,7 +710,6 @@ final class EssayPracticeViewModel: ObservableObject {
         isAssistanceLoading = false
     }
 
-    /// Internal synonym implementation — always called inside a stored `assistanceTask`.
     private func _performSynonymSearch() async {
         let word = assistanceInputText.trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -781,7 +728,6 @@ final class EssayPracticeViewModel: ObservableObject {
             return
         }
 
-        // Clear results and start loading atomically — no flash of stale data
         assistanceResultItems = []
         assistanceResultMessage = nil
         isAssistanceLoading = true
@@ -806,9 +752,6 @@ final class EssayPracticeViewModel: ObservableObject {
 
         isAssistanceLoading = false
     }
-
-    // MARK: - Private helpers
-
 
     private func issueSaveStateKey(_ issue: GrammarIssue) -> String {
         [
@@ -854,7 +797,6 @@ final class EssayPracticeViewModel: ObservableObject {
             validationState = .valid
         }
 
-        // Reset feedback if the essay changed after a grammar check
         if !grammarIssues.isEmpty || errorState != nil || score != nil {
             clearFeedback()
         }
@@ -911,13 +853,11 @@ final class EssayPracticeViewModel: ObservableObject {
         calculateScoreAfterGrammarCheck()
     }
 
-    /// Cancels any in-flight translate/synonym task so stale results can't write back.
     private func cancelAssistanceTaskIfNeeded() {
         assistanceTask?.cancel()
         assistanceTask = nil
     }
 
-    /// Resets source languages when the target writing language changes.
     private func resetSourceLanguagesIfNeeded() {
         if translationSourceLanguage == selectedLanguage {
             translationSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
@@ -927,24 +867,18 @@ final class EssayPracticeViewModel: ObservableObject {
         }
     }
 
-    /// Ensures the translation source language is not the same as the writing language.
     private func ensureTranslationSourceLanguageIsValid() {
         if translationSourceLanguage == selectedLanguage {
             translationSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
         }
     }
 
-    /// Ensures the assistance (synonym) source language is not the same as the writing language.
     private func ensureAssistanceSourceLanguageIsValid() {
         if assistanceSourceLanguage == selectedLanguage {
             assistanceSourceLanguage = Self.defaultSourceLanguage(for: selectedLanguage)
         }
     }
 
-    /// Picks a sensible "From" language for translation/synonym lookups.
-    /// English is the lingua franca for both MyMemory and Datamuse, so we
-    /// default to English whenever the user is writing in any other
-    /// language; English itself falls back to Spanish.
     private static func defaultSourceLanguage(for targetLanguage: GrammarLanguage) -> GrammarLanguage {
         targetLanguage == .english ? .spanish : .english
     }

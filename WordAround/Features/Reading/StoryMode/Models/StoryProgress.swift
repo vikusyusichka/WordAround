@@ -24,8 +24,6 @@ struct StoryProgress: Codable, Equatable, Hashable {
         self.overallProgress = min(max(overallProgress, 0), 1)
     }
 
-    // MARK: - Display helpers
-
     var chapterProgressText: String {
         let current = currentChapterIndex + 1
         if totalChaptersTarget > 0 {

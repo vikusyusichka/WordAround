@@ -19,8 +19,6 @@ final class StorySetupViewModel: ObservableObject {
         self.currentUserId = currentUserId
     }
 
-    // MARK: - Start Story
-
     func startStory(from setup: ReadingSessionSetup) {
         guard let userId = currentUserId() else {
             errorMessage = "Sign in to create a story."

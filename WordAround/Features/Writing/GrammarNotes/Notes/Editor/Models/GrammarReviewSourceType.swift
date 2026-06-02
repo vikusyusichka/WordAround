@@ -1,9 +1,5 @@
 import Foundation
 
-/// Origin of a `GrammarReviewItem`. Determines:
-///  - which icon/label to show on the review card
-///  - which "Open …" action is available inside the review session
-///  - which deterministic id is used (so the same source never spawns duplicates)
 enum GrammarReviewSourceType: String, Codable, CaseIterable, Identifiable, Equatable {
     case note
     case mistake

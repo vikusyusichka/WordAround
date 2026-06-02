@@ -85,8 +85,6 @@ struct ReadingSetupView: View {
         }
     }
 
-    // MARK: - Section content
-
     private func helperText(for section: ReadingSetupConfig.Section) -> String? {
         guard let helper = section.helper else { return nil }
         return helper(viewModel.selections[section.id] ?? "")

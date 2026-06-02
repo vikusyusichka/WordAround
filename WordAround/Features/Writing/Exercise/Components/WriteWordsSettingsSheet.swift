@@ -15,7 +15,6 @@ struct WriteWordsSettingsSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Drag indicator
             Capsule()
                 .fill(Color(red: 0.86, green: 0.89, blue: 0.96))
                 .frame(width: 36, height: 4)
@@ -23,7 +22,6 @@ struct WriteWordsSettingsSheet: View {
                 .padding(.top, 14)
                 .padding(.bottom, 28)
 
-            // MARK: Training mode section
             sectionHeader("Training mode")
                 .padding(.horizontal, hPad)
 
@@ -35,7 +33,6 @@ struct WriteWordsSettingsSheet: View {
             .padding(.horizontal, hPad)
             .padding(.top, 10)
 
-            // MARK: Difficulty section
             sectionHeader("Difficulty")
                 .padding(.horizontal, hPad)
                 .padding(.top, 24)
@@ -56,15 +53,11 @@ struct WriteWordsSettingsSheet: View {
         .presentationCornerRadius(28)
     }
 
-    // MARK: - Section header
-
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(.system(size: metrics.isRegular ? 17 : 15, weight: .bold, design: .rounded))
             .foregroundColor(AppColors.primaryBlueDark)
     }
-
-    // MARK: - Training mode row
 
     private func modeRow(_ mode: WriteWordsTrainingMode) -> some View {
         let isSelected = viewModel.trainingMode == mode
@@ -104,8 +97,6 @@ struct WriteWordsSettingsSheet: View {
         .buttonStyle(.plain)
         .animation(.easeInOut(duration: 0.16), value: isSelected)
     }
-
-    // MARK: - Difficulty row
 
     private func difficultyRow(_ level: WriteWordsDifficulty) -> some View {
         let isSelected = viewModel.difficulty == level

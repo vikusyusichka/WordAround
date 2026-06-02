@@ -1,7 +1,5 @@
 import Foundation
 
-/// Severity bucket for a review item. Surfaces visually on the review card
-/// and can be used by future scheduling tweaks to bias `dueAt` selection.
 enum GrammarReviewPriority: String, Codable, CaseIterable, Identifiable, Equatable {
     case low
     case normal

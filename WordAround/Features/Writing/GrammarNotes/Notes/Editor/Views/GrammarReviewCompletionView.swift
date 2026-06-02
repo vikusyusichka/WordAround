@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Shown at the end of a review session. Uses the existing WordAround
-/// design language — calm, no confetti, just a clear recap and a Done CTA.
 struct GrammarReviewCompletionView: View {
     let reviewedCount: Int
     let hardCount: Int
@@ -96,8 +94,6 @@ struct GrammarReviewCompletionView: View {
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }
-
-// MARK: - Previews
 
 #Preview("Successful session") {
     GrammarReviewCompletionView(reviewedCount: 8, hardCount: 1, forgotCount: 0, onDone: {})

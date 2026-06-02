@@ -39,6 +39,7 @@ struct ReadingView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .onAppear { viewModel.refreshDailyProgress() }
         .navigationDestination(isPresented: $openMyTexts) {
             ReadingMyTextsView()
         }

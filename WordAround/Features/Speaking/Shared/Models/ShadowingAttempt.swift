@@ -39,7 +39,6 @@ struct ShadowingAttempt: Identifiable, Equatable {
     }
 }
 
-
 enum ShadowingComparison {
 
     static func tokenize(_ text: String) -> [String] {

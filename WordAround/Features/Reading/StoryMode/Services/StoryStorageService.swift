@@ -15,8 +15,6 @@ extension StoryStorageServicing {
     }
 }
 
-// MARK: - Live
-
 final class StoryStorageService: StoryStorageServicing {
     static let shared = StoryStorageService()
 
@@ -75,8 +73,6 @@ final class StoryStorageService: StoryStorageServicing {
         )
     }
 }
-
-// MARK: - Mock (previews / tests)
 
 final class MockStoryStorageService: StoryStorageServicing {
     private var sessions: [StorySession]

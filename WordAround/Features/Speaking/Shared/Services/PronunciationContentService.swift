@@ -1,6 +1,5 @@
 import Foundation
 
-
 enum PronunciationContentError: LocalizedError {
     case noItems
     case notConfigured
@@ -19,13 +18,11 @@ enum PronunciationContentError: LocalizedError {
     }
 }
 
-
 struct PronunciationItemBatch {
     let items: [PronunciationItem]
     let usedFallback: Bool
     let fallbackReason: String?
 }
-
 
 protocol PronunciationContentProviding {
     func items(
@@ -49,7 +46,6 @@ extension PronunciationContentProviding {
     }
 }
 
-
 enum PronunciationContentConfiguration {
     static let workerPath = "/api/pronunciation/content"
 
@@ -62,7 +58,6 @@ enum PronunciationContentConfiguration {
         return components.url
     }
 }
-
 
 final class PronunciationContentService: PronunciationContentProviding {
 
@@ -136,7 +131,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         return PronunciationItemBatch(items: fallback, usedFallback: true, fallbackReason: reason)
     }
 
-
     private struct Entry {
         let type: PronunciationItemType
         let text: String
@@ -185,7 +179,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         }
     }
 
-
     private static let english: [Entry] = [
         Entry(type: .minimalPair, text: "ship / sheep", translation: "ship / sheep", focusSound: "ɪ vs iː", tip: "Keep the vowel short for 'ship', long for 'sheep'.", example: "The sheep is on the ship."),
         Entry(type: .word, text: "world", translation: "world", focusSound: "rl", tip: "Blend the 'r' into the 'l' at the end.", example: "The whole world is watching."),
@@ -198,7 +191,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         Entry(type: .minimalPair, text: "bat / bad", translation: "bat / bad", focusSound: "t vs d", tip: "Voice the final 'd' in 'bad'.", example: "The bad bat flew away."),
         Entry(type: .word, text: "squirrel", translation: "squirrel", focusSound: "skwɪrəl", tip: "Glide through the 'qu' then the 'rr'.", example: "A squirrel ran up the tree.")
     ]
-
 
     private static let spanish: [Entry] = [
         Entry(type: .minimalPair, text: "pero / perro", translation: "but / dog", focusSound: "r vs rr", tip: "Tap once for 'pero', roll for 'perro'.", example: "Pero el perro ladra."),
@@ -213,7 +205,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         Entry(type: .word, text: "guitarra", translation: "guitar", focusSound: "rr", tip: "Roll the 'rr' at the end.", example: "Toca la guitarra.")
     ]
 
-
     private static let french: [Entry] = [
         Entry(type: .word, text: "rue", translation: "street", focusSound: "French r + u", tip: "Guttural 'r' then rounded 'u'.", example: "J'habite dans cette rue."),
         Entry(type: .minimalPair, text: "tu / tout", translation: "you / all", focusSound: "y vs u", tip: "'tu' is tight lips; 'tout' is rounded 'oo'.", example: "Tu as tout vu ?"),
@@ -226,7 +217,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         Entry(type: .word, text: "heure", translation: "hour", focusSound: "eu + r", tip: "Rounded 'eu' then soft 'r'.", example: "Quelle heure est-il ?"),
         Entry(type: .word, text: "feuille", translation: "leaf", focusSound: "euille", tip: "Glide 'eu' into a 'y'.", example: "La feuille tombe.")
     ]
-
 
     private static let german: [Entry] = [
         Entry(type: .word, text: "ich", translation: "I", focusSound: "ç (ich-laut)", tip: "Soft 'h' with the tongue near the palate.", example: "Ich bin müde."),
@@ -241,7 +231,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         Entry(type: .phrase, text: "rote Rosen", translation: "red roses", focusSound: "rolled/uvular r", tip: "Two German 'r' sounds.", example: nil)
     ]
 }
-
 
 final class MockPronunciationContentService: PronunciationContentProviding {
     func items(

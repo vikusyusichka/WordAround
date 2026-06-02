@@ -117,8 +117,6 @@ struct ReadingMyTextsView: View {
         }
     }
 
-    // MARK: - Content states
-
     @ViewBuilder
     private var libraryContent: some View {
         if viewModel.isLoading {
@@ -141,8 +139,6 @@ struct ReadingMyTextsView: View {
             savedTextsSection
         }
     }
-
-    // MARK: - Sections
 
     private var addTextButton: some View {
         ReadingPrimaryButton(

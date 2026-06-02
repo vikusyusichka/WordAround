@@ -101,15 +101,9 @@ struct CreateGrammarNoteSheet: View {
             if !creating { didSubmit = false }
         }
         .onChange(of: errorMessage) { _, message in
-            // Only reset on a new error appearing — not on clearing during a
-            // fresh attempt. The VM always toggles isCreating true→false now,
-            // so the .onChange(of: isCreating) handler covers the success path.
             guard message != nil else { return }
             didSubmit = false
         }
-        // Safety watchdog — guarantees the spinner clears even if the
-        // parent's Task never publishes a state change (cancelled,
-        // synchronous return, or coalesced @Published update).
         .task(id: didSubmit) {
             guard didSubmit else { return }
             try? await Task.sleep(nanoseconds: 12_000_000_000)
@@ -117,7 +111,6 @@ struct CreateGrammarNoteSheet: View {
         }
     }
 
-    // MARK: - Header
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
@@ -141,7 +134,6 @@ struct CreateGrammarNoteSheet: View {
         }
     }
 
-    // MARK: - Template mode
     private var templateModePicker: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Start mode")
@@ -174,7 +166,6 @@ struct CreateGrammarNoteSheet: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Template picker
     private var templatePicker: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Template")
@@ -221,7 +212,6 @@ struct CreateGrammarNoteSheet: View {
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
-    // MARK: - Input fields
     private func inputField(title: String, placeholder: String, text: Binding<String>, limit: Int?) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -275,7 +265,6 @@ struct CreateGrammarNoteSheet: View {
         }
     }
 
-    // MARK: - Type picker
     private var typePicker: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Note type")
@@ -305,7 +294,6 @@ struct CreateGrammarNoteSheet: View {
         }
     }
 
-    // MARK: - Quiz toggle
     private var quizToggle: some View {
         Toggle(isOn: $hasQuiz) {
             VStack(alignment: .leading, spacing: 3) {
@@ -323,7 +311,6 @@ struct CreateGrammarNoteSheet: View {
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
-    // MARK: - Action buttons
     private var actionButtons: some View {
         HStack(spacing: 12) {
             Button {
@@ -358,7 +345,6 @@ struct CreateGrammarNoteSheet: View {
         .padding(.top, 4)
     }
 
-    // MARK: - Validation
     private func validateAndCreate() {
         guard !effectiveIsCreating else { return }
 

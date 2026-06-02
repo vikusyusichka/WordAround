@@ -24,19 +24,8 @@ struct GrammarNote: Identifiable, Codable, Equatable {
     var createdAt: Date
     var updatedAt: Date
     var lastEditedAt: Date
-    /// Denormalized search blob populated by `GrammarNoteSearchIndexer`.
-    /// Defaulted to empty so legacy in-memory constructions and older
-    /// Firestore documents stay compatible — the topic VM falls back to
-    /// rebuilding it locally when this is empty.
     var searchableText: String = ""
-    /// User-defined ordering for edit mode. `nil` for legacy notes that
-    /// were never reordered; sort fallback uses `updatedAt` in that case so
-    /// newly created notes keep surfacing at the top.
     var sortIndex: Int? = nil
-    /// Last time the note was opened in the editor. Used by Review Today to
-    /// surface "Recently opened" notes when no manual review items are due.
-    /// `nil` for legacy notes that never had this tracking; callers fall back
-    /// to `updatedAt` / `lastEditedAt` in that case.
     var recentlyOpenedAt: Date? = nil
 }
 
@@ -45,14 +34,10 @@ extension GrammarNote: Hashable {
 }
 
 extension GrammarNote {
-    /// Matches the Mistakes filter chip — covers legacy docs where only
-    /// `noteType` was set and `isMistakeNote` was never backfilled.
     var matchesMistakesFilter: Bool {
         isMistakeNote || noteType == .mistake
     }
 
-    /// Matches the Quizzes filter chip — prefers `hasQuiz`, with a fallback
-    /// for in-memory notes that still carry block data.
     var matchesQuizzesFilter: Bool {
         hasQuiz || contentBlocks.contains { $0.type == .quiz }
     }

@@ -5,8 +5,6 @@ import FoundationModels
 
 #if canImport(FoundationModels)
 
-// MARK: - Guided-generation schema (file scope)
-
 /// Apple's `@Generable` macro generates a runtime `GenerationSchema` that
 /// the FoundationModels framework constructs from OUTSIDE this file when
 /// `session.respond(to:, generating:)` is invoked. That means the type
@@ -38,8 +36,6 @@ struct OnDeviceQuizQuestion {
     let explanation: String
 }
 
-// MARK: - Client
-
 /// On-device AI quiz generator powered by Apple Intelligence
 /// (`FoundationModels`). Zero configuration: no API key, no backend,
 /// no network — the model runs locally on the user's device.
@@ -57,9 +53,6 @@ final class OnDeviceGrammarQuizAIClient: GrammarQuizAIClient {
     nonisolated func generateQuizQuestions(
         request: GrammarQuizAIRequest
     ) async throws -> GrammarQuizAIResponseDTO {
-        // Hop to main actor to touch the `FoundationModels` types, which
-        // are themselves `@MainActor` isolated. The HTTP path doesn't
-        // need this, but on-device generation requires it.
         try await MainActor.run {
             try Self.assertAvailable()
         }
@@ -97,10 +90,6 @@ final class OnDeviceGrammarQuizAIClient: GrammarQuizAIClient {
         }
     }
 
-    // MARK: - Prompt construction
-
-    /// Shared system prompt — uses the same response contract as the HTTP
-    /// path so both backends produce comparable output shapes.
     private static let systemInstructions: String = """
         You are a grammar quiz generator that produces structured JSON for a
         language-learning app. Stick strictly to the provided note content;
@@ -110,8 +99,6 @@ final class OnDeviceGrammarQuizAIClient: GrammarQuizAIClient {
         \(GrammarQuizAIPromptBuilder.responseContract)
         """
 
-    /// Per-call user prompt — formatted as a short briefing rather than
-    /// JSON so the on-device model has the easiest time understanding it.
     private static func makeUserPrompt(request: GrammarQuizAIRequest) -> String {
         var lines: [String] = []
         lines.append("Note title: \(request.noteTitle)")
@@ -140,8 +127,6 @@ final class OnDeviceGrammarQuizAIClient: GrammarQuizAIClient {
         return lines.joined(separator: "\n")
     }
 
-    // MARK: - Conversion
-
     private static func convert(_ payload: OnDeviceQuizPayload) -> GrammarQuizAIResponseDTO {
         let questions = payload.questions.map { raw in
             GrammarQuizAIResponseDTO.Question(
@@ -156,14 +141,9 @@ final class OnDeviceGrammarQuizAIClient: GrammarQuizAIClient {
     }
 }
 
-// MARK: - Availability check
-
 @available(iOS 26.0, macOS 26.0, *)
 @MainActor
 enum OnDeviceQuizAI {
-    /// `true` when Apple Intelligence is set up and the system language
-    /// model is ready to serve requests. Main-actor isolated because
-    /// `SystemLanguageModel.availability` itself is.
     static var isAvailable: Bool {
         if case .available = SystemLanguageModel.default.availability {
             return true
