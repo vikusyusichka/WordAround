@@ -4,6 +4,12 @@ struct BottomNavigationBar: View {
     @Binding var selectedTab: HomeTab?
     @Binding var isCreateMenuPresented: Bool
 
+    /// Called when a regular (non-create) tab is tapped, after `selectedTab` is
+    /// updated. Lets the host react to bottom-bar navigation (e.g. clearing the
+    /// sidebar category when returning Home) without a global `onChange` that
+    /// would also fire for sidebar-driven tab changes.
+    var onSelectTab: (HomeTab) -> Void = { _ in }
+
     @State private var pressedTab: HomeTab?
 
     var body: some View {
@@ -34,6 +40,7 @@ struct BottomNavigationBar: View {
                                 selectedTab = tab
                                 isCreateMenuPresented = false
                             }
+                            onSelectTab(tab)
                         },
                         onPressChange: { pressing in
                             withAnimation(.easeOut(duration: 0.14)) {

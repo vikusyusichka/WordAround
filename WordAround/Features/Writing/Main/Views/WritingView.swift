@@ -3,7 +3,6 @@ import SwiftUI
 struct WritingView: View {
     @StateObject private var viewModel = WritingViewModel()
     @State private var openEssays = false
-    @State private var openGrammarNotes = false
 
     var onOpenWriteSets: () -> Void = {}
 
@@ -42,9 +41,6 @@ struct WritingView: View {
         .navigationDestination(isPresented: $openEssays) {
             EssayPracticeView()
         }
-        .navigationDestination(isPresented: $openGrammarNotes) {
-            GrammarNotesHomeView()
-        }
     }
 
     private func handleMenuAction(_ action: WritingMenuAction) {
@@ -53,8 +49,6 @@ struct WritingView: View {
             onOpenWriteSets()
         case .essays:
             openEssays = true
-        case .grammarNotes:
-            openGrammarNotes = true
         }
     }
 }

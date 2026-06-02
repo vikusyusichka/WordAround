@@ -25,14 +25,6 @@ final class WritingViewModel: ObservableObject {
             accentColor: Color(red: 0.36, green: 0.58, blue: 1.00),
             blobColor: AppColors.blobBlue,
             action: .essays
-        ),
-        WritingMenuItem(
-            title: "Grammar notes",
-            subtitle: "Learn grammar with clear notes, examples and mini exercises.",
-            systemImage: "book.pages.fill",
-            accentColor: AppColors.orangeAccent,
-            blobColor: AppColors.blobYellow,
-            action: .grammarNotes
         )
     ]
 

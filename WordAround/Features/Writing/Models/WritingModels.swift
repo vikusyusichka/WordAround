@@ -13,7 +13,6 @@ struct WritingMenuItem: Identifiable {
 enum WritingMenuAction {
     case writeFromSets
     case essays
-    case grammarNotes
 }
 
 struct WriteWordsExercise: Identifiable {

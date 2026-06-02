@@ -5,10 +5,10 @@ import FirebaseAuth
 @MainActor
 final class HomeViewModel: ObservableObject {
 
-    // MARK: - Stats (static placeholders until a real stats backend exists)
+    // MARK: - Daily practice stats (real values from DailyPracticeStatsService /
+    // the listening session store — see `loadDailyStats()`)
 
-    @Published var todayGoal: HomeSetPreviewItem
-    @Published var statCards: [StatCardItem] = []
+    @Published var dailyStats: [HomeDailyStat] = []
 
     // MARK: - Folders
 
@@ -27,80 +27,25 @@ final class HomeViewModel: ObservableObject {
 
     private let folderService: FolderService
     private let authService: AuthServiceProtocol
-
-    // MARK: - Static placeholders
-
-    private static let staticStatCards: [StatCardItem] = [
-        StatCardItem(
-            title: "Learned today",
-            value: "24",
-            subtitle: "words",
-            iconSystemName: "chart.bar.fill",
-            accentColor: Color(red: 0.64, green: 0.54, blue: 0.98),
-            titleColor: Color(red: 0.58, green: 0.47, blue: 0.98),
-            valueColor: AppColors.primaryBlueDark,
-            subtitleColor: AppColors.textSecondary,
-            backgroundColor: Color(red: 0.96, green: 0.94, blue: 1.0),
-            blobColor: Color(red: 0.86, green: 0.81, blue: 1.0)
-        ),
-        StatCardItem(
-            title: "Accuracy",
-            value: "87%",
-            subtitle: "Great job!",
-            iconSystemName: "target",
-            accentColor: Color(red: 0.42, green: 0.80, blue: 0.67),
-            titleColor: Color(red: 0.33, green: 0.73, blue: 0.58),
-            valueColor: AppColors.primaryBlueDark,
-            subtitleColor: Color(red: 0.10, green: 0.66, blue: 0.38),
-            backgroundColor: Color(red: 0.93, green: 0.99, blue: 0.97),
-            blobColor: Color(red: 0.77, green: 0.92, blue: 0.85)
-        ),
-        StatCardItem(
-            title: "Streak",
-            value: "5",
-            subtitle: "days",
-            iconSystemName: "flame.fill",
-            accentColor: Color(red: 0.98, green: 0.68, blue: 0.20),
-            titleColor: Color(red: 0.67, green: 0.36, blue: 0.02),
-            valueColor: Color(red: 0.67, green: 0.36, blue: 0.02),
-            subtitleColor: AppColors.textSecondary,
-            backgroundColor: Color(red: 1.0, green: 0.96, blue: 0.89),
-            blobColor: Color(red: 0.98, green: 0.86, blue: 0.62)
-        )
-    ]
-
-    private static let staticTodayGoal = HomeSetPreviewItem(
-        sourceSet: nil,
-        title: "Today's goal",
-        subtitle: "6 words left",
-        iconSystemName: "book.closed",
-        currentValue: 24,
-        totalValue: 30,
-        unit: "words",
-        progress: 0.80,
-        accentColor: AppColors.primaryBlue,
-        backgroundColor: AppColors.goalBackground,
-        progressBackgroundColor: AppColors.goalProgressBackground,
-        titleColor: AppColors.primaryBlueDark,
-        valueColor: AppColors.primaryBlueDark,
-        subtitleColor: AppColors.textSecondary,
-        iconBackground: .white,
-        blobColor: Color(red: 0.82, green: 0.86, blue: 0.98)
-    )
+    private let statsService: DailyPracticeStatsService
+    private let listeningStore: ListeningSessionStoring
 
     // MARK: - Init
 
     init(
         folderService: FolderService? = nil,
-        authService: AuthServiceProtocol? = nil
+        authService: AuthServiceProtocol? = nil,
+        statsService: DailyPracticeStatsService = .shared,
+        listeningStore: ListeningSessionStoring? = nil
     ) {
         self.folderService = folderService ?? FolderService()
         self.authService = authService ?? AuthService()
-        self.todayGoal = Self.staticTodayGoal
-        self.statCards = Self.staticStatCards
+        self.statsService = statsService
+        self.listeningStore = listeningStore ?? LocalListeningSessionStore.shared
 
         Task {
             await loadFolders()
+            await loadDailyStats()
         }
     }
 
@@ -117,6 +62,8 @@ final class HomeViewModel: ObservableObject {
                 return "Reading"
             case .writing:
                 return "Writing"
+            case .notes:
+                return "Notes"
             case .none:
                 return "Flashcards"
             }
@@ -149,6 +96,8 @@ final class HomeViewModel: ObservableObject {
                 return "Read and review language materials."
             case .writing:
                 return "Practice your language actively."
+            case .notes:
+                return "Your grammar notes and mistakes."
             case .none:
                 return "Pick a set to practice"
             }
@@ -179,10 +128,81 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
+    /// Selects a learning section from the sidebar. Routes to the Home tab so
+    /// the category content renders regardless of which bottom tab was active —
+    /// this is what makes the sidebar work globally. Sidebar and bottom bar
+    /// share this single `selectedTab` / `selectedCategory` source of truth.
+    func selectCategory(_ category: HomeCategory) {
+        withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
+            selectedTab = .home
+            selectedCategory = category
+        }
+    }
+
+    // MARK: - Daily stats
+
+    /// Loads today's per-section practice totals from the existing stats
+    /// backend. Speaking / listening / reading are stored in seconds (shown as
+    /// minutes); writing is stored in words.
+    func loadDailyStats() async {
+        let speakingSeconds = await statsService.totalToday(skill: .speaking)
+        let readingSeconds = await statsService.totalToday(skill: .reading)
+        let writingWords = await statsService.totalToday(skill: .writing)
+        let listeningMinutes = await listeningMinutesToday()
+
+        dailyStats = [
+            HomeDailyStat(
+                id: .speaking,
+                title: "Speaking",
+                value: "\(speakingSeconds / 60)",
+                label: "minutes",
+                iconSystemName: HomeCategory.speaking.icon
+            ),
+            HomeDailyStat(
+                id: .listening,
+                title: "Listening",
+                value: "\(listeningMinutes)",
+                label: "minutes",
+                iconSystemName: HomeCategory.listening.icon
+            ),
+            HomeDailyStat(
+                id: .reading,
+                title: "Reading",
+                value: "\(readingSeconds / 60)",
+                label: "minutes",
+                iconSystemName: HomeCategory.reading.icon
+            ),
+            HomeDailyStat(
+                id: .writing,
+                title: "Writing",
+                value: "\(writingWords)",
+                label: "words",
+                iconSystemName: HomeCategory.writing.icon
+            )
+        ]
+    }
+
+    /// Listening records to its own session store rather than the shared stats
+    /// service, so today's minutes are aggregated here the same way the
+    /// Listening home screen does (completed sessions only, each id counted once).
+    private func listeningMinutesToday() async -> Int {
+        let sessions = await listeningStore.fetchSessions()
+        let calendar = Calendar.current
+        var seenIds = Set<String>()
+        let seconds = sessions
+            .filter { $0.isCompleted && calendar.isDateInToday($0.updatedAt) }
+            .reduce(into: 0) { partial, session in
+                guard seenIds.insert(session.id).inserted else { return }
+                partial += session.elapsedSeconds
+            }
+        return seconds / 60
+    }
+
     // MARK: - Folders
 
     func refresh() async {
         await loadFolders()
+        await loadDailyStats()
     }
 
     func loadFolders() async {

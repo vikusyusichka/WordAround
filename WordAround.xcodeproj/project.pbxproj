@@ -330,6 +330,8 @@
 		E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D1E2F9AC1E500387BDC /* Layout.swift */; };
 		E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D202F9AC20500387BDC /* ProgressCardView.swift */; };
 		E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D222F9AC21700387BDC /* StatCardView.swift */; };
+		FEEDFACE0000000000000002 /* HomeStatsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000001 /* HomeStatsGridView.swift */; };
+		FEEDFACE0000000000000004 /* ContinueLearningSetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000003 /* ContinueLearningSetCardView.swift */; };
 		E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D242F9AC22800387BDC /* SetItemView.swift */; };
 		E30A1D4F2F9BB9D000387BDC /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D4E2F9BB9C700387BDC /* AppColors.swift */; };
 		E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */; };
@@ -849,6 +851,8 @@
 		E30A1D1E2F9AC1E500387BDC /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		E30A1D202F9AC20500387BDC /* ProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCardView.swift; sourceTree = "<group>"; };
 		E30A1D222F9AC21700387BDC /* StatCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCardView.swift; sourceTree = "<group>"; };
+		FEEDFACE0000000000000001 /* HomeStatsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeStatsGridView.swift; sourceTree = "<group>"; };
+		FEEDFACE0000000000000003 /* ContinueLearningSetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinueLearningSetCardView.swift; sourceTree = "<group>"; };
 		E30A1D242F9AC22800387BDC /* SetItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetItemView.swift; sourceTree = "<group>"; };
 		E30A1D4E2F9BB9C700387BDC /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCardItem.swift; sourceTree = "<group>"; };
@@ -2119,6 +2123,8 @@
 				E30A1D082F9A5FCD00387BDC /* CategorySidebarView.swift */,
 				E30A1D242F9AC22800387BDC /* SetItemView.swift */,
 				E30A1D222F9AC21700387BDC /* StatCardView.swift */,
+				FEEDFACE0000000000000001 /* HomeStatsGridView.swift */,
+				FEEDFACE0000000000000003 /* ContinueLearningSetCardView.swift */,
 				E30A1D202F9AC20500387BDC /* ProgressCardView.swift */,
 			);
 			path = Components;
@@ -3292,6 +3298,8 @@
 				E30902C82FBC0FD000C52238 /* EssaysSetHintCardRowView.swift in Sources */,
 				E30902B62FBB96E400C52238 /* EssayAIClient.swift in Sources */,
 				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
+				FEEDFACE0000000000000002 /* HomeStatsGridView.swift in Sources */,
+				FEEDFACE0000000000000004 /* ContinueLearningSetCardView.swift in Sources */,
 				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,

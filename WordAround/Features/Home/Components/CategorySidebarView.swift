@@ -1,7 +1,13 @@
 import SwiftUI
 
 struct CategorySidebarView: View {
+    /// Reflects the shared selection (owned by `HomeViewModel`) so the rail can
+    /// highlight the active section. Selection itself is routed through
+    /// `onSelect` so the view model can also switch to the Home tab — this is
+    /// what lets the sidebar work from any bottom-tab screen.
     @Binding var selectedCategory: HomeCategory?
+    let onSelect: (HomeCategory) -> Void
+
     @State private var pressedCategory: HomeCategory?
 
     var body: some View {
@@ -12,9 +18,7 @@ struct CategorySidebarView: View {
                     isSelected: selectedCategory == category,
                     isPressed: pressedCategory == category,
                     onTap: {
-                        withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
-                            selectedCategory = category
-                        }
+                        onSelect(category)
                     },
                     onPressChange: { pressing in
                         withAnimation(.easeOut(duration: 0.15)) {
@@ -156,7 +160,7 @@ private struct SidebarItemView: View, Equatable {
 }
 
 #Preview {
-    CategorySidebarView(selectedCategory: .constant(nil))
+    CategorySidebarView(selectedCategory: .constant(nil), onSelect: { _ in })
         .padding()
         .background(Color(red: 0.965, green: 0.965, blue: 0.985))
 }

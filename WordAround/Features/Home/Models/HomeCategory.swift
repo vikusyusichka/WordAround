@@ -5,6 +5,7 @@ enum HomeCategory: String, CaseIterable, Identifiable {
     case listening
     case reading
     case writing
+    case notes
 
     var id: String { rawValue }
 
@@ -14,6 +15,7 @@ enum HomeCategory: String, CaseIterable, Identifiable {
         case .listening: return "LISTENING"
         case .reading: return "READING"
         case .writing: return "WRITING"
+        case .notes: return "NOTES"
         }
     }
 
@@ -23,6 +25,7 @@ enum HomeCategory: String, CaseIterable, Identifiable {
         case .listening: return "headphones"
         case .reading: return "book"
         case .writing: return "pencil.and.scribble"
+        case .notes: return "note.text"
         }
     }
 }

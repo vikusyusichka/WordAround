@@ -158,6 +158,38 @@ extension Layout {
     static let homeEmptySetHeight: CGFloat = isPadLike ? 180 : 140
 }
 
+// MARK: - Home Dashboard (daily stats grid + continue learning tile)
+
+extension Layout {
+    // Daily-practice stat cards
+    static let homeDailyStatGridSpacing: CGFloat = isPadLike ? 16 : 12
+    static let homeDailyStatCardHeight: CGFloat = isPadLike ? 150 : 116
+    static let homeDailyStatCardCornerRadius: CGFloat = isPadLike ? 24 : 20
+    static let homeDailyStatCardPadding: CGFloat = isPadLike ? 18 : 14
+    static let homeDailyStatIconCircleSize: CGFloat = isPadLike ? 48 : 38
+    static let homeDailyStatIconSize: CGFloat = isPadLike ? 22 : 17
+    static let homeDailyStatValueSize: CGFloat = isPadLike ? 34 : 26
+    static let homeDailyStatTitleSize: CGFloat = isPadLike ? 17 : 14
+    static let homeDailyStatLabelSize: CGFloat = isPadLike ? 14 : 11
+
+    // Continue-learning tile
+    static let homeContinueCardCornerRadius: CGFloat = isPadLike ? 30 : 24
+    static let homeContinueCardPadding: CGFloat = isPadLike ? 24 : 18
+    static let homeContinueIconCircleSize: CGFloat = isPadLike ? 64 : 52
+    static let homeContinueIconCornerRadius: CGFloat = isPadLike ? 20 : 16
+    static let homeContinueIconSize: CGFloat = isPadLike ? 28 : 23
+    static let homeContinueTitleSize: CGFloat = isPadLike ? 24 : 19
+    static let homeContinueMetaSize: CGFloat = isPadLike ? 15 : 13
+    static let homeContinueChipSize: CGFloat = isPadLike ? 13 : 11
+    static let homeContinueProgressTextSize: CGFloat = isPadLike ? 16 : 13
+    static let homeContinueProgressBarHeight: CGFloat = isPadLike ? 12 : 9
+    static let homeContinueButtonHeight: CGFloat = isPadLike ? 56 : 48
+    static let homeContinueButtonCornerRadius: CGFloat = 16
+    static let homeContinueButtonFontSize: CGFloat = isPadLike ? 18 : 16
+    static let homeContinueSpacing: CGFloat = isPadLike ? 18 : 14
+    static let homeContinueEmptyHeight: CGFloat = isPadLike ? 220 : 180
+}
+
 // MARK: - Home Create Menu
 
 extension Layout {

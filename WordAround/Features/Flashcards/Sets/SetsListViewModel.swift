@@ -39,7 +39,7 @@ final class SetsListViewModel: ObservableObject {
             let previewItems = sets.map { makePreviewItem(from: $0) }
 
             userSets = previewItems
-            continueLearningSet = previewItems.first
+            continueLearningSet = mostRelevantSet(from: sets)
             isLoadingSets = false
         } catch {
             isLoadingSets = false
@@ -96,6 +96,17 @@ final class SetsListViewModel: ObservableObject {
         if continueLearningSet?.sourceSet?.id == updatedSet.id {
             continueLearningSet = updatedItem
         }
+    }
+
+    /// Picks the set to surface in "Continue learning". With the data the set
+    /// model exposes, the most recently touched set (`updatedAt`, then
+    /// `createdAt` as a tiebreaker) is the best proxy for "last opened / last
+    /// practiced / newest". Returns nil when the user has no sets (empty state).
+    private func mostRelevantSet(from sets: [FlashcardSet]) -> HomeSetPreviewItem? {
+        let mostRecent = sets.max { lhs, rhs in
+            (lhs.updatedAt, lhs.createdAt) < (rhs.updatedAt, rhs.createdAt)
+        }
+        return mostRecent.map { makePreviewItem(from: $0) }
     }
 
     private func makePreviewItem(from set: FlashcardSet) -> HomeSetPreviewItem {

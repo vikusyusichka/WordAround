@@ -28,8 +28,11 @@ struct HomeView: View {
                 .padding(.horizontal, Layout.homeHorizontalPadding)
 
                 HStack(alignment: .top, spacing: Layout.homeHeaderSidebarSpacing) {
-                    CategorySidebarView(selectedCategory: $viewModel.selectedCategory)
-                        .frame(width: Layout.homeSidebarWidth)
+                    CategorySidebarView(
+                        selectedCategory: $viewModel.selectedCategory,
+                        onSelect: { viewModel.selectCategory($0) }
+                    )
+                    .frame(width: Layout.homeSidebarWidth)
 
                     mainContent
                 }
@@ -47,7 +50,13 @@ struct HomeView: View {
 
             BottomNavigationBar(
                 selectedTab: $viewModel.selectedTab,
-                isCreateMenuPresented: $viewModel.isCreateMenuPresented
+                isCreateMenuPresented: $viewModel.isCreateMenuPresented,
+                onSelectTab: { tab in
+                    // Returning Home via the bar shows the dashboard, not the
+                    // last category. Sidebar-driven tab changes go through
+                    // `selectCategory` instead, so they keep their category.
+                    if tab == .home { viewModel.clearSelectedCategory() }
+                }
             )
             .padding(.horizontal, Layout.homeBottomBarHorizontalPadding)
             .padding(.bottom, Layout.homeBottomBarBottomPadding)
@@ -87,12 +96,9 @@ struct HomeView: View {
         .onChange(of: isCreateFolderPresented) { _, isPresented in
             refreshIfDismissed(isPresented)
         }
-        // Category-clearing rules live in the VM (`clearSelectedCategory()`);
-        // these handlers are the only place HomeView wires nav state changes
-        // to that rule. Spring curve matches the bar's tab/create animations.
-        .onChange(of: viewModel.selectedTab) { _, newTab in
-            if newTab == .home { viewModel.clearSelectedCategory() }
-        }
+        // Category-clearing rules live in the VM (`clearSelectedCategory()`).
+        // Home-tab taps clear via the bar's `onSelectTab`; opening the create
+        // menu clears here so it always returns to the dashboard.
         .onChange(of: viewModel.isCreateMenuPresented) { _, _ in
             viewModel.clearSelectedCategory()
         }
@@ -165,6 +171,8 @@ private extension HomeView {
                         ReadingView()
                     } else if viewModel.selectedCategory == .listening {
                         ListeningView()
+                    } else if viewModel.selectedCategory == .notes {
+                        GrammarNotesHomeView()
                     } else if let category = viewModel.selectedCategory {
                         categoryPlaceholder(for: category)
                     } else {
@@ -197,19 +205,23 @@ private extension HomeView {
 
     var dashboardContent: some View {
         VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-            todayGoalCard
+            sectionTitle("Daily practice")
 
-            HStack(spacing: Layout.homeStatCardSpacing) {
-                ForEach(viewModel.statCards) { card in
-                    StatCardView(item: card)
-                }
-            }
+            HomeStatsGridView(stats: viewModel.dailyStats)
 
             sectionTitle("Continue learning")
 
-            if let set = setsViewModel.continueLearningSet {
-                learningProgressCard(from: set)
-            }
+            ContinueLearningSetCardView(
+                set: setsViewModel.continueLearningSet,
+                onContinue: {
+                    if let set = setsViewModel.continueLearningSet?.sourceSet {
+                        selectedSetForDetails = set
+                    }
+                },
+                onCreate: {
+                    isCreateSetPresented = true
+                }
+            )
 
             SetsListView(
                 title: "Your sets",
@@ -295,58 +307,6 @@ private extension HomeView {
                     .padding(.top, 4)
             }
         }
-    }
-}
-
-// MARK: - Cards
-
-private extension HomeView {
-    var todayGoalCard: some View {
-        ProgressCardView(
-            layout: .goal,
-            title: viewModel.todayGoal.title,
-            currentValue: viewModel.todayGoal.currentValue,
-            totalValue: viewModel.todayGoal.totalValue,
-            unit: viewModel.todayGoal.unit,
-            subtitle: viewModel.todayGoal.subtitle,
-            progress: viewModel.todayGoal.progress,
-            tint: viewModel.todayGoal.accentColor,
-            backgroundColor: viewModel.todayGoal.backgroundColor,
-            progressBackgroundColor: viewModel.todayGoal.progressBackgroundColor,
-            titleColor: viewModel.todayGoal.titleColor,
-            valueColor: viewModel.todayGoal.valueColor,
-            subtitleColor: viewModel.todayGoal.subtitleColor,
-            iconSystemName: viewModel.todayGoal.iconSystemName,
-            iconBackground: viewModel.todayGoal.iconBackground,
-            blobColor: viewModel.todayGoal.blobColor
-        )
-    }
-
-    func learningProgressCard(from set: HomeSetPreviewItem) -> some View {
-        Button {
-            selectedSetForDetails = set.sourceSet
-        } label: {
-            ProgressCardView(
-                layout: .action,
-                title: set.title,
-                currentValue: set.currentValue,
-                totalValue: set.totalValue,
-                unit: set.unit,
-                subtitle: set.subtitle,
-                progress: set.progress,
-                tint: set.accentColor,
-                backgroundColor: set.backgroundColor,
-                progressBackgroundColor: set.progressBackgroundColor,
-                titleColor: set.titleColor,
-                valueColor: set.valueColor,
-                subtitleColor: set.subtitleColor,
-                iconSystemName: set.iconSystemName,
-                iconBackground: set.iconBackground,
-                blobColor: set.blobColor,
-                actionSystemName: "arrow.right"
-            )
-        }
-        .buttonStyle(.plain)
     }
 }
 
