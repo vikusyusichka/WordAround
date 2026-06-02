@@ -10,9 +10,6 @@ struct FreeSpeakingTopicCardView: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            // Layered green theme background: soft mint fill + a subtle
-            // green tint overlay so the card reads as part of the
-            // Free Speaking mode rather than a neutral white card.
             RoundedRectangle(cornerRadius: corner, style: .continuous)
                 .fill(AppColors.greenSoftBackground)
 
@@ -119,9 +116,6 @@ struct FreeSpeakingTopicCardView: View {
         }
     }
 
-    /// Three-tier visual hierarchy: primary (solid green) → secondary
-    /// (green tint) → tertiary (lighter tint). The first chip is the most
-    /// identifying (level), so it gets the heaviest treatment.
     private enum ChipTier { case primary, secondary, tertiary }
 
     private func chipTier(at index: Int) -> ChipTier {

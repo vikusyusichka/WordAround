@@ -109,7 +109,6 @@ struct PronunciationTrainerView: View {
         }
     }
 
-    // MARK: - Top Bar
 
     private var topBar: some View {
         ZStack {
@@ -167,7 +166,6 @@ struct PronunciationTrainerView: View {
         .clipShape(Capsule())
     }
 
-    // MARK: - Transcript
 
     private var transcriptSection: some View {
         Group {
@@ -202,7 +200,6 @@ struct PronunciationTrainerView: View {
         .opacity(isPlaceholder ? 0.75 : 1)
     }
 
-    // MARK: - Regenerate
 
     private var regenerateRow: some View {
         HStack {
@@ -224,7 +221,6 @@ struct PronunciationTrainerView: View {
         }
     }
 
-    // MARK: - Banner
 
     private func banner(_ message: String, isError: Bool) -> some View {
         HStack(alignment: .top, spacing: 10) {
@@ -257,7 +253,6 @@ struct PronunciationTrainerView: View {
         )
     }
 
-    // MARK: - Actions
 
     private func handleMicTap() { Task { await viewModel.toggleListening() } }
     private func handleNext() { viewModel.goToNextItem() }

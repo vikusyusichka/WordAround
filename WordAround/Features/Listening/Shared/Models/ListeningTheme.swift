@@ -13,9 +13,9 @@ enum ListeningTheme {
     static let importAudioDark = Color(red: 0.38, green: 0.26, blue: 0.72)
     static let importAudioBlob = Color(red: 0.90, green: 0.86, blue: 0.98)
 
-    static let videoListeningAccent = AppColors.orangeAccent
-    static let videoListeningDark = AppColors.orangeTitle
-    static let videoListeningBlob = AppColors.blobYellow
+    static let importVideoAccent = Color(red: 0.16, green: 0.66, blue: 0.62)
+    static let importVideoDark = Color(red: 0.08, green: 0.45, blue: 0.43)
+    static let importVideoBlob = Color(red: 0.82, green: 0.95, blue: 0.93)
 
     static let savedPracticeAccent = Color(red: 0.93, green: 0.40, blue: 0.60)
     static let savedPracticeDark = Color(red: 0.62, green: 0.18, blue: 0.42)

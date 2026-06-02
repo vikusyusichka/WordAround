@@ -53,8 +53,6 @@ private struct FlowChips: View {
     let accent: Color
 
     var body: some View {
-        // Two even rows keep layout stable across iPhone/iPad without
-        // requiring a custom layout container.
         ViewThatFits(in: .horizontal) {
             HStack(spacing: 8) { chips }
             VStack(alignment: .leading, spacing: 8) {

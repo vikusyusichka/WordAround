@@ -8,8 +8,6 @@ struct ListeningAudioPlayerCard: View {
     let speedLabel: String
     var accent: Color = ListeningTheme.accent
     var accentDark: Color = ListeningTheme.accentDark
-    /// When provided, the view model owns playback: the play/pause button calls
-    /// this instead of just toggling the binding locally.
     var onPlayPause: (() -> Void)? = nil
     var onReplay: (() -> Void)? = nil
 

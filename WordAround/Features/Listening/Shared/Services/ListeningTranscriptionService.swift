@@ -1,14 +1,8 @@
 import Foundation
 import Speech
 
-/// Transcribes an imported audio file using the Speech framework
-/// (`SFSpeechURLRecognitionRequest`). The resulting transcript is used only to
-/// generate questions and is kept hidden from the user by default.
 final class SpeechFrameworkAudioTranscriptionService: ListeningAudioTranscribing, @unchecked Sendable {
 
-    /// Maximum seconds to wait for SFSpeech to return a final result.
-    /// On-device recognition is fast; cloud fallback can take longer but 60 s
-    /// is a reasonable hard ceiling before we surface an error to the user.
     private static let timeoutSeconds: TimeInterval = 60
 
     func requestPermission() async -> Bool {
@@ -30,7 +24,6 @@ final class SpeechFrameworkAudioTranscriptionService: ListeningAudioTranscribing
         }
         recognizer.defaultTaskHint = .dictation
 
-        // Run the recognition with an overall timeout so we never hang forever.
         let transcript = try await withTimeout(seconds: Self.timeoutSeconds) {
             try await self.runRecognition(recognizer: recognizer, fileURL: fileURL)
         }
@@ -61,13 +54,10 @@ final class SpeechFrameworkAudioTranscriptionService: ListeningAudioTranscribing
                 continuation.resume(returning: result.bestTranscription.formattedString)
             }
 
-            // Store task reference so the timeout handler can cancel it.
-            _ = task // retained by the recognizer internally
+            _ = task
         }
     }
 
-    /// Runs `operation` and throws `ListeningTranscriptionError.failed` if it
-    /// does not complete within `seconds`.
     private func withTimeout<T: Sendable>(
         seconds: TimeInterval,
         operation: @escaping @Sendable () async throws -> T
@@ -82,7 +72,6 @@ final class SpeechFrameworkAudioTranscriptionService: ListeningAudioTranscribing
                 )
             }
 
-            // First task to finish wins; cancel the other.
             let result = try await group.next()!
             group.cancelAll()
             return result
@@ -90,7 +79,6 @@ final class SpeechFrameworkAudioTranscriptionService: ListeningAudioTranscribing
     }
 }
 
-/// Preview/test transcriber that returns canned text without permissions.
 struct MockAudioTranscriptionService: ListeningAudioTranscribing {
     var transcript: String = ListeningPlaceholderData.sampleText
     func requestPermission() async -> Bool { true }

@@ -86,7 +86,6 @@ struct DescribePictureSetupView: View {
         }
     }
 
-    // MARK: - Preview Card
 
     private var previewCard: some View {
         HStack(spacing: 14) {

@@ -22,8 +22,8 @@ enum ListeningAudioImportError: LocalizedError, Equatable {
 }
 
 struct ListeningImportedAudio: Equatable {
-    let fileName: String          // stored filename inside the audio cache dir
-    let originalName: String      // user-facing display name
+    let fileName: String
+    let originalName: String
     let url: URL
     let durationSeconds: Double
     let fileSizeBytes: Int
@@ -38,15 +38,11 @@ struct ListeningImportedAudio: Equatable {
     }
 }
 
-/// Copies an imported audio file into a dedicated cache directory and reads its
-/// metadata (duration, size). Validation guards unsupported formats and
-/// oversized files before any expensive work.
 struct ListeningAudioImporter {
 
     static let supportedExtensions: Set<String> = ["mp3", "m4a", "wav", "aac"]
-    private static let maxBytes = 50 * 1024 * 1024  // 50 MB
+    private static let maxBytes = 50 * 1024 * 1024
 
-    /// Folder where imported audio lives. Created lazily.
     static func audioDirectory() -> URL {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory
@@ -63,7 +59,6 @@ struct ListeningAudioImporter {
             throw ListeningAudioImportError.unsupportedFormat
         }
 
-        // Security-scoped access is required for files outside the sandbox.
         let needsScope = sourceURL.startAccessingSecurityScopedResource()
         defer { if needsScope { sourceURL.stopAccessingSecurityScopedResource() } }
 
@@ -109,7 +104,6 @@ struct ListeningAudioImporter {
         )
     }
 
-    /// Removes a stored audio file (e.g. when a session is deleted).
     static func deleteAudio(fileName: String) {
         let url = audioDirectory().appendingPathComponent(fileName)
         try? FileManager.default.removeItem(at: url)

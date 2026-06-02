@@ -41,10 +41,7 @@ final class SpeechSynthesisService: NSObject {
                     synthesizer.stopSpeaking(at: .immediate)
                 }
 
-                // IMPORTANT: the utterance text is exactly `trimmed` — the
-                // single string passed in by the caller. Callers must pass the
-                // target phrase ONLY (never the translation). See
-                // ShadowingViewModel.playTargetPhrase().
+                // Callers must pass the target phrase only (never the translation).
                 let utterance = AVSpeechUtterance(string: trimmed)
                 let resolvedVoice = Self.resolveVoice(localeIdentifier: localeIdentifier)
                 utterance.voice = resolvedVoice
@@ -60,11 +57,6 @@ final class SpeechSynthesisService: NSObject {
         }
     }
 
-    /// Picks the best installed voice for the requested locale, degrading
-    /// gracefully: exact locale → any voice sharing the language prefix
-    /// (e.g. "pt" matches "pt-BR" when "pt-PT" is missing) → system default
-    /// for the language → nil (system chooses). This keeps a non-English
-    /// phrase spoken in its own language whenever a voice exists.
     private static func resolveVoice(localeIdentifier: String) -> AVSpeechSynthesisVoice? {
         if let exact = AVSpeechSynthesisVoice(language: localeIdentifier) {
             return exact
@@ -77,8 +69,7 @@ final class SpeechSynthesisService: NSObject {
             return prefixed
         }
 
-        // Last resort: let the system default voice handle it rather than
-        // forcing en-US onto, say, a Spanish phrase.
+        // Last resort: system default voice rather than forcing en-US on non-English phrases.
         return AVSpeechSynthesisVoice(language: languagePrefix)
     }
 

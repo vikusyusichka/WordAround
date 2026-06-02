@@ -116,7 +116,6 @@ struct DescribePictureView: View {
         }
     }
 
-    // MARK: - Top Bar
 
     private var topBar: some View {
         ZStack {
@@ -184,7 +183,6 @@ struct DescribePictureView: View {
         .animation(.easeInOut(duration: 0.18), value: isWarning)
     }
 
-    // MARK: - Transcript
 
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -248,7 +246,6 @@ struct DescribePictureView: View {
         )
     }
 
-    // MARK: - Hint Bubble
 
     private func hintBubble(_ text: String) -> some View {
         HStack(spacing: 10) {
@@ -293,7 +290,6 @@ struct DescribePictureView: View {
         )
     }
 
-    // MARK: - Actions
 
     private func handleMicTap() {
         if isRecording {
@@ -317,7 +313,6 @@ struct DescribePictureView: View {
         withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
             activeHint = hint
         }
-        // Local only — auto-dismiss after a few seconds.
         Task { @MainActor in
             try? await Task.sleep(nanoseconds: 3_500_000_000)
             withAnimation(.easeInOut(duration: 0.25)) {

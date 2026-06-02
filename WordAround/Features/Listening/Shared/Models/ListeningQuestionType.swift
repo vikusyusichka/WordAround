@@ -9,7 +9,6 @@ enum ListeningQuestionType: String, CaseIterable, Identifiable, Codable {
     var id: String { rawValue }
 }
 
-/// Shared playback state across all listening modes (TTS, audio, video).
 enum ListeningPlaybackState: Equatable {
     case idle
     case playing
@@ -35,18 +34,3 @@ enum ListeningVoiceType: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-enum ListeningVideoLength: String, CaseIterable, Identifiable {
-    case short = "Short"
-    case medium = "Medium"
-    case long = "Long"
-
-    var id: String { rawValue }
-
-    var helperText: String {
-        switch self {
-        case .short: return "Short: 1–5 min"
-        case .medium: return "Medium: 5–12 min"
-        case .long: return "Long: 12–20 min"
-        }
-    }
-}

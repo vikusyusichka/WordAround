@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Shows the current round label and what the learner should do this turn.
 struct DebateRoundCardView: View {
     let round: DebateRound
 

@@ -2,19 +2,9 @@ import Foundation
 import SwiftUI
 import Combine
 
-/// Orchestrates the Shadowing flow over the SHARED speaking services:
-///
-///   ShadowingViewModel
-///     → ShadowingPhraseService      (target phrases)
-///     → SpeechSynthesisService      (play target phrase)
-///     → SpeechRecognitionService    (capture spoken repetition)
-///     → SpeakingFeedbackService     (optional end-of-session feedback)
-///
-/// No duplicate speech / feedback / timer / worker systems are created.
 @MainActor
 final class ShadowingViewModel: ObservableObject {
 
-    // MARK: - Published — Phrases
 
     @Published private(set) var phrases: [ShadowingPhrase] = []
     @Published private(set) var currentPhraseIndex = 0
@@ -22,13 +12,11 @@ final class ShadowingViewModel: ObservableObject {
     @Published private(set) var phraseGenerationError: String?
     @Published private(set) var usedFallbackPhrases = false
 
-    // MARK: - Published — Pronunciation Assessment
 
     @Published private(set) var currentAssessment: PronunciationAssessmentResult?
     @Published private(set) var isAssessingPronunciation = false
     @Published private(set) var assessmentError: String?
 
-    // MARK: - Published — Speech / Transcript
 
     @Published private(set) var userTranscript = ""
     @Published private(set) var partialTranscript = ""
@@ -37,19 +25,16 @@ final class ShadowingViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published private(set) var permissionsDenied = false
 
-    // MARK: - Published — Attempts
 
     @Published private(set) var attempts: [ShadowingAttempt] = []
     @Published private(set) var currentAttemptResult: ShadowingAttempt?
 
-    // MARK: - Published — Feedback (shared result screen)
 
     @Published private(set) var messages: [SpeakingConversationMessage] = []
     @Published private(set) var conversationFeedback: SpeakingConversationFeedback?
     @Published private(set) var isGeneratingFeedback = false
     @Published private(set) var feedbackError: String?
 
-    // MARK: - Derived
 
     var currentPhrase: ShadowingPhrase? {
         guard phrases.indices.contains(currentPhraseIndex) else { return nil }
@@ -63,7 +48,6 @@ final class ShadowingViewModel: ObservableObject {
         !phrases.isEmpty && currentPhraseIndex >= phrases.count - 1
     }
 
-    /// Progress as the fraction of phrases that have a recorded attempt.
     var sessionProgress: Double {
         guard !phrases.isEmpty else { return 0 }
         return min(1.0, Double(attempts.count) / Double(phrases.count))
@@ -81,14 +65,18 @@ final class ShadowingViewModel: ObservableObject {
 
     var hasAttemptForCurrentPhrase: Bool { currentAttemptResult != nil }
 
-    // MARK: - Public Interface
 
     let setup: SpeakingConversationSetup
     let category: ShadowingCategory
     var onSessionEnded: (() -> Void)?
 
-    // MARK: - Private
+    var usesPreloadedPhrases: Bool {
+        guard let preloadedPhrases else { return false }
+        return !preloadedPhrases.isEmpty
+    }
 
+
+    private let preloadedPhrases: [ShadowingPhrase]?
     private let recognizer: SpeechRecognitionService
     private let synthesizer: SpeechSynthesisService
     private let phraseService: ShadowingPhraseProviding
@@ -103,7 +91,6 @@ final class ShadowingViewModel: ObservableObject {
     private var feedbackTask: Task<Void, Never>?
     private var assessmentTask: Task<Void, Never>?
 
-    /// Shadowing task context fed to the shared feedback service.
     private let shadowingContext: SpeakingConversationContext = .generatedTopic(
         GeneratedConversationTopic(
             title: "Shadowing practice",
@@ -114,11 +101,11 @@ final class ShadowingViewModel: ObservableObject {
         )
     )
 
-    // MARK: - Init
 
     init(
         setup: SpeakingConversationSetup,
         category: ShadowingCategory,
+        preloadedPhrases: [ShadowingPhrase]? = nil,
         recognizer: SpeechRecognitionService? = nil,
         synthesizer: SpeechSynthesisService? = nil,
         phraseService: ShadowingPhraseProviding? = nil,
@@ -128,6 +115,7 @@ final class ShadowingViewModel: ObservableObject {
     ) {
         self.setup = setup
         self.category = category
+        self.preloadedPhrases = preloadedPhrases
         self.recognizer = recognizer ?? SpeechRecognitionService()
         self.synthesizer = synthesizer ?? SpeechSynthesisService()
         self.phraseService = phraseService ?? ShadowingPhraseService()
@@ -143,7 +131,6 @@ final class ShadowingViewModel: ObservableObject {
         assessmentTask?.cancel()
     }
 
-    // MARK: - Session Lifecycle
 
     func startSession() {
         guard !hasStarted else { return }
@@ -154,7 +141,19 @@ final class ShadowingViewModel: ObservableObject {
         print("[ShadowingVM] startSession lang=\(setup.language.title) level=\(setup.level.rawValue) category=\(category.rawValue)")
         #endif
 
-        loadFreshPhrases(forceRefresh: false)
+        if let preloadedPhrases, !preloadedPhrases.isEmpty {
+            applyPreloadedPhrases(preloadedPhrases)
+        } else {
+            loadFreshPhrases(forceRefresh: false)
+        }
+    }
+
+    private func applyPreloadedPhrases(_ batch: [ShadowingPhrase]) {
+        phrases = batch
+        currentPhraseIndex = 0
+        usedFallbackPhrases = false
+        phraseGenerationError = nil
+        isLoadingPhrases = false
     }
 
     func endSession() {
@@ -208,13 +207,9 @@ final class ShadowingViewModel: ObservableObject {
         hasEnded = false
     }
 
-    // MARK: - Phrase Loading
 
-    /// Generates a fresh set of 5 AI phrases for the current language/level/
-    /// category. Falls back to randomized local phrases if AI is unavailable.
-    /// `forceRefresh` is used by the "Regenerate" action and avoids the
-    /// currently shown phrases in addition to the persisted recent set.
     func loadFreshPhrases(forceRefresh: Bool) {
+        guard !usesPreloadedPhrases else { return }
         guard !isLoadingPhrases else { return }
         isLoadingPhrases = true
         errorMessage = nil
@@ -226,7 +221,6 @@ final class ShadowingViewModel: ObservableObject {
         let service = phraseService
         let avoid = forceRefresh ? phrases.map(\.text) : []
 
-        // Clear current attempt/assessment when regenerating.
         currentAssessment = nil
         assessmentError = nil
         currentAttemptResult = nil
@@ -261,17 +255,15 @@ final class ShadowingViewModel: ObservableObject {
         }
     }
 
-    /// Regenerate button — always produces a different set.
     func regeneratePhrases() {
+        guard !usesPreloadedPhrases else { return }
         loadFreshPhrases(forceRefresh: true)
     }
 
-    // MARK: - Playback
 
     func playTargetPhrase() {
         guard let phrase = currentPhrase else { return }
 
-        // Never listen and speak at the same time.
         if recognizer.isListening {
             recognizer.cancel()
         }
@@ -284,11 +276,9 @@ final class ShadowingViewModel: ObservableObject {
 
         isSpeakingTarget = true
         state = .speaking
-        // Speak ONLY the target-language phrase. The translation is for display.
         synthesizer.speak(phrase.text, localeIdentifier: setup.speechLocaleIdentifier)
     }
 
-    // MARK: - Speech Recognition
 
     func toggleListening() async {
         switch state {
@@ -302,7 +292,6 @@ final class ShadowingViewModel: ObservableObject {
     }
 
     func startListening() async {
-        // Stop any target playback first.
         if isSpeakingTarget {
             synthesizer.stop()
             isSpeakingTarget = false
@@ -323,7 +312,6 @@ final class ShadowingViewModel: ObservableObject {
             permissionsDenied = false
         }
 
-        // Fresh attempt for this take.
         currentAttemptResult = nil
         userTranscript = ""
         lastSubmittedTranscript = ""
@@ -373,12 +361,7 @@ final class ShadowingViewModel: ObservableObject {
         state = .idle
     }
 
-    // MARK: - Pronunciation Assessment
 
-    /// Runs the real pronunciation assessor first; on failure (e.g. Azure SDK
-    /// not yet wired) falls back to the transcript-similarity estimate and
-    /// records an honest message. Currently no audio file is captured, so the
-    /// fallback path is expected until the Azure SDK + WAV capture are added.
     func assessCurrentAttempt(referenceText: String, recognizedText: String) {
         let languageCode = setup.speechLocaleIdentifier
         let realAssessor = pronunciationAssessor
@@ -394,8 +377,6 @@ final class ShadowingViewModel: ObservableObject {
         #endif
 
         assessmentTask = Task { [weak self] in
-            // 1) Try the real (Azure) assessor. We only have recognized text
-            //    today, so this throws .notImplemented and we fall back.
             do {
                 let result = try await realAssessor.assessPronunciation(
                     audioInput: .recognizedText(recognizedText),
@@ -418,7 +399,6 @@ final class ShadowingViewModel: ObservableObject {
                 #endif
             }
 
-            // 2) Honest transcript-similarity fallback.
             do {
                 let estimate = try await fallback.assessPronunciation(
                     audioInput: .recognizedText(recognizedText),
@@ -446,9 +426,7 @@ final class ShadowingViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Comparison
 
-    /// Local transcript comparison only. NOT true pronunciation analysis.
     func compareAttempt(target: ShadowingPhrase, userTranscript: String) -> ShadowingAttempt {
         let attempt = ShadowingComparison.evaluate(phrase: target, userTranscript: userTranscript)
         #if DEBUG
@@ -459,14 +437,11 @@ final class ShadowingViewModel: ObservableObject {
 
     private func recordAttempt(_ attempt: ShadowingAttempt) {
         currentAttemptResult = attempt
-        // Replace any previous attempt for this phrase (retry overwrites).
         attempts.removeAll { $0.phraseID == attempt.phraseID }
         attempts.append(attempt)
-        // Feed the shared feedback pipeline with what the learner actually said.
         messages.append(SpeakingConversationMessage(role: .user, text: attempt.userTranscript))
     }
 
-    // MARK: - Navigation
 
     func retryCurrentPhrase() {
         #if DEBUG
@@ -521,7 +496,6 @@ final class ShadowingViewModel: ObservableObject {
         errorMessage = nil
     }
 
-    // MARK: - Callbacks
 
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
@@ -565,7 +539,6 @@ final class ShadowingViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Feedback
 
     private func beginFeedbackGeneration() {
         let snapshotLanguage = setup.language
@@ -600,6 +573,5 @@ final class ShadowingViewModel: ObservableObject {
     }
 }
 
-// MARK: - Protocol Conformances
 
 extension ShadowingViewModel: SpeakingResultProvidable {}

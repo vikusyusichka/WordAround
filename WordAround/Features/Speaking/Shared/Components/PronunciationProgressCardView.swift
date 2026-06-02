@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Slim session-progress bar: "Item X of Y" plus a fill bar. Presentation only.
 struct PronunciationProgressCardView: View {
     let currentIndex: Int
     let total: Int

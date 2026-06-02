@@ -3,8 +3,6 @@ import SwiftUI
 struct AIConversationSetupView: View {
     @Environment(\.dismiss) private var dismiss
 
-    /// Pops the whole flow back to the main Speaking screen. Supplied by
-    /// `SpeakingView`. `nil` in previews.
     var onExitToSpeaking: (() -> Void)? = nil
 
     @State private var selectedLanguage: GrammarLanguage = .english

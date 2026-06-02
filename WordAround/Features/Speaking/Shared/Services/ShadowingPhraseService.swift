@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - Errors
 
 enum ShadowingPhraseError: LocalizedError {
     case noPhrases
@@ -20,20 +19,14 @@ enum ShadowingPhraseError: LocalizedError {
     }
 }
 
-// MARK: - Batch result
 
-/// Result of a phrase request. `usedFallback` is true when AI generation
-/// failed (or was unavailable) and curated local phrases were returned.
 struct ShadowingPhraseBatch {
     let phrases: [ShadowingPhrase]
     let usedFallback: Bool
     let fallbackReason: String?
 }
 
-// MARK: - Protocol
 
-/// Provides target phrases for Shadowing. Protocol-based so the view model
-/// can be driven by a mock in previews/tests.
 protocol ShadowingPhraseProviding {
     func phrases(
         for language: GrammarLanguage,
@@ -54,13 +47,10 @@ extension ShadowingPhraseProviding {
     }
 }
 
-// MARK: - Configuration
 
 enum ShadowingPhraseAIConfiguration {
     static let workerPath = "/api/shadowing/phrases"
 
-    /// Built from the shared Gemini-proxy base URL. The Gemini key lives only
-    /// in the Worker — the app never sees it.
     static var endpointURL: URL? {
         guard
             let base = GrammarQuizAIConfiguration.endpointURL,
@@ -71,15 +61,7 @@ enum ShadowingPhraseAIConfiguration {
     }
 }
 
-// MARK: - Service
 
-/// AI-first phrase provider:
-///   ShadowingViewModel → ShadowingPhraseService → CloudflareShadowingPhraseClient
-///   → Cloudflare Worker (/api/shadowing/phrases) → Gemini
-///
-/// On any AI failure it falls back to curated local sets (randomized, never
-/// the same first phrase). Recently used phrases are remembered so fresh
-/// sessions avoid repeats. No API keys live in the app.
 final class ShadowingPhraseService: ShadowingPhraseProviding {
 
     private let aiClient: CloudflareShadowingPhraseClient?
@@ -113,7 +95,6 @@ final class ShadowingPhraseService: ShadowingPhraseProviding {
         print("[ShadowingPhraseService] request lang=\(language.title) level=\(level.rawValue) category=\(category.rawValue) count=\(count) avoidCount=\(avoid.count) aiConfigured=\(aiClient != nil)")
         #endif
 
-        // 1) Try AI generation through the Worker.
         if let aiClient {
             do {
                 let generated = try await aiClient.generatePhrases(
@@ -140,7 +121,6 @@ final class ShadowingPhraseService: ShadowingPhraseProviding {
             }
         }
 
-        // 2) Local fallback (randomized, avoiding recent).
         let fallback = Self.localFallback(
             language: language, level: level, category: category, count: count, avoid: avoid
         )
@@ -156,12 +136,9 @@ final class ShadowingPhraseService: ShadowingPhraseProviding {
         return ShadowingPhraseBatch(phrases: fallback, usedFallback: true, fallbackReason: reason)
     }
 
-    // MARK: - Local Fallback Library
 
     private struct Entry { let text: String; let translation: String? }
 
-    /// Curated local phrases, shuffled and filtered against recent ones so
-    /// fallback never repeatedly returns the same first phrase.
     private static func localFallback(
         language: GrammarLanguage,
         level: EssayDifficulty,
@@ -210,6 +187,7 @@ final class ShadowingPhraseService: ShadowingPhraseProviding {
         case .interview:     return "Speak confidently and finish your sentences."
         case .academic:      return "Articulate longer words fully and slow down slightly."
         case .pronunciation: return "Focus on the tricky sounds; exaggerate them at first."
+        case .fromVideo:     return "Repeat the word clearly, matching the pronunciation you heard."
         }
     }
 
@@ -275,6 +253,8 @@ final class ShadowingPhraseService: ShadowingPhraseProviding {
                 Entry(text: "Six slippery snails slid slowly seaward.", translation: nil),
                 Entry(text: "A proper copper coffee pot.", translation: nil)
             ]
+        case .fromVideo:
+            return []
         }
     }
 
@@ -340,6 +320,8 @@ final class ShadowingPhraseService: ShadowingPhraseProviding {
                 Entry(text: "Como poco coco como, poco coco compro.", translation: "As I eat little coconut, I buy little coconut."),
                 Entry(text: "El cielo está enladrillado.", translation: "The sky is bricked.")
             ]
+        case .fromVideo:
+            return []
         }
     }
 
@@ -405,6 +387,8 @@ final class ShadowingPhraseService: ShadowingPhraseProviding {
                 Entry(text: "Je veux et j'exige.", translation: "I want and I demand."),
                 Entry(text: "Ton thé t'a-t-il ôté ta toux ?", translation: "Did your tea take away your cough?")
             ]
+        case .fromVideo:
+            return []
         }
     }
 
@@ -470,13 +454,13 @@ final class ShadowingPhraseService: ShadowingPhraseProviding {
                 Entry(text: "In Ulm und um Ulm herum.", translation: "In Ulm and around Ulm."),
                 Entry(text: "Wenn Fliegen hinter Fliegen fliegen.", translation: "When flies fly behind flies.")
             ]
+        case .fromVideo:
+            return []
         }
     }
 }
 
-// MARK: - Mock
 
-/// Offline provider for previews/tests.
 final class MockShadowingPhraseService: ShadowingPhraseProviding {
     func phrases(
         for language: GrammarLanguage,

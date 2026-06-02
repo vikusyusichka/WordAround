@@ -1,11 +1,5 @@
 import SwiftUI
 
-/// Large centered card showing the current pronunciation item: big target
-/// text, translation, focus-sound and difficulty chips, tip, a primary
-/// "Play pronunciation" button and an optional "Play example" button.
-///
-/// Presentation only — playback is triggered through closures. The main play
-/// button speaks ONLY `item.text`; the example button is separate.
 struct PronunciationItemCardView: View {
     let item: PronunciationItem?
     let isLoading: Bool

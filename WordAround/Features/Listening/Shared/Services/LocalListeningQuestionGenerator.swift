@@ -1,9 +1,5 @@
 import Foundation
 
-/// On-device comprehension question generator. Produces multiple-choice /
-/// true-false questions from a passage using lightweight heuristics. No network
-/// or AI calls — runs entirely locally so Listen From Text and Import Audio work
-/// offline. Replaceable by an AI-backed `ListeningQuestionGenerating` later.
 struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
 
     func generateQuestions(
@@ -19,7 +15,6 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
         }.value
     }
 
-    // MARK: - Builder
 
     private static func build(
         text: String,
@@ -41,33 +36,28 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
             questions.append(question)
         }
 
-        // 1. Main idea — always first when enabled.
         if enabledTypes.contains(.mainIdea) {
             append(makeMainIdea(sentences: sentences))
         }
 
-        // 2. Detail questions from the body sentences.
         if enabledTypes.contains(.details) {
             for sentence in sentences.dropFirst().prefix(4) {
                 append(makeDetail(sentence: sentence, otherSentences: sentences))
             }
         }
 
-        // 3. Vocabulary / word recognition.
         if enabledTypes.contains(.vocabulary) {
             for sentence in sentences.prefix(4) {
                 append(makeVocabulary(sentence: sentence, allText: text))
             }
         }
 
-        // 4. True / false.
         if enabledTypes.contains(.trueFalse) {
             for (index, sentence) in sentences.prefix(5).enumerated() {
                 append(makeTrueFalse(sentence: sentence, preferTrue: index.isMultiple(of: 2)))
             }
         }
 
-        // Fallback: if nothing matched the enabled types, still return a main idea.
         if questions.isEmpty {
             append(makeMainIdea(sentences: sentences))
         }
@@ -75,7 +65,6 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
         return Array(questions.prefix(maxQuestions))
     }
 
-    // MARK: - Question makers
 
     private static func makeMainIdea(sentences: [String]) -> ListeningQuestion? {
         let lead = sentences.first ?? ""
@@ -178,7 +167,6 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
         )
     }
 
-    // MARK: - Helpers
 
     static func sentences(from text: String) -> [String] {
         var result: [String] = []
@@ -188,7 +176,6 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
             }
         }
         if result.isEmpty {
-            // Fallback split on newlines for sources without sentence punctuation.
             result = text
                 .split(whereSeparator: { $0 == "\n" })
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -213,10 +200,8 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
         word.prefix(1).uppercased() + word.dropFirst()
     }
 
-    /// Deduplicates, shuffles options and returns the index of `correct`.
     private static func shuffle(_ options: [String], correct: String) -> (options: [String], correctIndex: Int) {
-        // Deduplicate while preserving order (NSOrderedSet is ObjC and fragile
-        // across Swift value types — use a pure-Swift approach instead).
+        // NSOrderedSet is ObjC-fragile across Swift value types; dedupe with Set instead.
         var seen = Set<String>()
         var unique = options.filter { seen.insert($0).inserted }
 
@@ -225,7 +210,6 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
         if let idx = unique.firstIndex(of: correct) {
             return (unique, idx)
         }
-        // Correct answer was removed as duplicate or missing — re-insert at front.
         unique.insert(correct, at: 0)
         return (unique, 0)
     }
@@ -237,10 +221,6 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
     ]
 }
 
-/// Placeholder for a future AI-backed generator. The project's AI provider
-/// router (Cloudflare Worker) can be wired in here without touching call sites,
-/// since it conforms to the same `ListeningQuestionGenerating` protocol. Until
-/// then it falls back to the local generator.
 struct AIListeningQuestionGenerator: ListeningQuestionGenerating {
     private let fallback = LocalListeningQuestionGenerator()
 
@@ -251,8 +231,6 @@ struct AIListeningQuestionGenerator: ListeningQuestionGenerating {
         types: Set<ListeningQuestionType>,
         count: Int
     ) async -> [ListeningQuestion] {
-        // TODO: call the AI provider router with a task hint, then parse the
-        // structured questions. For now delegate to the local generator.
         await fallback.generateQuestions(
             from: text, language: language, level: level, types: types, count: count
         )

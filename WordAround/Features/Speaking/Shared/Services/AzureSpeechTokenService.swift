@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - Errors
 
 enum AzureSpeechTokenError: LocalizedError {
     case notConfigured
@@ -18,11 +17,8 @@ enum AzureSpeechTokenError: LocalizedError {
     }
 }
 
-// MARK: - Protocol
 
-/// Fetches a short-lived Azure Speech auth token + region. The Azure
-/// subscription key NEVER lives in the app — the Worker holds it as a secret
-/// and exchanges it for a ~10-minute token.
+/// Azure subscription key never lives in the app — the Worker holds it as a secret.
 protocol AzureSpeechTokenProviding {
     func fetchToken() async throws -> AzureSpeechToken
 }
@@ -36,7 +32,6 @@ struct AzureSpeechToken: Equatable {
     var isFresh: Bool { Date().timeIntervalSince(fetchedAt) < 8 * 60 }
 }
 
-// MARK: - Configuration
 
 enum AzureSpeechTokenConfiguration {
     static let workerPath = "/api/speech/azure-token"
@@ -51,10 +46,7 @@ enum AzureSpeechTokenConfiguration {
     }
 }
 
-// MARK: - Service
 
-/// Calls the Worker `POST /api/speech/azure-token` endpoint and caches the
-/// returned token until it nears expiry. iOS → Worker → Azure STS.
 final class AzureSpeechTokenService: AzureSpeechTokenProviding {
 
     private let endpointURL: URL?

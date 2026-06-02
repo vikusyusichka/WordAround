@@ -10,9 +10,6 @@ struct SpeakingConversationFeedback: Equatable, Identifiable {
     let fluency: SpeakingFeedbackMetric
     let corrections: [SpeakingCorrection]
 
-    /// Mode-specific extra metrics shown after the four core ones. Empty for
-    /// most modes; Debate Mode populates it with Argument quality,
-    /// Persuasiveness and Structure.
     let extraMetrics: [SpeakingFeedbackMetric]
 
     let transcript: String

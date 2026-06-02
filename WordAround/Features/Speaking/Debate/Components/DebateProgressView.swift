@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Horizontal segmented bar showing how far through the debate rounds the
-/// learner is. Completed and current rounds are filled with the accent.
 struct DebateProgressView: View {
     let rounds: [DebateRound]
     let currentIndex: Int

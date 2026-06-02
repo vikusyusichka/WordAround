@@ -1,10 +1,6 @@
 import Foundation
 
-/// Calls the Worker endpoint `POST /api/shadowing/phrases`, decodes the
-/// strict JSON phrase set, and maps it to `[ShadowingPhrase]`.
-///
-/// The Gemini key lives only in the Worker — this client only knows the
-/// Worker URL. Never talks to an AI provider directly.
+/// Gemini API key lives only in the Worker.
 final class CloudflareShadowingPhraseClient {
 
     private let endpointURL: URL
@@ -127,11 +123,7 @@ final class CloudflareShadowingPhraseClient {
     }
 }
 
-// MARK: - Recent Phrase Store
 
-/// Remembers recently generated/used phrase texts per language+level+category
-/// so fresh sessions can ask the AI to avoid repeats (and the local fallback
-/// can rotate). Mirrors `SpeakingRecentTopicTitlesStore`.
 struct ShadowingRecentPhraseStore {
 
     static let shared = ShadowingRecentPhraseStore()

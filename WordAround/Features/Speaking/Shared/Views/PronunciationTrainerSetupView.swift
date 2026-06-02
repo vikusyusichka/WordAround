@@ -94,7 +94,6 @@ struct PronunciationTrainerSetupView: View {
         }
     }
 
-    // MARK: - Difficulty Picker
 
     private var difficultyPicker: some View {
         HStack(spacing: Layout.convSetupGridSpacing) {
@@ -122,7 +121,6 @@ struct PronunciationTrainerSetupView: View {
         }
     }
 
-    // MARK: - Focus Grid
 
     private var focusGrid: some View {
         LazyVGrid(columns: focusColumns, spacing: 10) {
@@ -157,7 +155,6 @@ struct PronunciationTrainerSetupView: View {
         }
     }
 
-    // MARK: - Preview Card
 
     private var previewCard: some View {
         VStack(alignment: .leading, spacing: 12) {

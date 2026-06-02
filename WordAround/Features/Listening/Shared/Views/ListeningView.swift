@@ -5,7 +5,7 @@ struct ListeningView: View {
 
     @State private var openListenFromText = false
     @State private var openImportAudio = false
-    @State private var openVideoListening = false
+    @State private var openImportVideo = false
     @State private var openSavedPractice = false
 
     private var columns: [GridItem] {
@@ -46,8 +46,8 @@ struct ListeningView: View {
         .navigationDestination(isPresented: $openImportAudio) {
             ImportAudioSetupView(onExitToListening: { openImportAudio = false })
         }
-        .navigationDestination(isPresented: $openVideoListening) {
-            VideoListeningSetupView(onExitToListening: { openVideoListening = false })
+        .navigationDestination(isPresented: $openImportVideo) {
+            ImportVideoSetupView(onExitToListening: { openImportVideo = false })
         }
         .navigationDestination(isPresented: $openSavedPractice) {
             SavedPracticeView(onExitToListening: { openSavedPractice = false })
@@ -58,7 +58,7 @@ struct ListeningView: View {
         switch mode.id {
         case "listen-from-text": openListenFromText = true
         case "import-audio":     openImportAudio = true
-        case "video-listening":  openVideoListening = true
+        case "import-video":     openImportVideo = true
         case "saved-practice":   openSavedPractice = true
         default:                 break
         }

@@ -1,9 +1,6 @@
 import Foundation
 
-// MARK: - Category
 
-/// Phrase set categories offered in Shadowing. Presentation metadata
-/// (title / systemImage) lives here so pickers and chips stay consistent.
 enum ShadowingCategory: String, CaseIterable, Identifiable, Equatable {
     case daily
     case travel
@@ -11,8 +8,13 @@ enum ShadowingCategory: String, CaseIterable, Identifiable, Equatable {
     case interview
     case academic
     case pronunciation
+    case fromVideo
 
     var id: String { rawValue }
+
+    static var selectableCases: [ShadowingCategory] {
+        allCases.filter { $0 != .fromVideo }
+    }
 
     var title: String {
         switch self {
@@ -22,6 +24,7 @@ enum ShadowingCategory: String, CaseIterable, Identifiable, Equatable {
         case .interview:     return "Interview"
         case .academic:      return "Academic"
         case .pronunciation: return "Pronunciation"
+        case .fromVideo:     return "From video"
         }
     }
 
@@ -33,14 +36,12 @@ enum ShadowingCategory: String, CaseIterable, Identifiable, Equatable {
         case .interview:     return "person.crop.rectangle.fill"
         case .academic:      return "graduationcap.fill"
         case .pronunciation: return "waveform"
+        case .fromVideo:     return "play.rectangle.fill"
         }
     }
 }
 
-// MARK: - Phrase
 
-/// A single target phrase the learner listens to and repeats. Pure value
-/// type — no business logic. Comparison/scoring lives in `ShadowingAttempt`.
 struct ShadowingPhrase: Identifiable, Equatable {
     let id: UUID
     let text: String

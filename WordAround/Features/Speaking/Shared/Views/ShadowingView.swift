@@ -9,8 +9,16 @@ struct ShadowingView: View {
     private let accent = ShadowingTheme.accent
     private let accentDark = ShadowingTheme.accentDark
 
-    init(setup: SpeakingConversationSetup, category: ShadowingCategory) {
-        _viewModel = StateObject(wrappedValue: ShadowingViewModel(setup: setup, category: category))
+    init(
+        setup: SpeakingConversationSetup,
+        category: ShadowingCategory,
+        preloadedPhrases: [ShadowingPhrase]? = nil
+    ) {
+        _viewModel = StateObject(wrappedValue: ShadowingViewModel(
+            setup: setup,
+            category: category,
+            preloadedPhrases: preloadedPhrases
+        ))
     }
 
     var body: some View {
@@ -32,7 +40,9 @@ struct ShadowingView: View {
                                 progress: viewModel.sessionProgress
                             )
 
-                            regenerateRow
+                            if !viewModel.usesPreloadedPhrases {
+                                regenerateRow
+                            }
                         }
 
                         ShadowingPhraseCardView(
@@ -119,7 +129,6 @@ struct ShadowingView: View {
         }
     }
 
-    // MARK: - Top Bar
 
     private var topBar: some View {
         ZStack {
@@ -180,7 +189,6 @@ struct ShadowingView: View {
         .clipShape(Capsule())
     }
 
-    // MARK: - Transcript
 
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -242,7 +250,6 @@ struct ShadowingView: View {
         )
     }
 
-    // MARK: - Regenerate
 
     private var regenerateRow: some View {
         HStack {
@@ -266,7 +273,6 @@ struct ShadowingView: View {
         }
     }
 
-    // MARK: - Banner
 
     private func banner(_ message: String, isError: Bool) -> some View {
         HStack(alignment: .top, spacing: 10) {
@@ -299,7 +305,6 @@ struct ShadowingView: View {
         )
     }
 
-    // MARK: - Actions
 
     private func handleMicTap() {
         Task { await viewModel.toggleListening() }

@@ -31,7 +31,6 @@ final class ImportAudioSetupViewModel: ObservableObject {
         errorMessage = nil
     }
 
-    /// Result coming back from SwiftUI's `.fileImporter`.
     func handleImportResult(_ result: Result<[URL], Error>) {
         switch result {
         case .failure(let error):

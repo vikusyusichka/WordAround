@@ -1,10 +1,6 @@
 import Foundation
 
-/// Calls the Worker endpoint `POST /api/pronunciation/content`, decodes the
-/// strict JSON item set, and maps it to `[PronunciationItem]`.
-///
-/// The Gemini key lives only in the Worker — this client only knows the
-/// Worker URL. Never talks to an AI provider directly.
+/// Gemini API key lives only in the Worker.
 final class CloudflarePronunciationContentClient {
 
     private let endpointURL: URL
@@ -140,10 +136,7 @@ final class CloudflarePronunciationContentClient {
     }
 }
 
-// MARK: - Recent Item Store
 
-/// Remembers recently used item texts per language+level+difficulty so fresh
-/// sessions can ask the AI to avoid repeats (and the local fallback rotates).
 struct PronunciationRecentItemStore {
 
     static let shared = PronunciationRecentItemStore()

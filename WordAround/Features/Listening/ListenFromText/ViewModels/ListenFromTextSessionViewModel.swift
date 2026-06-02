@@ -51,7 +51,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         }
 
         self.speech.onStart = { [weak self] in
-            // State confirmed by AVFoundation — timer is already running from startSpeaking().
             self?.playbackState = .playing
         }
         self.speech.onFinish = { [weak self] in
@@ -63,7 +62,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Lifecycle
 
     func onAppear() {
         guard !didStart else { return }
@@ -82,7 +80,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Question generation
 
     private func generateQuestions() {
         isGeneratingQuestions = true
@@ -100,7 +97,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Playback
 
     var isPlaying: Bool { playbackState == .playing }
 
@@ -140,12 +136,10 @@ final class ListenFromTextSessionViewModel: ObservableObject {
             rate: setup.voiceSpeed.utteranceRate,
             voiceType: setup.voiceType
         )
-        // onStart flips state to .playing; set optimistically for immediate UI.
         playbackState = .playing
         startTimer()
     }
 
-    // MARK: - Timer
 
     private func startTimer() {
         stopTimer()
@@ -165,11 +159,9 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         guard playbackState == .playing else { return }
         elapsedSeconds += 1
         playbackElapsed += 1
-        // Allow up to 1.0; onFinish will set exactly 1.0 when TTS ends naturally.
         progress = min(playbackElapsed / estimatedDuration, 1.0)
     }
 
-    // MARK: - Answers
 
     func selectAnswer(questionID: String, optionIndex: Int) {
         guard !hasCheckedAnswers else { return }
@@ -221,7 +213,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         showResult = true
     }
 
-    // MARK: - Display helpers
 
     var timerText: String { formatTime(elapsedSeconds) }
     var durationText: String { formatTime(Int(estimatedDuration)) }
@@ -231,7 +222,6 @@ final class ListenFromTextSessionViewModel: ObservableObject {
         String(format: "%d:%02d", seconds / 60, seconds % 60)
     }
 
-    // MARK: - Persistence
 
     private func persist(status: ListeningSessionStatus, result: ListeningResult? = nil) {
         let session = ListeningPersistedSession(

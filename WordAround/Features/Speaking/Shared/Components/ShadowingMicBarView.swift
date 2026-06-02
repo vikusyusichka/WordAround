@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Floating bottom bar for Shadowing. Presentation only.
-/// LEFT: Retry · CENTER: Mic · RIGHT: Next.
 struct ShadowingMicBarView: View {
     let state: SpeakingConversationState
     let canRetry: Bool

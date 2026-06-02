@@ -32,8 +32,6 @@ struct SpeakingFeedbackAIResponseDTO: Decodable {
     let fluency: MetricDTO
     let corrections: [CorrectionDTO]
 
-    /// Debate-only metrics. Optional so non-debate responses decode
-    /// unchanged; present only when `includeDebateMetrics` was requested.
     let argumentQuality: MetricDTO?
     let persuasiveness: MetricDTO?
     let structure: MetricDTO?
@@ -60,8 +58,6 @@ struct SpeakingFeedbackRequest {
 
     let messages: [SpeakingConversationMessage]
 
-    /// When true the evaluator is asked to also produce the three debate
-    /// metrics (argument quality, persuasiveness, structure).
     let includeDebateMetrics: Bool
 
     init(

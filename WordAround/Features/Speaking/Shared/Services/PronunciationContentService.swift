@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - Errors
 
 enum PronunciationContentError: LocalizedError {
     case noItems
@@ -20,7 +19,6 @@ enum PronunciationContentError: LocalizedError {
     }
 }
 
-// MARK: - Batch
 
 struct PronunciationItemBatch {
     let items: [PronunciationItem]
@@ -28,7 +26,6 @@ struct PronunciationItemBatch {
     let fallbackReason: String?
 }
 
-// MARK: - Protocol
 
 protocol PronunciationContentProviding {
     func items(
@@ -52,7 +49,6 @@ extension PronunciationContentProviding {
     }
 }
 
-// MARK: - Configuration
 
 enum PronunciationContentConfiguration {
     static let workerPath = "/api/pronunciation/content"
@@ -67,15 +63,7 @@ enum PronunciationContentConfiguration {
     }
 }
 
-// MARK: - Service
 
-/// AI-first pronunciation item provider:
-///   PronunciationTrainerViewModel → PronunciationContentService
-///   → CloudflarePronunciationContentClient → Worker (/api/pronunciation/content) → Gemini
-///
-/// On any AI failure it falls back to curated local sets (randomized, never
-/// the same first item). Recently used items are remembered so fresh sessions
-/// avoid repeats. No API keys live in the app.
 final class PronunciationContentService: PronunciationContentProviding {
 
     private let aiClient: CloudflarePronunciationContentClient?
@@ -110,7 +98,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         print("[PronunciationContent] request lang=\(language.title) level=\(level.rawValue) difficulty=\(difficulty.rawValue) focus=\(focus.promptValue) count=\(count) avoidCount=\(avoid.count) aiConfigured=\(aiClient != nil)")
         #endif
 
-        // 1) Try AI generation through the Worker.
         if let aiClient {
             do {
                 let generated = try await aiClient.generateItems(
@@ -134,7 +121,6 @@ final class PronunciationContentService: PronunciationContentProviding {
             }
         }
 
-        // 2) Local fallback (randomized, avoiding recent).
         let fallback = Self.localFallback(
             language: language, level: level, difficulty: difficulty, count: count, avoid: avoid
         )
@@ -150,7 +136,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         return PronunciationItemBatch(items: fallback, usedFallback: true, fallbackReason: reason)
     }
 
-    // MARK: - Local Fallback Library
 
     private struct Entry {
         let type: PronunciationItemType
@@ -200,7 +185,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         }
     }
 
-    // MARK: English
 
     private static let english: [Entry] = [
         Entry(type: .minimalPair, text: "ship / sheep", translation: "ship / sheep", focusSound: "ɪ vs iː", tip: "Keep the vowel short for 'ship', long for 'sheep'.", example: "The sheep is on the ship."),
@@ -215,7 +199,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         Entry(type: .word, text: "squirrel", translation: "squirrel", focusSound: "skwɪrəl", tip: "Glide through the 'qu' then the 'rr'.", example: "A squirrel ran up the tree.")
     ]
 
-    // MARK: Spanish
 
     private static let spanish: [Entry] = [
         Entry(type: .minimalPair, text: "pero / perro", translation: "but / dog", focusSound: "r vs rr", tip: "Tap once for 'pero', roll for 'perro'.", example: "Pero el perro ladra."),
@@ -230,7 +213,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         Entry(type: .word, text: "guitarra", translation: "guitar", focusSound: "rr", tip: "Roll the 'rr' at the end.", example: "Toca la guitarra.")
     ]
 
-    // MARK: French
 
     private static let french: [Entry] = [
         Entry(type: .word, text: "rue", translation: "street", focusSound: "French r + u", tip: "Guttural 'r' then rounded 'u'.", example: "J'habite dans cette rue."),
@@ -245,7 +227,6 @@ final class PronunciationContentService: PronunciationContentProviding {
         Entry(type: .word, text: "feuille", translation: "leaf", focusSound: "euille", tip: "Glide 'eu' into a 'y'.", example: "La feuille tombe.")
     ]
 
-    // MARK: German
 
     private static let german: [Entry] = [
         Entry(type: .word, text: "ich", translation: "I", focusSound: "ç (ich-laut)", tip: "Soft 'h' with the tongue near the palate.", example: "Ich bin müde."),
@@ -261,7 +242,6 @@ final class PronunciationContentService: PronunciationContentProviding {
     ]
 }
 
-// MARK: - Mock
 
 final class MockPronunciationContentService: PronunciationContentProviding {
     func items(

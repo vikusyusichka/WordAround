@@ -1,9 +1,6 @@
 import Foundation
 
-// MARK: - Item kind
 
-/// What a pronunciation practice item targets. Unlike Shadowing (full natural
-/// sentences), these focus on specific sounds, words and minimal pairs.
 enum PronunciationItemType: String, Equatable {
     case word          // a single difficult word
     case minimalPair   // two contrasting words "ship / sheep"
@@ -29,7 +26,6 @@ enum PronunciationItemType: String, Equatable {
     }
 }
 
-// MARK: - Difficulty
 
 enum PronunciationDifficulty: String, CaseIterable, Identifiable, Equatable {
     case easy
@@ -47,7 +43,6 @@ enum PronunciationDifficulty: String, CaseIterable, Identifiable, Equatable {
     }
 }
 
-// MARK: - Focus area
 
 enum PronunciationFocus: String, CaseIterable, Identifiable, Equatable {
     case vowels
@@ -78,7 +73,6 @@ enum PronunciationFocus: String, CaseIterable, Identifiable, Equatable {
         }
     }
 
-    /// Phrasing used in the AI request `focus` field.
     var promptValue: String {
         switch self {
         case .vowels:         return "vowel sounds"
@@ -90,9 +84,7 @@ enum PronunciationFocus: String, CaseIterable, Identifiable, Equatable {
     }
 }
 
-// MARK: - Item
 
-/// A focused pronunciation practice item. Pure value type — no logic.
 struct PronunciationItem: Identifiable, Equatable {
     let id: UUID
     let type: PronunciationItemType

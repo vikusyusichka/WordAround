@@ -5,7 +5,6 @@ import Combine
 @MainActor
 final class DebateModeViewModel: ObservableObject {
 
-    // MARK: - Published state
 
     @Published private(set) var messages: [SpeakingConversationMessage] = []
     @Published private(set) var partialTranscript: String = ""
@@ -25,7 +24,6 @@ final class DebateModeViewModel: ObservableObject {
 
     @Published private(set) var remainingSeconds: Int = 0
 
-    // MARK: - Derived
 
     let setup: SpeakingConversationSetup
     let requestedSide: DebateSide
@@ -43,11 +41,8 @@ final class DebateModeViewModel: ObservableObject {
 
     var isTimeRunningOut: Bool { remainingSeconds > 0 && remainingSeconds < 60 }
 
-    /// Fired when the debate ends (rounds exhausted, timer up, or the learner
-    /// taps End). The view uses it to present the result screen.
     var onDebateEnded: (() -> Void)?
 
-    // MARK: - Dependencies
 
     private let recognizer: SpeechRecognitionService
     private let synthesizer: SpeechSynthesisService
@@ -55,7 +50,6 @@ final class DebateModeViewModel: ObservableObject {
     private let topicService: SpeakingTopicGenerationService
     private let feedbackService: SpeakingFeedbackService
 
-    // MARK: - Private state
 
     private var hasStarted = false
     private var hasEnded = false
@@ -73,7 +67,6 @@ final class DebateModeViewModel: ObservableObject {
     private var feedbackTask: Task<Void, Never>?
     private var hintAutoHideTask: Task<Void, Never>?
 
-    // MARK: - Init
 
     init(
         setup: SpeakingConversationSetup,
@@ -105,7 +98,6 @@ final class DebateModeViewModel: ObservableObject {
         hintAutoHideTask?.cancel()
     }
 
-    // MARK: - Callbacks
 
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
@@ -136,7 +128,6 @@ final class DebateModeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Lifecycle
 
     func startDebate() {
         guard !hasStarted else { return }
@@ -190,7 +181,6 @@ final class DebateModeViewModel: ObservableObject {
         remainingSeconds = setup.length.minutes * 60
     }
 
-    // MARK: - Topic + opening
 
     private func generateTopicAndOpen() {
         isGeneratingTopic = true
@@ -263,7 +253,6 @@ final class DebateModeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Mic
 
     func toggleListening() async {
         if isGeneratingTopic { return }
@@ -313,7 +302,6 @@ final class DebateModeViewModel: ObservableObject {
         sendUserTranscript(trimmed)
     }
 
-    // MARK: - Turn handling
 
     func sendUserTranscript(_ text: String) {
         clearHint()
@@ -373,8 +361,6 @@ final class DebateModeViewModel: ObservableObject {
         }
     }
 
-    /// Moves to the next round after the opponent has replied. When the final
-    /// round is complete the debate ends and feedback generation begins.
     func advanceRound() {
         guard var session else { return }
         let didAdvance = session.advance()
@@ -399,7 +385,6 @@ final class DebateModeViewModel: ObservableObject {
         synthesizer.speak(text, localeIdentifier: setup.speechLocaleIdentifier)
     }
 
-    // MARK: - Hints (local only)
 
     func requestHint() {
         if case .processing = state { return }
@@ -434,7 +419,6 @@ final class DebateModeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Timer
 
     func startTimer() {
         timerTask?.cancel()
@@ -467,7 +451,6 @@ final class DebateModeViewModel: ObservableObject {
         onDebateEnded?()
     }
 
-    // MARK: - Feedback
 
     private func beginFeedbackGeneration() {
         let language = setup.language
@@ -505,6 +488,5 @@ final class DebateModeViewModel: ObservableObject {
     }
 }
 
-// MARK: - Protocol conformance
 
 extension DebateModeViewModel: SpeakingResultProvidable {}

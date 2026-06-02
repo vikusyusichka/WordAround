@@ -37,7 +37,6 @@ struct DescribePictureImageCardView: View {
         }
     }
 
-    // MARK: - Image Surface
 
     @ViewBuilder
     private var imageSurface: some View {
@@ -92,7 +91,6 @@ struct DescribePictureImageCardView: View {
         }
     }
 
-    // MARK: - Refresh Button
 
     private var refreshButton: some View {
         Button(action: onRefresh) {

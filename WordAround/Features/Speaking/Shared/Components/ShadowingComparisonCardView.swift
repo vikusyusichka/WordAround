@@ -1,14 +1,5 @@
 import SwiftUI
 
-/// Shows the result of a spoken attempt.
-///
-/// When a `PronunciationAssessmentResult` is available it presents real (or
-/// transcript-estimated) Pronunciation / Accuracy / Fluency / Completeness
-/// scores, the recognized text and weak words. When the scores are an
-/// estimate (no acoustic engine), an honest warning is shown — we never
-/// pretend transcript similarity is real pronunciation analysis.
-///
-/// Presentation only.
 struct ShadowingComparisonCardView: View {
     let assessment: PronunciationAssessmentResult?
     let isAssessing: Bool
@@ -28,7 +19,6 @@ struct ShadowingComparisonCardView: View {
                 if let attempt { retrySuggestion(attempt.feedback) }
                 if assessment.isEstimate { estimateWarning }
             } else if let attempt {
-                // No assessment yet — show the transcript comparison only.
                 legacyAccuracy(attempt)
                 if let attempt = self.attempt { retrySuggestion(attempt.feedback) }
                 estimateWarning
@@ -43,7 +33,6 @@ struct ShadowingComparisonCardView: View {
         )
     }
 
-    // MARK: - Assessing
 
     private var assessingState: some View {
         HStack(spacing: 12) {
@@ -56,7 +45,6 @@ struct ShadowingComparisonCardView: View {
         .padding(.vertical, 6)
     }
 
-    // MARK: - Score grid
 
     private func scoreGrid(_ a: PronunciationAssessmentResult) -> some View {
         VStack(spacing: 10) {
@@ -91,7 +79,6 @@ struct ShadowingComparisonCardView: View {
         )
     }
 
-    // MARK: - Recognized text
 
     private func recognizedSection(_ a: PronunciationAssessmentResult) -> some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -105,7 +92,6 @@ struct ShadowingComparisonCardView: View {
         }
     }
 
-    // MARK: - Weak words
 
     @ViewBuilder
     private func weakWordsSection(_ a: PronunciationAssessmentResult) -> some View {
@@ -151,7 +137,6 @@ struct ShadowingComparisonCardView: View {
         .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(accent.opacity(0.08)))
     }
 
-    // MARK: - Legacy (no assessment object)
 
     private func legacyAccuracy(_ attempt: ShadowingAttempt) -> some View {
         HStack(spacing: 14) {
@@ -173,7 +158,6 @@ struct ShadowingComparisonCardView: View {
         }
     }
 
-    // MARK: - Honest warning
 
     private var estimateWarning: some View {
         HStack(alignment: .top, spacing: 8) {
@@ -188,7 +172,6 @@ struct ShadowingComparisonCardView: View {
         }
     }
 
-    // MARK: - Helpers
 
     private func scoreColor(_ pct: Int) -> Color {
         switch pct {
@@ -199,8 +182,7 @@ struct ShadowingComparisonCardView: View {
     }
 }
 
-/// Lightweight flow layout (iOS 16+ `Layout`). Fully qualified because the
-/// app defines its own `Layout` enum which would otherwise shadow SwiftUI's.
+/// App `Layout` enum shadows SwiftUI.Layout — use SwiftUI.Layout here.
 private struct FlexibleWrap: SwiftUI.Layout {
     var spacing: CGFloat = 6
     var lineSpacing: CGFloat = 6

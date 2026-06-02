@@ -4,8 +4,6 @@ struct ConversationMetric: Identifiable {
     let id = UUID()
     let title: String
     let rating: String
-    /// 0…100 percentage shown prominently on the metric card. Use 0 when
-    /// no score is available (the card will hide the percentage).
     let score: Int
     let icon: String
     let accentColor: Color

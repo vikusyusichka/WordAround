@@ -44,6 +44,7 @@ const SHADOWING_PHRASES_PATH = "/api/shadowing/phrases";
 const PRONUNCIATION_CONTENT_PATH = "/api/pronunciation/content";
 const SPEAKING_TOPIC_PATH = "/api/speaking/topic";
 const AZURE_TOKEN_PATH = "/api/speech/azure-token";
+const LISTENING_TRANSCRIBE_PATH = "/api/listening/transcribe";
 
 export default {
   async fetch(request, env) {
@@ -80,6 +81,10 @@ export default {
 
     if (pathname === SPEAKING_TOPIC_PATH) {
       return handleSpeakingTopic(request, env);
+    }
+
+    if (pathname === LISTENING_TRANSCRIBE_PATH) {
+      return handleListeningTranscribe(request, env);
     }
 
     // Default `POST /` — the generic prompt proxy used by grammar quiz,
@@ -555,6 +560,217 @@ async function handleAzureSpeechToken(env) {
     status: 200,
     headers: JSON_HEADERS,
   });
+}
+
+/**
+ * Listening transcription — receives a multipart audio/video upload, runs it
+ * through Cloudflare Workers AI Whisper (free, no API key needed), and returns
+ * timed subtitle cues + full transcript to the iOS ImportVideo flow.
+ *
+ *   POST /api/listening/transcribe
+ *   body: multipart/form-data { file, language?, level?, mode? }
+ *   resp: { transcriptText, subtitles[], vttText, durationSeconds, detectedLanguage }
+ */
+async function handleListeningTranscribe(request, env) {
+  const MAX_BYTES = 20 * 1024 * 1024; // 20 MB — Workers AI Whisper limit
+
+  let form;
+  try {
+    form = await request.formData();
+  } catch {
+    return jsonError("Request must be multipart/form-data.", 400);
+  }
+
+  const file = form.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return jsonError("No file was uploaded.", 400);
+  }
+  if (file.size > MAX_BYTES) {
+    return jsonError("That file is too large. Please upload audio under 20 MB.", 413);
+  }
+
+  const language = typeof form.get("language") === "string" ? form.get("language").trim() : undefined;
+
+  let arrayBuffer;
+  try {
+    arrayBuffer = await file.arrayBuffer();
+  } catch {
+    return jsonError("Could not read the uploaded file.", 400);
+  }
+
+  let result;
+  try {
+    result = await env.AI.run("@cf/openai/whisper-large-v3-turbo", {
+      audio: arrayBufferToBase64(arrayBuffer),
+      ...(language ? { language } : {}),
+    });
+  } catch (e) {
+    const msg = typeof e?.message === "string" ? e.message : "unknown";
+    console.error(JSON.stringify({ event: "whisper_error", error: msg }));
+    if (msg.toLowerCase().includes("too large") || msg.includes("413")) {
+      return jsonError("That file is too large to transcribe.", 413);
+    }
+    return jsonError("Transcription failed. Please try another file.", 500);
+  }
+
+  const transcriptText = typeof result?.text === "string" ? result.text.trim() : "";
+  if (!transcriptText) {
+    return jsonError("No speech could be transcribed from this file.", 422);
+  }
+
+  // Build subtitle cues from VTT (preferred) or word-level timing.
+  let subtitles = [];
+  let vttText = "";
+  let durationSeconds = null;
+
+  if (typeof result?.vtt === "string" && result.vtt.includes("-->")) {
+    vttText = result.vtt;
+    subtitles = parseVTTtoCues(result.vtt);
+    if (shouldMergeCues(subtitles)) {
+      subtitles = mergeCuesToSentences(subtitles);
+      vttText = cuesToVTT(subtitles);
+    }
+    durationSeconds = subtitles.length > 0 ? subtitles[subtitles.length - 1].endTime : null;
+  } else if (Array.isArray(result?.words) && result.words.length > 0) {
+    subtitles = groupWordsToCues(result.words);
+    vttText = cuesToVTT(subtitles);
+    durationSeconds = subtitles.length > 0 ? subtitles[subtitles.length - 1].endTime : null;
+  }
+
+  return new Response(
+    JSON.stringify({ transcriptText, subtitles, vttText, durationSeconds, detectedLanguage: result?.language ?? null }),
+    { status: 200, headers: JSON_HEADERS }
+  );
+}
+
+function parseVTTtoCues(vttText) {
+  const cues = [];
+  let index = 0;
+  for (const block of vttText.split(/\n\s*\n/)) {
+    if (!block.includes("-->")) continue;
+    const lines = block.trim().split("\n");
+    const timingLine = lines.find((l) => l.includes("-->"));
+    if (!timingLine) continue;
+    const parts = timingLine.split("-->").map((s) => s.trim());
+    const startTime = parseVTTTimestamp(parts[0]);
+    const endTime = parseVTTTimestamp((parts[1] ?? "").split(" ")[0]);
+    const text = lines.filter((l) => !l.includes("-->") && !/^\d+$/.test(l.trim())).join(" ").trim();
+    if (text && endTime > startTime) {
+      cues.push({ id: `cue-${index}`, startTime, endTime, text, order: index });
+      index++;
+    }
+  }
+  return cues;
+}
+
+function parseVTTTimestamp(ts) {
+  const parts = ts.split(":").map(Number);
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  return Number(ts) || 0;
+}
+
+function groupWordsToCues(words) {
+  const MAX_WORDS = 14;
+  const MAX_SECS = 8;
+  const cues = [];
+  let i = 0;
+  while (i < words.length) {
+    const startTime = words[i].start ?? 0;
+    const buf = [];
+    let j = i;
+    while (j < words.length) {
+      const w = words[j];
+      const token = (w.word ?? w.text ?? "").trim();
+      if (token) buf.push(token);
+      const isSentenceEnd = /[.!?]$/.test(token);
+      j++;
+      if (isSentenceEnd || buf.length >= MAX_WORDS || (w.end ?? 0) - startTime >= MAX_SECS) break;
+    }
+    const endTime = words[j - 1].end ?? startTime;
+    const text = buf.join(" ").trim();
+    if (text) cues.push({ id: `cue-${cues.length}`, startTime, endTime, text, order: cues.length });
+    i = j;
+  }
+  return cues;
+}
+
+function shouldMergeCues(cues) {
+  if (cues.length <= 1) return false;
+  const totalWords = cues.reduce(
+    (sum, c) => sum + c.text.trim().split(/\s+/).filter(Boolean).length,
+    0
+  );
+  return totalWords / cues.length < 3;
+}
+
+function mergeCuesToSentences(cues) {
+  const MAX_WORDS = 14;
+  const MAX_SECS = 8;
+  const merged = [];
+  let i = 0;
+
+  while (i < cues.length) {
+    const texts = [cues[i].text.trim()];
+    let startTime = cues[i].startTime;
+    let endTime = cues[i].endTime;
+    let j = i + 1;
+
+    while (j < cues.length) {
+      const prev = texts[texts.length - 1];
+      if (/[.!?]["']?\s*$/.test(prev)) break;
+
+      const nextText = cues[j].text.trim();
+      const combinedWords =
+        texts.join(" ").split(/\s+/).filter(Boolean).length +
+        nextText.split(/\s+/).filter(Boolean).length;
+      if (combinedWords > MAX_WORDS || cues[j].endTime - startTime > MAX_SECS) break;
+
+      texts.push(nextText);
+      endTime = cues[j].endTime;
+      j++;
+    }
+
+    const text = texts.join(" ").replace(/\s+/g, " ").trim();
+    if (text) {
+      merged.push({ id: `cue-${merged.length}`, startTime, endTime, text, order: merged.length });
+    }
+    i = j > i + 1 ? j : i + 1;
+  }
+
+  return merged;
+}
+
+function cuesToVTT(cues) {
+  if (cues.length === 0) return "";
+  const lines = ["WEBVTT", ""];
+  for (const c of cues) {
+    lines.push(String(c.order + 1));
+    lines.push(`${formatVTTTime(c.startTime)} --> ${formatVTTTime(c.endTime)}`);
+    lines.push(c.text);
+    lines.push("");
+  }
+  return lines.join("\n");
+}
+
+function formatVTTTime(secs) {
+  const ms = Math.floor((secs % 1) * 1000);
+  const t = Math.floor(secs);
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const s = t % 60;
+  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}.${String(ms).padStart(3,"0")}`;
+}
+
+/** Workers AI Whisper expects base64-encoded audio, not a raw byte array. */
+function arrayBufferToBase64(buffer) {
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
 }
 
 /**

@@ -105,7 +105,6 @@ struct DebateModeView: View {
         }
     }
 
-    // MARK: - Messages
 
     private var messageList: some View {
         VStack(alignment: .leading, spacing: Layout.convMessageGroupSpacing) {
@@ -132,7 +131,6 @@ struct DebateModeView: View {
         .animation(.easeInOut(duration: 0.22), value: viewModel.currentHint)
     }
 
-    // MARK: - Top Bar
 
     private var topBar: some View {
         ZStack {
@@ -197,7 +195,6 @@ struct DebateModeView: View {
         .animation(.easeInOut(duration: 0.18), value: isWarning)
     }
 
-    // MARK: - Banner
 
     private func banner(_ message: String, icon: String, tint: Color) -> some View {
         HStack(alignment: .top, spacing: 10) {
@@ -228,7 +225,6 @@ struct DebateModeView: View {
         )
     }
 
-    // MARK: - Actions
 
     private func handleMicTap() {
         Task { await viewModel.toggleListening() }

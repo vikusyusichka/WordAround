@@ -1,18 +1,6 @@
 import SwiftUI
 
-// MARK: - Shared building blocks for the Speaking setup screens
-//
-// AI Conversation, Free Speaking, Describe Picture and Debate Mode all share
-// the same setup layout: a themed top bar, section titles, a session-length
-// picker and a gradient start button. These views capture that shared chrome
-// once and are themed per mode via `accent` / `accentDark` — exactly the same
-// pattern already used by `LanguageSelectorView` / `DifficultySelectorView`.
-//
-// Nothing here is mode-specific: each screen still owns its own preview card,
-// extra sections (e.g. Debate's "Your side", AI Conversation's "Scenario") and
-// navigation.
 
-/// Subtle scale-down on press, shared by all Speaking setup controls.
 struct SpeakingSetupPressStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -21,7 +9,6 @@ struct SpeakingSetupPressStyle: ButtonStyle {
     }
 }
 
-/// Back button + title + subtitle, themed per mode.
 struct SpeakingSetupTopBar: View {
     let title: String
     let subtitle: String
@@ -67,7 +54,6 @@ struct SpeakingSetupTopBar: View {
     }
 }
 
-/// Section heading ("Language", "Level", …), themed per mode.
 struct SpeakingSetupSectionTitle: View {
     let title: String
     var accentDark: Color = AppColors.primaryBlueDark
@@ -85,7 +71,6 @@ struct SpeakingSetupSectionTitle: View {
     }
 }
 
-/// 5 / 10 / 15-minute session-length chips, themed per mode.
 struct SpeakingSetupDurationPicker: View {
     @Binding var selection: ConversationLength
     var accent: Color = AppColors.primaryBlue
@@ -125,7 +110,6 @@ struct SpeakingSetupDurationPicker: View {
     }
 }
 
-/// Full-width gradient start button, themed per mode.
 struct SpeakingSetupStartButton: View {
     let title: String
     let icon: String
@@ -156,17 +140,8 @@ struct SpeakingSetupStartButton: View {
     }
 }
 
-// MARK: - Adaptive width
 
 extension View {
-    /// Centers and width-constrains a bottom action bar (Start button, mic bar,
-    /// banners) to the same `convContentMaxWidth` used by the scroll content,
-    /// so controls don't stretch edge-to-edge on iPad / large screens while the
-    /// content above stays centered.
-    ///
-    /// No-op on iPhone: there `convContentMaxWidth` is `.infinity`, so the
-    /// compact layout is byte-for-byte unchanged. Only iPad / regular-width
-    /// screens are affected.
     func speakingActionBarWidth() -> some View {
         self
             .frame(maxWidth: Layout.convContentMaxWidth)

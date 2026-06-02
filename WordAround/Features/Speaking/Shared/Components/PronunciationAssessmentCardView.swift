@@ -1,12 +1,5 @@
 import SwiftUI
 
-/// Shows the pronunciation assessment for an attempt: Pronunciation /
-/// Accuracy / Fluency / Completeness scores, recognized text and weak
-/// words/sounds. When the result is an estimate (no acoustic engine), an
-/// honest warning is shown — we never pretend transcript similarity is real
-/// pronunciation analysis.
-///
-/// Presentation only.
 struct PronunciationAssessmentCardView: View {
     let assessment: PronunciationAssessmentResult?
     let isAssessing: Bool
@@ -160,8 +153,7 @@ struct PronunciationAssessmentCardView: View {
     }
 }
 
-/// Lightweight flow layout (iOS 16+ `Layout`). Fully qualified because the app
-/// defines its own `Layout` enum which would otherwise shadow SwiftUI's.
+/// App `Layout` enum shadows SwiftUI.Layout — use SwiftUI.Layout here.
 private struct FlexibleWrap: SwiftUI.Layout {
     var spacing: CGFloat = 6
     var lineSpacing: CGFloat = 6

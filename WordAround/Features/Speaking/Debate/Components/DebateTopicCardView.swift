@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Top card on the debate screen: the topic being argued plus the learner's
-/// resolved side. Shows a loading state while the topic is generated.
 struct DebateTopicCardView: View {
     let topicTitle: String
     let topicDescription: String

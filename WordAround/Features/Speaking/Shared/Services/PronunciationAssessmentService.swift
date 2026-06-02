@@ -4,16 +4,12 @@ import Foundation
 import MicrosoftCognitiveServicesSpeech
 #endif
 
-// MARK: - Input
 
-/// What the assessor is given. A real acoustic engine needs the recorded
-/// audio; the transcript-similarity fallback only needs the recognized text.
 enum PronunciationAudioInput {
     case audioFile(URL)
     case recognizedText(String)
 }
 
-// MARK: - Errors
 
 enum PronunciationAssessmentError: LocalizedError {
     case notImplemented(String)
@@ -29,10 +25,7 @@ enum PronunciationAssessmentError: LocalizedError {
     }
 }
 
-// MARK: - Protocol
 
-/// Abstraction over a pronunciation-assessment engine so Azure can be plugged
-/// in cleanly without touching call sites.
 protocol PronunciationAssessing {
     func assessPronunciation(
         audioInput: PronunciationAudioInput,
@@ -41,27 +34,8 @@ protocol PronunciationAssessing {
     ) async throws -> PronunciationAssessmentResult
 }
 
-// MARK: - Azure (skeleton)
 
-/// Real pronunciation assessment via Azure Speech.
-///
-/// Secure token flow (no key in the app):
-///   iOS → `AzureSpeechTokenService` → Worker `/api/speech/azure-token` → Azure STS
-///
-/// The Microsoft Cognitive Services Speech SDK is NOT yet added to the
-/// project, so the acoustic path is gated behind `#if canImport(...)`. When
-/// the SDK is added (see integration notes below) the TODO block wires the
-/// recorded audio + reference text into `SPXPronunciationAssessmentConfig`.
-///
-/// INTEGRATION NOTES (to enable real assessment):
-///   1. Add the Swift package / xcframework `MicrosoftCognitiveServicesSpeech`.
-///   2. Capture the user's repetition to a WAV file (the current
-///      `SpeechRecognitionService` streams the mic but does not persist audio;
-///      add an `AVAudioFile` tap or `AVAudioRecorder` for Shadowing only).
-///   3. Pass `.audioFile(url)` here. The token + region come from the Worker.
-///   4. Map `SPXPronunciationAssessmentResult` → `PronunciationAssessmentResult`.
-/// Until then this throws `.notImplemented` and the caller uses the
-/// transcript-similarity fallback (clearly marked as an estimate).
+/// Azure Speech SDK not wired yet; throws `.notImplemented` until audio assessment lands.
 final class AzurePronunciationAssessmentService: PronunciationAssessing {
 
     private let tokenProvider: AzureSpeechTokenProviding
@@ -82,23 +56,11 @@ final class AzurePronunciationAssessmentService: PronunciationAssessing {
             )
         }
 
-        // Secure token (region included). Proves the token flow end-to-end.
         let azure = try await tokenProvider.fetchToken()
         #if DEBUG
         print("[Pronunciation] Azure token acquired region=\(azure.region) — audio=\(audioURL.lastPathComponent)")
         #endif
 
-        // TODO: Wire the Azure Speech SDK once the package is added:
-        //   let speechConfig = try SPXSpeechConfiguration(authorizationToken: azure.token, region: azure.region)
-        //   speechConfig.speechRecognitionLanguage = languageCode
-        //   let audioConfig = SPXAudioConfiguration(wavFileInput: audioURL.path)
-        //   let paConfig = try SPXPronunciationAssessmentConfiguration(
-        //       referenceText, gradingSystem: .hundredMark, granularity: .phoneme, enableMiscue: true)
-        //   let recognizer = try SPXSpeechRecognizer(speechConfiguration: speechConfig, audioConfiguration: audioConfig)
-        //   try paConfig.apply(to: recognizer)
-        //   let spxResult = try recognizer.recognizeOnce()
-        //   let pa = SPXPronunciationAssessmentResult(spxResult)
-        //   return map(pa, recognizedText: spxResult.text)
         _ = (referenceText, languageCode)
         throw PronunciationAssessmentError.notImplemented(
             "Azure Speech SDK present, but audio-stream wiring is not finished yet."
@@ -112,11 +74,7 @@ final class AzurePronunciationAssessmentService: PronunciationAssessing {
     }
 }
 
-// MARK: - Transcript-similarity fallback
 
-/// Honest fallback when no real acoustic engine is available. Produces a
-/// `PronunciationAssessmentResult` with `isEstimate = true` so the UI clearly
-/// states this is NOT real pronunciation analysis.
 struct TranscriptSimilarityPronunciationAssessor: PronunciationAssessing {
 
     func assessPronunciation(
@@ -168,15 +126,12 @@ struct TranscriptSimilarityPronunciationAssessor: PronunciationAssessing {
     }
 }
 
-// MARK: - Factory
 
 enum PronunciationAssessmentConfiguration {
-    /// The real engine attempted first.
     static func makeAzureAssessor() -> PronunciationAssessing {
         AzurePronunciationAssessmentService()
     }
 
-    /// The honest fallback used when the real engine is unavailable.
     static func makeFallbackAssessor() -> PronunciationAssessing {
         TranscriptSimilarityPronunciationAssessor()
     }

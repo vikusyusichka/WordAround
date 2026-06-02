@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - Errors
 
 enum DescribePictureImageError: LocalizedError {
     case notConfigured
@@ -22,22 +21,16 @@ enum DescribePictureImageError: LocalizedError {
     }
 }
 
-// MARK: - Protocol
 
-/// Provides random pictures for Describe Picture. Protocol-based so the
-/// view model can be driven by a mock in previews/tests, and the live
-/// source can be swapped later without touching call sites.
 protocol DescribePictureImageProviding {
     func fetchRandomImage() async throws -> DescribePictureImage
 }
 
-// MARK: - Configuration
 
 enum DescribePictureImageConfiguration {
 
     static let workerPath = "/api/describe-picture/random-image"
 
-    /// Builds the Worker endpoint URL from the shared Gemini-proxy base URL.
     /// The Unsplash key lives only in the Worker — the app never sees it.
     static var endpointURL: URL? {
         guard
@@ -57,10 +50,7 @@ enum DescribePictureImageConfiguration {
     }
 }
 
-// MARK: - Live Service
 
-/// Calls the Worker endpoint, decodes the simplified JSON, and surfaces
-/// meaningful errors. Never talks to Unsplash directly.
 final class DescribePictureImageService: DescribePictureImageProviding {
 
     private let endpointURL: URL
@@ -150,9 +140,7 @@ final class DescribePictureImageService: DescribePictureImageProviding {
     }
 }
 
-// MARK: - Mock
 
-/// Offline provider for previews/tests and when the Worker URL is unset.
 final class MockDescribePictureImageService: DescribePictureImageProviding {
     private let samples: [DescribePictureImage]
     private var index = 0

@@ -14,8 +14,6 @@ final class ListeningHomeViewModel: ObservableObject {
 
     var modes: [ListeningMode] { ListeningMode.allModes }
 
-    /// Sums today's listening time across all sessions touched today and
-    /// converts to whole minutes for the daily-goal ring.
     func refreshDailyProgress() {
         Task {
             let sessions = await store.fetchSessions()

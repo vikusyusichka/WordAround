@@ -1,10 +1,6 @@
 import Foundation
 import AVFoundation
 
-/// AVFoundation-backed text-to-speech for Listen From Text. Wraps
-/// `AVSpeechSynthesizer` and exposes a small play/pause/resume/stop API plus
-/// start/finish callbacks. View models depend on `ListeningSpeechSynthesizing`,
-/// never on AVFoundation directly.
 @MainActor
 final class AVFoundationListeningSpeechService: NSObject, ListeningSpeechSynthesizing {
 
@@ -64,7 +60,6 @@ final class AVFoundationListeningSpeechService: NSObject, ListeningSpeechSynthes
         try? session.setActive(true, options: [])
     }
 
-    /// Best installed voice for the locale and requested gender, degrading gracefully.
     private static func resolveVoice(
         localeIdentifier: String,
         voiceType: ListeningVoiceType
@@ -148,7 +143,6 @@ extension AVFoundationListeningSpeechService: AVSpeechSynthesizerDelegate {
     }
 
     nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
-        // Cancellation (replay / leaving the screen) is not a natural finish; do
-        // not fire onFinish so callers can distinguish a user stop from EOF.
+        // Cancellation must not fire onFinish — distinguish user stop from natural EOF.
     }
 }

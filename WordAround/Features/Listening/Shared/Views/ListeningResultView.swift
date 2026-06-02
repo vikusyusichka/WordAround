@@ -8,6 +8,9 @@ struct ListeningResultView: View {
     var accentDark: Color = ListeningTheme.accentDark
     let practiceAgainTitle: String
     let backButtonTitle: String
+    var secondaryCTATitle: String? = nil
+    var secondaryCTAIcon: String = "arrow.right"
+    var onSecondaryCTA: (() -> Void)? = nil
     let onPracticeAgain: () -> Void
     let onBack: () -> Void
 
@@ -108,8 +111,6 @@ struct ListeningResultView: View {
         )
     }
 
-    /// Shown for watch-only sessions (no questions answered): no fake score,
-    /// just the listening time and a "completed" message.
     private var watchOnlySummary: some View {
         VStack(spacing: 10) {
             Image(systemName: "checkmark.seal.fill")
@@ -131,6 +132,16 @@ struct ListeningResultView: View {
 
     private var actions: some View {
         VStack(spacing: 10) {
+            if let secondaryCTATitle, let onSecondaryCTA {
+                ListeningPrimaryButton(
+                    title: secondaryCTATitle,
+                    icon: secondaryCTAIcon,
+                    accent: accent,
+                    accentDark: accentDark,
+                    action: onSecondaryCTA
+                )
+            }
+
             ListeningPrimaryButton(
                 title: practiceAgainTitle,
                 icon: "arrow.clockwise",

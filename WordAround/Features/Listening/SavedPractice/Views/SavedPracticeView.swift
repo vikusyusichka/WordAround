@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// A navigation target for continuing or reviewing a saved session.
 private struct SavedPracticeRoute: Identifiable, Hashable {
     let id: String
     let session: ListeningPersistedSession
@@ -96,9 +95,6 @@ struct SavedPracticeView: View {
     }
 }
 
-/// Resolves a persisted session into the right destination: a review result
-/// screen for completed sessions, or the matching mode session screen to
-/// continue an unfinished one.
 private struct SavedPracticeDestinationView: View {
     let session: ListeningPersistedSession
     let onExit: () -> Void
@@ -136,16 +132,6 @@ private struct SavedPracticeDestinationView: View {
                 setup: session.makeAudioSetup(),
                 restore: session,
                 onExitToSetup: onExit,
-                onExitToListening: onExit
-            )
-        case "video-listening":
-            let rebuilt = session.makeVideo()
-            VideoListeningSessionView(
-                setup: rebuilt.setup,
-                video: rebuilt.video,
-                sessionId: session.id,
-                restore: session,
-                onExitToResults: onExit,
                 onExitToListening: onExit
             )
         default:

@@ -6,13 +6,8 @@ struct AIConversationView: View {
     @StateObject private var viewModel: AIConversationViewModel
     @State private var showResult = false
 
-    /// Pops the conversation (and the result pushed on top of it) back to the
-    /// AI Conversation setup screen. Owned by the setup screen. `nil` in previews.
     private let onExitToSetup: (() -> Void)?
 
-    /// Pops the whole AI Conversation flow (setup + conversation + result)
-    /// back to the main Speaking screen. Supplied by `SpeakingView` via the
-    /// setup screen. `nil` in previews.
     private let onExitToSpeaking: (() -> Void)?
 
     init(
@@ -131,10 +126,6 @@ struct AIConversationView: View {
             ConversationResultView(
                 viewModel: viewModel,
                 onPracticeAgain: {
-                    // Return to the AI Conversation setup screen so the user
-                    // can start a fresh session. The setup screen owns the
-                    // binding, so this pops the conversation AND the result in
-                    // one step.
                     viewModel.endConversation()
                     if let onExitToSetup {
                         onExitToSetup()
@@ -144,7 +135,6 @@ struct AIConversationView: View {
                     }
                 },
                 onBackToSpeaking: {
-                    // Leave the whole flow back to the main Speaking screen.
                     viewModel.endConversation()
                     if let onExitToSpeaking {
                         onExitToSpeaking()

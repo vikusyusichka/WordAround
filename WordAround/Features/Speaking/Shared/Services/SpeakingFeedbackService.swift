@@ -8,11 +8,6 @@ final class SpeakingFeedbackService {
         self.client = client
     }
 
-    /// Generates speaking feedback. Returns the feedback along with an
-    /// optional human-readable fallback reason. When `fallbackReason` is
-    /// non-nil the feedback is the local fallback. The reason is intended
-    /// for surfacing in a result-screen banner (e.g. "AI feedback
-    /// unavailable (decode error). Showing basic feedback.").
     func generateFeedback(
         language: GrammarLanguage,
         level: EssayDifficulty,
@@ -145,8 +140,6 @@ final class SpeakingFeedbackService {
         )
     }
 
-    /// Maps the optional debate score blocks (if the AI returned them) into
-    /// extra metrics shown after the four core ones.
     private static func debateMetrics(from dto: SpeakingFeedbackAIResponseDTO) -> [SpeakingFeedbackMetric] {
         var result: [SpeakingFeedbackMetric] = []
         if let argument = dto.argumentQuality {

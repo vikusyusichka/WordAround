@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Three-step guide (Listen → Repeat → Compare) with the active step
-/// highlighted from the current speaking state. Presentation only.
 struct ShadowingListenRepeatCardView: View {
     let state: SpeakingConversationState
     let isSpeakingTarget: Bool

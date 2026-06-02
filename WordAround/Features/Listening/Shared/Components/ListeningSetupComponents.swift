@@ -123,7 +123,6 @@ struct ListeningWhiteCard<Content: View>: View {
     }
 }
 
-/// Inline, non-blocking error banner used inside session/setup screens.
 struct ListeningInlineErrorView: View {
     let message: String
     var accent: Color = ListeningTheme.accent
@@ -147,8 +146,6 @@ struct ListeningInlineErrorView: View {
     }
 }
 
-/// Small inline progress row (spinner + label) for async work like question
-/// generation or transcription.
 struct ListeningLoadingRow: View {
     let message: String
     var accent: Color = ListeningTheme.accent

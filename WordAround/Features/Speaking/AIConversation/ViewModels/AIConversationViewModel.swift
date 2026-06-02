@@ -113,10 +113,7 @@ final class AIConversationViewModel: ObservableObject {
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
             guard let self else { return }
-            // Only show the live partial while actually listening. A late
-            // partial result can fire AFTER we've stopped and appended the
-            // final message — accepting it would re-show a faded duplicate
-            // bubble of the same answer.
+            // Late partial results can arrive after stop; ignore unless still listening.
             guard self.state.isListening else { return }
             self.partialTranscript = text
         }
@@ -594,7 +591,6 @@ final class AIConversationViewModel: ObservableObject {
         }
         guard !isRequestingHint else { return }
 
-        // Without a resolved topic/scenario yet, fall back instantly.
         guard let context else {
             presentHint(SpeakingConversationService.genericTopicHint(for: setup.language))
             return
@@ -624,8 +620,6 @@ final class AIConversationViewModel: ObservableObject {
         }
     }
 
-    /// Tries the AI Router for a context-aware suggested answer, falling back
-    /// to the context-aware local hint if the AI is unavailable.
     private static func resolveHint(
         service: SpeakingConversationService,
         language: GrammarLanguage,
@@ -653,8 +647,6 @@ final class AIConversationViewModel: ObservableObject {
     }
 
     private func presentHint(_ hintText: String) {
-        // Drop a stale hint if the user already started speaking or the tutor
-        // is busy replying by the time the AI hint resolved.
         guard !state.isListening, !state.isBusy else {
             #if DEBUG
             print("[ConversationVM] hint dropped — state=\(state)")
@@ -734,7 +726,6 @@ final class AIConversationViewModel: ObservableObject {
     }
 }
 
-// MARK: - Protocol Conformances
 
 extension AIConversationViewModel: SpeakingTopicPickable {}
 extension AIConversationViewModel: SpeakingResultProvidable {}

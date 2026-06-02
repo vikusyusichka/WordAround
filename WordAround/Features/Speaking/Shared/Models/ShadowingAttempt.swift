@@ -1,18 +1,12 @@
 import Foundation
 
-/// The result of comparing one spoken attempt against a target phrase.
-///
-/// IMPORTANT: `accuracy` is estimated from *transcript similarity only*.
-/// It is NOT a true accent / pronunciation analysis — there is no audio
-/// signal analysis here. The score reflects how closely the recognized
-/// words match the target words.
+/// `accuracy` is transcript similarity only — not acoustic pronunciation analysis.
 struct ShadowingAttempt: Identifiable, Equatable {
     let id: UUID
     let phraseID: UUID
     let targetText: String
     let userTranscript: String
 
-    /// 0...100, derived from word-level F1 of recognized vs. target words.
     let accuracy: Int
     let matchedWords: [String]
     let missingWords: [String]
@@ -45,15 +39,9 @@ struct ShadowingAttempt: Identifiable, Equatable {
     }
 }
 
-// MARK: - Comparison
 
-/// Pure, testable text comparison for Shadowing. Multiset word matching
-/// with an F1-based accuracy score so both *missing* and *extra* words
-/// lower the result. Deliberately simple — see the note on `accuracy`.
 enum ShadowingComparison {
 
-    /// Normalizes text into comparable word tokens: lowercase, fold
-    /// diacritics, strip punctuation, collapse whitespace.
     static func tokenize(_ text: String) -> [String] {
         let folded = text.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
         let cleaned = folded.unicodeScalars.map { scalar -> Character in
@@ -72,13 +60,11 @@ enum ShadowingComparison {
         let targetTokens = tokenize(phrase.text)
         let userTokens = tokenize(userTranscript)
 
-        // Multiset counts.
         var targetCounts: [String: Int] = [:]
         for t in targetTokens { targetCounts[t, default: 0] += 1 }
         var userCounts: [String: Int] = [:]
         for u in userTokens { userCounts[u, default: 0] += 1 }
 
-        // Matched = sum of min(count) per shared token.
         var matched: [String] = []
         var matchedCount = 0
         for (token, tCount) in targetCounts {
@@ -89,7 +75,6 @@ enum ShadowingComparison {
             }
         }
 
-        // Missing = target tokens (in order) not covered by user.
         var remainingMatch = matchedCount
         var consumed: [String: Int] = [:]
         var missing: [String] = []
@@ -104,7 +89,6 @@ enum ShadowingComparison {
             }
         }
 
-        // Extra = user tokens not present (or over-spoken) vs. target.
         var extraConsumed: [String: Int] = [:]
         var extra: [String] = []
         for token in userTokens {

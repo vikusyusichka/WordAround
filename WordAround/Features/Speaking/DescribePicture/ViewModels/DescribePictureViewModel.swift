@@ -5,27 +5,20 @@ import Combine
 @MainActor
 final class DescribePictureViewModel: ObservableObject {
 
-    // MARK: - Published — Image
 
     @Published private(set) var currentImage: DescribePictureImage?
     @Published private(set) var isLoadingImage = false
     @Published private(set) var imageError: String?
 
-    // MARK: - Published — Transcript / Speech
 
-    /// Plain-text mirror of finalized user transcript chunks. Kept in sync
-    /// with `messages` so the UI can drive from a simple [String] while
-    /// feedback continues to use the shared `messages` pipeline.
     @Published private(set) var transcriptChunks: [String] = []
     @Published private(set) var partialTranscript: String = ""
     @Published private(set) var state: SpeakingConversationState = .idle
     @Published var errorMessage: String?
     @Published private(set) var permissionsDenied = false
 
-    /// Feedback pipeline (shared) operates on `messages`.
     @Published private(set) var messages: [SpeakingConversationMessage] = []
 
-    // MARK: - Published — Timer / Feedback
 
     @Published private(set) var remainingSeconds: Int = 0
     @Published private(set) var conversationFeedback: SpeakingConversationFeedback?
@@ -36,7 +29,6 @@ final class DescribePictureViewModel: ObservableObject {
     var isGeneratingFeedbackValue: Bool { isGeneratingFeedback }
     var speakingFeedback: SpeakingConversationFeedback? { conversationFeedback }
 
-    // MARK: - Public Interface
 
     let setup: SpeakingConversationSetup
     var onTimerFinished: (() -> Void)?
@@ -48,10 +40,8 @@ final class DescribePictureViewModel: ObservableObject {
 
     var isTimeRunningOut: Bool { remainingSeconds > 0 && remainingSeconds < 60 }
 
-    /// Whether a transcript reset confirmation is needed before refreshing.
     var hasTranscript: Bool { !transcriptChunks.isEmpty || !partialTranscript.isEmpty }
 
-    // MARK: - Private
 
     private let recognizer: SpeechRecognitionService
     private let feedbackService: SpeakingFeedbackService
@@ -65,7 +55,6 @@ final class DescribePictureViewModel: ObservableObject {
     private var feedbackTask: Task<Void, Never>?
     private var imageTask: Task<Void, Never>?
 
-    /// The describe-picture task context fed to the shared feedback service.
     private let pictureContext: SpeakingConversationContext = .generatedTopic(
         GeneratedConversationTopic(
             title: "Describe a picture",
@@ -76,7 +65,6 @@ final class DescribePictureViewModel: ObservableObject {
         )
     )
 
-    // MARK: - Init
 
     init(
         setup: SpeakingConversationSetup,
@@ -98,7 +86,6 @@ final class DescribePictureViewModel: ObservableObject {
         imageTask?.cancel()
     }
 
-    // MARK: - Session Lifecycle
 
     func startSession() {
         guard !hasStarted else { return }
@@ -142,7 +129,6 @@ final class DescribePictureViewModel: ObservableObject {
         imageError = nil
     }
 
-    // MARK: - Image Loading
 
     func loadRandomImage() {
         guard !isLoadingImage else {
@@ -179,8 +165,6 @@ final class DescribePictureViewModel: ObservableObject {
         }
     }
 
-    /// New Picture button. Resets transcript and loads a fresh image.
-    /// Spam-guarded by `isLoadingImage`.
     func refreshImage() {
         guard !isLoadingImage else { return }
         resetTranscript()
@@ -201,7 +185,6 @@ final class DescribePictureViewModel: ObservableObject {
         state = .idle
     }
 
-    // MARK: - Timer
 
     func startTimer() {
         timerTask?.cancel()
@@ -233,7 +216,6 @@ final class DescribePictureViewModel: ObservableObject {
         onTimerFinished?()
     }
 
-    // MARK: - Speech Recognition
 
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
@@ -351,7 +333,6 @@ final class DescribePictureViewModel: ObservableObject {
         errorMessage = nil
     }
 
-    // MARK: - Feedback
 
     private func beginFeedbackGeneration() {
         let snapshotLanguage = setup.language
@@ -393,6 +374,5 @@ final class DescribePictureViewModel: ObservableObject {
     }
 }
 
-// MARK: - Protocol Conformances
 
 extension DescribePictureViewModel: SpeakingResultProvidable {}

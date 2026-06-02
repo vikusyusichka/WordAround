@@ -11,12 +11,10 @@ final class SavedPracticeViewModel: ObservableObject {
         self.store = store ?? LocalListeningSessionStore.shared
     }
 
-    /// Most recent unfinished session, surfaced as "Continue listening".
     var continueSession: ListeningPersistedSession? {
         sessions.first { $0.status != .completed && $0.result == nil }
     }
 
-    /// Everything except the single highlighted continue session, newest first.
     var savedSessions: [ListeningPersistedSession] {
         sessions.filter { $0.id != continueSession?.id }
     }

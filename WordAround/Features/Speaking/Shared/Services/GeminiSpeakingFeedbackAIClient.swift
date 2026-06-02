@@ -19,8 +19,6 @@ final class GeminiSpeakingFeedbackAIClient: SpeakingFeedbackAIClient {
     private struct WorkerRequest: Encodable {
         let prompt: String
         let responseMimeType: String?
-        // Task hint for the Worker's AI Provider Router (ANALYSIS chain).
-        // Names a TASK TYPE, never a provider.
         let task: String?
     }
 
@@ -154,11 +152,6 @@ final class GeminiSpeakingFeedbackAIClient: SpeakingFeedbackAIClient {
         }
     }
 
-    /// Compact human-readable description of a DecodingError. The default
-    /// `localizedDescription` is generic ("The data couldn't be read…") and
-    /// hides the actual coding-path; this surfaces the keyPath and
-    /// underlying cause so we can spot e.g. an Int field arriving as a
-    /// Double, or a missing key, in the console.
     private static func describe(_ error: DecodingError) -> String {
         switch error {
         case .keyNotFound(let key, let ctx):

@@ -2,20 +2,9 @@ import Foundation
 import SwiftUI
 import Combine
 
-/// Orchestrates the Pronunciation Trainer flow over the SHARED speaking
-/// services. Reuses the same pieces as Shadowing — no duplicate speech,
-/// assessment, feedback or worker systems are created:
-///
-///   PronunciationTrainerViewModel
-///     → PronunciationContentService     (AI item generation + local fallback)
-///     → SpeechSynthesisService          (play target item / example only)
-///     → SpeechRecognitionService        (capture the spoken repetition)
-///     → PronunciationAssessing          (Azure assessment + honest fallback)
-///     → SpeakingFeedbackService         (optional end-of-session feedback)
 @MainActor
 final class PronunciationTrainerViewModel: ObservableObject {
 
-    // MARK: - Published — Items
 
     @Published private(set) var items: [PronunciationItem] = []
     @Published private(set) var currentItemIndex = 0
@@ -23,7 +12,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
     @Published private(set) var itemGenerationError: String?
     @Published private(set) var usedFallbackItems = false
 
-    // MARK: - Published — Speech / Transcript
 
     @Published private(set) var userTranscript = ""
     @Published private(set) var partialTranscript = ""
@@ -32,21 +20,18 @@ final class PronunciationTrainerViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published private(set) var permissionsDenied = false
 
-    // MARK: - Published — Assessment
 
     @Published private(set) var currentAssessment: PronunciationAssessmentResult?
     @Published private(set) var isAssessingPronunciation = false
     @Published private(set) var assessmentError: String?
     @Published private(set) var attempts: [PronunciationAttempt] = []
 
-    // MARK: - Published — Feedback (shared result screen)
 
     @Published private(set) var messages: [SpeakingConversationMessage] = []
     @Published private(set) var conversationFeedback: SpeakingConversationFeedback?
     @Published private(set) var isGeneratingFeedback = false
     @Published private(set) var feedbackError: String?
 
-    // MARK: - Derived
 
     var currentItem: PronunciationItem? {
         guard items.indices.contains(currentItemIndex) else { return nil }
@@ -76,14 +61,12 @@ final class PronunciationTrainerViewModel: ObservableObject {
 
     var hasAttemptForCurrentItem: Bool { currentAssessment != nil }
 
-    // MARK: - Public Interface
 
     let setup: SpeakingConversationSetup
     let difficulty: PronunciationDifficulty
     let focus: PronunciationFocus
     var onSessionEnded: (() -> Void)?
 
-    // MARK: - Private
 
     private let recognizer: SpeechRecognitionService
     private let synthesizer: SpeechSynthesisService
@@ -110,7 +93,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         )
     )
 
-    // MARK: - Init
 
     init(
         setup: SpeakingConversationSetup,
@@ -141,7 +123,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         assessmentTask?.cancel()
     }
 
-    // MARK: - Session Lifecycle
 
     func startSession() {
         guard !hasStarted else { return }
@@ -203,11 +184,7 @@ final class PronunciationTrainerViewModel: ObservableObject {
         hasEnded = false
     }
 
-    // MARK: - Item Loading
 
-    /// Generates a fresh set of 10 AI items for the current selection. Falls
-    /// back to randomized local items if AI is unavailable. `forceRefresh`
-    /// (Regenerate) additionally avoids the currently shown items.
     func loadFreshItems(forceRefresh: Bool) {
         guard !isLoadingItems else { return }
         isLoadingItems = true
@@ -259,9 +236,7 @@ final class PronunciationTrainerViewModel: ObservableObject {
         loadFreshItems(forceRefresh: true)
     }
 
-    // MARK: - Playback
 
-    /// Speaks ONLY the target item text (never translation, never example).
     func playCurrentItem() {
         guard let item = currentItem else { return }
         speak(item.text, label: "item")
@@ -273,7 +248,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         #endif
     }
 
-    /// Speaks the example sentence — only when the user explicitly taps it.
     func playExample() {
         guard let example = currentItem?.example, !example.isEmpty else { return }
         isPlayingExample = true
@@ -291,7 +265,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         synthesizer.speak(text, localeIdentifier: setup.speechLocaleIdentifier)
     }
 
-    // MARK: - Speech Recognition
 
     func toggleListening() async {
         switch state {
@@ -364,11 +337,7 @@ final class PronunciationTrainerViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Pronunciation Assessment
 
-    /// Runs the real assessor first; on failure falls back to the transcript
-    /// estimate and records an honest message. No audio file is captured yet,
-    /// so the fallback path is expected until Azure SDK + WAV capture land.
     func assessCurrentAttempt(referenceText: String, recognizedText: String) {
         let languageCode = setup.speechLocaleIdentifier
         let realAssessor = pronunciationAssessor
@@ -385,7 +354,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         #endif
 
         assessmentTask = Task { [weak self] in
-            // 1) Try the real (Azure) assessor.
             do {
                 let result = try await realAssessor.assessPronunciation(
                     audioInput: .recognizedText(recognizedText),
@@ -406,7 +374,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
                 #endif
             }
 
-            // 2) Honest transcript-similarity fallback.
             do {
                 let estimate = try await fallback.assessPronunciation(
                     audioInput: .recognizedText(recognizedText),
@@ -456,7 +423,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         messages.append(SpeakingConversationMessage(role: .user, text: recognizedText))
     }
 
-    // MARK: - Navigation
 
     func retryCurrentItem() {
         #if DEBUG
@@ -507,7 +473,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
 
     func clearError() { errorMessage = nil }
 
-    // MARK: - Callbacks
 
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
@@ -550,7 +515,6 @@ final class PronunciationTrainerViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Feedback
 
     private func beginFeedbackGeneration() {
         let snapshotLanguage = setup.language
@@ -585,6 +549,5 @@ final class PronunciationTrainerViewModel: ObservableObject {
     }
 }
 
-// MARK: - Protocol Conformances
 
 extension PronunciationTrainerViewModel: SpeakingResultProvidable {}

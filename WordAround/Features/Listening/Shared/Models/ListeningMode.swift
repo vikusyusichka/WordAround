@@ -26,12 +26,12 @@ struct ListeningMode: Identifiable {
             blobColor: ListeningTheme.importAudioBlob
         ),
         ListeningMode(
-            id: "video-listening",
-            title: "Video Listening",
-            subtitle: "Find level-based videos and practice real speech.",
-            systemImage: "play.rectangle.fill",
-            accentColor: ListeningTheme.videoListeningAccent,
-            blobColor: ListeningTheme.videoListeningBlob
+            id: "import-video",
+            title: "Import Video",
+            subtitle: "Upload a video, get subtitles, and practice with questions.",
+            systemImage: "film.stack",
+            accentColor: ListeningTheme.importVideoAccent,
+            blobColor: ListeningTheme.importVideoBlob
         ),
         ListeningMode(
             id: "saved-practice",

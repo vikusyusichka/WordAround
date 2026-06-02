@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// The stance the learner chooses to defend in a debate. `surpriseMe`
-/// is resolved to a concrete `agree`/`disagree` side when the debate
-/// starts (see `DebateSession.resolvedSide`).
 enum DebateSide: String, CaseIterable, Identifiable, Equatable {
     case agree
     case disagree
@@ -34,8 +31,6 @@ enum DebateSide: String, CaseIterable, Identifiable, Equatable {
         }
     }
 
-    /// Whether the learner argues *for* the statement. Only meaningful for
-    /// the two concrete sides; `surpriseMe` must be resolved first.
     var isForStatement: Bool? {
         switch self {
         case .agree:      return true
@@ -44,8 +39,6 @@ enum DebateSide: String, CaseIterable, Identifiable, Equatable {
         }
     }
 
-    /// Resolves `surpriseMe` into a concrete side. Concrete sides are
-    /// returned unchanged.
     func resolvedConcreteSide() -> DebateSide {
         switch self {
         case .agree, .disagree:

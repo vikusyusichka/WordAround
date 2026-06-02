@@ -1,8 +1,6 @@
 import Foundation
 import AVFoundation
 
-/// `AVAudioPlayer`-backed playback for imported audio. Emits progress on a timer
-/// and a finish callback when playback reaches the end.
 @MainActor
 final class AVFoundationAudioPlayerService: NSObject, ListeningAudioPlaying {
 

@@ -8,13 +8,8 @@ struct FreeSpeakingView: View {
     @State private var isPaused = false
     @State private var showResult = false
 
-    /// Pops the session (and the result pushed on top of it) back to the Free
-    /// Speaking setup screen. Owned by the setup screen. `nil` in previews.
     private let onExitToSetup: (() -> Void)?
 
-    /// Pops the whole Free Speaking flow (setup + session + result) back to
-    /// the main Speaking screen. Supplied by `SpeakingView` via the setup
-    /// screen. `nil` in previews.
     private let onExitToSpeaking: (() -> Void)?
 
     init(
@@ -99,9 +94,6 @@ struct FreeSpeakingView: View {
                 viewModel: viewModel,
                 completionTitle: "Free Speaking completed",
                 onPracticeAgain: {
-                    // Return to the Free Speaking setup screen for a fresh run.
-                    // The setup screen owns the binding, so this pops the
-                    // session AND the result in one step.
                     viewModel.endSession()
                     if let onExitToSetup {
                         onExitToSetup()
@@ -111,7 +103,6 @@ struct FreeSpeakingView: View {
                     }
                 },
                 onBackToSpeaking: {
-                    // Leave the whole flow back to the main Speaking screen.
                     viewModel.endSession()
                     if let onExitToSpeaking {
                         onExitToSpeaking()
@@ -124,7 +115,6 @@ struct FreeSpeakingView: View {
         }
     }
 
-    // MARK: - Top Bar
 
     private var topBar: some View {
         ZStack {
@@ -207,7 +197,6 @@ struct FreeSpeakingView: View {
         .animation(.easeInOut(duration: 0.18), value: isWarning)
     }
 
-    // MARK: - Topic Card
 
     @ViewBuilder
     private var topicCard: some View {
@@ -233,7 +222,6 @@ struct FreeSpeakingView: View {
         return chips
     }
 
-    // MARK: - Transcript Section
 
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -299,7 +287,6 @@ struct FreeSpeakingView: View {
         )
     }
 
-    // MARK: - Fallback Banner
 
     private func fallbackBanner(_ message: String) -> some View {
         HStack(alignment: .top, spacing: 10) {
@@ -321,7 +308,6 @@ struct FreeSpeakingView: View {
         )
     }
 
-    // MARK: - Actions
 
     private func handleMicTap() {
         if isRecording {

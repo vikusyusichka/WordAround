@@ -66,7 +66,6 @@ final class ImportAudioSessionViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Lifecycle
 
     func onAppear() {
         guard !didLoad else { return }
@@ -95,7 +94,6 @@ final class ImportAudioSessionViewModel: ObservableObject {
         if !showResult { persist(status: .inProgress) }
     }
 
-    // MARK: - Playback
 
     var isPlaying: Bool { playbackState == .playing }
 
@@ -119,7 +117,6 @@ final class ImportAudioSessionViewModel: ObservableObject {
         playbackState = .playing
     }
 
-    // MARK: - Answers
 
     func selectAnswer(questionID: String, optionIndex: Int) {
         guard !hasCheckedAnswers else { return }
@@ -170,7 +167,6 @@ final class ImportAudioSessionViewModel: ObservableObject {
         showResult = true
     }
 
-    // MARK: - Display helpers
 
     var timerText: String { formatTime(elapsedSeconds) }
     var currentTimeText: String { formatTime(Int(currentTime)) }
@@ -181,7 +177,6 @@ final class ImportAudioSessionViewModel: ObservableObject {
         String(format: "%d:%02d", seconds / 60, seconds % 60)
     }
 
-    // MARK: - Persistence
 
     private func persist(status: ListeningSessionStatus, result: ListeningResult? = nil) {
         let session = ListeningPersistedSession(

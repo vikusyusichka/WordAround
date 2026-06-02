@@ -1,6 +1,5 @@
 import Foundation
 
-/// One recorded attempt at a pronunciation item, paired with its assessment.
 struct PronunciationAttempt: Identifiable, Equatable {
     let id: UUID
     let itemId: UUID

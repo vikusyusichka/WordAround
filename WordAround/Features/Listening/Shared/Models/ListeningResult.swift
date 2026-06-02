@@ -17,8 +17,6 @@ struct ListeningResult: Identifiable, Equatable, Hashable, Codable {
     let listeningTimeSeconds: Int
     let speedLabel: String
     let mistakes: [ListeningMistake]
-    /// `false` for watch-only sessions (e.g. a captionless video) where no
-    /// comprehension score should be shown — only a "practice completed" state.
     var hasQuestions: Bool = true
 
     var mistakeCount: Int { mistakes.count }

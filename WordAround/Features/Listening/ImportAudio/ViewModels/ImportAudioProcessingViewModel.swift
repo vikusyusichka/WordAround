@@ -38,7 +38,6 @@ final class ImportAudioProcessingViewModel: ObservableObject {
 
     var stepTitles: [String] { steps }
 
-    /// Index of the currently active step (drives the checklist UI).
     var currentStep: Int {
         switch phase {
         case .importing:           return 0
@@ -69,11 +68,8 @@ final class ImportAudioProcessingViewModel: ObservableObject {
     }
 
     private func process() async {
-        // Mark upload step done.
         phase = .transcribing
 
-        // If the user disabled questions, no transcription is needed —
-        // it's a pure listening session.
         guard setup.addQuestions else {
             phase = .ready
             showSession = true

@@ -1,19 +1,8 @@
 import Foundation
 
-/// Pure scoring logic shared by every listening mode. Keeps answer-checking and
-/// result building out of the view models.
 struct ListeningScoringService {
     static let shared = ListeningScoringService()
 
-    /// Builds a result from the answered questions.
-    ///
-    /// - Parameters:
-    ///   - questions: the questions presented.
-    ///   - selectedAnswers: questionID -> chosen option index.
-    ///   - listeningTimeSeconds: accumulated listening time.
-    ///   - speedLabel: e.g. "1.0x".
-    ///   - hasQuestions: pass `false` for watch-only sessions so no fake score
-    ///     is produced.
     func makeResult(
         sessionId: String,
         questions: [ListeningQuestion],
@@ -74,8 +63,6 @@ struct ListeningScoringService {
         )
     }
 
-    /// Whether every presented question has an answer selected — used to gate
-    /// the "Check answers" / "Finish" button.
     func allAnswered(questions: [ListeningQuestion], selectedAnswers: [String: Int]) -> Bool {
         guard !questions.isEmpty else { return true }
         return questions.allSatisfy { selectedAnswers[$0.id] != nil }

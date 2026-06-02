@@ -71,14 +71,7 @@ final class SpeakingConversationService {
         """
     }
 
-    // MARK: - Suggested answer (hint)
 
-    /// Asks the AI (via the same Worker AI Router as replies) for ONE short,
-    /// level-appropriate example answer the learner could say next. The prompt
-    /// includes the full speaking context: mode, language, level, topic, the
-    /// recent transcript, the tutor's last question and the learner's last
-    /// answer. Throws on failure so the caller can use a context-aware local
-    /// fallback.
     func requestHint(
         mode: SpeakingHintMode,
         language: GrammarLanguage,
@@ -230,8 +223,6 @@ final class SpeakingConversationService {
         }
     }
 
-    /// Context-aware local fallback for AI-generated topics: it at least names
-    /// the current topic instead of the old generic "say one sentence" line.
     static func topicAwareLocalHint(for language: GrammarLanguage, topicTitle: String) -> String {
         let title = topicTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !title.isEmpty else { return genericTopicHint(for: language) }
@@ -247,9 +238,6 @@ final class SpeakingConversationService {
     }
 }
 
-/// Which speaking flow is asking for a suggested-answer hint. Only used to
-/// shape the AI prompt — it never selects an AI provider (the Worker router
-/// owns that).
 enum SpeakingHintMode {
     case aiConversation
     case freeSpeaking

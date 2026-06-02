@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// Large centered card showing the current target phrase, its translation,
-/// category/level chips, an optional tip, and a Play button. Presentation
-/// only — playback is triggered through the `onPlay` closure.
 struct ShadowingPhraseCardView: View {
     let phrase: ShadowingPhrase?
     let isLoading: Bool

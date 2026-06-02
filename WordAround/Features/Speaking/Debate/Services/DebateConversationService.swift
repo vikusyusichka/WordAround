@@ -1,9 +1,5 @@
 import Foundation
 
-/// Produces the AI opponent's turns for Debate Mode. Reuses the shared
-/// `SpeakingAIClient` (and therefore the existing Cloudflare Worker / Gemini
-/// proxy) — it only adds debate-specific prompt building. It does NOT talk to
-/// any provider directly and stores no keys.
 final class DebateConversationService {
 
     private let client: SpeakingAIClient
@@ -14,10 +10,7 @@ final class DebateConversationService {
         self.recentHistoryLimit = recentHistoryLimit
     }
 
-    // MARK: - Requests
 
-    /// The opponent's opening statement: it declares its stance and gives one
-    /// clear argument, then invites the learner to begin.
     func requestOpening(
         language: GrammarLanguage,
         level: EssayDifficulty,
@@ -35,7 +28,6 @@ final class DebateConversationService {
         return try await client.generateReply(prompt: prompt)
     }
 
-    /// The opponent's reply to a learner turn, shaped by the current round.
     func requestReply(
         language: GrammarLanguage,
         level: EssayDifficulty,
@@ -60,7 +52,6 @@ final class DebateConversationService {
         return try await client.generateReply(prompt: prompt)
     }
 
-    // MARK: - Prompt Building
 
     static func buildOpeningPrompt(
         language: GrammarLanguage,
@@ -156,7 +147,6 @@ final class DebateConversationService {
         }
     }
 
-    // MARK: - Fallbacks
 
     static func fallbackOpening(for language: GrammarLanguage, topicTitle: String) -> String {
         switch language {
@@ -184,8 +174,7 @@ final class DebateConversationService {
         "AI limit reached. Using fallback."
     }
 
-    /// Short local sentence starters the learner can lean on. Never sent to
-    /// the AI and never added to the transcript.
+    /// Local-only hints; never sent to the AI or added to the transcript.
     static func localHints(for language: GrammarLanguage) -> [String] {
         switch language {
         case .spanish:

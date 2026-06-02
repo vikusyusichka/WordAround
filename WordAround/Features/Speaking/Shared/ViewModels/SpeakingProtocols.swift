@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - Topic Picker
 
 protocol SpeakingTopicPickable: ObservableObject {
     var isGeneratingTopic: Bool { get }
@@ -14,7 +13,6 @@ protocol SpeakingTopicPickable: ObservableObject {
     func applyStandardScenario(_ scenario: ConversationScenario)
 }
 
-// MARK: - Result View
 
 protocol SpeakingResultProvidable: ObservableObject {
     var conversationFeedback: SpeakingConversationFeedback? { get }

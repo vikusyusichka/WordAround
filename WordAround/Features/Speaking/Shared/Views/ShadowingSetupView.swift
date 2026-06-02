@@ -10,7 +10,7 @@ struct ShadowingSetupView: View {
 
     private let accent = ShadowingTheme.accent
     private let accentDark = ShadowingTheme.accentDark
-    private let categories = ShadowingCategory.allCases
+    private let categories = ShadowingCategory.selectableCases
 
     private var columns: [GridItem] {
         [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
@@ -88,7 +88,6 @@ struct ShadowingSetupView: View {
         }
     }
 
-    // MARK: - Category Grid
 
     private var categoryGrid: some View {
         LazyVGrid(columns: columns, spacing: 10) {
@@ -124,7 +123,6 @@ struct ShadowingSetupView: View {
         }
     }
 
-    // MARK: - Preview Card
 
     private var previewCard: some View {
         HStack(spacing: 14) {

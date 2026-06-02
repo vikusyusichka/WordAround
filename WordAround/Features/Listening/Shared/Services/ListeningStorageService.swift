@@ -1,8 +1,5 @@
 import Foundation
 
-/// Local-first session store backed by a JSON file in Application Support.
-/// Persists draft, in-progress and completed sessions so the user can continue
-/// later or review results. Thread-safe via an internal serial queue.
 final class LocalListeningSessionStore: ListeningSessionStoring, @unchecked Sendable {
     static let shared = LocalListeningSessionStore()
 
@@ -78,7 +75,6 @@ final class LocalListeningSessionStore: ListeningSessionStoring, @unchecked Send
         }
     }
 
-    // MARK: - Disk I/O (must run on `queue`)
 
     private func readAll() -> [ListeningPersistedSession] {
         guard let data = try? Data(contentsOf: fileURL) else { return [] }
@@ -92,7 +88,6 @@ final class LocalListeningSessionStore: ListeningSessionStoring, @unchecked Send
     }
 }
 
-/// In-memory store for previews and tests.
 final class MockListeningSessionStore: ListeningSessionStoring, @unchecked Sendable {
     private var sessions: [ListeningPersistedSession]
 

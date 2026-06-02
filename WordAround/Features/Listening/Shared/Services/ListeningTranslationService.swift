@@ -1,14 +1,19 @@
 import Foundation
 
-/// Translates a subtitle / transcript line. Kept behind a protocol so the
-/// concrete backend (the app's existing assistance service today, a dedicated
-/// API later) can be swapped without touching view models or views.
+struct ListeningTranslationResult: Identifiable, Equatable, Hashable, Codable {
+    var id: String = UUID().uuidString
+    let originalText: String
+    let translatedText: String
+    let sourceLanguage: GrammarLanguage
+    let targetLanguage: GrammarLanguage
+    var contextSentence: String?
+}
+
 protocol ListeningTranslationServicing {
     func translate(text: String, from source: GrammarLanguage, to target: GrammarLanguage) async throws -> String
 }
 
 extension ListeningTranslationServicing {
-    /// Best translation target for the user's device, never the source language.
     func defaultTargetLanguage(for source: GrammarLanguage) -> GrammarLanguage {
         for identifier in Locale.preferredLanguages {
             let code = Locale(identifier: identifier).language.languageCode?.identifier.lowercased()
@@ -20,10 +25,25 @@ extension ListeningTranslationServicing {
         }
         return source == .english ? .ukrainian : .english
     }
+
+    func translateWord(
+        word: String,
+        context: String?,
+        from source: GrammarLanguage,
+        to target: GrammarLanguage
+    ) async throws -> ListeningTranslationResult {
+        let cleaned = word.trimmingCharacters(in: .whitespacesAndNewlines)
+        let translated = try await translate(text: cleaned, from: source, to: target)
+        return ListeningTranslationResult(
+            originalText: cleaned,
+            translatedText: translated,
+            sourceLanguage: source,
+            targetLanguage: target,
+            contextSentence: context
+        )
+    }
 }
 
-/// Real translation backed by the app's existing `EssayAssistanceService`
-/// (the same backend Reading uses for word translation).
 struct AIListeningTranslationService: ListeningTranslationServicing {
     private let assistance: EssayAssistanceService
 
@@ -40,8 +60,6 @@ struct AIListeningTranslationService: ListeningTranslationServicing {
     }
 }
 
-/// Mock translator for previews and tests — echoes the text with a target tag,
-/// no network calls or permissions required.
 struct MockListeningTranslationService: ListeningTranslationServicing {
     var delayNanoseconds: UInt64 = 400_000_000
 

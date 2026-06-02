@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Slim session-progress bar: "Phrase X of Y" plus a fill bar.
-/// Presentation only.
 struct ShadowingProgressCardView: View {
     let currentIndex: Int
     let total: Int

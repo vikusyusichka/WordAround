@@ -1,10 +1,5 @@
 import Foundation
 
-/// Result of a real pronunciation assessment (e.g. Azure Pronunciation
-/// Assessment). All scores are 0...100.
-///
-/// `isEstimate` distinguishes a genuine acoustic assessment from a
-/// transcript-similarity fallback so the UI can be honest about it.
 struct PronunciationAssessmentResult: Equatable {
     let pronunciationScore: Double
     let accuracyScore: Double
@@ -13,8 +8,6 @@ struct PronunciationAssessmentResult: Equatable {
     let recognizedText: String
     let wordResults: [PronunciationWordResult]
 
-    /// True when these numbers came from transcript similarity rather than a
-    /// real acoustic engine. The UI must surface an honest warning.
     let isEstimate: Bool
 
     init(
@@ -35,18 +28,15 @@ struct PronunciationAssessmentResult: Equatable {
         self.isEstimate = isEstimate
     }
 
-    /// Words the engine flagged as mispronounced, omitted or otherwise weak.
     var weakWords: [PronunciationWordResult] {
         wordResults.filter { $0.isWeak }
     }
 }
 
-/// Per-word breakdown from the assessment engine.
 struct PronunciationWordResult: Identifiable, Equatable {
     let id: UUID
     let word: String
     let accuracyScore: Double
-    /// Azure error types: "None", "Mispronunciation", "Omission", "Insertion".
     let errorType: String
     let phonemeResults: [PronunciationPhonemeResult]?
 
@@ -70,7 +60,6 @@ struct PronunciationWordResult: Identifiable, Equatable {
     }
 }
 
-/// Optional phoneme-level detail when the engine provides it.
 struct PronunciationPhonemeResult: Identifiable, Equatable {
     let id: UUID
     let phoneme: String

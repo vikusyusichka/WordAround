@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Floating bottom bar for Pronunciation Trainer. Presentation only.
-/// LEFT: Retry · CENTER: Mic · RIGHT: Next.
 struct PronunciationMicBarView: View {
     let state: SpeakingConversationState
     let canRetry: Bool

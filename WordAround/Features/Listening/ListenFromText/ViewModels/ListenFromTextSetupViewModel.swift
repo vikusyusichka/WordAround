@@ -71,7 +71,7 @@ final class ListenFromTextSetupViewModel: ObservableObject {
             addQuestions: addQuestions,
             questionCount: questionCount,
             questionTypes: questionTypes,
-            estimatedMinutes: max(1, words / 130)  // ~130 wpm spoken
+            estimatedMinutes: max(1, words / 130)
         )
     }
 }

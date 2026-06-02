@@ -5,20 +5,14 @@ import Combine
 @MainActor
 final class FreeSpeakingViewModel: ObservableObject {
 
-    // MARK: - Published
 
     @Published private(set) var messages: [SpeakingConversationMessage] = []
-    /// Plain-text mirror of finalized user transcript chunks (one per finalized utterance).
-    /// Kept in sync with `messages` so Free Speaking can drive UI from a simple [String]
-    /// while feedback continues to use the existing `messages` pipeline.
     @Published private(set) var transcriptChunks: [String] = []
     @Published private(set) var partialTranscript: String = ""
     @Published private(set) var state: SpeakingConversationState = .idle
     @Published var errorMessage: String?
-    /// True when microphone or speech recognition permission was denied.
     @Published private(set) var permissionsDenied: Bool = false
 
-    /// Mirrors `state == .listening` for the public Free Speaking API.
     var isListening: Bool { state == .listening }
 
     @Published private(set) var context: SpeakingConversationContext?
@@ -35,7 +29,6 @@ final class FreeSpeakingViewModel: ObservableObject {
 
     @Published private(set) var remainingSeconds: Int = 0
 
-    // MARK: - Public Interface
 
     let setup: SpeakingConversationSetup
 
@@ -53,7 +46,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         return nil
     }
 
-    // MARK: - Private
 
     private let recognizer: SpeechRecognitionService
     private let topicService: SpeakingTopicGenerationService
@@ -71,7 +63,6 @@ final class FreeSpeakingViewModel: ObservableObject {
     private var triedTopicTitles: [String] = []
     private var triedTopicTitlesLoaded = false
 
-    // MARK: - Init
 
     init(
         setup: SpeakingConversationSetup,
@@ -93,7 +84,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         topicGenerationTask?.cancel()
     }
 
-    // MARK: - Session Lifecycle
 
     func startSession() {
         guard !hasStarted else { return }
@@ -142,7 +132,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         usedFallbackTopic = false
     }
 
-    // MARK: - Timer
 
     func startTimer() {
         timerTask?.cancel()
@@ -174,15 +163,11 @@ final class FreeSpeakingViewModel: ObservableObject {
         onTimerFinished?()
     }
 
-    // MARK: - Speech Recognition
 
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
             guard let self else { return }
-            // Only show the live partial while actually listening. A late
-            // partial result can fire AFTER we've stopped and appended the
-            // final chunk — accepting it would re-show a faded duplicate
-            // transcript card of the same utterance.
+            // Late partial results can arrive after stop; ignore unless still listening.
             guard self.state.isListening else { return }
             #if DEBUG
             print("[FreeSpeakingVM] partial transcript update (len=\(text.count))")
@@ -274,7 +259,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         #if DEBUG
         print("[FreeSpeakingVM] mic tapped → stopListening")
         #endif
-        // Go idle immediately; final transcript arrives via callback
         state = .idle
         Task { await recognizer.stop() }
     }
@@ -288,7 +272,6 @@ final class FreeSpeakingViewModel: ObservableObject {
             return
         }
 
-        // Deduplicate: ignore if same utterance repeated
         if trimmed == lastSubmittedTranscript {
             state = .idle
             return
@@ -303,16 +286,13 @@ final class FreeSpeakingViewModel: ObservableObject {
         messages.append(SpeakingConversationMessage(role: .user, text: trimmed))
         transcriptChunks.append(trimmed)
         state = .idle
-        // Free Speaking: no AI reply. The session continues until End or timer.
     }
 
     func clearError() {
         errorMessage = nil
     }
 
-    // MARK: - Topic Management
 
-    /// Called at session start — generates and auto-applies the first topic.
     private func startAutoTopicGeneration() {
         topicGenerationTask?.cancel()
         isGeneratingTopic = true
@@ -325,7 +305,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         )
     }
 
-    /// Called from topic picker — generates a preview topic (not auto-applied).
     func generateFreshTopic(forceRefresh: Bool) {
         topicGenerationTask?.cancel()
         let avoidTitles = forceRefresh ? triedTopicTitles : []
@@ -459,7 +438,6 @@ final class FreeSpeakingViewModel: ObservableObject {
         startTimer()
     }
 
-    // MARK: - Feedback
 
     private func beginFeedbackGeneration() {
         let snapshotLanguage = setup.language
@@ -504,7 +482,6 @@ final class FreeSpeakingViewModel: ObservableObject {
     }
 }
 
-// MARK: - Protocol Conformances
 
 extension FreeSpeakingViewModel: SpeakingTopicPickable {}
 extension FreeSpeakingViewModel: SpeakingResultProvidable {}

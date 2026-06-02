@@ -1,13 +1,7 @@
 import Foundation
 import AVFoundation
 
-/// Maps the app's `GrammarLanguage` to the locale identifiers used by
-/// AVFoundation speech synthesis and the Speech framework so the Listening
-/// module never hardcodes locale strings inside view models or services.
 extension GrammarLanguage {
-    /// BCP-47 locale identifier used for speech synthesis and recognition.
-    /// Languages without a dedicated TTS/recognition voice fall back to a
-    /// reasonable carrier locale (e.g. constructed languages → English).
     var listeningLocaleIdentifier: String {
         switch self {
         case .english:    return "en-US"
@@ -45,8 +39,6 @@ extension GrammarLanguage {
 }
 
 extension ListeningVoiceSpeed {
-    /// Converts the user-facing speed into a value for `AVSpeechUtterance.rate`,
-    /// scaled around `AVSpeechUtteranceDefaultSpeechRate` (~0.5).
     var utteranceRate: Float {
         let base = AVSpeechUtteranceDefaultSpeechRate
         switch self {
@@ -56,7 +48,6 @@ extension ListeningVoiceSpeed {
         }
     }
 
-    /// Playback-rate multiplier for `AVAudioPlayer` / `AVPlayer`.
     var playbackRate: Float {
         switch self {
         case .slow:   return 0.75

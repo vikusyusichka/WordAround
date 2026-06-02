@@ -1,7 +1,6 @@
 import Foundation
 
 enum SavedPracticePreviewData {
-    /// Full persisted sessions used by the mock store and previews.
     static let persistedSessions: [ListeningPersistedSession] = [
         ListeningPersistedSession(
             id: "continue-1",
@@ -39,22 +38,6 @@ enum SavedPracticePreviewData {
             result: ListeningPlaceholderData.sampleResult,
             status: .completed
         ),
-        ListeningPersistedSession(
-            id: "saved-3",
-            modeID: "video-listening",
-            title: "Daily Life in Tokyo",
-            language: .english,
-            level: .a2,
-            createdAt: Date().addingTimeInterval(-7 * 86_400),
-            updatedAt: Date().addingTimeInterval(-7 * 86_400),
-            durationSeconds: 255,
-            elapsedSeconds: 255,
-            progress: 1,
-            videoURL: "https://www.youtube.com/watch?v=LXb3EKWsInQ",
-            videoTitle: "Daily Life in Tokyo",
-            addQuestions: false,
-            status: .completed
-        )
     ]
 
     static var savedSessions: [ListeningSavedSession] {
