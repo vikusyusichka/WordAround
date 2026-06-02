@@ -158,6 +158,18 @@ extension Layout {
     static let homeEmptySetHeight: CGFloat = isPadLike ? 180 : 140
 }
 
+// MARK: - Profile screen
+
+extension Layout {
+    /// Caps the column width on iPad / Mac so cards don't stretch edge-to-edge.
+    /// iPhone uses `.infinity` so cards still fill the narrower width.
+    static let profileContentMaxWidth: CGFloat = isPadLike ? 740 : .infinity
+    static let profileSectionSpacing: CGFloat = isPadLike ? 18 : 14
+    static let profileCardPadding: CGFloat = isPadLike ? 24 : 18
+    static let profileCardCornerRadius: CGFloat = isPadLike ? 28 : 22
+    static let profileAvatarSize: CGFloat = isPadLike ? 120 : 96
+}
+
 // MARK: - Home Dashboard (daily stats grid + continue learning tile)
 
 extension Layout {

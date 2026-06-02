@@ -327,14 +327,17 @@
 		E30A1D0D2F9A616F00387BDC /* HomeCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D0C2F9A616100387BDC /* HomeCategory.swift */; };
 		E30A1D0F2F9A618800387BDC /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D0E2F9A618400387BDC /* HomeTab.swift */; };
 		E30A1D1D2F9AC1D500387BDC /* BaseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D1C2F9AC1C800387BDC /* BaseCardView.swift */; };
+		FEEDFACE0000000000000006 /* StatBlobShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000005 /* StatBlobShape.swift */; };
 		E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D1E2F9AC1E500387BDC /* Layout.swift */; };
 		E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D202F9AC20500387BDC /* ProgressCardView.swift */; };
-		E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D222F9AC21700387BDC /* StatCardView.swift */; };
 		FEEDFACE0000000000000002 /* HomeStatsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000001 /* HomeStatsGridView.swift */; };
 		FEEDFACE0000000000000004 /* ContinueLearningSetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000003 /* ContinueLearningSetCardView.swift */; };
+		FEEDFACE0000000000000012 /* UserProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000011 /* UserProfileService.swift */; };
+		FEEDFACE0000000000000014 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000013 /* ProfileViewModel.swift */; };
+		FEEDFACE0000000000000016 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000015 /* ProfileView.swift */; };
+		FEEDFACE0000000000000018 /* EditProfileSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000017 /* EditProfileSheet.swift */; };
 		E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D242F9AC22800387BDC /* SetItemView.swift */; };
 		E30A1D4F2F9BB9D000387BDC /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D4E2F9BB9C700387BDC /* AppColors.swift */; };
-		E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */; };
 		E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */; };
 		E30A1D552F9BBD3D00387BDC /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D542F9BBD3700387BDC /* HomeViewModel.swift */; };
 		E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D562F9BBF8500387BDC /* VerifyEmailViewModel.swift */; };
@@ -848,14 +851,17 @@
 		E30A1D0C2F9A616100387BDC /* HomeCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCategory.swift; sourceTree = "<group>"; };
 		E30A1D0E2F9A618400387BDC /* HomeTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTab.swift; sourceTree = "<group>"; };
 		E30A1D1C2F9AC1C800387BDC /* BaseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCardView.swift; sourceTree = "<group>"; };
+		FEEDFACE0000000000000005 /* StatBlobShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatBlobShape.swift; sourceTree = "<group>"; };
 		E30A1D1E2F9AC1E500387BDC /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		E30A1D202F9AC20500387BDC /* ProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCardView.swift; sourceTree = "<group>"; };
-		E30A1D222F9AC21700387BDC /* StatCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCardView.swift; sourceTree = "<group>"; };
 		FEEDFACE0000000000000001 /* HomeStatsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeStatsGridView.swift; sourceTree = "<group>"; };
 		FEEDFACE0000000000000003 /* ContinueLearningSetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinueLearningSetCardView.swift; sourceTree = "<group>"; };
+		FEEDFACE0000000000000011 /* UserProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileService.swift; sourceTree = "<group>"; };
+		FEEDFACE0000000000000013 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileViewModel.swift; path = "WordAround/Features/Profile/ViewModels/ProfileViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000015 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileView.swift; path = "WordAround/Features/Profile/Views/ProfileView.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000017 /* EditProfileSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EditProfileSheet.swift; path = "WordAround/Features/Profile/Views/EditProfileSheet.swift"; sourceTree = SOURCE_ROOT; };
 		E30A1D242F9AC22800387BDC /* SetItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetItemView.swift; sourceTree = "<group>"; };
 		E30A1D4E2F9BB9C700387BDC /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
-		E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCardItem.swift; sourceTree = "<group>"; };
 		E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashCardSet.swift; sourceTree = "<group>"; };
 		E30A1D542F9BBD3700387BDC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		E30A1D562F9BBF8500387BDC /* VerifyEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailViewModel.swift; sourceTree = "<group>"; };
@@ -2072,6 +2078,7 @@
 				E30A1CBD2F98078A00387BDC /* Onboarding */,
 				E30A1CBA2F98023200387BDC /* Home */,
 				E30A1CCE2F99444400387BDC /* Auth */,
+				FEEDFACE0000000000000020 /* Profile */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -2122,7 +2129,6 @@
 				E30A1D0A2F9A5FE700387BDC /* BottomNavigationBarView.swift */,
 				E30A1D082F9A5FCD00387BDC /* CategorySidebarView.swift */,
 				E30A1D242F9AC22800387BDC /* SetItemView.swift */,
-				E30A1D222F9AC21700387BDC /* StatCardView.swift */,
 				FEEDFACE0000000000000001 /* HomeStatsGridView.swift */,
 				FEEDFACE0000000000000003 /* ContinueLearningSetCardView.swift */,
 				E30A1D202F9AC20500387BDC /* ProgressCardView.swift */,
@@ -2212,6 +2218,7 @@
 			isa = PBXGroup;
 			children = (
 				E30A1D1C2F9AC1C800387BDC /* BaseCardView.swift */,
+				FEEDFACE0000000000000005 /* StatBlobShape.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -2603,9 +2610,18 @@
 				E30A1D0C2F9A616100387BDC /* HomeCategory.swift */,
 				E30A1D0E2F9A618400387BDC /* HomeTab.swift */,
 				E30A1D7B2F9C1D6900387BDC /* HomeSetPreviewItem.swift */,
-				E30A1D502F9BBCFC00387BDC /* StatCardItem.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		FEEDFACE0000000000000020 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				FEEDFACE0000000000000013 /* ProfileViewModel.swift */,
+				FEEDFACE0000000000000015 /* ProfileView.swift */,
+				FEEDFACE0000000000000017 /* EditProfileSheet.swift */,
+			);
+			name = Profile;
 			sourceTree = "<group>";
 		};
 		E3DA1A0B2FFFFFFF0000000B /* Firebase */ = {
@@ -2614,6 +2630,7 @@
 				E30A1CD22F99448400387BDC /* AuthService.swift */,
 				E30A1D742F9C0EF700387BDC /* FlashcardSetService.swift */,
 				E30A1DA52F9E079A00387BDC /* FolderService.swift */,
+				FEEDFACE0000000000000011 /* UserProfileService.swift */,
 			);
 			path = Firebase;
 			sourceTree = "<group>";
@@ -3282,7 +3299,6 @@
 				4FEF00BB7BB056D1F7AFEBED /* ListeningScoringService.swift in Sources */,
 				5677655C6E753714B5262EE8 /* LocalListeningQuestionGenerator.swift in Sources */,
 				E30A1D1F2F9AC1F100387BDC /* Layout.swift in Sources */,
-				E30A1D512F9BBCFC00387BDC /* StatCardItem.swift in Sources */,
 				E30A1DB42F9E0C3D00387BDC /* FolderCardView.swift in Sources */,
 				E30902B42FBB96CB00C52238 /* EssayGeneratedHint.swift in Sources */,
 				E30A1DAE2F9E07F000387BDC /* CreateFolderViewModel.swift in Sources */,
@@ -3297,9 +3313,12 @@
 				E30902BC2FBB975100C52238 /* GeneratedEssayTask.swift in Sources */,
 				E30902C82FBC0FD000C52238 /* EssaysSetHintCardRowView.swift in Sources */,
 				E30902B62FBB96E400C52238 /* EssayAIClient.swift in Sources */,
-				E30A1D232F9AC21B00387BDC /* StatCardView.swift in Sources */,
 				FEEDFACE0000000000000002 /* HomeStatsGridView.swift in Sources */,
 				FEEDFACE0000000000000004 /* ContinueLearningSetCardView.swift in Sources */,
+				FEEDFACE0000000000000012 /* UserProfileService.swift in Sources */,
+				FEEDFACE0000000000000014 /* ProfileViewModel.swift in Sources */,
+				FEEDFACE0000000000000016 /* ProfileView.swift in Sources */,
+				FEEDFACE0000000000000018 /* EditProfileSheet.swift in Sources */,
 				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
@@ -3409,6 +3428,7 @@
 				E309024C2FBAB98700C52238 /* WriteWordsLoseScreenView.swift in Sources */,
 				E3DA1A132FFFFFFF00000013 /* WriteWordsResultScreenView.swift in Sources */,
 				E30A1D1D2F9AC1D500387BDC /* BaseCardView.swift in Sources */,
+				FEEDFACE0000000000000006 /* StatBlobShape.swift in Sources */,
 				E30A1DB02F9E098700387BDC /* FolderDetailViewModel.swift in Sources */,
 				E30A1D6F2F9C0E9200387BDC /* SetIconType.swift in Sources */,
 				E30A1D812F9C24C100387BDC /* HomeSetPreviewMapper.swift in Sources */,

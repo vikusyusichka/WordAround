@@ -192,10 +192,7 @@ private extension HomeView {
                     )
 
                 case .profile:
-                    placeholderCard(
-                        title: "Profile",
-                        subtitle: sessionStore.currentEmail
-                    )
+                    ProfileView()
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
