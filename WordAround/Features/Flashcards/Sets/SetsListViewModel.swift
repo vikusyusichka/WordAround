@@ -86,6 +86,28 @@ final class SetsListViewModel: ObservableObject {
         }
     }
 
+    @discardableResult
+    func updateSet(_ item: HomeSetPreviewItem, title: String, description: String) async -> Bool {
+        guard let sourceSet = item.sourceSet else {
+            errorMessage = "Set data is missing."
+            return false
+        }
+
+        var updatedSet = sourceSet
+        updatedSet.title = title
+        updatedSet.description = description
+        updatedSet.updatedAt = Date()
+
+        do {
+            try await setService.updateSet(updatedSet)
+            applyUpdatedSet(updatedSet)
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
     func applyUpdatedSet(_ updatedSet: FlashcardSet) {
         let updatedItem = makePreviewItem(from: updatedSet)
 
@@ -98,10 +120,6 @@ final class SetsListViewModel: ObservableObject {
         }
     }
 
-    /// Picks the set to surface in "Continue learning". With the data the set
-    /// model exposes, the most recently touched set (`updatedAt`, then
-    /// `createdAt` as a tiebreaker) is the best proxy for "last opened / last
-    /// practiced / newest". Returns nil when the user has no sets (empty state).
     private func mostRelevantSet(from sets: [FlashcardSet]) -> HomeSetPreviewItem? {
         let mostRecent = sets.max { lhs, rhs in
             (lhs.updatedAt, lhs.createdAt) < (rhs.updatedAt, rhs.createdAt)

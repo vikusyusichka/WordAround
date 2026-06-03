@@ -10,6 +10,7 @@ struct SetItemView: View {
     let trailingText: String?
     let showsArrow: Bool
     let blobColor: Color
+    let height: CGFloat
 
     init(
         title: String,
@@ -20,7 +21,8 @@ struct SetItemView: View {
         backgroundColor: Color,
         trailingText: String? = nil,
         showsArrow: Bool = true,
-        blobColor: Color
+        blobColor: Color,
+        height: CGFloat = Layout.setItemHeight
     ) {
         self.title = title
         self.subtitle = subtitle
@@ -31,6 +33,7 @@ struct SetItemView: View {
         self.trailingText = trailingText
         self.showsArrow = showsArrow
         self.blobColor = blobColor
+        self.height = height
     }
 
     var body: some View {
@@ -55,7 +58,7 @@ struct SetItemView: View {
 
             content
         }
-        .frame(height: Layout.setItemHeight)
+        .frame(height: height)
         .clipShape(RoundedRectangle(cornerRadius: Layout.setItemCornerRadius, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: Layout.setItemCornerRadius, style: .continuous)

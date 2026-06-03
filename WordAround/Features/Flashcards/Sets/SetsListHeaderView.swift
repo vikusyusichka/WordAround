@@ -7,6 +7,8 @@ struct SetsListHeaderView: View {
     let isEditing: Bool
     let onToggleEditing: () -> Void
     let onAction: () -> Void
+    var showsLayoutToggle: Bool = false
+    var layoutMode: Binding<CollectionLayoutMode>? = nil
 
     var body: some View {
         HStack(alignment: .center, spacing: 8) {
@@ -26,6 +28,10 @@ struct SetsListHeaderView: View {
                     circleIconButton(systemName: isEditing ? "checkmark" : "pencil")
                 }
                 .buttonStyle(.plain)
+            }
+
+            if showsLayoutToggle, let layoutMode {
+                LayoutModeToggleButton(mode: layoutMode)
             }
 
             Button(action: onAction) {

@@ -5,8 +5,7 @@ import FirebaseAuth
 @MainActor
 final class HomeViewModel: ObservableObject {
 
-    // MARK: - Daily practice stats (real values from DailyPracticeStatsService /
-    // the listening session store — see `loadDailyStats()`)
+    // MARK: - Daily practice stats
 
     @Published var dailyStats: [HomeDailyStat] = []
 
@@ -16,8 +15,7 @@ final class HomeViewModel: ObservableObject {
     @Published var isLoadingFolders = false
     @Published var errorMessage: String?
 
-    // MARK: - Navigation state (single source of truth — observed by the
-    // sidebar, the bottom bar, and HomeView's main content switch)
+    // MARK: - Navigation state
 
     @Published var selectedTab: HomeTab? = nil
     @Published var selectedCategory: HomeCategory? = nil
@@ -49,7 +47,7 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Header copy (derived from navigation state)
+    // MARK: - Header copy
 
     var headerTitle: String {
         if selectedTab == nil || selectedTab == .home {
@@ -83,8 +81,6 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    /// Subtitle uses the signed-in email when the profile tab is active, so
-    /// the caller must pass it in (the VM does not own session state).
     func headerSubtitle(currentEmail: String) -> String {
         if selectedTab == nil || selectedTab == .home {
             switch selectedCategory {
@@ -119,8 +115,6 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Navigation actions
 
-    /// Clears the selected category with the same spring curve the bottom bar
-    /// uses for tab transitions. Idempotent: no-op when no category is set.
     func clearSelectedCategory() {
         guard selectedCategory != nil else { return }
         withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
@@ -128,10 +122,6 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    /// Selects a learning section from the sidebar. Routes to the Home tab so
-    /// the category content renders regardless of which bottom tab was active —
-    /// this is what makes the sidebar work globally. Sidebar and bottom bar
-    /// share this single `selectedTab` / `selectedCategory` source of truth.
     func selectCategory(_ category: HomeCategory) {
         withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
             selectedTab = .home
@@ -141,9 +131,6 @@ final class HomeViewModel: ObservableObject {
 
     // MARK: - Daily stats
 
-    /// Loads today's per-section practice totals from the existing stats
-    /// backend. Speaking / listening / reading are stored in seconds (shown as
-    /// minutes); writing is stored in words.
     func loadDailyStats() async {
         let speakingSeconds = await statsService.totalToday(skill: .speaking)
         let readingSeconds = await statsService.totalToday(skill: .reading)
@@ -246,5 +233,26 @@ final class HomeViewModel: ObservableObject {
 
     func moveFolders(from source: IndexSet, to destination: Int) {
         folders.move(fromOffsets: source, toOffset: destination)
+    }
+
+    @discardableResult
+    func updateFolder(_ folder: Folder, title: String, description: String) async -> Bool {
+        var updatedFolder = folder
+        updatedFolder.title = title
+        updatedFolder.description = description
+        updatedFolder.updatedAt = Date()
+
+        do {
+            try await folderService.updateFolder(updatedFolder)
+
+            if let index = folders.firstIndex(where: { $0.id == folder.id }) {
+                folders[index] = updatedFolder
+            }
+
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
     }
 }

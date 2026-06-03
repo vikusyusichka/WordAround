@@ -35,6 +35,15 @@ final class FlashcardSetService {
             .delete()
     }
 
+    func updateSet(_ set: FlashcardSet) async throws {
+        try db
+            .collection("users")
+            .document(set.ownerUID)
+            .collection("flashcardSets")
+            .document(set.id)
+            .setData(from: set, merge: true)
+    }
+
     func fetchSets(folderID: String, ownerUID: String) async throws -> [FlashcardSet] {
         let snapshot = try await db
             .collection("users")

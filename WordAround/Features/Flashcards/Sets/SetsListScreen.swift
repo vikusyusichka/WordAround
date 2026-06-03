@@ -21,7 +21,11 @@ struct SetsListScreen: View {
             },
             onMove: { source, destination in
                 viewModel.moveSets(from: source, to: destination)
-            }
+            },
+            onUpdate: { set, title, description in
+                await viewModel.updateSet(set, title: title, description: description)
+            },
+            showsLayoutToggle: true
         )
     }
 }

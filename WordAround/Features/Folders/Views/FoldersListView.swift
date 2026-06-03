@@ -8,9 +8,25 @@ struct FolderListView: View {
     let onSelect: (Folder) -> Void
     let onDelete: (Folder) -> Void
     let onMove: (IndexSet, Int) -> Void
+    var onUpdate: ((Folder, String, String) async -> Bool)? = nil
 
     @State private var isEditing = false
     @State private var draggingFolder: Folder?
+    @State private var folderBeingEdited: Folder?
+    @State private var isSavingEditedFolder = false
+
+    @AppStorage("foldersLayoutMode") private var layoutModeRaw: String = CollectionLayoutMode.list.rawValue
+
+    private var layoutMode: CollectionLayoutMode {
+        CollectionLayoutMode(rawValue: layoutModeRaw) ?? .list
+    }
+
+    private var layoutModeBinding: Binding<CollectionLayoutMode> {
+        Binding(
+            get: { layoutMode },
+            set: { layoutModeRaw = $0.rawValue }
+        )
+    }
 
     private var isMac: Bool {
         #if os(macOS)
@@ -27,8 +43,29 @@ struct FolderListView: View {
             if folders.isEmpty {
                 emptyCard
             } else {
-                foldersList
+                switch layoutMode {
+                case .list:
+                    foldersList
+                case .grid:
+                    foldersGrid
+                }
             }
+        }
+        .sheet(item: $folderBeingEdited) { folder in
+            let theme = CreateSetTheme.theme(forHex: folder.colorHex)
+            EditFolderSheet(
+                folder: folder,
+                theme: theme,
+                isSaving: isSavingEditedFolder
+            ) { title, description in
+                guard let onUpdate else { return false }
+                isSavingEditedFolder = true
+                let success = await onUpdate(folder, title, description)
+                isSavingEditedFolder = false
+                return success
+            }
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
         }
     }
 
@@ -51,6 +88,8 @@ struct FolderListView: View {
                 circleIconButton(systemName: isEditing ? "checkmark" : "pencil")
             }
             .buttonStyle(.plain)
+
+            LayoutModeToggleButton(mode: layoutModeBinding)
 
             Button {
                 onCreate()
@@ -128,6 +167,27 @@ struct FolderListView: View {
         .scrollDisabled(true)
         .frame(height: rowHeight * CGFloat(folders.count))
         .environment(\.editMode, .constant(isEditing ? .active : .inactive))
+    }
+
+    private var foldersGrid: some View {
+        let columnCount = Layout.isPadLike ? 4 : 2
+        return LazyVGrid(
+            columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: columnCount),
+            spacing: 12
+        ) {
+            ForEach(folders) { folder in
+                FolderGridCellView(
+                    folder: folder,
+                    setsCount: setsCount(folder),
+                    onSelect: { onSelect(folder) },
+                    onRename: {
+                        guard onUpdate != nil else { return }
+                        folderBeingEdited = folder
+                    },
+                    onDelete: { onDelete(folder) }
+                )
+            }
+        }
     }
 
     private var rowHeight: CGFloat {
@@ -229,6 +289,63 @@ private struct FolderListRowView: View {
                     return NSItemProvider(object: folder.id as NSString)
                 }
         }
+    }
+}
+
+private struct FolderGridCellView: View {
+    let folder: Folder
+    let setsCount: Int
+    let onSelect: () -> Void
+    let onRename: () -> Void
+    let onDelete: () -> Void
+
+    var body: some View {
+        Color.clear
+            .aspectRatio(5.0 / 3.0, contentMode: .fit)
+            .overlay {
+                GeometryReader { proxy in
+                    ZStack(alignment: .topTrailing) {
+                        Button {
+                            onSelect()
+                        } label: {
+                            FolderCardView(
+                                title: folder.title,
+                                setsCount: setsCount,
+                                colorHex: folder.colorHex,
+                                height: proxy.size.height
+                            )
+                        }
+                        .buttonStyle(.plain)
+
+                        Menu {
+                            Button {
+                                onRename()
+                            } label: {
+                                Label("Rename", systemImage: "pencil")
+                            }
+
+                            Button(role: .destructive) {
+                                onDelete()
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        } label: {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.white.opacity(0.94))
+                                    .frame(width: 32, height: 32)
+                                    .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2)
+
+                                Image(systemName: "ellipsis")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(AppColors.primaryBlue)
+                            }
+                        }
+                        .padding(.top, 36)
+                        .padding(.trailing, 12)
+                    }
+                }
+            }
     }
 }
 

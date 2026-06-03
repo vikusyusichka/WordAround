@@ -5,10 +5,12 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @StateObject private var setsViewModel = SetsListViewModel()
 
-    // Sheet/cover flags are transient view-local UI state — kept as @State.
     @State private var isCreateSetPresented = false
     @State private var isCreateFolderPresented = false
     @State private var isWritingSetSelectionPresented = false
+    @State private var isAddTextPresented = false
+    @State private var isImportAudioPresented = false
+    @State private var isEssayPracticePresented = false
 
     @State private var selectedSetForDetails: FlashcardSet?
     @State private var selectedSetForWriting: FlashcardSet?
@@ -52,9 +54,6 @@ struct HomeView: View {
                 selectedTab: $viewModel.selectedTab,
                 isCreateMenuPresented: $viewModel.isCreateMenuPresented,
                 onSelectTab: { tab in
-                    // Returning Home via the bar shows the dashboard, not the
-                    // last category. Sidebar-driven tab changes go through
-                    // `selectCategory` instead, so they keep their category.
                     if tab == .home { viewModel.clearSelectedCategory() }
                 }
             )
@@ -71,6 +70,21 @@ struct HomeView: View {
         }
         .fullScreenCover(isPresented: $isWritingSetSelectionPresented) {
             writingSetSelectionCover
+        }
+        .fullScreenCover(isPresented: $isAddTextPresented) {
+            NavigationStack {
+                ReadingAddTextView()
+            }
+        }
+        .fullScreenCover(isPresented: $isImportAudioPresented) {
+            NavigationStack {
+                ImportAudioSetupView(onExitToListening: { isImportAudioPresented = false })
+            }
+        }
+        .fullScreenCover(isPresented: $isEssayPracticePresented) {
+            NavigationStack {
+                EssayPracticeView()
+            }
         }
         .fullScreenCover(item: $selectedSetForDetails) { set in
             FlashcardSetDetailView(
@@ -96,9 +110,6 @@ struct HomeView: View {
         .onChange(of: isCreateFolderPresented) { _, isPresented in
             refreshIfDismissed(isPresented)
         }
-        // Category-clearing rules live in the VM (`clearSelectedCategory()`).
-        // Home-tab taps clear via the bar's `onSelectTab`; opening the create
-        // menu clears here so it always returns to the dashboard.
         .onChange(of: viewModel.isCreateMenuPresented) { _, _ in
             viewModel.clearSelectedCategory()
         }
@@ -108,9 +119,6 @@ struct HomeView: View {
 // MARK: - Main Content
 
 private extension HomeView {
-    // `headerTitle` / `headerSubtitle(currentEmail:)` live on HomeViewModel —
-    // they derive purely from navigation state which is also VM-owned.
-
     var backgroundLayer: some View {
         ZStack {
             AppColors.appBackground
@@ -292,6 +300,9 @@ private extension HomeView {
                     },
                     onMove: { source, destination in
                         viewModel.moveFolders(from: source, to: destination)
+                    },
+                    onUpdate: { folder, title, description in
+                        await viewModel.updateFolder(folder, title: title, description: description)
                     }
                 )
             }
@@ -411,7 +422,9 @@ private extension HomeView {
                         xOffset: 0,
                         yOffset: Layout.homeCreateTextOffset.height,
                         delay: 0.16
-                    )
+                    ) {
+                        isAddTextPresented = true
+                    }
 
                     createMenuItem(
                         icon: "waveform",
@@ -419,7 +432,9 @@ private extension HomeView {
                         xOffset: Layout.homeCreateAudioOffset.width,
                         yOffset: Layout.homeCreateSetOffset.height,
                         delay: 0.22
-                    )
+                    ) {
+                        isImportAudioPresented = true
+                    }
 
                     createMenuItem(
                         icon: "pencil.and.scribble",
@@ -427,7 +442,9 @@ private extension HomeView {
                         xOffset: Layout.homeCreateEssayOffset.width,
                         yOffset: Layout.homeCreateFolderOffset.height,
                         delay: 0.28
-                    )
+                    ) {
+                        isEssayPracticePresented = true
+                    }
                 }
                 .frame(height: Layout.homeCreateMenuFrameHeight)
                 .padding(.bottom, Layout.homeCreateMenuBottomPadding)

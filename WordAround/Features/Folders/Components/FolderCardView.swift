@@ -4,6 +4,7 @@ struct FolderCardView: View {
     let title: String
     let setsCount: Int
     let colorHex: String
+    var height: CGFloat = 128
 
     private var theme: CreateSetTheme {
         CreateSetTheme.theme(forHex: colorHex)
@@ -78,7 +79,7 @@ struct FolderCardView: View {
             .padding(.horizontal, 26)
             .padding(.top, 18)
         }
-        .frame(height: 128)
+        .frame(height: height)
     }
 }
 
