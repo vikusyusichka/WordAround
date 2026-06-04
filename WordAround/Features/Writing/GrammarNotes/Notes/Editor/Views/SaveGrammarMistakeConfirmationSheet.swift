@@ -50,7 +50,7 @@ struct SaveGrammarMistakeConfirmationSheet: View {
                     .font(.system(size: Layout.grammarQuickTitleSize, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
 
-                Text("Confirm this correction before saving it to Grammar Notes.")
+                Text("Confirm this correction before saving it to Notes.")
                     .font(.system(size: Layout.grammarQuickSubtitleSize, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                     .lineSpacing(2)

@@ -87,7 +87,7 @@ enum GrammarNoteBlockType: String, Codable, CaseIterable, Identifiable, Equatabl
         case .checklist: return "Track rules or mistakes"
         case .quote: return "Sentence worth remembering"
         case .rule: return "Highlighted grammar rule"
-        case .example: return "Grammar examples"
+        case .example: return "Examples"
         case .warning: return "Common mistake warning"
         case .comparison: return "Compare two forms"
         case .exercise: return "Practice task"

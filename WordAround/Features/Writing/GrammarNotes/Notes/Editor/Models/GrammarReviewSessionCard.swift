@@ -17,6 +17,6 @@ struct GrammarReviewSessionCard: Identifiable {
     let question: GrammarQuizQuestion
 
     var displayTitle: String {
-        reviewItem.title.isEmpty ? "Grammar Note" : reviewItem.title
+        reviewItem.title.isEmpty ? "Note" : reviewItem.title
     }
 }

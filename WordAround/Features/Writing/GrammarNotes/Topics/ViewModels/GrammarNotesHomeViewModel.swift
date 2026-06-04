@@ -15,7 +15,8 @@ final class GrammarNotesHomeViewModel: ObservableObject {
     @Published private(set) var isCreatingQuickNote = false
     @Published private(set) var isCreatingQuickMistake = false
     @Published var searchText = ""
-    @Published var errorMessage: String?
+    @Published var loadError: String?
+    @Published var createTopicError: String?
     @Published private(set) var quickNoteError: String?
     @Published private(set) var quickMistakeError: String?
 
@@ -25,6 +26,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
     private let createQuickNoteUseCase: CreateQuickGrammarNoteUseCase
     private let saveQuickMistakeUseCase: SaveQuickGrammarMistakeUseCase
     private var isEnsuringDefaultTopic = false
+    private var isFetchingTopics = false
     private var cancellables = Set<AnyCancellable>()
 
     var hasOnlyMistakesTopic: Bool {
@@ -50,9 +52,12 @@ final class GrammarNotesHomeViewModel: ObservableObject {
 
     func loadTopics() async {
         guard !ownerUID.isEmpty else {
-            errorMessage = "User session is not available. Please sign in again."
+            loadError = "User session is not available. Please sign in again."
             return
         }
+        guard !isFetchingTopics else { return }
+        isFetchingTopics = true
+        defer { isFetchingTopics = false }
 
         if topics.isEmpty {
             if let cached = try? await service.fetchTopics(for: ownerUID, source: .cache),
@@ -64,7 +69,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         let needsSpinner = topics.isEmpty
         if needsSpinner { isLoading = true }
         defer { isLoading = false }
-        errorMessage = nil
+        loadError = nil
 
         do {
             var loadedTopics = try await service.fetchTopics(for: ownerUID)
@@ -72,7 +77,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             updateTopics(sortTopics(loadedTopics))
         } catch {
             if topics.isEmpty {
-                errorMessage = readableMessage(for: error)
+                loadError = readableMessage(for: error)
             }
         }
     }
@@ -88,13 +93,13 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         guard !isCreatingTopic else { return false }
 
         isCreatingTopic = true
-        errorMessage = nil
+        createTopicError = nil
         defer { isCreatingTopic = false }
 
         await Task.yield()
 
         guard !ownerUID.isEmpty else {
-            errorMessage = "User session is not available. Please sign in again."
+            createTopicError = "User session is not available. Please sign in again."
             #if DEBUG
             print("[CreateTopic] failed: ownerUID is empty")
             #endif
@@ -105,15 +110,15 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         let trimmedDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !trimmedTitle.isEmpty else {
-            errorMessage = "Topic title is required."
+            createTopicError = "Topic title is required."
             return false
         }
         guard trimmedTitle.count <= 40 else {
-            errorMessage = "Topic title must be under 40 characters."
+            createTopicError = "Topic title must be under 40 characters."
             return false
         }
         guard trimmedDescription.count <= 120 else {
-            errorMessage = "Description must be under 120 characters."
+            createTopicError = "Description must be under 120 characters."
             return false
         }
 
@@ -146,7 +151,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             #endif
             return true
         } catch {
-            errorMessage = readableMessage(for: error)
+            createTopicError = readableMessage(for: error)
             #if DEBUG
             print("[CreateTopic] failed:", error)
             #endif
@@ -161,13 +166,13 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         guard !isCreatingTopic else { return nil }
 
         isCreatingTopic = true
-        errorMessage = nil
+        createTopicError = nil
         defer { isCreatingTopic = false }
 
         await Task.yield()
 
         guard !ownerUID.isEmpty else {
-            errorMessage = "User session is not available. Please sign in again."
+            createTopicError = "User session is not available. Please sign in again."
             #if DEBUG
             print("[CreateTopicFromTemplate] failed: ownerUID empty")
             #endif
@@ -203,7 +208,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         do {
             try await service.createTopic(topic)
         } catch {
-            errorMessage = readableMessage(for: error)
+            createTopicError = readableMessage(for: error)
             #if DEBUG
             print("[CreateTopicFromTemplate] topic write failed:", error)
             #endif
@@ -302,9 +307,9 @@ final class GrammarNotesHomeViewModel: ObservableObject {
         do {
             try await service.deleteTopic(id: topic.id, ownerUID: ownerUID)
             updateTopics(topics.filter { $0.id != topic.id })
-            errorMessage = nil
+            loadError = nil
         } catch {
-            errorMessage = readableMessage(for: error)
+            loadError = readableMessage(for: error)
         }
     }
 

@@ -5,13 +5,13 @@ struct GrammarNotesTopicView: View {
     @StateObject private var viewModel: GrammarNotesTopicViewModel
     @StateObject private var settings = GrammarNotesSettingsStore()
     @State private var isCreateSheetPresented = false
-    @State private var isFABExpanded = false
     @State private var isQuickNoteSheetPresented = false
     @State private var isQuickMistakeSheetPresented = false
     @State private var editorNote: GrammarNote?
     @State private var quizNote: GrammarNote?
     @State private var isEditingNotes = false
     @State private var notePendingDeletion: GrammarNote?
+    @State private var templateSavedToast = false
 
     private let theme: CreateSetTheme
 
@@ -40,7 +40,7 @@ struct GrammarNotesTopicView: View {
 
     var body: some View {
         ZStack {
-            theme.screenBackground.ignoresSafeArea()
+            AppColors.appBackground.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: isPadLike ? 20 : 16) {
@@ -51,18 +51,34 @@ struct GrammarNotesTopicView: View {
                     }
                     contentView
                 }
-                .padding(.horizontal, isPadLike ? 28 : 20)
-                .padding(.top, isPadLike ? 22 : 16)
-                .padding(.bottom, 96)
+                .frame(maxWidth: Layout.grammarNotesHomeContentMaxWidth, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, isPadLike ? 24 : 16)
+                .padding(.top, isPadLike ? 16 : 12)
+                .padding(.bottom, Layout.grammarNotesHomeScrollBottomPadding)
             }
-        }
-        .overlay(alignment: .bottomTrailing) {
-            GrammarNotesFABMenu(
-                tint: theme.accent,
-                items: GrammarNotesFABMenuItem.topicItems,
-                onSelect: handleFABSelection,
-                isExpanded: $isFABExpanded
-            )
+
+            if templateSavedToast {
+                VStack {
+                    Spacer()
+                    HStack(spacing: 10) {
+                        Image(systemName: "doc.badge.plus")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(Color.white)
+                        Text("Saved as template")
+                            .font(.system(size: 13, weight: .bold, design: .rounded))
+                            .foregroundStyle(Color.white)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 11)
+                    .background(AppColors.primaryBlueDark.opacity(0.95))
+                    .clipShape(Capsule())
+                    .shadow(color: Color.black.opacity(0.18), radius: 14, x: 0, y: 6)
+                    .padding(.bottom, 28)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+                .allowsHitTesting(false)
+            }
         }
         .navigationBarBackButtonHidden(true)
         .navigationDestination(item: $editorNote) { note in
@@ -70,7 +86,10 @@ struct GrammarNotesTopicView: View {
                 note: note,
                 ownerUID: note.ownerUID,
                 topicId: note.topicId,
-                allowsQuiz: settings.allowQuickQuizzes
+                allowsQuiz: settings.allowQuickQuizzes,
+                onDeleted: { deleted in
+                    viewModel.removeNoteLocally(deleted)
+                }
             )
         }
         .sheet(isPresented: $isCreateSheetPresented) {
@@ -90,6 +109,20 @@ struct GrammarNotesTopicView: View {
                 onAllDeleted: {},
                 onDismiss: { quizNote = nil }
             )
+        }
+        .confirmationDialog(
+            "Delete this note?",
+            isPresented: noteDeletionBinding,
+            titleVisibility: .visible,
+            presenting: notePendingDeletion
+        ) { note in
+            Button("Delete \"\(note.title)\"", role: .destructive) {
+                Task { await viewModel.deleteNote(note) }
+                notePendingDeletion = nil
+            }
+            Button("Cancel", role: .cancel) { notePendingDeletion = nil }
+        } message: { _ in
+            Text("This note will be removed from the topic permanently.")
         }
         .task {
             await viewModel.loadNotesIfNeeded()
@@ -150,7 +183,7 @@ struct GrammarNotesTopicView: View {
             topics: [viewModel.topicOption],
             isCreating: viewModel.isCreatingQuickMistake,
             errorMessage: viewModel.quickMistakeError,
-            showsTopicPicker: settings.groupMistakesByTopic,
+            showsTopicPicker: false,
             onCancel: { isQuickMistakeSheetPresented = false },
             onSave: { draft in
                 Task {
@@ -166,73 +199,99 @@ struct GrammarNotesTopicView: View {
         )
     }
 
-    private func handleFABSelection(_ item: GrammarNotesFABMenuItem) {
-        switch item.role {
-        case .newNote:      isCreateSheetPresented = true
-        case .quickNote:    isQuickNoteSheetPresented = true
-        case .quickMistake: isQuickMistakeSheetPresented = true
-        case .newTopic:     break
-        }
-    }
-
     private var headerView: some View {
-        VStack(alignment: .leading, spacing: isPadLike ? 16 : 13) {
+        VStack(alignment: .leading, spacing: isPadLike ? 14 : 12) {
             HStack {
                 Button {
                     dismiss()
                 } label: {
                     Image(systemName: "chevron.left")
-                        .font(.system(size: isPadLike ? 18 : 16, weight: .semibold))
-                        .foregroundStyle(theme.mutedTextColor)
-                        .frame(width: isPadLike ? 50 : 44, height: isPadLike ? 50 : 44)
-                        .background(theme.fieldBackground)
+                        .font(.system(size: isPadLike ? 16 : 15, weight: .semibold))
+                        .foregroundStyle(AppColors.primaryBlue)
+                        .frame(width: isPadLike ? 40 : 36, height: isPadLike ? 40 : 36)
+                        .background(Color.white)
                         .clipShape(Circle())
-                        .shadow(color: theme.shadowColor, radius: 12, x: 0, y: 7)
+                        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
                 }
                 .buttonStyle(.plain)
 
                 Spacer()
 
-                Button {
-                    toggleEditingNotes()
-                } label: {
-                    Image(systemName: isEditingNotes ? "checkmark" : "pencil")
-                        .font(.system(size: isPadLike ? 17 : 15, weight: .bold))
-                        .foregroundStyle(isEditingNotes ? Color.white : theme.accent)
-                        .frame(width: isPadLike ? 46 : 40, height: isPadLike ? 46 : 40)
-                        .background(isEditingNotes ? theme.accent : theme.fieldBackground)
-                        .clipShape(Circle())
-                        .shadow(color: theme.shadowColor, radius: 12, x: 0, y: 7)
+                if hasEditableNotes || isEditingNotes {
+                    Button {
+                        toggleEditingNotes()
+                    } label: {
+                        Text(isEditingNotes ? "Done" : "Edit")
+                            .font(.system(size: isPadLike ? 13 : 12, weight: .bold, design: .rounded))
+                            .foregroundStyle(isEditingNotes ? Color.white : AppColors.primaryBlue)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
+                            .background(isEditingNotes ? AppColors.primaryBlue : Color.white)
+                            .clipShape(Capsule())
+                            .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 3)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(isEditingNotes ? "Done editing notes" : "Edit notes")
                 }
-                .buttonStyle(.plain)
-                .disabled(!hasEditableNotes)
-                .opacity(hasEditableNotes ? 1 : 0.55)
-                .accessibilityLabel(isEditingNotes ? "Done editing notes" : "Edit notes")
+
+                if !isEditingNotes {
+                    quickActionIconButton(
+                        systemImage: "square.and.pencil",
+                        accessibilityLabel: "Quick Note"
+                    ) {
+                        isQuickNoteSheetPresented = true
+                    }
+
+                    quickActionIconButton(
+                        systemImage: "exclamationmark.bubble.fill",
+                        accessibilityLabel: "Quick Mistake"
+                    ) {
+                        isQuickMistakeSheetPresented = true
+                    }
+
+                    Button {
+                        isCreateSheetPresented = true
+                    } label: {
+                        Text("New Note")
+                            .font(.system(size: isPadLike ? 13 : 12, weight: .bold, design: .rounded))
+                            .foregroundStyle(AppColors.primaryBlue)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
+                            .background(Color.white)
+                            .clipShape(Capsule())
+                            .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 3)
+                    }
+                    .buttonStyle(.plain)
+
+                    topicOverflowMenu
+                }
             }
 
             HStack(alignment: .center, spacing: 14) {
                 ZStack {
                     Circle()
                         .fill(theme.softAccent)
-                        .frame(width: isPadLike ? 68 : 58, height: isPadLike ? 68 : 58)
+                        .frame(width: isPadLike ? 60 : 52, height: isPadLike ? 60 : 52)
 
                     Image(systemName: viewModel.topic.icon)
-                        .font(.system(size: isPadLike ? 29 : 24, weight: .bold))
+                        .font(.system(size: isPadLike ? 26 : 22, weight: .bold))
                         .foregroundStyle(theme.accent)
                 }
 
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(viewModel.topic.title)
-                        .font(.system(size: isPadLike ? 31 : 26, weight: .bold, design: .rounded))
-                        .foregroundStyle(theme.titleColor)
+                        .font(.system(size: isPadLike ? 26 : 22, weight: .bold, design: .rounded))
+                        .foregroundStyle(AppColors.primaryBlueDark)
                         .lineLimit(2)
-                        .minimumScaleFactor(0.82)
+                        .minimumScaleFactor(0.84)
 
-                    Text(viewModel.topic.description)
-                        .font(.system(size: isPadLike ? 15 : 13, weight: .semibold, design: .rounded))
-                        .foregroundStyle(theme.mutedTextColor)
-                        .lineLimit(2)
-                        .lineSpacing(2)
+                    if !viewModel.topic.description.isEmpty {
+                        Text(viewModel.topic.description)
+                            .font(.system(size: isPadLike ? 14 : 12, weight: .semibold, design: .rounded))
+                            .foregroundStyle(AppColors.textSecondary)
+                            .lineLimit(2)
+                            .lineSpacing(1)
+                    }
                 }
 
                 Spacer(minLength: 0)
@@ -240,18 +299,66 @@ struct GrammarNotesTopicView: View {
 
             HStack(spacing: 8) {
                 metaPill(text: "\(viewModel.topic.notesCount) notes", systemImage: "doc.text.fill")
-                metaPill(text: viewModel.topic.languageName, systemImage: "globe")
+                if !viewModel.topic.languageName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    metaPill(text: viewModel.topic.languageName, systemImage: "globe")
+                }
             }
         }
-        .padding(isPadLike ? 22 : 18)
+        .padding(isPadLike ? 18 : 16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(theme.sectionBackground)
-        .clipShape(RoundedRectangle(cornerRadius: isPadLike ? 30 : 26, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: isPadLike ? 30 : 26, style: .continuous)
-                .stroke(theme.softBorderColor, lineWidth: 1)
-        )
-        .shadow(color: theme.shadowColor, radius: 18, x: 0, y: 10)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: Layout.cardCornerRadius, style: .continuous))
+        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
+    }
+
+    private var topicOverflowMenu: some View {
+        Menu {
+            Button {
+                saveTopicAsTemplate()
+            } label: {
+                Label("Save topic as template", systemImage: "square.and.arrow.down")
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.system(size: isPadLike ? 14 : 13, weight: .bold))
+                .foregroundStyle(AppColors.primaryBlue)
+                .frame(width: isPadLike ? 36 : 32, height: isPadLike ? 36 : 32)
+                .background(Color.white)
+                .clipShape(Circle())
+                .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 3)
+        }
+        .accessibilityLabel("More topic actions")
+    }
+
+    private func saveTopicAsTemplate() {
+        viewModel.saveTopicAsTemplate()
+        withAnimation(.spring(response: 0.32, dampingFraction: 0.86)) {
+            templateSavedToast = true
+        }
+        Task {
+            try? await Task.sleep(nanoseconds: 2_200_000_000)
+            withAnimation(.easeInOut(duration: 0.2)) {
+                templateSavedToast = false
+            }
+        }
+    }
+
+    private func quickActionIconButton(
+        systemImage: String,
+        accessibilityLabel: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: isPadLike ? 14 : 13, weight: .bold))
+                .foregroundStyle(AppColors.primaryBlue)
+                .frame(width: isPadLike ? 36 : 32, height: isPadLike ? 36 : 32)
+                .background(Color.white)
+                .clipShape(Circle())
+                .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 3)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel)
     }
 
     private var searchBar: some View {
@@ -259,33 +366,135 @@ struct GrammarNotesTopicView: View {
             placeholder: "Search notes",
             text: $viewModel.searchText,
             theme: theme,
-            isPadLike: isPadLike
+            isPadLike: isPadLike,
+            appearance: .elevated
         )
     }
 
     private var filtersRow: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            primaryFilterRow
+
+            if viewModel.selectedFilter == .types {
+                typesSubFilterRow
+            } else if viewModel.selectedFilter == .tags {
+                tagsSubFilterRow
+            }
+        }
+    }
+
+    private var primaryFilterRow: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 9) {
+            HStack(spacing: 8) {
                 ForEach(GrammarNoteFilter.allCases) { filter in
+                    primaryFilterPill(filter)
+                }
+            }
+            .padding(.vertical, 2)
+        }
+    }
+
+    private func primaryFilterPill(_ filter: GrammarNoteFilter) -> some View {
+        let isSelected = viewModel.selectedFilter == filter
+        let showsCaret = (filter == .types || filter == .tags)
+        return Button {
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
+                viewModel.selectedFilter = filter
+            }
+        } label: {
+            HStack(spacing: 6) {
+                Text(filter.title)
+                    .font(.system(size: isPadLike ? 13 : 12, weight: .bold, design: .rounded))
+                if showsCaret {
+                    Image(systemName: isSelected ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 9, weight: .bold))
+                }
+            }
+            .foregroundStyle(isSelected ? Color.white : AppColors.primaryBlue)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 9)
+            .background(isSelected ? AppColors.primaryBlue : Color.white)
+            .clipShape(Capsule())
+            .shadow(color: Color.black.opacity(0.04), radius: 6, x: 0, y: 3)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var typesSubFilterRow: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(GrammarNoteType.allCases) { type in
+                    let isSelected = viewModel.selectedNoteType == type
                     Button {
-                        viewModel.selectedFilter = filter
+                        viewModel.selectedNoteType = isSelected ? nil : type
                     } label: {
-                        Text(filter.title)
-                            .font(.system(size: isPadLike ? 13 : 12, weight: .bold, design: .rounded))
-                            .foregroundStyle(viewModel.selectedFilter == filter ? Color.white : theme.accent)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 10)
-                            .background(viewModel.selectedFilter == filter ? theme.accent : theme.fieldBackground)
-                            .clipShape(Capsule())
-                            .overlay(
-                                Capsule()
-                                    .stroke(theme.softBorderColor, lineWidth: 1)
-                            )
+                        HStack(spacing: 6) {
+                            Image(systemName: type.systemImage)
+                                .font(.system(size: 10, weight: .bold))
+                            Text(type.title)
+                                .font(.system(size: isPadLike ? 12 : 11, weight: .bold, design: .rounded))
+                                .lineLimit(1)
+                        }
+                        .foregroundStyle(isSelected ? Color.white : type.tintColor)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(isSelected ? type.tintColor : type.tintColor.opacity(0.12))
+                        .clipShape(Capsule())
+                        .shadow(color: Color.black.opacity(0.04), radius: 4, x: 0, y: 2)
                     }
                     .buttonStyle(.plain)
                 }
             }
             .padding(.vertical, 2)
+        }
+    }
+
+    private var tagsSubFilterRow: some View {
+        HStack(spacing: 8) {
+            Menu {
+                Button("All tags") {
+                    viewModel.selectedTag = nil
+                }
+                if !viewModel.availableTags.isEmpty {
+                    Divider()
+                    ForEach(viewModel.availableTags, id: \.self) { tag in
+                        Button {
+                            viewModel.selectedTag = tag
+                        } label: {
+                            if viewModel.selectedTag == tag {
+                                Label(tag, systemImage: "checkmark")
+                            } else {
+                                Text(tag)
+                            }
+                        }
+                    }
+                }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "tag.fill")
+                        .font(.system(size: 10, weight: .bold))
+                    Text(viewModel.selectedTag.map { "#\($0)" } ?? "All tags")
+                        .font(.system(size: isPadLike ? 12 : 11, weight: .bold, design: .rounded))
+                        .lineLimit(1)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 9, weight: .bold))
+                }
+                .foregroundStyle(viewModel.availableTags.isEmpty ? AppColors.textSecondary : AppColors.primaryBlue)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 9)
+                .background(Color.white)
+                .clipShape(Capsule())
+                .shadow(color: Color.black.opacity(0.04), radius: 4, x: 0, y: 2)
+            }
+            .disabled(viewModel.availableTags.isEmpty)
+
+            if viewModel.availableTags.isEmpty {
+                Text("No tags yet")
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .foregroundStyle(AppColors.textSecondary)
+            }
+
+            Spacer(minLength: 0)
         }
     }
 
@@ -353,20 +562,6 @@ struct GrammarNotesTopicView: View {
         .scrollDisabled(true)
         .environment(\.editMode, .constant(.active))
         .frame(height: approxRowHeight * CGFloat(editingNotes.count))
-        .confirmationDialog(
-            "Delete this note?",
-            isPresented: noteDeletionBinding,
-            titleVisibility: .visible,
-            presenting: notePendingDeletion
-        ) { note in
-            Button("Delete \"\(note.title)\"", role: .destructive) {
-                Task { await viewModel.deleteNote(note) }
-                notePendingDeletion = nil
-            }
-            Button("Cancel", role: .cancel) { notePendingDeletion = nil }
-        } message: { _ in
-            Text("This note will be removed from the topic permanently.")
-        }
     }
 
     private var noteDeletionBinding: Binding<Bool> {
@@ -393,21 +588,16 @@ struct GrammarNotesTopicView: View {
         VStack(alignment: .leading, spacing: 10) {
             if let title {
                 Text(title)
-                    .font(.system(size: isPadLike ? 16 : 13, weight: .black, design: .rounded))
-                    .foregroundStyle(theme.mutedTextColor)
+                    .font(.system(size: isPadLike ? 13 : 11, weight: .bold, design: .rounded))
+                    .foregroundStyle(AppColors.textSecondary)
                     .textCase(.uppercase)
-                    .tracking(0.8)
+                    .tracking(1.0)
             }
 
             VStack(spacing: isPadLike ? 13 : 11) {
                 ForEach(notes) { note in
-                    NavigationLink {
-                        GrammarNoteEditorView(
-                            note: note,
-                            ownerUID: viewModel.topic.ownerUID,
-                            topicId: viewModel.topic.id,
-                            allowsQuiz: settings.allowQuickQuizzes
-                        )
+                    Button {
+                        editorNote = note
                     } label: {
                         GrammarNoteCardView(
                             note: note,
@@ -417,24 +607,29 @@ struct GrammarNotesTopicView: View {
                         )
                     }
                     .buttonStyle(.plain)
-                    .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                    .contextMenu {
                         Button {
-                            Task { await viewModel.togglePinned(note) }
+                            editorNote = note
                         } label: {
-                            Label(note.isPinned ? "Unpin" : "Pin", systemImage: note.isPinned ? "pin.slash.fill" : "pin.fill")
+                            Label("Edit", systemImage: "pencil")
                         }
-                        .tint(AppColors.primaryBlue)
 
                         Button {
                             Task { await viewModel.toggleFavorite(note) }
                         } label: {
-                            Label(note.isFavorite ? "Unfavorite" : "Favorite", systemImage: note.isFavorite ? "heart.slash.fill" : "heart.fill")
+                            Label(note.isFavorite ? "Remove from Favourites" : "Add to Favourites",
+                                  systemImage: note.isFavorite ? "heart.slash.fill" : "heart.fill")
                         }
-                        .tint(note.noteType.tintColor)
-                    }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+
+                        Button {
+                            Task { await viewModel.togglePinned(note) }
+                        } label: {
+                            Label(note.isPinned ? "Unpin" : "Pin",
+                                  systemImage: note.isPinned ? "pin.slash.fill" : "pin.fill")
+                        }
+
                         Button(role: .destructive) {
-                            Task { await viewModel.deleteNote(note) }
+                            notePendingDeletion = note
                         } label: {
                             Label("Delete", systemImage: "trash.fill")
                         }
@@ -445,19 +640,18 @@ struct GrammarNotesTopicView: View {
     }
 
     private var loadingCard: some View {
-        VStack(spacing: 12) {
+        HStack(spacing: 12) {
             ProgressView()
-                .tint(theme.accent)
-                .scaleEffect(1.08)
-
+                .tint(AppColors.primaryBlue)
             Text("Loading notes...")
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .foregroundStyle(theme.mutedTextColor)
+                .foregroundStyle(AppColors.textSecondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, isPadLike ? 36 : 30)
-        .background(theme.sectionBackground)
-        .grammarSectionCardChrome(theme: theme)
+        .padding(.vertical, isPadLike ? 28 : 24)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: Layout.cardCornerRadius, style: .continuous))
+        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
     }
 
     private func errorCard(message: String) -> some View {
@@ -465,16 +659,13 @@ struct GrammarNotesTopicView: View {
             HStack(spacing: 10) {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .foregroundStyle(CreateSetTheme.red.accent)
-
                 Text("Something went wrong")
                     .font(.system(size: 15, weight: .bold, design: .rounded))
-                    .foregroundStyle(theme.titleColor)
+                    .foregroundStyle(AppColors.primaryBlueDark)
             }
-
             Text(message)
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .foregroundStyle(theme.mutedTextColor)
-
+                .foregroundStyle(AppColors.textSecondary)
             Button {
                 Task { await viewModel.retryLoading() }
             } label: {
@@ -483,38 +674,36 @@ struct GrammarNotesTopicView: View {
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 18)
                     .padding(.vertical, 10)
-                    .background(theme.accent)
+                    .background(AppColors.primaryBlue)
                     .clipShape(Capsule())
             }
             .buttonStyle(.plain)
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(theme.sectionBackground)
-        .grammarSectionCardChrome(theme: theme)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: Layout.cardCornerRadius, style: .continuous))
+        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
     }
 
     private func emptyState(title: String, subtitle: String, showsButton: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             ZStack {
                 Circle()
-                    .fill(theme.softAccent)
-                    .frame(width: 54, height: 54)
-
+                    .fill(AppColors.primaryBlue.opacity(0.12))
+                    .frame(width: 48, height: 48)
                 Image(systemName: showsButton ? "doc.badge.plus" : "magnifyingglass")
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundStyle(theme.accent)
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundStyle(AppColors.primaryBlue)
             }
-
             Text(title)
-                .font(.system(size: isPadLike ? 18 : 16, weight: .bold, design: .rounded))
-                .foregroundStyle(theme.titleColor)
-
+                .font(.system(size: isPadLike ? 17 : 16, weight: .bold, design: .rounded))
+                .foregroundStyle(AppColors.primaryBlueDark)
             Text(subtitle)
                 .font(.system(size: isPadLike ? 14 : 12, weight: .semibold, design: .rounded))
-                .foregroundStyle(theme.mutedTextColor)
+                .foregroundStyle(AppColors.textSecondary)
                 .lineSpacing(2)
-
+                .fixedSize(horizontal: false, vertical: true)
             if showsButton {
                 Button {
                     isCreateSheetPresented = true
@@ -523,38 +712,33 @@ struct GrammarNotesTopicView: View {
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .foregroundStyle(Color.white)
                         .padding(.horizontal, 18)
-                        .padding(.vertical, 11)
-                        .background(theme.accent)
+                        .padding(.vertical, 10)
+                        .background(AppColors.primaryBlue)
                         .clipShape(Capsule())
                 }
                 .buttonStyle(.plain)
-                .padding(.top, 4)
             }
         }
-        .padding(20)
+        .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(theme.sectionBackground)
-        .grammarSectionCardChrome(theme: theme)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: Layout.cardCornerRadius, style: .continuous))
+        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
     }
 
     private func metaPill(text: String, systemImage: String) -> some View {
-        HStack(spacing: 5) {
+        HStack(spacing: 4) {
             Image(systemName: systemImage)
-                .font(.system(size: 10, weight: .bold))
-
+                .font(.system(size: 9, weight: .bold))
             Text(text)
                 .lineLimit(1)
         }
-        .font(.system(size: isPadLike ? 12 : 10, weight: .bold, design: .rounded))
-        .foregroundStyle(theme.mutedTextColor)
-        .padding(.horizontal, 9)
-        .padding(.vertical, 6)
-        .background(theme.fieldBackground)
+        .font(.system(size: isPadLike ? 11 : 10, weight: .bold, design: .rounded))
+        .foregroundStyle(AppColors.textSecondary)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(AppColors.primaryBlue.opacity(0.08))
         .clipShape(Capsule())
-        .overlay(
-            Capsule()
-                .stroke(theme.softBorderColor, lineWidth: 1)
-        )
     }
 }
 

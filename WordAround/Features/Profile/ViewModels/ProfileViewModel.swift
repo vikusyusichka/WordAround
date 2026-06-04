@@ -3,14 +3,6 @@ import Combine
 import FirebaseAuth
 import UIKit
 
-/// Backs `ProfileView` and `EditProfileSheet`. Owns the editable profile
-/// state, the read-only learning summary, and the save/sign-out flows.
-///
-/// Firebase calls live here (not in the views): `loadProfile` snapshots
-/// `Auth.auth().currentUser`, `saveProfile` writes via
-/// `createProfileChangeRequest()` + `UserProfileService`, and `signOut`
-/// delegates to `AuthService`. `SessionStore` observes the auth-state listener
-/// and will route the app back to the auth flow automatically.
 @MainActor
 final class ProfileViewModel: ObservableObject {
 
@@ -20,20 +12,19 @@ final class ProfileViewModel: ObservableObject {
     @Published var displayName: String = ""
     @Published private(set) var photoURL: URL?
 
-    /// Edit-sheet local draft. Cleared when the sheet is dismissed.
     @Published var draftDisplayName: String = ""
     @Published var draftAvatarImage: UIImage?
+    @Published var draftAvatarColor: ProfileAvatarColor = .default
 
     // MARK: - State
 
     @Published private(set) var isSaving = false
+    @Published private(set) var isDeleting = false
     @Published var errorMessage: String?
+    @Published private(set) var requiresReauthForDeletion = false
 
-    /// Account metadata for the summary card (joined date).
     @Published private(set) var joinedDate: Date?
 
-    /// Learning summary numbers. Each entry is hidden when its value is 0,
-    /// so the summary card can hide itself when nothing exists yet.
     @Published private(set) var totalWordsWritten: Int = 0
     @Published private(set) var totalPracticeMinutes: Int = 0
 
@@ -43,6 +34,8 @@ final class ProfileViewModel: ObservableObject {
     private let profileService: UserProfileService
     private let statsStore: DailyPracticeStatsStoring
     private let listeningStore: ListeningSessionStoring
+    private let deletionService: AccountDeletionService
+    private let preferences: UserPreferencesStore
 
     // MARK: - Init
 
@@ -50,18 +43,24 @@ final class ProfileViewModel: ObservableObject {
         authService: AuthServiceProtocol? = nil,
         profileService: UserProfileService = UserProfileService(),
         statsStore: DailyPracticeStatsStoring = LocalDailyPracticeStatsStore.shared,
-        listeningStore: ListeningSessionStoring? = nil
+        listeningStore: ListeningSessionStoring? = nil,
+        deletionService: AccountDeletionService = AccountDeletionService(),
+        preferences: UserPreferencesStore = .shared
     ) {
         self.authService = authService ?? AuthService()
         self.profileService = profileService
         self.statsStore = statsStore
         self.listeningStore = listeningStore ?? LocalListeningSessionStore.shared
+        self.deletionService = deletionService
+        self.preferences = preferences
     }
+
+    // MARK: - Avatar color
+
+    var avatarColor: ProfileAvatarColor { preferences.avatarColor }
 
     // MARK: - Derived
 
-    /// Two-letter avatar fallback. Falls back to the email's first letter when
-    /// no display name is set so the avatar is never blank.
     var initials: String {
         let source = displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             ? email
@@ -73,23 +72,19 @@ final class ProfileViewModel: ObservableObject {
         return letters.joined().uppercased()
     }
 
-    /// True when the user hasn't picked a name yet — used to show the
-    /// "Add your name" placeholder instead of an empty label.
     var hasDisplayName: Bool {
         !displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
-    /// The summary card hides itself when there is genuinely nothing to show.
     var hasAnySummaryStat: Bool {
         totalWordsWritten > 0 || totalPracticeMinutes > 0 || joinedDate != nil
     }
 
-    /// Edit sheet's Save button is enabled only when the draft actually differs
-    /// from what's persisted on Auth. Trim so trailing whitespace doesn't pass.
     var hasUnsavedChanges: Bool {
         let trimmedDraft = draftDisplayName.trimmingCharacters(in: .whitespacesAndNewlines)
         let nameChanged = trimmedDraft != displayName.trimmingCharacters(in: .whitespacesAndNewlines)
-        return nameChanged || draftAvatarImage != nil
+        let colorChanged = draftAvatarColor != preferences.avatarColor
+        return nameChanged || draftAvatarImage != nil || colorChanged
     }
 
     // MARK: - Loading
@@ -105,10 +100,6 @@ final class ProfileViewModel: ObservableObject {
         await loadSummaryStats()
     }
 
-    /// Aggregates the real stats backend over all-time. Writing entries are
-    /// counted in words; speaking / reading entries are stored in seconds and
-    /// converted to minutes. Listening uses its dedicated session store the
-    /// same way `HomeViewModel` and `ListeningHomeViewModel` do.
     private func loadSummaryStats() async {
         let entries = await statsStore.fetchAll()
         totalWordsWritten = entries
@@ -136,19 +127,18 @@ final class ProfileViewModel: ObservableObject {
     func beginEditing() {
         draftDisplayName = displayName
         draftAvatarImage = nil
+        draftAvatarColor = preferences.avatarColor
         errorMessage = nil
     }
 
     func cancelEditing() {
         draftDisplayName = displayName
         draftAvatarImage = nil
+        draftAvatarColor = preferences.avatarColor
     }
 
     // MARK: - Save
 
-    /// Pushes the edit-sheet draft to Auth + Firestore (+ Storage if an avatar
-    /// was picked). Returns `true` on success so the view can dismiss the
-    /// sheet; failures stay on screen via `errorMessage`.
     @discardableResult
     func saveProfile() async -> Bool {
         guard let user = authService.currentUser else {
@@ -165,8 +155,6 @@ final class ProfileViewModel: ObservableObject {
         var newPhotoURLString: String? = nil
 
         do {
-            // 1. Avatar (optional). Upload first so the new photoURL can be
-            // written alongside the name in a single Auth profile change.
             if let image = draftAvatarImage,
                let jpeg = image.jpegData(compressionQuality: 0.85) {
                 let urlString = try await profileService.uploadAvatar(
@@ -176,7 +164,6 @@ final class ProfileViewModel: ObservableObject {
                 newPhotoURLString = urlString
             }
 
-            // 2. FirebaseAuth profile change request.
             let change = user.createProfileChangeRequest()
             if trimmedName != displayName {
                 change.displayName = trimmedName
@@ -186,19 +173,19 @@ final class ProfileViewModel: ObservableObject {
             }
             try await change.commitChanges()
 
-            // 3. Firestore mirror (merge:true so unrelated fields survive).
             try await profileService.saveProfile(
                 uid: user.uid,
                 displayName: trimmedName,
                 email: user.email,
-                photoURL: newPhotoURLString ?? user.photoURL?.absoluteString
+                photoURL: newPhotoURLString ?? user.photoURL?.absoluteString,
+                avatarColor: draftAvatarColor.rawValue
             )
 
-            // 4. Reflect in the published state so the profile card updates.
             displayName = trimmedName
             if let urlString = newPhotoURLString, let url = URL(string: urlString) {
                 photoURL = url
             }
+            preferences.avatarColor = draftAvatarColor
             draftAvatarImage = nil
             return true
         } catch {
@@ -209,14 +196,43 @@ final class ProfileViewModel: ObservableObject {
 
     // MARK: - Sign out
 
-    /// Delegates to `AuthService`; `SessionStore`'s auth-state listener routes
-    /// the app back to the auth flow on its own — we don't drive navigation
-    /// from here.
     func signOut() {
         do {
             try authService.signOut()
+            cleanupLocalUserState()
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    // MARK: - Delete account
+
+    @discardableResult
+    func deleteAccount() async -> Bool {
+        guard !isDeleting else { return false }
+        isDeleting = true
+        errorMessage = nil
+        requiresReauthForDeletion = false
+        defer { isDeleting = false }
+
+        do {
+            try await deletionService.deleteCurrentUserAccount()
+            cleanupLocalUserState()
+            return true
+        } catch AccountDeletionService.DeletionError.requiresRecentLogin {
+            requiresReauthForDeletion = true
+            errorMessage = L10n.string(.deleteAccountReauthNeeded)
+            try? authService.signOut()
+            cleanupLocalUserState()
+            return false
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
+    private func cleanupLocalUserState() {
+        preferences.resetToDefaults()
+        Task { await NotificationService.shared.removeAll() }
     }
 }

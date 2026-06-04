@@ -4,8 +4,6 @@ struct GrammarNotesSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var settings = GrammarNotesSettingsStore()
 
-    @State private var selectedDefaultType: GrammarNoteType = .standard
-
     @MainActor init() {}
 
     var body: some View {
@@ -37,7 +35,7 @@ struct GrammarNotesSettingsView: View {
         .animation(Layout.grammarQuickSheetAnimation, value: settings.groupsPinnedNotesFirst)
         .animation(Layout.grammarQuickSheetAnimation, value: settings.usesCompactCards)
         .animation(Layout.grammarQuickSheetAnimation, value: settings.groupMistakesByTopic)
-        .animation(Layout.grammarQuickSheetAnimation, value: selectedDefaultType)
+        .animation(Layout.grammarQuickSheetAnimation, value: settings.quickNoteType)
     }
 
     private var header: some View {
@@ -59,7 +57,7 @@ struct GrammarNotesSettingsView: View {
             .buttonStyle(.plain)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("Grammar Notes")
+                Text("Notes")
                     .font(.system(size: Layout.grammarSettingsTitleSize, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
 
@@ -166,10 +164,10 @@ struct GrammarNotesSettingsView: View {
 
     private var defaultTypeSection: some View {
         settingsSection(
-            title: "Default note type",
-            subtitle: "Choose what a new quick note should look like by default.",
+            title: "Quick Note Type",
+            subtitle: "Choose what type Quick Notes create by default.",
             icon: "doc.text.fill",
-            tint: selectedDefaultType.tintColor
+            tint: settings.quickNoteType.tintColor
         ) {
             LazyVGrid(
                 columns: [
@@ -311,10 +309,10 @@ struct GrammarNotesSettingsView: View {
     }
 
     private func defaultTypeButton(_ type: GrammarNoteType) -> some View {
-        let isSelected = selectedDefaultType == type
+        let isSelected = settings.quickNoteType == type
 
         return Button {
-            selectedDefaultType = type
+            settings.quickNoteType = type
         } label: {
             VStack(spacing: 8) {
                 ZStack {

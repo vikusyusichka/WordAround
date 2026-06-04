@@ -146,7 +146,7 @@ final class GrammarReviewQueueBuilder: @unchecked Sendable {
 
     private func selectBestBlock(from blocks: [GrammarNoteBlock]) -> GrammarNoteBlock? {
         let priority: [GrammarNoteBlockType] = [
-            .rule, .warning, .comparison, .example, .paragraph, .quote, .exercise
+            .quiz, .rule, .warning, .comparison, .example, .paragraph, .quote, .exercise
         ]
         for type in priority {
             if let b = blocks.first(where: {
@@ -219,6 +219,16 @@ final class GrammarReviewQueueBuilder: @unchecked Sendable {
         guard !text.isEmpty else { return nil }
 
         switch block.type {
+        case .quiz:
+            let answer = secondary?.nilIfEmpty ?? text
+            guard !answer.isEmpty else { return nil }
+            return GrammarQuizQuestion(
+                type: .shortAnswer,
+                questionText: text,
+                correctAnswer: String(answer.prefix(160)),
+                order: 0
+            )
+
         case .comparison:
             if let secondary, !secondary.isEmpty {
                 let options = [text, secondary, "Neither applies", "Both are correct"].sorted()

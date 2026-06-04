@@ -2,45 +2,40 @@ import Foundation
 
 enum GrammarNoteFilter: String, CaseIterable, Identifiable {
     case all
-    case pinned
+    case types
     case favorites
-    case mistakes
-    case quizzes
+    case tags
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
         case .all:       return "All"
-        case .pinned:    return "Pinned"
-        case .favorites: return "Favorites"
-        case .mistakes:  return "Mistakes"
-        case .quizzes:   return "Quizzes"
+        case .types:     return "Types"
+        case .favorites: return "Favourites"
+        case .tags:      return "Tags"
         }
     }
 
     var emptyStateTitle: String {
         switch self {
-        case .all:       return "No grammar notes yet"
-        case .pinned:    return "No pinned notes yet"
-        case .favorites: return "No favorite notes yet"
-        case .mistakes:  return "No saved mistakes yet"
-        case .quizzes:   return "No quiz notes yet"
+        case .all:       return "No notes yet"
+        case .types:     return "No notes for this type"
+        case .favorites: return "No favourite notes yet"
+        case .tags:      return "No notes with this tag"
         }
     }
 
     var emptyStateSubtitle: String {
         switch self {
         case .all:
-            return "Create your first grammar note for this topic."
-        case .pinned:
-            return "Pin notes from the list to find them quickly."
+            return "Create your first note for this topic."
+        case .types:
+            return "Pick another type or create a note of this type."
         case .favorites:
-            return "Favorite notes to keep them handy."
-        case .mistakes:
-            return "Save grammar mistakes to review them here."
-        case .quizzes:
-            return "Add a quiz to a note to see it here."
+            return "Long-press a note and choose Add to Favourites."
+        case .tags:
+            return "Tag notes when you create or edit them to filter by tag."
         }
     }
 }

@@ -407,7 +407,7 @@ struct QuickGrammarMistakeSheet: View {
             HStack(spacing: 8) {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.system(size: 12, weight: .bold))
-                Text("Saved to Grammar Notes.")
+                Text("Saved to Notes.")
                     .font(.system(size: 12, weight: .bold, design: .rounded))
             }
             .foregroundStyle(CreateSetTheme.green.accent)

@@ -6,7 +6,7 @@ struct GrammarNoteTemplateProvider {
     let templates: [GrammarNoteTemplate] = [
         GrammarNoteTemplate(
             id: "grammar-rule",
-            title: "Grammar Rule Template",
+            title: "Rule Template",
             description: "Rule, examples, warning and practice in one clean structure.",
             noteType: .rule,
             tags: ["rule", "structured"],
@@ -100,7 +100,7 @@ struct GrammarNoteTemplateProvider {
         ),
         GrammarNoteTemplate(
             id: "image-based",
-            title: "Image-Based Grammar Note Template",
+            title: "Image-Based Note Template",
             description: "Add a screenshot or chart, then explain it in your own words.",
             noteType: .standard,
             tags: ["image", "visual"],

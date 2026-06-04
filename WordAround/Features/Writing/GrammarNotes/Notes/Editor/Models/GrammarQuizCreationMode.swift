@@ -18,7 +18,7 @@ enum GrammarQuizCreationMode: String, CaseIterable, Identifiable, Codable, Equat
     var shortTitle: String {
         switch self {
         case .manual:      return "Manual"
-        case .smartLocal:  return "Smart"
+        case .smartLocal:  return "Smart Local"
         case .aiGenerated: return "AI"
         }
     }
@@ -42,7 +42,7 @@ enum GrammarQuizCreationMode: String, CaseIterable, Identifiable, Codable, Equat
     var ctaTitle: String {
         switch self {
         case .manual:      return "Create Quiz"
-        case .smartLocal:  return "Save Quiz"
+        case .smartLocal:  return "Create Quiz"
         case .aiGenerated: return "Generate Quiz"
         }
     }

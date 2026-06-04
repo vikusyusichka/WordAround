@@ -161,8 +161,6 @@ extension Layout {
 // MARK: - Profile screen
 
 extension Layout {
-    /// Caps the column width on iPad / Mac so cards don't stretch edge-to-edge.
-    /// iPhone uses `.infinity` so cards still fill the narrower width.
     static let profileContentMaxWidth: CGFloat = isPadLike ? 740 : .infinity
     static let profileSectionSpacing: CGFloat = isPadLike ? 18 : 14
     static let profileCardPadding: CGFloat = isPadLike ? 24 : 18
@@ -173,7 +171,6 @@ extension Layout {
 // MARK: - Home Dashboard (daily stats grid + continue learning tile)
 
 extension Layout {
-    // Daily-practice stat cards
     static let homeDailyStatGridSpacing: CGFloat = isPadLike ? 16 : 12
     static let homeDailyStatCardHeight: CGFloat = isPadLike ? 150 : 116
     static let homeDailyStatCardCornerRadius: CGFloat = isPadLike ? 24 : 20
@@ -184,7 +181,6 @@ extension Layout {
     static let homeDailyStatTitleSize: CGFloat = isPadLike ? 17 : 14
     static let homeDailyStatLabelSize: CGFloat = isPadLike ? 14 : 11
 
-    // Continue-learning tile
     static let homeContinueCardCornerRadius: CGFloat = isPadLike ? 30 : 24
     static let homeContinueCardPadding: CGFloat = isPadLike ? 24 : 18
     static let homeContinueIconCircleSize: CGFloat = isPadLike ? 64 : 52
@@ -531,10 +527,6 @@ struct ScreenMetrics {
     let isVerticalCompact: Bool
     let containerWidth: CGFloat
 
-    // Pure value computations — explicitly `nonisolated` so that the
-    // project-wide `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` setting
-    // does not infer @MainActor here. None of these touch UIKit or any
-    // main-actor-only state.
     nonisolated var isCompact: Bool {
         isHorizontalCompact || containerWidth < LayoutConstants.Breakpoints.regularMinWidth
     }
@@ -562,9 +554,6 @@ enum LayoutConstants {
         static let regularMinWidth: CGFloat = 700
     }
 
-    // Pure value functions over `ScreenMetrics` — explicitly `nonisolated` so
-    // that function references (e.g. used as default-arg values for escaping
-    // closures) work under `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`.
     enum Common {
         nonisolated static func screenHorizontalPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 34 : 22 }
         nonisolated static func screenTopPadding(_ metrics: ScreenMetrics) -> CGFloat { metrics.isRegular ? 24 : 16 }
@@ -904,7 +893,6 @@ extension Layout {
     static let essaySelectorOptionsShadowRadius: CGFloat = 14
     static let essaySelectorOptionsShadowYOffset: CGFloat = 8
 
-
     // MARK: - Essay Topic Mode
 
     static let essayTopicModeSpacing: CGFloat = isPadLike ? 14 : 10
@@ -1058,7 +1046,6 @@ extension Layout {
 
 }
 
-
 // MARK: - Speaking
 
 extension Layout {
@@ -1078,11 +1065,6 @@ extension Layout {
 }
 
 // MARK: - Reading mode cards
-//
-// One uniform card system for the Reading home grid. Every card uses the same
-// size / padding / corner / spacing — the "Featured" mode differs only by a
-// gradient + badge, never by size. Values mirror the Speaking card metrics so
-// the two screens feel like one design system.
 extension Layout {
     static let readingModeGridSpacing: CGFloat = isPadLike ? 14 : 10
     static let readingModeCardCornerRadius: CGFloat = isPadLike ? 26 : 20
@@ -1094,9 +1076,7 @@ extension Layout {
     static let readingModeSubtitleSize: CGFloat = isPadLike ? 14 : 12
     static let readingModeArrowCircleSize: CGFloat = isPadLike ? 32 : 26
     static let readingModeArrowIconSize: CGFloat = isPadLike ? 14 : 11
-    /// Vertical gap between the icon row, the text block and the arrow row.
     static let readingModeContentSpacing: CGFloat = 10
-    /// Gap between title and subtitle.
     static let readingModeTextSpacing: CGFloat = 4
     static let readingModeBlobSize: CGSize = CGSize(width: isPadLike ? 92 : 72, height: isPadLike ? 76 : 60)
     static let readingModeBlobOffsetX: CGFloat = isPadLike ? 18 : 14
@@ -1127,7 +1107,6 @@ extension Layout {
 // MARK: - AI Conversation
 
 extension Layout {
-    // Scenario card
     static let convScenarioCornerRadius: CGFloat       = isPadLike ? 26 : 22
     static let convScenarioPadding: CGFloat            = isPadLike ? 22 : 18
     static let convScenarioHeaderSpacing: CGFloat      = isPadLike ? 8 : 6
@@ -1148,7 +1127,6 @@ extension Layout {
     static let convScenarioDecorIconSize: CGFloat      = isPadLike ? 18 : 15
     static let convScenarioDividerOpacity: CGFloat     = 0.35
 
-    // Chat bubbles
     static let convBubbleCornerRadius: CGFloat         = isPadLike ? 20 : 18
     static let convBubbleInnerPadding: CGFloat         = isPadLike ? 14 : 12
     static let convBubbleTextSize: CGFloat             = isPadLike ? 16 : 15
@@ -1157,7 +1135,6 @@ extension Layout {
     static let convBubbleSpacing: CGFloat              = isPadLike ? 10 : 8
     static let convMessageGroupSpacing: CGFloat        = isPadLike ? 16 : 12
 
-    // Mic bar
     static let convMicBarHeight: CGFloat               = isPadLike ? 110 : 96
     static let convMicBarCornerRadius: CGFloat         = isPadLike ? 34 : 26
     static let convMicCircleSize: CGFloat              = isPadLike ? 72 : 60
@@ -1167,7 +1144,6 @@ extension Layout {
     static let convMicBarHorizontalPadding: CGFloat    = isPadLike ? 36 : 26
     static let convMicBarBottomPadding: CGFloat        = isPadLike ? 20 : 10
 
-    // Result screen
     static let convResultScoreCircleSize: CGFloat      = isPadLike ? 150 : 122
     static let convResultScoreStrokeWidth: CGFloat     = isPadLike ? 13 : 10
     static let convResultScoreValueSize: CGFloat       = isPadLike ? 50 : 40
@@ -1182,7 +1158,6 @@ extension Layout {
     static let convResultActionCornerRadius: CGFloat   = isPadLike ? 20 : 17
     static let convResultActionTextSize: CGFloat       = isPadLike ? 17 : 15
 
-    // Shared
     static let convContentMaxWidth: CGFloat            = isPadLike ? 720 : .infinity
 }
 
@@ -1207,8 +1182,6 @@ extension Layout {
 // MARK: - Generic pad/phone picker
 
 extension Layout {
-    /// Returns `pad` when on iPad/wide screen, `phone` otherwise.
-    /// Replaces the old DeviceLayout.value(pad:phone:) helper.
     @inlinable
     static func value<T>(pad: T, phone: T) -> T {
         isPadLike ? pad : phone
@@ -1223,6 +1196,7 @@ extension Layout {
     static let grammarNoteBlockSpacing: CGFloat            = isPadLike ? 16 : 13
     static let grammarNoteBlockPadding: CGFloat            = isPadLike ? 16 : 14
     static let grammarNoteBlockCornerRadius: CGFloat       = isPadLike ? 24 : 21
+    static let grammarNoteEditorContentMaxWidth: CGFloat   = isPadLike ? 960 : .infinity
 
     static let grammarNoteHeadingSize: CGFloat             = isPadLike ? 26 : 22
     static let grammarNoteSubheadingSize: CGFloat          = isPadLike ? 20 : 18
@@ -1263,6 +1237,15 @@ extension Layout {
     static let grammarNotesFABMenuTitleSize: CGFloat = isPadLike ? 15 : 13
     static let grammarNotesFABItemDelay: Double = 0.035
     static let grammarNotesFABSpring: Animation = .spring(response: 0.34, dampingFraction: 0.86)
+
+    // MARK: - Grammar Notes Home Dashboard
+    static let grammarNotesHomeContentMaxWidth: CGFloat = isPadLike ? 1000 : .infinity
+    static let grammarNotesHomeScrollBottomPadding: CGFloat =
+        homeBottomBarHeight + homeBottomBarBottomPadding + (isPadLike ? 32 : 24)
+    static let grammarNotesHomeSectionSpacing: CGFloat = isPadLike ? 20 : 16
+    static let grammarNotesHomeHorizontalPadding: CGFloat = isPadLike ? 24 : 16
+    static let grammarNotesQuickActionSpacing: CGFloat = isPadLike ? 12 : 10
+    static let grammarNotesQuickActionMinHeight: CGFloat = isPadLike ? 88 : 76
 
     // MARK: - Quick Grammar Sheets
     static let grammarQuickSheetMaxWidth: CGFloat = isPadLike ? 620 : .infinity
@@ -1338,6 +1321,4 @@ extension Layout {
     static let grammarSettingsTypeMinWidth: CGFloat = isPadLike ? 130 : 104
     static let grammarSettingsTypeButtonHeight: CGFloat = isPadLike ? 92 : 82
 }
-
-
 

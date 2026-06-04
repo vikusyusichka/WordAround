@@ -6,7 +6,6 @@ struct GrammarReviewSummaryView: View {
     let errorMessage: String?
     let queueCount: Int
     let estimatedMinutes: Int
-    let isAddingRecommendation: Bool
     let effectivePool: GrammarReviewSourcePool?
     let onStart: () -> Void
     let onRetry: () -> Void
@@ -17,7 +16,6 @@ struct GrammarReviewSummaryView: View {
         errorMessage: String?,
         queueCount: Int = 0,
         estimatedMinutes: Int = 1,
-        isAddingRecommendation: Bool = false,
         effectivePool: GrammarReviewSourcePool? = nil,
         onStart: @escaping () -> Void,
         onRetry: @escaping () -> Void = {}
@@ -27,7 +25,6 @@ struct GrammarReviewSummaryView: View {
         self.errorMessage = errorMessage
         self.queueCount = queueCount
         self.estimatedMinutes = max(1, estimatedMinutes)
-        self.isAddingRecommendation = isAddingRecommendation
         self.effectivePool = effectivePool
         self.onStart = onStart
         self.onRetry = onRetry
@@ -36,7 +33,7 @@ struct GrammarReviewSummaryView: View {
     private var effectiveCount: Int { queueCount }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Layout.grammarSettingsCardInnerSpacing) {
             header
 
             if isLoading {
@@ -50,34 +47,46 @@ struct GrammarReviewSummaryView: View {
                 startButton
             }
         }
-        .padding(16)
+        .padding(Layout.grammarSettingsCardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(Color.white.opacity(0.72), lineWidth: 1)
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: Layout.grammarSettingsCardCornerRadius,
+                style: .continuous
+            )
         )
-        .shadow(color: Color.black.opacity(0.05), radius: 14, x: 0, y: 8)
+        .overlay(
+            RoundedRectangle(
+                cornerRadius: Layout.grammarSettingsCardCornerRadius,
+                style: .continuous
+            )
+            .stroke(Color.white.opacity(0.62), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.045), radius: 18, x: 0, y: 10)
     }
 
     private var header: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .top, spacing: 11) {
             ZStack {
-                Circle().fill(AppColors.primaryBlue.opacity(0.14))
+                Circle().fill(AppColors.primaryBlue.opacity(0.12))
                 Image(systemName: "brain.head.profile")
-                    .font(.system(size: 17, weight: .bold))
+                    .font(.system(size: Layout.grammarSettingsSectionIconSize, weight: .bold))
                     .foregroundStyle(AppColors.primaryBlue)
             }
-            .frame(width: 42, height: 42)
+            .frame(
+                width: Layout.grammarSettingsSectionIconBox,
+                height: Layout.grammarSettingsSectionIconBox
+            )
 
             VStack(alignment: .leading, spacing: 3) {
                 Text("Review Today")
-                    .font(.system(size: 17, weight: .black, design: .rounded))
+                    .font(.system(size: Layout.grammarSettingsSectionTitleSize, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
                 Text(headlineSubtitle)
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .font(.system(size: Layout.grammarSettingsSectionSubtitleSize, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
+                    .lineSpacing(3)
                     .lineLimit(2)
             }
 
@@ -138,7 +147,12 @@ struct GrammarReviewSummaryView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(tint.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: Layout.grammarSettingsRowCornerRadius,
+                style: .continuous
+            )
+        )
     }
 
     private func sourceTint(_ pool: GrammarReviewSourcePool) -> Color {
@@ -177,7 +191,7 @@ struct GrammarReviewSummaryView: View {
                 Spacer(minLength: 0)
             }
 
-            Text("Open a grammar note and tap \"Add to Review\" to schedule it here.")
+            Text("Open a note and tap \"Add to Review\" to schedule it here.")
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary.opacity(0.75))
                 .lineSpacing(2)
@@ -222,11 +236,19 @@ struct GrammarReviewSummaryView: View {
 
     private var cardBackground: some View {
         ZStack(alignment: .topTrailing) {
-            Color.white.opacity(0.92)
-            Circle()
-                .fill(AppColors.primaryBlue.opacity(0.08))
-                .frame(width: 130, height: 130)
-                .offset(x: 50, y: -55)
+            Color.white.opacity(0.84)
+
+            BlobShape()
+                .fill(AppColors.primaryBlue.opacity(0.09))
+                .frame(
+                    width: Layout.isPadLike ? 150 : 110,
+                    height: Layout.isPadLike ? 120 : 90
+                )
+                .rotationEffect(.degrees(-9))
+                .offset(
+                    x: Layout.isPadLike ? 48 : 36,
+                    y: Layout.isPadLike ? -40 : -28
+                )
         }
     }
 }

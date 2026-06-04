@@ -11,13 +11,8 @@ struct CreateGrammarNoteSheet: View {
     @State private var previewText = ""
     @State private var selectedType: GrammarNoteType = .standard
     @State private var tagsText = ""
-    @State private var hasQuiz = false
-    @State private var usesTemplate = false
-    @State private var selectedTemplate: GrammarNoteTemplate?
     @State private var validationMessage: String?
     @State private var didSubmit = false
-
-    private let templates = GrammarNoteTemplateProvider.shared.templates
 
     init(
         topic: GrammarNoteTopic,
@@ -44,17 +39,9 @@ struct CreateGrammarNoteSheet: View {
                     VStack(alignment: .leading, spacing: Layout.grammarNoteCreateSpacing) {
                         header
                         inputField(title: "Title", placeholder: "Example: Ser vs Estar", text: $title, limit: 60)
-                        templateModePicker
-
-                        if usesTemplate {
-                            templatePicker
-                        } else {
-                            previewField
-                        }
-
+                        previewField
                         typePicker
                         inputField(title: "Tags", placeholder: "A1, verbs, articles", text: $tagsText, limit: nil)
-                        quizToggle
 
                         if let validationMessage {
                             Text(validationMessage)
@@ -90,13 +77,6 @@ struct CreateGrammarNoteSheet: View {
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
-        .onChange(of: selectedTemplate) { _, template in
-            guard let template else { return }
-            selectedType = template.noteType
-            if previewText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                previewText = template.description
-            }
-        }
         .onChange(of: isCreating) { _, creating in
             if !creating { didSubmit = false }
         }
@@ -132,84 +112,6 @@ struct CreateGrammarNoteSheet: View {
             }
             .buttonStyle(.plain)
         }
-    }
-
-    private var templateModePicker: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Start mode")
-                .font(.system(size: 13, weight: .bold, design: .rounded))
-                .foregroundStyle(AppColors.primaryBlueDark)
-
-            HStack(spacing: 10) {
-                modeButton(title: "Start blank",  systemImage: "doc.text",  isSelected: !usesTemplate) {
-                    usesTemplate = false
-                    selectedTemplate = nil
-                }
-                modeButton(title: "Use template", systemImage: "sparkles", isSelected: usesTemplate) {
-                    usesTemplate = true
-                    selectedTemplate = selectedTemplate ?? templates.first
-                }
-            }
-        }
-    }
-
-    private func modeButton(title: String, systemImage: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Label(title, systemImage: systemImage)
-                .font(.system(size: 13, weight: .bold, design: .rounded))
-                .foregroundStyle(isSelected ? Color.white : AppColors.primaryBlue)
-                .frame(maxWidth: .infinity)
-                .frame(height: 46)
-                .background(isSelected ? AppColors.primaryBlue : AppColors.primaryBlue.opacity(0.10))
-                .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var templatePicker: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Template")
-                .font(.system(size: 13, weight: .bold, design: .rounded))
-                .foregroundStyle(AppColors.primaryBlueDark)
-
-            VStack(spacing: 10) {
-                ForEach(templates) { template in
-                    Button { selectedTemplate = template } label: {
-                        templateRow(template)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-        }
-    }
-
-    private func templateRow(_ template: GrammarNoteTemplate) -> some View {
-        HStack(spacing: 11) {
-            Image(systemName: template.noteType.systemImage)
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(template.noteType.tintColor)
-                .frame(width: 38, height: 38)
-                .background(template.noteType.tintColor.opacity(0.12))
-                .clipShape(Circle())
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(template.title)
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
-                    .foregroundStyle(AppColors.primaryBlueDark)
-                Text(template.description)
-                    .font(.system(size: 11, weight: .semibold, design: .rounded))
-                    .foregroundStyle(AppColors.textSecondary)
-                    .lineLimit(2)
-            }
-            Spacer()
-            if selectedTemplate?.id == template.id {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(AppColors.primaryBlue)
-            }
-        }
-        .padding(12)
-        .background(Color.white.opacity(0.92))
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
     private func inputField(title: String, placeholder: String, text: Binding<String>, limit: Int?) -> some View {
@@ -294,23 +196,6 @@ struct CreateGrammarNoteSheet: View {
         }
     }
 
-    private var quizToggle: some View {
-        Toggle(isOn: $hasQuiz) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Create quick quiz later")
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
-                    .foregroundStyle(AppColors.primaryBlueDark)
-                Text("Adds a small quiz badge to this note.")
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(AppColors.textSecondary)
-            }
-        }
-        .tint(AppColors.primaryBlue)
-        .padding(16)
-        .background(Color.white.opacity(0.92))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-    }
-
     private var actionButtons: some View {
         HStack(spacing: 12) {
             Button {
@@ -354,12 +239,10 @@ struct CreateGrammarNoteSheet: View {
         guard !cleanTitle.isEmpty          else { validationMessage = "Title is required.";                    return }
         guard cleanTitle.count   <= 60     else { validationMessage = "Title must be under 60 characters.";    return }
         guard cleanPreview.count <= 180    else { validationMessage = "Preview must be under 180 characters."; return }
-        guard !usesTemplate || selectedTemplate != nil
-                                           else { validationMessage = "Choose a template or start blank.";     return }
 
         validationMessage = nil
         didSubmit = true
-        onCreate(cleanTitle, cleanPreview, selectedType, parsedTags(from: tagsText), hasQuiz, usesTemplate ? selectedTemplate : nil)
+        onCreate(cleanTitle, cleanPreview, selectedType, parsedTags(from: tagsText), false, nil)
     }
 
     private func parsedTags(from raw: String) -> [String] {

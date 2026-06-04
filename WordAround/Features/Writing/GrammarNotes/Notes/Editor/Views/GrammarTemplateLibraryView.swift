@@ -12,11 +12,15 @@ struct GrammarTemplateLibraryView: View {
     let onSelectNote:  ((GrammarNoteTemplate)  -> Void)?
     let onCancel: () -> Void
 
+    @ObservedObject private var userStore = GrammarUserTemplateStore.shared
+
     @State private var searchText: String = ""
     @State private var selectedLanguageCode: String? = nil
     @State private var selectedDifficulty: String? = nil
     @State private var previewTopic: GrammarTopicTemplate? = nil
     @State private var previewNote:  GrammarNoteTemplate?  = nil
+    @State private var topicTemplatePendingDeletion: GrammarTopicTemplate? = nil
+    @State private var noteTemplatePendingDeletion:  GrammarNoteTemplate?  = nil
 
     init(
         kind: Kind,
@@ -88,6 +92,40 @@ struct GrammarTemplateLibraryView: View {
                 },
                 onCancel: { previewNote = nil }
             )
+        }
+        .confirmationDialog(
+            "Delete this template?",
+            isPresented: Binding(
+                get: { topicTemplatePendingDeletion != nil },
+                set: { if !$0 { topicTemplatePendingDeletion = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: topicTemplatePendingDeletion
+        ) { template in
+            Button("Delete \"\(template.title)\"", role: .destructive) {
+                userStore.deleteTopicTemplate(id: template.id)
+                topicTemplatePendingDeletion = nil
+            }
+            Button("Cancel", role: .cancel) { topicTemplatePendingDeletion = nil }
+        } message: { _ in
+            Text("This saved topic template will be removed. Your notes and topics are not affected.")
+        }
+        .confirmationDialog(
+            "Delete this template?",
+            isPresented: Binding(
+                get: { noteTemplatePendingDeletion != nil },
+                set: { if !$0 { noteTemplatePendingDeletion = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: noteTemplatePendingDeletion
+        ) { template in
+            Button("Delete \"\(template.title)\"", role: .destructive) {
+                userStore.deleteNoteTemplate(id: template.id)
+                noteTemplatePendingDeletion = nil
+            }
+            Button("Cancel", role: .cancel) { noteTemplatePendingDeletion = nil }
+        } message: { _ in
+            Text("This saved note template will be removed. Your notes are not affected.")
         }
     }
 
@@ -203,67 +241,170 @@ struct GrammarTemplateLibraryView: View {
     }
 
     private var topicCards: some View {
-        let templates = GrammarTemplateProvider.shared.topicTemplates(
+        let builtIn = GrammarTemplateProvider.shared.topicTemplates(
             languageCode: selectedLanguageCode,
             difficulty: selectedDifficulty,
             searchQuery: searchText
         )
+        let mine = userStore.topicTemplates.filter(matchesFilters)
+
         return Group {
-            if templates.isEmpty {
+            if builtIn.isEmpty && mine.isEmpty {
                 emptyState
             } else {
-                VStack(spacing: 10) {
-                    ForEach(templates) { template in
-                        Button { previewTopic = template } label: {
-                            GrammarTemplateCardView(
-                                title: template.title,
-                                description: template.description,
-                                iconName: template.icon,
-                                tint: CreateSetTheme.theme(forHex: template.colorHex).accent,
-                                difficulty: template.difficulty,
-                                estimatedMinutes: template.estimatedMinutes,
-                                tags: template.tags,
-                                includedNotesCount: template.noteTemplates.isEmpty ? nil : template.noteTemplates.count
-                            )
+                VStack(spacing: 14) {
+                    if !mine.isEmpty {
+                        templateSection(title: "My templates") {
+                            ForEach(mine) { template in
+                                topicCard(template, deletable: true)
+                            }
                         }
-                        .buttonStyle(ScaleButtonStyle())
-                        .transition(.scale(scale: 0.98).combined(with: .opacity))
+                    }
+                    if !builtIn.isEmpty {
+                        templateSection(title: mine.isEmpty ? nil : "Built-in templates") {
+                            ForEach(builtIn) { template in
+                                topicCard(template, deletable: false)
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
+    @ViewBuilder
+    private func topicCard(_ template: GrammarTopicTemplate, deletable: Bool) -> some View {
+        let card = Button { previewTopic = template } label: {
+            GrammarTemplateCardView(
+                title: template.title,
+                description: template.description,
+                iconName: template.icon,
+                tint: CreateSetTheme.theme(forHex: template.colorHex).accent,
+                difficulty: template.difficulty,
+                estimatedMinutes: template.estimatedMinutes,
+                tags: template.tags,
+                includedNotesCount: template.noteTemplates.isEmpty ? nil : template.noteTemplates.count
+            )
+        }
+        .buttonStyle(ScaleButtonStyle())
+        .transition(.scale(scale: 0.98).combined(with: .opacity))
+
+        if deletable {
+            card.contextMenu {
+                Button(role: .destructive) {
+                    topicTemplatePendingDeletion = template
+                } label: {
+                    Label("Delete template", systemImage: "trash")
+                }
+            }
+        } else {
+            card
+        }
+    }
+
     private var noteCards: some View {
-        let templates = GrammarTemplateProvider.shared.noteTemplates(
+        let builtIn = GrammarTemplateProvider.shared.noteTemplates(
             noteType: nil,
             languageCode: selectedLanguageCode,
             difficulty: selectedDifficulty,
             searchQuery: searchText
         )
+        let mine = userStore.noteTemplates.filter(matchesFilters)
+
         return Group {
-            if templates.isEmpty {
+            if builtIn.isEmpty && mine.isEmpty {
                 emptyState
             } else {
-                VStack(spacing: 10) {
-                    ForEach(templates) { template in
-                        Button { previewNote = template } label: {
-                            GrammarTemplateCardView(
-                                title: template.title,
-                                description: template.description,
-                                iconName: template.noteType.systemImage,
-                                tint: template.noteType.tintColor,
-                                difficulty: template.difficulty,
-                                estimatedMinutes: template.estimatedMinutes,
-                                tags: template.tags
-                            )
+                VStack(spacing: 14) {
+                    if !mine.isEmpty {
+                        templateSection(title: "My templates") {
+                            ForEach(mine) { template in
+                                noteCard(template, deletable: true)
+                            }
                         }
-                        .buttonStyle(ScaleButtonStyle())
-                        .transition(.scale(scale: 0.98).combined(with: .opacity))
+                    }
+                    if !builtIn.isEmpty {
+                        templateSection(title: mine.isEmpty ? nil : "Built-in templates") {
+                            ForEach(builtIn) { template in
+                                noteCard(template, deletable: false)
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func noteCard(_ template: GrammarNoteTemplate, deletable: Bool) -> some View {
+        let card = Button { previewNote = template } label: {
+            GrammarTemplateCardView(
+                title: template.title,
+                description: template.description,
+                iconName: template.noteType.systemImage,
+                tint: template.noteType.tintColor,
+                difficulty: template.difficulty,
+                estimatedMinutes: template.estimatedMinutes,
+                tags: template.tags
+            )
+        }
+        .buttonStyle(ScaleButtonStyle())
+        .transition(.scale(scale: 0.98).combined(with: .opacity))
+
+        if deletable {
+            card.contextMenu {
+                Button(role: .destructive) {
+                    noteTemplatePendingDeletion = template
+                } label: {
+                    Label("Delete template", systemImage: "trash")
+                }
+            }
+        } else {
+            card
+        }
+    }
+
+    @ViewBuilder
+    private func templateSection<Content: View>(
+        title: String?,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if let title {
+                Text(title)
+                    .font(.system(size: 12, weight: .black, design: .rounded))
+                    .foregroundStyle(AppColors.textSecondary)
+                    .textCase(.uppercase)
+                    .tracking(0.6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            content()
+        }
+    }
+
+    private func matchesFilters(_ language: String?, _ difficulty: String, _ title: String, _ description: String, _ tags: [String]) -> Bool {
+        if let selectedLanguageCode, !selectedLanguageCode.isEmpty,
+           language != nil, language != selectedLanguageCode {
+            return false
+        }
+        if let selectedDifficulty, !selectedDifficulty.isEmpty,
+           difficulty.caseInsensitiveCompare(selectedDifficulty) != .orderedSame {
+            return false
+        }
+        let trimmed = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if !trimmed.isEmpty {
+            let haystack = ([title, description] + tags).map { $0.lowercased() }
+            return haystack.contains { $0.contains(trimmed) }
+        }
+        return true
+    }
+
+    private func matchesFilters(_ template: GrammarTopicTemplate) -> Bool {
+        matchesFilters(template.languageCode, template.difficulty, template.title, template.description, template.tags)
+    }
+
+    private func matchesFilters(_ template: GrammarNoteTemplate) -> Bool {
+        matchesFilters(template.languageCode, template.difficulty, template.title, template.description, template.tags)
     }
 
     private var emptyState: some View {

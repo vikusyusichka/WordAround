@@ -18,6 +18,9 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     @Published private(set) var didLoadNotes = false
     @Published var searchText = ""
     @Published var selectedFilter: GrammarNoteFilter = .all
+    @Published var selectedNoteType: GrammarNoteType?
+    @Published var selectedTag: String?
+    @Published private(set) var availableTags: [String] = []
     @Published var errorMessage: String?
     @Published private(set) var quickNoteError: String?
     @Published private(set) var quickMistakeError: String?
@@ -26,6 +29,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     private let ownerUID: String
     private let noteService: GrammarNoteServicing
     private let topicService: GrammarNoteTopicServicing
+    private let reviewService: GrammarReviewServicing
     private let createNoteUseCase: CreateGrammarNoteUseCase
     private let createQuickNoteUseCase: CreateQuickGrammarNoteUseCase
     private let saveQuickMistakeUseCase: SaveQuickGrammarMistakeUseCase
@@ -43,6 +47,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
     var emptyStateTitle: String {
         if hasNoNotes { return GrammarNoteFilter.all.emptyStateTitle }
         if isSearchActive { return "No matching notes" }
+        if selectedFilter != .all { return "No notes match this filter" }
         return selectedFilter.emptyStateTitle
     }
 
@@ -59,6 +64,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         ownerUID: String,
         noteService: GrammarNoteServicing? = nil,
         topicService: GrammarNoteTopicServicing? = nil,
+        reviewService: GrammarReviewServicing? = nil,
         previewNotes: [GrammarNote] = []
     ) {
         self.topic = topic
@@ -67,6 +73,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         let resolvedTopicService = topicService ?? GrammarNoteTopicService()
         self.noteService = resolvedNoteService
         self.topicService = resolvedTopicService
+        self.reviewService = reviewService ?? GrammarReviewService()
         self.createNoteUseCase = CreateGrammarNoteUseCase(noteService: resolvedNoteService)
         self.createQuickNoteUseCase = CreateQuickGrammarNoteUseCase(noteService: resolvedNoteService)
         self.saveQuickMistakeUseCase = SaveQuickGrammarMistakeUseCase(noteService: resolvedNoteService)
@@ -81,6 +88,24 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         Publishers.CombineLatest3($searchText, $selectedFilter, $notes)
             .sink { [weak self] _, _, _ in
                 self?.refreshFiltered()
+            }
+            .store(in: &cancellables)
+
+        Publishers.CombineLatest($selectedNoteType, $selectedTag)
+            .sink { [weak self] _, _ in
+                self?.refreshFiltered()
+            }
+            .store(in: &cancellables)
+
+        $selectedFilter
+            .sink { [weak self] newValue in
+                guard let self else { return }
+                if newValue != .types, self.selectedNoteType != nil {
+                    self.selectedNoteType = nil
+                }
+                if newValue != .tags, self.selectedTag != nil {
+                    self.selectedTag = nil
+                }
             }
             .store(in: &cancellables)
     }
@@ -318,19 +343,7 @@ final class GrammarNotesTopicViewModel: ObservableObject {
             return nil
         }
 
-        let targetTopic: GrammarNoteTopic
-        if settings.groupMistakesByTopic {
-            targetTopic = topic
-        } else {
-            guard let mistakes = await getOrCreateMistakesTopic() else {
-                quickMistakeError = "Could not find or create Common Mistakes topic."
-                #if DEBUG
-                print("[QuickMistake/Topic] save failed: could not resolve mistakes topic")
-                #endif
-                return nil
-            }
-            targetTopic = mistakes
-        }
+        let targetTopic: GrammarNoteTopic = topic
 
         #if DEBUG
         print("[QuickMistake/Topic] saving to users/\(ownerUID)/grammarNoteTopics/\(targetTopic.id)/notes")
@@ -374,9 +387,36 @@ final class GrammarNotesTopicViewModel: ObservableObject {
             try await noteService.deleteNote(id: note.id, ownerUID: ownerUID, topicId: topic.id)
             updateNotes(notes.filter { $0.id != note.id })
             errorMessage = nil
+            purgeReviewItems(for: note)
         } catch {
             errorMessage = readableMessage(for: error)
         }
+    }
+
+    private func purgeReviewItems(for note: GrammarNote) {
+        let service = reviewService
+        let owner = ownerUID
+        let noteId = note.id
+        let topicId = topic.id
+        Task.detached(priority: .utility) {
+            try? await service.deleteReviewItem(
+                id: GrammarReviewItem.id(forNoteTopicId: topicId, noteId: noteId),
+                ownerUID: owner
+            )
+            try? await service.deleteReviewItem(
+                id: GrammarReviewItem.id(forMistakeTopicId: topicId, noteId: noteId),
+                ownerUID: owner
+            )
+        }
+    }
+
+    func removeNoteLocally(_ note: GrammarNote) {
+        updateNotes(notes.filter { $0.id != note.id })
+    }
+
+    func saveTopicAsTemplate() {
+        let template = GrammarTopicTemplate.userTemplate(from: topic, notes: notes)
+        GrammarUserTemplateStore.shared.saveTopicTemplate(template)
     }
 
     func moveNotes(from source: IndexSet, to destination: Int) {
@@ -438,25 +478,19 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         }
     }
 
-    private func getOrCreateMistakesTopic() async -> GrammarNoteTopic? {
-        if topic.isMistakesTopic { return topic }
-        do {
-            return try await topicService.ensureDefaultMistakesTopic(ownerUID: ownerUID)
-        } catch {
-            return nil
-        }
-    }
-
     private func refreshFiltered() {
         let rawQuery = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         let filtered = notes.filter { note in
             let matchesFilter: Bool
             switch selectedFilter {
-            case .all:       matchesFilter = true
-            case .pinned:    matchesFilter = note.isPinned
-            case .favorites: matchesFilter = note.isFavorite
-            case .mistakes:  matchesFilter = note.matchesMistakesFilter
-            case .quizzes:   matchesFilter = note.matchesQuizzesFilter
+            case .all:
+                matchesFilter = true
+            case .types:
+                matchesFilter = selectedNoteType.map { note.noteType == $0 } ?? true
+            case .favorites:
+                matchesFilter = note.isFavorite
+            case .tags:
+                matchesFilter = selectedTag.map { note.tags.contains($0) } ?? true
             }
             guard matchesFilter else { return false }
             guard !rawQuery.isEmpty else { return true }
@@ -467,6 +501,8 @@ final class GrammarNotesTopicViewModel: ObservableObject {
         filteredNotes = filtered
         pinnedNotes = filtered.filter { $0.isPinned }
         regularNotes = filtered.filter { !$0.isPinned }
+
+        availableTags = Array(Set(notes.flatMap { $0.tags })).sorted(by: { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending })
 
         if rawQuery.isEmpty {
             searchSnippets = [:]

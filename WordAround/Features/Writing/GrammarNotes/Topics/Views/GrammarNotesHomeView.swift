@@ -9,23 +9,37 @@ struct GrammarNotesHomeView: View {
     @StateObject private var sessionVM: GrammarReviewSessionViewModel
     @State private var isCreateSheetPresented = false
     @State private var isSettingsPresented = false
-    @State private var isFABExpanded = false
     @State private var isQuickNoteSheetPresented = false
     @State private var isQuickMistakeSheetPresented = false
+    @State private var isTemplateLibraryPresented = false
     @State private var isReviewSessionPresented = false
     @State private var editorNote: GrammarNote?
     @State private var isEditingTopics = false
     @State private var topicPendingDeletion: GrammarNoteTopic?
+    @State private var isEmptyReviewAlertPresented = false
 
     private let theme: CreateSetTheme = .blue
+    private let showsBackButton: Bool
 
     private var isPadLike: Bool {
         UIDevice.current.userInterfaceIdiom == .pad
     }
 
+    private var quickActionColumns: [GridItem] {
+        if isPadLike {
+            Array(repeating: GridItem(.flexible(), spacing: Layout.grammarNotesQuickActionSpacing), count: 4)
+        } else {
+            Array(repeating: GridItem(.flexible(), spacing: Layout.grammarNotesQuickActionSpacing), count: 2)
+        }
+    }
+
     @MainActor
-    init(ownerUID: String? = Auth.auth().currentUser?.uid) {
+    init(
+        ownerUID: String? = Auth.auth().currentUser?.uid,
+        showsBackButton: Bool = false
+    ) {
         let uid = ownerUID ?? ""
+        self.showsBackButton = showsBackButton
         _viewModel = StateObject(
             wrappedValue: GrammarNotesHomeViewModel(ownerUID: uid)
         )
@@ -38,7 +52,8 @@ struct GrammarNotesHomeView: View {
     }
 
     @MainActor
-    init(viewModel: GrammarNotesHomeViewModel) {
+    init(viewModel: GrammarNotesHomeViewModel, showsBackButton: Bool = false) {
+        self.showsBackButton = showsBackButton
         _viewModel = StateObject(wrappedValue: viewModel)
         _reviewVM = StateObject(
             wrappedValue: GrammarReviewViewModel(ownerUID: "")
@@ -50,31 +65,24 @@ struct GrammarNotesHomeView: View {
 
     var body: some View {
         ZStack {
-            theme.screenBackground
+            AppColors.appBackground
                 .ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: isPadLike ? 22 : 18) {
-                    headerView
-                    searchBar
+                VStack(alignment: .leading, spacing: Layout.grammarNotesHomeSectionSpacing) {
+                    if showsBackButton {
+                        backButtonRow
+                    }
+                    toolbarRow
                     reviewSummaryCard
-                    mistakesToFixSection
-                    weakQuizAreasSection
+                    quickActionsRow
                     sectionHeader
                     contentView
                 }
-                .padding(.horizontal, isPadLike ? 28 : 20)
-                .padding(.top, isPadLike ? 22 : 16)
-                .padding(.bottom, 96)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, isPadLike ? 12 : 8)
+                .padding(.bottom, Layout.grammarNotesHomeScrollBottomPadding)
             }
-        }
-        .overlay(alignment: .bottomTrailing) {
-            GrammarNotesFABMenu(
-                tint: theme.accent,
-                items: GrammarNotesFABMenuItem.homeItems,
-                onSelect: handleFABSelection,
-                isExpanded: $isFABExpanded
-            )
         }
         .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $isSettingsPresented) {
@@ -97,6 +105,20 @@ struct GrammarNotesHomeView: View {
         .sheet(isPresented: $isQuickMistakeSheetPresented) {
             quickMistakeSheet
         }
+        .sheet(isPresented: $isTemplateLibraryPresented) {
+            GrammarTemplateLibraryView(
+                kind: .topic,
+                onSelectTopic: { template in
+                    isTemplateLibraryPresented = false
+                    Task {
+                        let created = await viewModel.createTopicFromTemplate(template, settings: settings)
+                        if created != nil { isCreateSheetPresented = false }
+                    }
+                },
+                onSelectNote: nil,
+                onCancel: { isTemplateLibraryPresented = false }
+            )
+        }
         .sheet(isPresented: $isReviewSessionPresented, onDismiss: {
             Task {
                 await reviewVM.loadSummary(force: true)
@@ -115,14 +137,40 @@ struct GrammarNotesHomeView: View {
                 }
             )
         }
-        .task {
-            if viewModel.topics.isEmpty {
-                await viewModel.loadTopics()
+        .alert("Nothing to review yet", isPresented: $isEmptyReviewAlertPresented) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Add notes or save mistakes from writing practice to build your review queue.")
+        }
+        .confirmationDialog(
+            "Delete this topic?",
+            isPresented: topicDeletionBinding,
+            titleVisibility: .visible,
+            presenting: topicPendingDeletion
+        ) { topic in
+            Button("Delete \"\(topic.title)\"", role: .destructive) {
+                Task { await viewModel.deleteTopic(topic) }
+                topicPendingDeletion = nil
             }
+            Button("Cancel", role: .cancel) { topicPendingDeletion = nil }
+        } message: { topic in
+            Text("This topic and its \(topic.notesCount) note\(topic.notesCount == 1 ? "" : "s") will be permanently deleted. This cannot be undone.")
+        }
+        .task {
+            await viewModel.loadTopics()
             await reviewVM.loadSummary()
             await reviewVM.loadHighlights()
         }
+        .onAppear {
+            Task {
+                await viewModel.loadTopics()
+                await reviewVM.loadSummary(force: true)
+                await reviewVM.loadHighlights()
+            }
+        }
     }
+
+    // MARK: - Review
 
     @ViewBuilder
     private var reviewSummaryCard: some View {
@@ -134,8 +182,7 @@ struct GrammarNotesHomeView: View {
             errorMessage: reviewVM.summaryError,
             queueCount: queue.count,
             estimatedMinutes: queue.estimatedMinutes,
-            isAddingRecommendation: reviewVM.isAddingRecommendation,
-            effectivePool: queue.pool,
+            effectivePool: queue.isEmpty ? nil : queue.pool,
             onStart: startReviewSession,
             onRetry: { Task { await reviewVM.loadSummary(force: true) } }
         )
@@ -150,8 +197,9 @@ struct GrammarNotesHomeView: View {
 
         guard !queue.isEmpty else {
             #if DEBUG
-            print("[Review] queue is empty — not presenting session sheet")
+            print("[Review] queue is empty — showing alert")
             #endif
+            isEmptyReviewAlertPresented = true
             return
         }
 
@@ -159,106 +207,93 @@ struct GrammarNotesHomeView: View {
         isReviewSessionPresented = true
     }
 
-    @ViewBuilder
-    private var mistakesToFixSection: some View {
-        if !reviewVM.mistakeHighlights.isEmpty {
-            highlightsSection(
-                title: "Mistakes to Fix",
-                subtitle: "Recent corrections waiting for review.",
-                accent: CreateSetTheme.red.accent,
-                items: reviewVM.mistakeHighlights
+    // MARK: - Quick actions
+
+    private var quickActionsRow: some View {
+        LazyVGrid(columns: quickActionColumns, spacing: Layout.grammarNotesQuickActionSpacing) {
+            quickActionButton(
+                title: "Quick Note",
+                systemImage: "square.and.pencil",
+                action: { isQuickNoteSheetPresented = true }
+            )
+            quickActionButton(
+                title: "Quick Mistake",
+                systemImage: "exclamationmark.bubble.fill",
+                action: { isQuickMistakeSheetPresented = true }
+            )
+            quickActionButton(
+                title: "New Topic",
+                systemImage: "folder.badge.plus",
+                action: { isCreateSheetPresented = true }
+            )
+            quickActionButton(
+                title: "Templates",
+                systemImage: "doc.on.doc.fill",
+                action: { isTemplateLibraryPresented = true }
             )
         }
     }
 
-    @ViewBuilder
-    private var weakQuizAreasSection: some View {
-        if !reviewVM.quizHighlights.isEmpty {
-            highlightsSection(
-                title: "Weak Quiz Areas",
-                subtitle: "Quizzes worth re-taking soon.",
-                accent: CreateSetTheme.purple.accent,
-                items: reviewVM.quizHighlights
-            )
-        }
-    }
-
-    private func highlightsSection(
+    private func quickActionButton(
         title: String,
-        subtitle: String,
-        accent: Color,
-        items: [GrammarReviewItem]
+        systemImage: String,
+        action: @escaping () -> Void
     ) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            VStack(alignment: .leading, spacing: 3) {
+        Button(action: action) {
+            VStack(spacing: isPadLike ? 8 : 6) {
+                ZStack {
+                    Circle()
+                        .fill(AppColors.primaryBlue.opacity(0.12))
+                        .frame(width: isPadLike ? 36 : 32, height: isPadLike ? 36 : 32)
+                    Image(systemName: systemImage)
+                        .font(.system(size: isPadLike ? 15 : 14, weight: .bold))
+                        .foregroundStyle(AppColors.primaryBlue)
+                }
+
                 Text(title)
-                    .font(.system(size: isPadLike ? 17 : 15, weight: .black, design: .rounded))
-                    .foregroundStyle(theme.titleColor)
-                Text(subtitle)
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(theme.mutedTextColor)
-            }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ForEach(items) { item in
-                        highlightCard(item, accent: accent)
-                    }
-                }
-                .padding(.vertical, 2)
-            }
-        }
-    }
-
-    private func highlightCard(_ item: GrammarReviewItem, accent: Color) -> some View {
-        Button {
-            startReviewSession()
-        } label: {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 6) {
-                    Image(systemName: item.sourceType.systemImage)
-                        .font(.system(size: 10, weight: .bold))
-                    Text(item.sourceType.title)
-                        .font(.system(size: 10, weight: .black, design: .rounded))
-                        .textCase(.uppercase)
-                        .tracking(0.5)
-                }
-                .foregroundStyle(accent)
-
-                Text(item.title.isEmpty ? "Untitled" : item.title)
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
-                    .foregroundStyle(theme.titleColor)
+                    .font(.system(size: isPadLike ? 12 : 11, weight: .black, design: .rounded))
+                    .foregroundStyle(AppColors.primaryBlueDark)
                     .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                if !item.previewText.isEmpty {
-                    Text(item.previewText)
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundStyle(theme.mutedTextColor)
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+                    .multilineTextAlignment(.center)
+                    .minimumScaleFactor(0.85)
             }
-            .padding(12)
-            .frame(width: 220, alignment: .leading)
-            .background(Color.white.opacity(0.92))
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: Layout.grammarNotesQuickActionMinHeight)
+            .padding(.horizontal, 8)
+            .padding(.vertical, isPadLike ? 12 : 10)
+            .background(quickActionBackground)
+            .clipShape(RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .stroke(accent.opacity(0.18), lineWidth: 1)
+                RoundedRectangle(cornerRadius: Layout.smallCardCornerRadius, style: .continuous)
+                    .stroke(Color.white.opacity(0.62), lineWidth: 1)
             )
-            .shadow(color: Color.black.opacity(0.04), radius: 10, x: 0, y: 5)
+            .shadow(color: Color.black.opacity(0.045), radius: 14, x: 0, y: 8)
         }
         .buttonStyle(.plain)
     }
 
+    private var quickActionBackground: some View {
+        ZStack(alignment: .topTrailing) {
+            Color.white.opacity(0.84)
+
+            BlobShape()
+                .fill(AppColors.primaryBlue.opacity(0.07))
+                .frame(width: isPadLike ? 80 : 64, height: isPadLike ? 64 : 52)
+                .rotationEffect(.degrees(-9))
+                .offset(x: isPadLike ? 22 : 16, y: isPadLike ? -18 : -14)
+        }
+    }
+
+    // MARK: - Sheets
+
     private var createTopicSheet: some View {
         CreateGrammarTopicSheet(
             isCreating: viewModel.isCreatingTopic,
-            errorMessage: viewModel.errorMessage,
-            onCancel: { isCreateSheetPresented = false },
+            errorMessage: viewModel.createTopicError,
+            onCancel: {
+                viewModel.createTopicError = nil
+                isCreateSheetPresented = false
+            },
             onCreate: { title, description, languageCode, languageName, icon, colorHex in
                 Task {
                     let didCreate = await viewModel.createTopic(
@@ -323,129 +358,94 @@ struct GrammarNotesHomeView: View {
         )
     }
 
-    private func handleFABSelection(_ item: GrammarNotesFABMenuItem) {
-        switch item.role {
-        case .newTopic:    isCreateSheetPresented = true
-        case .quickNote:   isQuickNoteSheetPresented = true
-        case .quickMistake: isQuickMistakeSheetPresented = true
-        case .newNote:     break
+    // MARK: - Header
+
+    private var backButtonRow: some View {
+        HStack {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: isPadLike ? 16 : 15, weight: .black))
+                    .foregroundStyle(AppColors.primaryBlueDark)
+                    .frame(width: isPadLike ? 40 : 36, height: isPadLike ? 40 : 36)
+                    .background(Color.white.opacity(0.88))
+                    .clipShape(Circle())
+                    .shadow(color: Color.black.opacity(0.04), radius: 10, x: 0, y: 5)
+            }
+            .buttonStyle(.plain)
+            Spacer(minLength: 0)
         }
     }
 
-    private var headerView: some View {
-        VStack(spacing: isPadLike ? 18 : 14) {
-            HStack {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: isPadLike ? 18 : 16, weight: .semibold))
-                        .foregroundStyle(theme.mutedTextColor)
-                        .frame(width: isPadLike ? 50 : 44, height: isPadLike ? 50 : 44)
-                        .background(theme.fieldBackground)
-                        .clipShape(Circle())
-                        .shadow(color: theme.shadowColor, radius: 12, x: 0, y: 7)
-                }
-                .buttonStyle(.plain)
+    private var toolbarRow: some View {
+        HStack(spacing: 10) {
+            GrammarSearchBar(
+                placeholder: "Search topics",
+                text: $viewModel.searchText,
+                theme: theme,
+                isPadLike: isPadLike,
+                appearance: .elevated
+            )
+            .frame(maxWidth: .infinity)
 
-                Spacer()
-
-                Button {
-                    isSettingsPresented = true
-                } label: {
-                    HStack(spacing: 10) {
-                        Text("Settings")
-                            .font(.system(size: isPadLike ? 15 : 13, weight: .bold, design: .rounded))
-                            .foregroundStyle(theme.accent)
-                            .lineLimit(1)
-
-                        ZStack {
-                            Circle()
-                                .fill(theme.softAccent)
-                                .frame(width: isPadLike ? 42 : 36, height: isPadLike ? 42 : 36)
-
-                            Image(systemName: "gearshape.fill")
-                                .font(.system(size: isPadLike ? 18 : 16, weight: .bold))
-                                .foregroundStyle(theme.accent)
-                        }
-                    }
-                }
-                .buttonStyle(.plain)
+            Button {
+                isSettingsPresented = true
+            } label: {
+                Image(systemName: "gearshape.fill")
+                    .font(.system(size: isPadLike ? 20 : 18, weight: .bold))
+                    .foregroundStyle(AppColors.primaryBlue)
+                    .frame(width: isPadLike ? 52 : 46, height: isPadLike ? 52 : 46)
+                    .background(Color.white.opacity(0.88))
+                    .clipShape(Circle())
+                    .shadow(color: Color.black.opacity(0.045), radius: 10, x: 0, y: 5)
             }
-
-            HStack(alignment: .center, spacing: 14) {
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("Grammar Notes")
-                        .font(.system(size: isPadLike ? 34 : 28, weight: .bold, design: .rounded))
-                        .foregroundStyle(theme.titleColor)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.82)
-
-                    Text("Organize grammar rules, examples and corrections.")
-                        .font(.system(size: isPadLike ? 16 : 14, weight: .semibold, design: .rounded))
-                        .foregroundStyle(theme.mutedTextColor)
-                        .lineSpacing(2)
-                }
-
-                Spacer(minLength: 8)
-            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Notes settings")
         }
-    }
-
-    private var searchBar: some View {
-        GrammarSearchBar(
-            placeholder: "Search topics",
-            text: $viewModel.searchText,
-            theme: theme,
-            isPadLike: isPadLike
-        )
     }
 
     private var sectionHeader: some View {
         HStack(spacing: 8) {
             Text("My Topics")
-                .font(.system(size: isPadLike ? 21 : 18, weight: .bold, design: .rounded))
-                .foregroundStyle(theme.titleColor)
+                .font(.system(size: isPadLike ? 20 : 17, weight: .black, design: .rounded))
+                .foregroundStyle(AppColors.primaryBlueDark)
 
             Spacer(minLength: 8)
 
             if canShowEditButton {
-                Button {
-                    toggleEditingTopics()
-                } label: {
-                    Text(isEditingTopics ? "Done" : "Edit")
-                        .font(.system(size: isPadLike ? 14 : 12, weight: .bold, design: .rounded))
-                        .foregroundStyle(isEditingTopics ? Color.white : theme.accent)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                        .background(isEditingTopics ? theme.accent : theme.fieldBackground)
-                        .clipShape(Capsule())
-                        .overlay(
-                            Capsule()
-                                .stroke(theme.softBorderColor, lineWidth: 1)
-                        )
-                }
-                .buttonStyle(.plain)
+                sectionActionButton(
+                    title: isEditingTopics ? "Done" : "Edit",
+                    isFilled: isEditingTopics,
+                    action: toggleEditingTopics
+                )
                 .accessibilityLabel(isEditingTopics ? "Done editing topics" : "Edit topics")
             }
 
-            Button {
-                isCreateSheetPresented = true
-            } label: {
-                Text("+ New Topic")
-                    .font(.system(size: isPadLike ? 14 : 12, weight: .bold, design: .rounded))
-                    .foregroundStyle(theme.accent)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .background(theme.fieldBackground)
-                    .clipShape(Capsule())
-                    .overlay(
-                        Capsule()
-                            .stroke(theme.softBorderColor, lineWidth: 1)
-                    )
-            }
-            .buttonStyle(.plain)
+            sectionActionButton(
+                title: "New Topic",
+                isFilled: false,
+                action: { isCreateSheetPresented = true }
+            )
         }
+    }
+
+    private func sectionActionButton(
+        title: String,
+        isFilled: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: isPadLike ? 13 : 12, weight: .bold, design: .rounded))
+                .foregroundStyle(isFilled ? Color.white : AppColors.primaryBlue)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(isFilled ? AppColors.primaryBlue : Color.white.opacity(0.88))
+                .clipShape(Capsule())
+                .shadow(color: Color.black.opacity(0.04), radius: 6, x: 0, y: 3)
+        }
+        .buttonStyle(.plain)
     }
 
     private var canShowEditButton: Bool {
@@ -458,45 +458,61 @@ struct GrammarNotesHomeView: View {
         }
     }
 
+    // MARK: - Content
+
     @ViewBuilder
     private var contentView: some View {
         if viewModel.isLoading {
             loadingCard
-        } else if let errorMessage = viewModel.errorMessage {
-            errorCard(message: errorMessage)
+        } else if let loadError = viewModel.loadError {
+            errorCard(message: loadError)
+        } else if isSearchEmpty {
+            searchEmptyState
         } else if isEditingTopics {
             editableTopicsList
+        } else if viewModel.filteredTopics.isEmpty && viewModel.searchText.isEmpty {
+            topicsEmptyState
         } else {
-            VStack(spacing: isPadLike ? 16 : 12) {
-                ForEach(viewModel.filteredTopics) { topic in
-                    NavigationLink {
-                        GrammarNotesTopicView(topic: topic)
-                    } label: {
-                        GrammarNoteTopicCardView(topic: topic)
-                    }
-                    .buttonStyle(.plain)
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        if !topic.isMistakesTopic {
-                            Button(role: .destructive) {
-                                Task { await viewModel.deleteTopic(topic) }
-                            } label: {
-                                Label("Delete", systemImage: "trash.fill")
-                            }
+            topicsList
+        }
+    }
+
+    private var isSearchEmpty: Bool {
+        !viewModel.searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && viewModel.filteredTopics.isEmpty
+            && !viewModel.isLoading
+    }
+
+    private var topicsList: some View {
+        VStack(spacing: isPadLike ? 12 : 10) {
+            ForEach(viewModel.filteredTopics) { topic in
+                NavigationLink {
+                    GrammarNotesTopicView(topic: topic)
+                } label: {
+                    GrammarNoteTopicCardView(topic: topic)
+                }
+                .buttonStyle(.plain)
+                .contextMenu {
+                    if !topic.isMistakesTopic {
+                        Button(role: .destructive) {
+                            topicPendingDeletion = topic
+                        } label: {
+                            Label("Delete topic", systemImage: "trash.fill")
                         }
                     }
                 }
+            }
 
-                if viewModel.hasOnlyMistakesTopic && viewModel.searchText.isEmpty {
-                    emptyState
-                }
+            if viewModel.hasOnlyMistakesTopic && viewModel.searchText.isEmpty {
+                topicsEmptyState
             }
         }
     }
 
     private var editableTopicsList: some View {
         let editingTopics = viewModel.topics
-        let rowSpacing: CGFloat = isPadLike ? 14 : 12
-        let approxRowHeight: CGFloat = isPadLike ? 154 : 132
+        let rowSpacing: CGFloat = isPadLike ? 12 : 10
+        let approxRowHeight: CGFloat = isPadLike ? 120 : 104
 
         return List {
             ForEach(editingTopics) { topic in
@@ -522,20 +538,6 @@ struct GrammarNotesHomeView: View {
         .scrollDisabled(true)
         .environment(\.editMode, .constant(.active))
         .frame(height: approxRowHeight * CGFloat(editingTopics.count))
-        .confirmationDialog(
-            "Delete this topic?",
-            isPresented: topicDeletionBinding,
-            titleVisibility: .visible,
-            presenting: topicPendingDeletion
-        ) { topic in
-            Button("Delete \"\(topic.title)\"", role: .destructive) {
-                Task { await viewModel.deleteTopic(topic) }
-                topicPendingDeletion = nil
-            }
-            Button("Cancel", role: .cancel) { topicPendingDeletion = nil }
-        } message: { topic in
-            Text("All \(topic.notesCount) note\(topic.notesCount == 1 ? "" : "s") inside this topic will become inaccessible.")
-        }
     }
 
     private var topicDeletionBinding: Binding<Bool> {
@@ -553,20 +555,19 @@ struct GrammarNotesHomeView: View {
             .allowsHitTesting(false)
     }
 
-    private var loadingCard: some View {
-        VStack(spacing: 12) {
-            ProgressView()
-                .tint(theme.accent)
-                .scaleEffect(1.08)
+    // MARK: - States
 
+    private var loadingCard: some View {
+        HStack(spacing: 12) {
+            ProgressView()
+                .tint(AppColors.primaryBlue)
             Text("Loading topics...")
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .foregroundStyle(theme.mutedTextColor)
+                .foregroundStyle(AppColors.textSecondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, isPadLike ? 36 : 30)
-        .background(sectionBackground)
-        .grammarSectionCardChrome(theme: theme)
+        .padding(.vertical, isPadLike ? 28 : 24)
+        .dashboardCardBackground
     }
 
     private func errorCard(message: String) -> some View {
@@ -574,15 +575,15 @@ struct GrammarNotesHomeView: View {
             HStack(spacing: 10) {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .foregroundStyle(CreateSetTheme.red.accent)
-
                 Text("Something went wrong")
-                    .font(.system(size: 15, weight: .bold, design: .rounded))
-                    .foregroundStyle(theme.titleColor)
+                    .font(.system(size: 15, weight: .black, design: .rounded))
+                    .foregroundStyle(AppColors.primaryBlueDark)
             }
 
             Text(message)
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .foregroundStyle(theme.mutedTextColor)
+                .foregroundStyle(AppColors.textSecondary)
+                .lineSpacing(3)
 
             Button {
                 Task { await viewModel.loadTopics() }
@@ -592,70 +593,129 @@ struct GrammarNotesHomeView: View {
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 18)
                     .padding(.vertical, 10)
-                    .background(theme.accent)
+                    .background(AppColors.primaryBlue)
                     .clipShape(Capsule())
             }
             .buttonStyle(.plain)
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(sectionBackground)
-        .grammarSectionCardChrome(theme: theme)
+        .dashboardCardBackground
     }
 
-    private var emptyState: some View {
-        VStack(alignment: .leading, spacing: 10) {
+    private var topicsEmptyState: some View {
+        dashboardEmptyCard(
+            icon: "text.book.closed.fill",
+            title: "No grammar topics yet",
+            subtitle: "Create your first topic or save a mistake from writing practice.",
+            buttonTitle: "New Topic",
+            action: { isCreateSheetPresented = true }
+        )
+    }
+
+    private var searchEmptyState: some View {
+        dashboardEmptyCard(
+            icon: "magnifyingglass",
+            title: "Nothing found",
+            subtitle: "Try another word or topic name.",
+            buttonTitle: nil,
+            action: {}
+        )
+    }
+
+    private func dashboardEmptyCard(
+        icon: String,
+        title: String,
+        subtitle: String,
+        buttonTitle: String?,
+        action: @escaping () -> Void
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
             ZStack {
                 Circle()
-                    .fill(theme.softAccent)
-                    .frame(width: 54, height: 54)
-
-                Image(systemName: "sparkles")
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundStyle(theme.accent)
+                    .fill(AppColors.primaryBlue.opacity(0.12))
+                    .frame(width: 48, height: 48)
+                Image(systemName: icon)
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundStyle(AppColors.primaryBlue)
             }
 
-            Text("Create your first grammar topic")
-                .font(.system(size: isPadLike ? 18 : 16, weight: .bold, design: .rounded))
-                .foregroundStyle(theme.titleColor)
+            Text(title)
+                .font(.system(size: isPadLike ? 17 : 16, weight: .black, design: .rounded))
+                .foregroundStyle(AppColors.primaryBlueDark)
 
-            Text("Start with verbs, tenses, articles or your own custom topic.")
+            Text(subtitle)
                 .font(.system(size: isPadLike ? 14 : 12, weight: .semibold, design: .rounded))
-                .foregroundStyle(theme.mutedTextColor)
-                .lineSpacing(2)
+                .foregroundStyle(AppColors.textSecondary)
+                .lineSpacing(3)
+                .fixedSize(horizontal: false, vertical: true)
 
-            Button {
-                isCreateSheetPresented = true
-            } label: {
-                Text("New Topic")
-                    .font(.system(size: 13, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color.white)
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 11)
-                    .background(theme.accent)
-                    .clipShape(Capsule())
+            if let buttonTitle {
+                Button(action: action) {
+                    Text(buttonTitle)
+                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color.white)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 10)
+                        .background(AppColors.primaryBlue)
+                        .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
-            .padding(.top, 4)
         }
-        .padding(20)
+        .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(sectionBackground)
-        .grammarSectionCardChrome(theme: theme)
+        .dashboardCardBackground
     }
+}
 
-    private var sectionBackground: some View {
-        RoundedRectangle(cornerRadius: 26, style: .continuous)
-            .fill(theme.sectionBackground)
-            .overlay(
-                RoundedRectangle(cornerRadius: 26, style: .continuous)
-                    .stroke(theme.softBorderColor, lineWidth: 1)
+// MARK: - Card chrome
+
+private struct DashboardCardChrome: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .background(
+                ZStack(alignment: .topTrailing) {
+                    Color.white.opacity(0.84)
+
+                    BlobShape()
+                        .fill(AppColors.primaryBlue.opacity(0.09))
+                        .frame(
+                            width: Layout.isPadLike ? 150 : 110,
+                            height: Layout.isPadLike ? 120 : 90
+                        )
+                        .rotationEffect(.degrees(-9))
+                        .offset(
+                            x: Layout.isPadLike ? 48 : 36,
+                            y: Layout.isPadLike ? -40 : -28
+                        )
+                }
             )
+            .clipShape(
+                RoundedRectangle(
+                    cornerRadius: Layout.grammarSettingsCardCornerRadius,
+                    style: .continuous
+                )
+            )
+            .overlay(
+                RoundedRectangle(
+                    cornerRadius: Layout.grammarSettingsCardCornerRadius,
+                    style: .continuous
+                )
+                .stroke(Color.white.opacity(0.62), lineWidth: 1)
+            )
+            .shadow(color: Color.black.opacity(0.045), radius: 18, x: 0, y: 10)
+    }
+}
+
+private extension View {
+    var dashboardCardBackground: some View {
+        modifier(DashboardCardChrome())
     }
 }
 
 #Preview {
     NavigationStack {
-        GrammarNotesHomeView(ownerUID: "preview-user")
+        GrammarNotesHomeView(ownerUID: "preview-user", showsBackButton: true)
     }
 }

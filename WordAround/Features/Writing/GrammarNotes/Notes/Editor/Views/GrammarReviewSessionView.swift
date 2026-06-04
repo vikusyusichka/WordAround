@@ -1,14 +1,5 @@
 import SwiftUI
 
-/// Sheet-hosted multi-phase review session.
-///
-/// Flow per card:
-///   1. **Source** — shows the grammar block content. User taps Continue.
-///   2. **Question** — shows a quiz question. User answers.
-///   3. **Result** — shows correct answer + explanation. Rating buttons appear.
-///
-/// Every card is guaranteed to have a question (the queue builder skips
-/// items that can't produce one). There is no rate-only fallback.
 struct GrammarReviewSessionView: View {
     @ObservedObject var viewModel: GrammarReviewSessionViewModel
     let onDismiss: () -> Void
@@ -67,7 +58,8 @@ struct GrammarReviewSessionView: View {
                     }
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 32)
+                .padding(.top, 4)
+                .padding(.bottom, 20)
             }
         }
         .onChange(of: viewModel.currentIndex) { _, _ in
@@ -405,6 +397,8 @@ struct GrammarReviewSessionView: View {
             axis: .vertical
         )
         .font(.system(size: 15, weight: .semibold, design: .rounded))
+        .foregroundStyle(AppColors.primaryBlueDark)
+        .tint(AppColors.primaryBlue)
         .lineLimit(question.type == .shortAnswer ? 5 : 2)
         .padding(14)
         .background(Color.white.opacity(0.92))

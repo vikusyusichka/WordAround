@@ -42,14 +42,17 @@ final class GrammarNotesSettingsStore: ObservableObject {
         didSet { _ud.set(saveGrammarMistakesAutomatically, forKey: "grammarNotes.saveGrammarMistakesAutomatically") }
     }
 
+    // TODO: showsMistakeHighlights toggle is persisted but not consumed
     @Published var showsMistakeHighlights: Bool = boolSetting("grammarNotes.showsMistakeHighlights", default: true) {
         didSet { _ud.set(showsMistakeHighlights, forKey: "grammarNotes.showsMistakeHighlights") }
     }
 
+    // TODO: groupsPinnedNotesFirst toggle is persisted but not consumed
     @Published var groupsPinnedNotesFirst: Bool = boolSetting("grammarNotes.groupsPinnedNotesFirst", default: true) {
         didSet { _ud.set(groupsPinnedNotesFirst, forKey: "grammarNotes.groupsPinnedNotesFirst") }
     }
 
+    // TODO: usesCompactCards toggle is persisted but not consumed by
     @Published var usesCompactCards: Bool = boolSetting("grammarNotes.usesCompactCards", default: false) {
         didSet { _ud.set(usesCompactCards, forKey: "grammarNotes.usesCompactCards") }
     }
@@ -60,5 +63,12 @@ final class GrammarNotesSettingsStore: ObservableObject {
 
     @Published var enableReviewReminders: Bool = boolSetting("grammarNotes.enableReviewReminders", default: false) {
         didSet { _ud.set(enableReviewReminders, forKey: "grammarNotes.enableReviewReminders") }
+    }
+
+    @Published var quickNoteType: GrammarNoteType = {
+        let raw = _ud.string(forKey: "grammarNotes.quickNoteType") ?? ""
+        return GrammarNoteType(rawValue: raw) ?? .standard
+    }() {
+        didSet { _ud.set(quickNoteType.rawValue, forKey: "grammarNotes.quickNoteType") }
     }
 }

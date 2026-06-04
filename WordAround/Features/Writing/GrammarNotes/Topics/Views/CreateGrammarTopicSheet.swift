@@ -205,7 +205,7 @@ struct CreateGrammarTopicSheet: View {
 
             HStack(alignment: .center, spacing: 14) {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("New Grammar Topic")
+                    Text("New Topic")
                         .font(.system(size: isPadLike ? 34 : 28, weight: .bold, design: .rounded))
                         .foregroundStyle(theme.titleColor)
                         .lineLimit(1)
@@ -431,7 +431,7 @@ struct CreateGrammarTopicSheet: View {
                 }
 
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(trimmedTitle.isEmpty ? "Grammar topic" : trimmedTitle)
+                    Text(trimmedTitle.isEmpty ? "Topic" : trimmedTitle)
                         .font(.system(size: isPadLike ? 18 : 16, weight: .bold, design: .rounded))
                         .foregroundStyle(theme.titleColor)
                         .lineLimit(1)

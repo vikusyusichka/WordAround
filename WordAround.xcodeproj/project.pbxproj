@@ -339,6 +339,18 @@
 		FEEDFACE0000000000000014 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000013 /* ProfileViewModel.swift */; };
 		FEEDFACE0000000000000016 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000015 /* ProfileView.swift */; };
 		FEEDFACE0000000000000018 /* EditProfileSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000017 /* EditProfileSheet.swift */; };
+		FEEDFACE0000000000000022 /* ProfileAvatarColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000021 /* ProfileAvatarColor.swift */; };
+		FEEDFACE0000000000000024 /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000023 /* L10n.swift */; };
+		FEEDFACE0000000000000026 /* SafariSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000025 /* SafariSheet.swift */; };
+		FEEDFACE0000000000000028 /* UserPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000027 /* UserPreferencesStore.swift */; };
+		FEEDFACE000000000000002A /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000029 /* NotificationService.swift */; };
+		FEEDFACE000000000000002C /* AccountDeletionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE000000000000002B /* AccountDeletionService.swift */; };
+		FEEDFACE000000000000002E /* ProfileCardStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE000000000000002D /* ProfileCardStyle.swift */; };
+		FEEDFACE0000000000000030 /* LanguageSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE000000000000002F /* LanguageSelectionView.swift */; };
+		FEEDFACE0000000000000032 /* AppearanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000031 /* AppearanceView.swift */; };
+		FEEDFACE0000000000000034 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000033 /* NotificationsView.swift */; };
+		FEEDFACE0000000000000036 /* DeleteAccountConfirmationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000035 /* DeleteAccountConfirmationSheet.swift */; };
+		FEEDFACE0000000000000038 /* L10n+Translations.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000037 /* L10n+Translations.swift */; };
 		E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D242F9AC22800387BDC /* SetItemView.swift */; };
 		E30A1D4F2F9BB9D000387BDC /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D4E2F9BB9C700387BDC /* AppColors.swift */; };
 		E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */; };
@@ -374,7 +386,6 @@
 		E3820FD92FBC8C1A007BDB57 /* GrammarNoteTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FD82FBC8C0E007BDB57 /* GrammarNoteTemplate.swift */; };
 		E3820FDB2FBC8C55007BDB57 /* GrammarNoteTemplateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FDA2FBC8C47007BDB57 /* GrammarNoteTemplateProvider.swift */; };
 		E3820FDE2FBC8C92007BDB57 /* GrammarNoteEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FDD2FBC8C7E007BDB57 /* GrammarNoteEditorViewModel.swift */; };
-		E3820FE02FBC8CDE007BDB57 /* AddGrammarNoteBlockSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FDF2FBC8CCE007BDB57 /* AddGrammarNoteBlockSheet.swift */; };
 		E3820FE22FBC8D1B007BDB57 /* GrammarNoteBlockEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FE12FBC8D07007BDB57 /* GrammarNoteBlockEditorView.swift */; };
 		E3820FE92FBE5A23007BDB57 /* GrammarNoteEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FE82FBE5A0D007BDB57 /* GrammarNoteEmptyStateView.swift */; };
 		E3820FEB2FBE5A51007BDB57 /* GrammarNotesFABMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3820FEA2FBE5A43007BDB57 /* GrammarNotesFABMenu.swift */; };
@@ -441,6 +452,7 @@
 		EED85DB2C8C049B9B71EC027 /* ReadingQuestionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFADC615DB3243729CADF8B2 /* ReadingQuestionService.swift */; };
 		F16DAB702FBBD2B72B280410 /* ReadingPostSetupRouterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB04503255C59710E8520C1E /* ReadingPostSetupRouterView.swift */; };
 		F1B5819548296F657B819FC8 /* GrammarTemplateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCF3DFB5EBE7A2DEB1A1F89 /* GrammarTemplateProvider.swift */; };
+		AAB1000000000000000000A1 /* GrammarUserTemplateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB1000000000000000000A2 /* GrammarUserTemplateStore.swift */; };
 		F2E267F2984408CEA037B66E /* ReadingSessionPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32E05B634F1EACB4BA97623 /* ReadingSessionPhase.swift */; };
 		F36AED65EA01413FB737C14C /* ReadingAddTextViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6144F835844B76A6934107 /* ReadingAddTextViewModel.swift */; };
 		F42043B4CD7975C842F8096A /* ConversationTopicPickerSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A97D45BED44AAFEFA4360E8 /* ConversationTopicPickerSheetView.swift */; };
@@ -651,6 +663,7 @@
 		946C496D53FC4A9591E18827 /* GrammarReviewSourcePool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarReviewSourcePool.swift; sourceTree = "<group>"; };
 		9B0A213EBAB0C5967E037332 /* ReadingUserText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingUserText.swift; path = WordAround/Features/Reading/MyTexts/Models/ReadingUserText.swift; sourceTree = SOURCE_ROOT; };
 		9CCF3DFB5EBE7A2DEB1A1F89 /* GrammarTemplateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarTemplateProvider.swift; sourceTree = "<group>"; };
+		AAB1000000000000000000A2 /* GrammarUserTemplateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarUserTemplateStore.swift; sourceTree = "<group>"; };
 		9E226DE20B3C1BD3B6E9F7AA /* GrammarQuizAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarQuizAIService.swift; sourceTree = "<group>"; };
 		9FD861E8725CF7DF44E06BA7 /* GrammarNoteQuizResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteQuizResultView.swift; sourceTree = "<group>"; };
 		A156FFF0999C3FCA57BF39CC /* ReadingTextAnalyzerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReadingTextAnalyzerService.swift; path = WordAround/Features/Reading/MyTexts/Services/ReadingTextAnalyzerService.swift; sourceTree = SOURCE_ROOT; };
@@ -866,6 +879,18 @@
 		FEEDFACE0000000000000013 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileViewModel.swift; path = "WordAround/Features/Profile/ViewModels/ProfileViewModel.swift"; sourceTree = SOURCE_ROOT; };
 		FEEDFACE0000000000000015 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileView.swift; path = "WordAround/Features/Profile/Views/ProfileView.swift"; sourceTree = SOURCE_ROOT; };
 		FEEDFACE0000000000000017 /* EditProfileSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EditProfileSheet.swift; path = "WordAround/Features/Profile/Views/EditProfileSheet.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000021 /* ProfileAvatarColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileAvatarColor.swift; path = "WordAround/Features/Profile/Models/ProfileAvatarColor.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000023 /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = L10n.swift; path = "WordAround/Core/Localization/L10n.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000025 /* SafariSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SafariSheet.swift; path = "WordAround/Features/Profile/Views/SafariSheet.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000027 /* UserPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserPreferencesStore.swift; path = "WordAround/Core/Preferences/UserPreferencesStore.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000029 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationService.swift; path = "WordAround/Core/Services/Notifications/NotificationService.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE000000000000002B /* AccountDeletionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AccountDeletionService.swift; path = "WordAround/Core/Services/Firebase/AccountDeletionService.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE000000000000002D /* ProfileCardStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileCardStyle.swift; path = "WordAround/Features/Profile/Views/ProfileCardStyle.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE000000000000002F /* LanguageSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LanguageSelectionView.swift; path = "WordAround/Features/Profile/Views/LanguageSelectionView.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000031 /* AppearanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppearanceView.swift; path = "WordAround/Features/Profile/Views/AppearanceView.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000033 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationsView.swift; path = "WordAround/Features/Profile/Views/NotificationsView.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000035 /* DeleteAccountConfirmationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DeleteAccountConfirmationSheet.swift; path = "WordAround/Features/Profile/Views/DeleteAccountConfirmationSheet.swift"; sourceTree = SOURCE_ROOT; };
+		FEEDFACE0000000000000037 /* L10n+Translations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "L10n+Translations.swift"; path = "WordAround/Core/Localization/L10n+Translations.swift"; sourceTree = SOURCE_ROOT; };
 		E30A1D242F9AC22800387BDC /* SetItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetItemView.swift; sourceTree = "<group>"; };
 		E30A1D4E2F9BB9C700387BDC /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		E30A1D522F9BBD1800387BDC /* FlashCardSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashCardSet.swift; sourceTree = "<group>"; };
@@ -899,7 +924,6 @@
 		E3820FD82FBC8C0E007BDB57 /* GrammarNoteTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteTemplate.swift; sourceTree = "<group>"; };
 		E3820FDA2FBC8C47007BDB57 /* GrammarNoteTemplateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteTemplateProvider.swift; sourceTree = "<group>"; };
 		E3820FDD2FBC8C7E007BDB57 /* GrammarNoteEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteEditorViewModel.swift; sourceTree = "<group>"; };
-		E3820FDF2FBC8CCE007BDB57 /* AddGrammarNoteBlockSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGrammarNoteBlockSheet.swift; sourceTree = "<group>"; };
 		E3820FE12FBC8D07007BDB57 /* GrammarNoteBlockEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteBlockEditorView.swift; sourceTree = "<group>"; };
 		E3820FE82FBE5A0D007BDB57 /* GrammarNoteEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNoteEmptyStateView.swift; sourceTree = "<group>"; };
 		E3820FEA2FBE5A43007BDB57 /* GrammarNotesFABMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrammarNotesFABMenu.swift; sourceTree = "<group>"; };
@@ -2350,6 +2374,7 @@
 				F45AC03EE45345DAB18A3F1A /* GrammarReviewQueueBuilder.swift */,
 				54E28D1EA2B5C6197D89A506 /* GrammarNoteSearchIndexer.swift */,
 				9CCF3DFB5EBE7A2DEB1A1F89 /* GrammarTemplateProvider.swift */,
+				AAB1000000000000000000A2 /* GrammarUserTemplateStore.swift */,
 				E8A8765FC329B3B99E67B042 /* GrammarQuizQuestionGenerating.swift */,
 				11E598DD47C28FC3FE163E34 /* LocalGrammarQuizQuestionGenerator.swift */,
 				1CAA93C3F0C5729C51244D15 /* GrammarQuizAIPromptBuilder.swift */,
@@ -2371,7 +2396,6 @@
 				E3820FEA2FBE5A43007BDB57 /* GrammarNotesFABMenu.swift */,
 				E3820FE82FBE5A0D007BDB57 /* GrammarNoteEmptyStateView.swift */,
 				E3820FE12FBC8D07007BDB57 /* GrammarNoteBlockEditorView.swift */,
-				E3820FDF2FBC8CCE007BDB57 /* AddGrammarNoteBlockSheet.swift */,
 				E3820FCB2FBC8451007BDB57 /* CreateGrammarNoteSheet.swift */,
 				E3820FCC2FBC8451007BDB57 /* GrammarNoteCardView.swift */,
 				E3820FCD2FBC8451007BDB57 /* GrammarNoteEditorView.swift */,
@@ -2629,6 +2653,18 @@
 				FEEDFACE0000000000000013 /* ProfileViewModel.swift */,
 				FEEDFACE0000000000000015 /* ProfileView.swift */,
 				FEEDFACE0000000000000017 /* EditProfileSheet.swift */,
+				FEEDFACE0000000000000021 /* ProfileAvatarColor.swift */,
+				FEEDFACE0000000000000023 /* L10n.swift */,
+				FEEDFACE0000000000000037 /* L10n+Translations.swift */,
+				FEEDFACE0000000000000025 /* SafariSheet.swift */,
+				FEEDFACE0000000000000027 /* UserPreferencesStore.swift */,
+				FEEDFACE0000000000000029 /* NotificationService.swift */,
+				FEEDFACE000000000000002B /* AccountDeletionService.swift */,
+				FEEDFACE000000000000002D /* ProfileCardStyle.swift */,
+				FEEDFACE000000000000002F /* LanguageSelectionView.swift */,
+				FEEDFACE0000000000000031 /* AppearanceView.swift */,
+				FEEDFACE0000000000000033 /* NotificationsView.swift */,
+				FEEDFACE0000000000000035 /* DeleteAccountConfirmationSheet.swift */,
 			);
 			name = Profile;
 			sourceTree = "<group>";
@@ -3328,6 +3364,18 @@
 				FEEDFACE0000000000000014 /* ProfileViewModel.swift in Sources */,
 				FEEDFACE0000000000000016 /* ProfileView.swift in Sources */,
 				FEEDFACE0000000000000018 /* EditProfileSheet.swift in Sources */,
+				FEEDFACE0000000000000022 /* ProfileAvatarColor.swift in Sources */,
+				FEEDFACE0000000000000024 /* L10n.swift in Sources */,
+				FEEDFACE0000000000000038 /* L10n+Translations.swift in Sources */,
+				FEEDFACE0000000000000026 /* SafariSheet.swift in Sources */,
+				FEEDFACE0000000000000028 /* UserPreferencesStore.swift in Sources */,
+				FEEDFACE000000000000002A /* NotificationService.swift in Sources */,
+				FEEDFACE000000000000002C /* AccountDeletionService.swift in Sources */,
+				FEEDFACE000000000000002E /* ProfileCardStyle.swift in Sources */,
+				FEEDFACE0000000000000030 /* LanguageSelectionView.swift in Sources */,
+				FEEDFACE0000000000000032 /* AppearanceView.swift in Sources */,
+				FEEDFACE0000000000000034 /* NotificationsView.swift in Sources */,
+				FEEDFACE0000000000000036 /* DeleteAccountConfirmationSheet.swift in Sources */,
 				E30A1D252F9AC23000387BDC /* SetItemView.swift in Sources */,
 				E30A1CD52F99451900387BDC /* BlobShape.swift in Sources */,
 				E30A1D572F9BBF9400387BDC /* VerifyEmailViewModel.swift in Sources */,
@@ -3387,7 +3435,6 @@
 				E30902CA2FBC100900C52238 /* SetHintsSelectionView.swift in Sources */,
 				E3820FDB2FBC8C55007BDB57 /* GrammarNoteTemplateProvider.swift in Sources */,
 				E3820FE22FBC8D1B007BDB57 /* GrammarNoteBlockEditorView.swift in Sources */,
-				E3820FE02FBC8CDE007BDB57 /* AddGrammarNoteBlockSheet.swift in Sources */,
 				E30A1D532F9BBD1800387BDC /* FlashCardSet.swift in Sources */,
 				E30902BA2FBB973D00C52238 /* GeminiEssayAPIClient.swift in Sources */,
 				E309025D2FBACA1C00C52238 /* EssayTopicCardView.swift in Sources */,
@@ -3506,6 +3553,7 @@
 				648C5A3ED537A1674D6CDCDA /* GrammarNoteSearchIndexer.swift in Sources */,
 				A652D6CA195B6B7FB9A62DCF /* GrammarTopicTemplate.swift in Sources */,
 				F1B5819548296F657B819FC8 /* GrammarTemplateProvider.swift in Sources */,
+				AAB1000000000000000000A1 /* GrammarUserTemplateStore.swift in Sources */,
 				45F25915242D55B353ADA5B9 /* GrammarTemplateCardView.swift in Sources */,
 				B6702D9F9E5108A8CABE54FE /* GrammarTemplatePreviewView.swift in Sources */,
 				308C7170BA1C915D8D068643 /* GrammarTemplateLibraryView.swift in Sources */,

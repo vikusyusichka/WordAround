@@ -52,9 +52,34 @@ final class GrammarNoteTopicService: GrammarNoteTopicServicing {
     }
 
     func deleteTopic(id: String, ownerUID: String) async throws {
-        try await topicsCollection(ownerUID: ownerUID)
-            .document(id)
-            .delete()
+        let topicRef = topicsCollection(ownerUID: ownerUID).document(id)
+        let notesRef = topicRef.collection("notes")
+
+        let notesSnapshot = try await notesRef.getDocuments()
+        for noteDoc in notesSnapshot.documents {
+            let quizzesSnapshot = try await noteDoc.reference
+                .collection("quizzes")
+                .getDocuments()
+            try await deleteDocuments(quizzesSnapshot.documents.map { $0.reference })
+            try await noteDoc.reference.delete()
+        }
+
+        try await topicRef.delete()
+    }
+
+    private func deleteDocuments(_ refs: [DocumentReference]) async throws {
+        guard !refs.isEmpty else { return }
+        let chunkSize = 400
+        var index = 0
+        while index < refs.count {
+            let end = min(index + chunkSize, refs.count)
+            let batch = db.batch()
+            for ref in refs[index..<end] {
+                batch.deleteDocument(ref)
+            }
+            try await batch.commit()
+            index = end
+        }
     }
 
     func updateTopicSortIndices(

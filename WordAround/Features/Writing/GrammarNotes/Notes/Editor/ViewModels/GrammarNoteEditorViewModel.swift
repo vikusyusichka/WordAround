@@ -28,6 +28,7 @@ final class GrammarNoteEditorViewModel: ObservableObject {
     @Published private(set) var errorMessage: String?
     @Published private(set) var isLoadingBlocks = false
     @Published private(set) var reviewToast: String?
+    @Published private(set) var reviewToastIcon: String = "brain.head.profile"
 
     let ownerUID: String
     let topicId: String
@@ -36,6 +37,7 @@ final class GrammarNoteEditorViewModel: ObservableObject {
     private var autosaveTask: Task<Void, Never>?
     private var hasLoadedBlocks = false
     private var reviewToastTask: Task<Void, Never>?
+    private var isDeleted = false
 
     private static let autosaveDelay: UInt64 = 1_200_000_000 // 1.2 s in nanoseconds
 
@@ -61,7 +63,8 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         reviewToastTask?.cancel()
     }
 
-    func addBlock(_ type: GrammarNoteBlockType) {
+    @discardableResult
+    func addBlock(_ type: GrammarNoteBlockType, after afterId: String? = nil) -> String {
         var block = GrammarNoteBlock(type: type, order: blocks.count)
         switch type {
         case .bulletList, .numberedList, .checklist:
@@ -71,8 +74,15 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         default:
             break
         }
-        blocks.append(block)
+        if let afterId, let index = blocks.firstIndex(where: { $0.id == afterId }) {
+            blocks.insert(block, at: index + 1)
+            reorderBlocks()
+        } else {
+            blocks.append(block)
+        }
+        if type == .quiz { note.hasQuiz = true }
         scheduleAutosave()
+        return block.id
     }
 
     enum TemplateApplyMode {
@@ -139,6 +149,34 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         scheduleAutosave()
     }
 
+    func moveBlockUp(_ block: GrammarNoteBlock) {
+        guard let index = blocks.firstIndex(where: { $0.id == block.id }),
+              index > 0 else { return }
+        blocks.swapAt(index, index - 1)
+        reorderBlocks()
+        scheduleAutosave()
+    }
+
+    func moveBlockDown(_ block: GrammarNoteBlock) {
+        guard let index = blocks.firstIndex(where: { $0.id == block.id }),
+              index < blocks.count - 1 else { return }
+        blocks.swapAt(index, index + 1)
+        reorderBlocks()
+        scheduleAutosave()
+    }
+
+    func duplicateBlock(_ block: GrammarNoteBlock) {
+        guard let index = blocks.firstIndex(where: { $0.id == block.id }) else { return }
+        let now = Date()
+        var copy = block
+        copy.id = UUID().uuidString
+        copy.createdAt = now
+        copy.updatedAt = now
+        blocks.insert(copy, at: index + 1)
+        reorderBlocks()
+        scheduleAutosave()
+    }
+
     func updateBlock(_ block: GrammarNoteBlock) {
         guard let index = blocks.firstIndex(where: { $0.id == block.id }),
               blocks[index] != block else { return }
@@ -152,8 +190,123 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         scheduleAutosave()
     }
 
+    func updateTags(_ tags: [String]) {
+        note.tags = tags
+        scheduleAutosave()
+    }
+
+    func changeNoteType(_ type: GrammarNoteType) {
+        guard note.noteType != type else { return }
+        note.noteType = type
+        scheduleAutosave()
+    }
+
     func markHasQuiz(_ value: Bool) {
+        guard note.hasQuiz != value else { return }
         note.hasQuiz = value
+        scheduleAutosave()
+    }
+
+    func refreshQuizState() {
+        let hasQuizBlock = blocks.contains { $0.type == .quiz }
+        guard hasQuizBlock, !note.hasQuiz else { return }
+        note.hasQuiz = true
+        scheduleAutosave()
+    }
+
+    func toggleFavorite() {
+        let newValue = !note.isFavorite
+        let original = note.isFavorite
+        note.isFavorite = newValue
+
+        let service = noteService
+        let id = note.id
+        let owner = ownerUID
+        let topicId = self.topicId
+
+        Task.detached(priority: .userInitiated) { [service, weak self] in
+            do {
+                try await service.setNoteFavorite(
+                    id: id,
+                    ownerUID: owner,
+                    topicId: topicId,
+                    isFavorite: newValue
+                )
+            } catch {
+                #if DEBUG
+                print("[Favorite] toggle failed:", error)
+                #endif
+                await MainActor.run {
+                    self?.note.isFavorite = original
+                }
+            }
+        }
+    }
+
+    func togglePinned() {
+        let newValue = !note.isPinned
+        let original = note.isPinned
+        note.isPinned = newValue
+
+        let service = noteService
+        let id = note.id
+        let owner = ownerUID
+        let topicId = self.topicId
+
+        Task.detached(priority: .userInitiated) { [service, weak self] in
+            do {
+                try await service.setNotePinned(
+                    id: id,
+                    ownerUID: owner,
+                    topicId: topicId,
+                    isPinned: newValue
+                )
+            } catch {
+                #if DEBUG
+                print("[Pinned] toggle failed:", error)
+                #endif
+                await MainActor.run {
+                    self?.note.isPinned = original
+                }
+            }
+        }
+    }
+
+    func deleteNote() async -> Bool {
+        autosaveTask?.cancel()
+        do {
+            try await noteService.deleteNote(
+                id: note.id,
+                ownerUID: ownerUID,
+                topicId: topicId
+            )
+            isDeleted = true
+            saveState = .saved
+            errorMessage = nil
+            purgeReviewItems()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            saveState = .failed(error.localizedDescription)
+            return false
+        }
+    }
+
+    private func purgeReviewItems() {
+        let service = reviewService
+        let owner = ownerUID
+        let noteId = note.id
+        let topicId = self.topicId
+        Task.detached(priority: .utility) {
+            try? await service.deleteReviewItem(
+                id: GrammarReviewItem.id(forNoteTopicId: topicId, noteId: noteId),
+                ownerUID: owner
+            )
+            try? await service.deleteReviewItem(
+                id: GrammarReviewItem.id(forMistakeTopicId: topicId, noteId: noteId),
+                ownerUID: owner
+            )
+        }
     }
 
     func addToReview() {
@@ -192,8 +345,18 @@ final class GrammarNoteEditorViewModel: ObservableObject {
         }
     }
 
-    private func showReviewToast(_ message: String) {
+    func saveAsTemplate() {
+        var snapshot = note
+        let cleanTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        snapshot.title = cleanTitle.isEmpty ? "Untitled note" : cleanTitle
+        let template = GrammarNoteTemplate.userTemplate(from: snapshot, blocks: blocks)
+        GrammarUserTemplateStore.shared.saveNoteTemplate(template)
+        showReviewToast("Saved as template", icon: "doc.badge.plus")
+    }
+
+    private func showReviewToast(_ message: String, icon: String = "brain.head.profile") {
         reviewToastTask?.cancel()
+        reviewToastIcon = icon
         reviewToast = message
         reviewToastTask = Task { [weak self] in
             try? await Task.sleep(nanoseconds: 2_400_000_000)
@@ -236,6 +399,7 @@ final class GrammarNoteEditorViewModel: ObservableObject {
     }
 
     private func scheduleAutosave() {
+        guard !isDeleted else { return }
         autosaveTask?.cancel()
         saveState = .saving
         autosaveTask = Task { [weak self] in
@@ -250,6 +414,7 @@ final class GrammarNoteEditorViewModel: ObservableObject {
     }
 
     private func performSave() async {
+        guard !isDeleted else { return }
         let now = Date()
         let cleanTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let cleanedBlocks = Self.reindexed(blocks)

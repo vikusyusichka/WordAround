@@ -167,7 +167,7 @@ struct CreateGrammarQuizSheet: View {
             Spacer()
 
             Button(action: submit) {
-                Text("Add")
+                Text("Create")
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 24)

@@ -179,7 +179,7 @@ struct GrammarReviewSessionSummaryView: View {
 
     private var doneButton: some View {
         Button(action: onDone) {
-            Text("Back to Grammar Notes")
+            Text("Back to Notes")
                 .font(.system(size: 15, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)

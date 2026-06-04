@@ -84,7 +84,7 @@ struct GrammarNotesEmptyStateView: View {
 extension GrammarNotesEmptyStateView {
     static func noTopics(action: @escaping () -> Void) -> GrammarNotesEmptyStateView {
         GrammarNotesEmptyStateView(
-            title: "No grammar topics yet",
+            title: "No topics yet",
             message: "Create your first topic and keep rules, examples, and annoying little language traps in one place.",
             buttonTitle: "Create your first topic",
             systemImage: "folder.badge.plus",

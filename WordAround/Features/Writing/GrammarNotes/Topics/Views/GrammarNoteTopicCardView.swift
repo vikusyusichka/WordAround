@@ -43,16 +43,23 @@ struct GrammarNoteTopicCardView: View {
                     .foregroundStyle(theme.mutedTextColor.opacity(0.78))
             }
         }
-        .padding(.horizontal, isPadLike ? 22 : 18)
-        .padding(.vertical, isPadLike ? 18 : 16)
+        .padding(Layout.grammarSettingsCardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: isPadLike ? 28 : 24, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: isPadLike ? 28 : 24, style: .continuous)
-                .stroke(topic.isMistakesTopic ? theme.borderColor : theme.softBorderColor, lineWidth: 1)
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: Layout.grammarSettingsCardCornerRadius,
+                style: .continuous
+            )
         )
-        .shadow(color: theme.shadowColor, radius: 18, x: 0, y: 10)
+        .overlay(
+            RoundedRectangle(
+                cornerRadius: Layout.grammarSettingsCardCornerRadius,
+                style: .continuous
+            )
+            .stroke(Color.white.opacity(0.62), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.045), radius: 18, x: 0, y: 10)
     }
 
     private var titleRow: some View {
@@ -88,13 +95,19 @@ struct GrammarNoteTopicCardView: View {
 
     private var cardBackground: some View {
         ZStack(alignment: .topTrailing) {
-            topic.isMistakesTopic ? theme.previewBackground : theme.sectionBackground
+            Color.white.opacity(0.84)
 
-            Circle()
-                .fill(theme.softAccent)
-                .frame(width: isPadLike ? 132 : 112, height: isPadLike ? 132 : 112)
-                .offset(x: isPadLike ? 54 : 46, y: isPadLike ? -58 : -50)
-                .opacity(topic.isMistakesTopic ? 1 : 0.55)
+            BlobShape()
+                .fill(theme.accent.opacity(topic.isMistakesTopic ? 0.14 : 0.09))
+                .frame(
+                    width: Layout.isPadLike ? 150 : 110,
+                    height: Layout.isPadLike ? 120 : 90
+                )
+                .rotationEffect(.degrees(-9))
+                .offset(
+                    x: Layout.isPadLike ? 48 : 36,
+                    y: Layout.isPadLike ? -40 : -28
+                )
         }
     }
 

@@ -41,8 +41,8 @@ struct QuickGrammarNoteSheet: View {
     @State private var title = ""
     @State private var noteText = ""
     @State private var selectedTopic: GrammarQuickTopicOption
-    @State private var selectedType: GrammarNoteType = .standard
     @AppStorage("grammarNotes.opensEditorAfterQuickSave") private var opensEditorAfterSaving: Bool = true
+    @AppStorage("grammarNotes.quickNoteType") private var quickNoteType: GrammarNoteType = .standard
     @State private var validationMessage: String?
     @State private var didSubmitSave = false
     @FocusState private var focusedField: Field?
@@ -79,8 +79,9 @@ struct QuickGrammarNoteSheet: View {
                     header
                     titleSection
                     noteSection
-                    selectorGrid
+                    if showsTopicPicker { topicSelector }
                     openEditorToggle
+                    typeIndicatorRow
                     validationView
                     actions
                 }
@@ -114,7 +115,6 @@ struct QuickGrammarNoteSheet: View {
         }
         .animation(Layout.grammarQuickSheetAnimation, value: validationMessage)
         .animation(Layout.grammarQuickSheetAnimation, value: selectedTopic)
-        .animation(Layout.grammarQuickSheetAnimation, value: selectedType)
     }
 
     private var header: some View {
@@ -186,15 +186,6 @@ struct QuickGrammarNoteSheet: View {
         }
     }
 
-    private var selectorGrid: some View {
-        VStack(spacing: Layout.grammarQuickMiniSectionSpacing) {
-            if showsTopicPicker {
-                topicSelector
-            }
-            noteTypeSelector
-        }
-    }
-
     private var topicSelector: some View {
         quickSection(title: "Topic", helper: "Choose where this note should visually belong.") {
             ScrollView(.horizontal, showsIndicators: false) {
@@ -242,37 +233,23 @@ struct QuickGrammarNoteSheet: View {
         .buttonStyle(GrammarNotesScaleButtonStyle())
     }
 
-    private var noteTypeSelector: some View {
-        quickSection(title: "Note type", helper: "This only changes visual grouping for now.") {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: Layout.grammarQuickTypeMinWidth), spacing: 9)], spacing: 9) {
-                ForEach(GrammarNoteType.allCases) { type in
-                    typeButton(type)
-                }
-            }
+    private var typeIndicatorRow: some View {
+        HStack(spacing: 7) {
+            Image(systemName: quickNoteType.systemImage)
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(quickNoteType.tintColor)
+            Text("Creates: \(quickNoteType.title) note")
+                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                .foregroundStyle(AppColors.textSecondary)
+            Spacer(minLength: 0)
+            Text("Change in Settings")
+                .font(.system(size: 10, weight: .bold, design: .rounded))
+                .foregroundStyle(AppColors.textSecondary.opacity(0.55))
         }
-    }
-
-    private func typeButton(_ type: GrammarNoteType) -> some View {
-        let isSelected = selectedType == type
-
-        return Button {
-            selectedType = type
-        } label: {
-            HStack(spacing: 8) {
-                Image(systemName: type.systemImage)
-                    .font(.system(size: 13, weight: .bold))
-                Text(type.title)
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.82)
-            }
-            .foregroundStyle(isSelected ? Color.white : type.tintColor)
-            .frame(maxWidth: .infinity)
-            .frame(height: 42)
-            .background(isSelected ? type.tintColor : type.tintColor.opacity(0.10))
-            .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-        }
-        .buttonStyle(GrammarNotesScaleButtonStyle())
+        .padding(.horizontal, 14)
+        .padding(.vertical, 9)
+        .background(quickNoteType.tintColor.opacity(0.07))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
     private var openEditorToggle: some View {
@@ -414,7 +391,7 @@ struct QuickGrammarNoteSheet: View {
                 title: trimmedTitle.isEmpty ? "Untitled quick note" : trimmedTitle,
                 text: trimmedText,
                 topic: selectedTopic,
-                noteType: selectedType,
+                noteType: quickNoteType,
                 opensEditorAfterSaving: opensEditorAfterSaving
             )
         )
