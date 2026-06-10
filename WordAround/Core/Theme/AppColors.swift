@@ -78,6 +78,22 @@ extension Color {
     }
 }
 
+// MARK: - Home Dashboard accents
+
+extension AppColors {
+    static let notesAccent = Color(red: 0.95, green: 0.62, blue: 0.18)
+    static let notesSoft = Color(red: 1.00, green: 0.95, blue: 0.86)
+
+    static let tipAccent = greenAccent
+    static let tipSoft = greenSoftBackground
+
+    static let guideAccent = primaryBlue
+    static let guideSoft = goalBackground
+
+    static let streakAccent = Color(red: 0.96, green: 0.47, blue: 0.28)
+    static let streakSoft = Color(red: 1.00, green: 0.93, blue: 0.89)
+}
+
 extension AppColors {
     static let flashcardDetailTitle = Color(red: 0.08, green: 0.20, blue: 0.72)
     static let flashcardDetailText = Color(red: 0.42, green: 0.46, blue: 0.62)

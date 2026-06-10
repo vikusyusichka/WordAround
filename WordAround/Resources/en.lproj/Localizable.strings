@@ -112,6 +112,51 @@
 "homeTabSets" = "Sets";
 "homeYourSets" = "Your sets";
 
+/* Home dashboard cards */
+"homeNoteTitle" = "Note";
+"homeNoteSubtitle" = "Create";
+"homeContinueLearningEmptyTitle" = "Start learning";
+"homeContinueLearningEmptySubtitle" = "Pick a section to begin";
+"homeContinueLearningActivityFlashcards" = "Flashcards";
+"homeContinueLearningContinueSession" = "Continue session";
+"homeTipTitle" = "Today's Tip";
+"homeGuideTitle" = "Guide";
+"homeGuideSubtitle" = "Study smarter";
+"homeStreakActiveLabel" = "Day streak";
+"homeStreakEmptyTitle" = "No streak";
+"homeStreakEmptySubtitle" = "Start today";
+
+/* Tip sheet */
+"homeTipSheetTitle" = "Today's Tip";
+"homeTipSheetWhy" = "Why it helps";
+"homeTipShort1" = "Learn vocabulary in context.";
+"homeTipDetail1" = "Words stick better when you meet them inside real sentences. Try to read or write a short example for every new word you learn.";
+"homeTipShort2" = "Review just before sleep.";
+"homeTipDetail2" = "A short review right before bed helps your brain move new words into long-term memory while you sleep.";
+"homeTipShort3" = "Practice speaking daily.";
+"homeTipDetail3" = "Even two minutes of speaking out loud each day builds fluency far faster than silent reading alone.";
+"homeTipShort4" = "Little and often beats cramming.";
+"homeTipDetail4" = "Several short sessions across the week are more effective than one long study marathon. Keep your streak alive.";
+"homeTipShort5" = "Say new words out loud.";
+"homeTipDetail5" = "Pronouncing a word as you learn it links sound to meaning and makes it much easier to recall later.";
+"homeTipShort6" = "Learn from your mistakes.";
+"homeTipDetail6" = "Revisit the words and grammar you get wrong. Mistakes show you exactly where the next bit of progress is hiding.";
+
+/* Guide sheet */
+"homeGuideSheetTitle" = "Learning guide";
+"homeGuideIntro" = "A few simple habits to get the most out of WordAround.";
+"homeGuideStep1Title" = "Practice a little every day";
+"homeGuideStep1Body" = "Short, regular sessions keep your streak alive and help words stick.";
+"homeGuideStep2Title" = "Mix the four skills";
+"homeGuideStep2Body" = "Rotate speaking, listening, reading and writing to learn the language from every angle.";
+"homeGuideStep3Title" = "Review your notes";
+"homeGuideStep3Body" = "Capture tricky grammar and mistakes as notes, then revisit them often.";
+
+/* Streak sheet */
+"homeStreakSheetTitle" = "Your streak";
+"homeStreakSheetActiveFmt" = "You've practiced %d days in a row. Keep it going!";
+"homeStreakSheetEmpty" = "Practice any skill today to start a new streak.";
+
 /* Added by add_strings.py from reading.json */
 "commonAdd" = "Add";
 "commonCantBeUndone" = "This can't be undone.";

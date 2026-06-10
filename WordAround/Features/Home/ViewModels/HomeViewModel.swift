@@ -9,6 +9,11 @@ final class HomeViewModel: ObservableObject {
 
     @Published var dailyStats: [HomeDailyStat] = []
 
+    // MARK: - Dashboard
+
+    @Published var streakState: HomeStreakState = .empty
+    @Published var dailyTip: DailyTip = DailyTipProvider.todayTip()
+
     // MARK: - Folders
 
     @Published var folders: [Folder] = []
@@ -44,6 +49,7 @@ final class HomeViewModel: ObservableObject {
         Task {
             await loadFolders()
             await loadDailyStats()
+            await loadStreak()
         }
     }
 
@@ -187,6 +193,15 @@ final class HomeViewModel: ObservableObject {
     func refresh() async {
         await loadFolders()
         await loadDailyStats()
+        await loadStreak()
+        dailyTip = DailyTipProvider.todayTip()
+    }
+
+    // MARK: - Streak
+
+    func loadStreak() async {
+        let days = await statsService.currentStreak()
+        streakState = days > 0 ? .active(days: days) : .empty
     }
 
     func loadFolders() async {

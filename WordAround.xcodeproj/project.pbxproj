@@ -335,6 +335,14 @@
 		E30A1D212F9AC20B00387BDC /* ProgressCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A1D202F9AC20500387BDC /* ProgressCardView.swift */; };
 		FEEDFACE0000000000000002 /* HomeStatsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000001 /* HomeStatsGridView.swift */; };
 		FEEDFACE0000000000000004 /* ContinueLearningSetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000003 /* ContinueLearningSetCardView.swift */; };
+		FEEDFACE0000000000000071 /* HomeDashboardModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000070 /* HomeDashboardModels.swift */; };
+		FEEDFACE0000000000000073 /* HomeDashboardSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000072 /* HomeDashboardSection.swift */; };
+		FEEDFACE0000000000000075 /* HomeNoteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000074 /* HomeNoteCard.swift */; };
+		FEEDFACE0000000000000077 /* HomeContinueLearningCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000076 /* HomeContinueLearningCard.swift */; };
+		FEEDFACE0000000000000079 /* HomeTipCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000078 /* HomeTipCard.swift */; };
+		FEEDFACE000000000000007B /* HomeGuideCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE000000000000007A /* HomeGuideCard.swift */; };
+		FEEDFACE000000000000007D /* HomeStreakCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE000000000000007C /* HomeStreakCard.swift */; };
+		FEEDFACE000000000000007F /* HomeDashboardSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE000000000000007E /* HomeDashboardSheets.swift */; };
 		FEEDFACE0000000000000012 /* UserProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000011 /* UserProfileService.swift */; };
 		FEEDFACE0000000000000014 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000013 /* ProfileViewModel.swift */; };
 		FEEDFACE0000000000000016 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000015 /* ProfileView.swift */; };
@@ -875,6 +883,14 @@
 		E30A1D202F9AC20500387BDC /* ProgressCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCardView.swift; sourceTree = "<group>"; };
 		FEEDFACE0000000000000001 /* HomeStatsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeStatsGridView.swift; sourceTree = "<group>"; };
 		FEEDFACE0000000000000003 /* ContinueLearningSetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinueLearningSetCardView.swift; sourceTree = "<group>"; };
+		FEEDFACE0000000000000070 /* HomeDashboardModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDashboardModels.swift; sourceTree = "<group>"; };
+		FEEDFACE0000000000000072 /* HomeDashboardSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDashboardSection.swift; sourceTree = "<group>"; };
+		FEEDFACE0000000000000074 /* HomeNoteCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNoteCard.swift; sourceTree = "<group>"; };
+		FEEDFACE0000000000000076 /* HomeContinueLearningCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeContinueLearningCard.swift; sourceTree = "<group>"; };
+		FEEDFACE0000000000000078 /* HomeTipCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTipCard.swift; sourceTree = "<group>"; };
+		FEEDFACE000000000000007A /* HomeGuideCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeGuideCard.swift; sourceTree = "<group>"; };
+		FEEDFACE000000000000007C /* HomeStreakCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeStreakCard.swift; sourceTree = "<group>"; };
+		FEEDFACE000000000000007E /* HomeDashboardSheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDashboardSheets.swift; sourceTree = "<group>"; };
 		FEEDFACE0000000000000011 /* UserProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileService.swift; sourceTree = "<group>"; };
 		FEEDFACE0000000000000013 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileViewModel.swift; path = "WordAround/Features/Profile/ViewModels/ProfileViewModel.swift"; sourceTree = SOURCE_ROOT; };
 		FEEDFACE0000000000000015 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileView.swift; path = "WordAround/Features/Profile/Views/ProfileView.swift"; sourceTree = SOURCE_ROOT; };
@@ -2194,6 +2210,12 @@
 				E30A1D242F9AC22800387BDC /* SetItemView.swift */,
 				FEEDFACE0000000000000001 /* HomeStatsGridView.swift */,
 				FEEDFACE0000000000000003 /* ContinueLearningSetCardView.swift */,
+				FEEDFACE0000000000000072 /* HomeDashboardSection.swift */,
+				FEEDFACE0000000000000074 /* HomeNoteCard.swift */,
+				FEEDFACE0000000000000076 /* HomeContinueLearningCard.swift */,
+				FEEDFACE0000000000000078 /* HomeTipCard.swift */,
+				FEEDFACE000000000000007A /* HomeGuideCard.swift */,
+				FEEDFACE000000000000007C /* HomeStreakCard.swift */,
 				E30A1D202F9AC20500387BDC /* ProgressCardView.swift */,
 			);
 			path = Components;
@@ -2247,6 +2269,7 @@
 			children = (
 				E30A1CBB2F98023900387BDC /* HomeView.swift */,
 				E30A1D062F9A5FB300387BDC /* HomeHeaderView.swift */,
+				FEEDFACE000000000000007E /* HomeDashboardSheets.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2675,6 +2698,7 @@
 				E30A1D0C2F9A616100387BDC /* HomeCategory.swift */,
 				E30A1D0E2F9A618400387BDC /* HomeTab.swift */,
 				E30A1D7B2F9C1D6900387BDC /* HomeSetPreviewItem.swift */,
+				FEEDFACE0000000000000070 /* HomeDashboardModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -3422,6 +3446,14 @@
 				E30902C82FBC0FD000C52238 /* EssaysSetHintCardRowView.swift in Sources */,
 				E30902B62FBB96E400C52238 /* EssayAIClient.swift in Sources */,
 				FEEDFACE0000000000000002 /* HomeStatsGridView.swift in Sources */,
+				FEEDFACE0000000000000071 /* HomeDashboardModels.swift in Sources */,
+				FEEDFACE0000000000000073 /* HomeDashboardSection.swift in Sources */,
+				FEEDFACE0000000000000075 /* HomeNoteCard.swift in Sources */,
+				FEEDFACE0000000000000077 /* HomeContinueLearningCard.swift in Sources */,
+				FEEDFACE0000000000000079 /* HomeTipCard.swift in Sources */,
+				FEEDFACE000000000000007B /* HomeGuideCard.swift in Sources */,
+				FEEDFACE000000000000007D /* HomeStreakCard.swift in Sources */,
+				FEEDFACE000000000000007F /* HomeDashboardSheets.swift in Sources */,
 				FEEDFACE0000000000000004 /* ContinueLearningSetCardView.swift in Sources */,
 				FEEDFACE0000000000000012 /* UserProfileService.swift in Sources */,
 				FEEDFACE0000000000000014 /* ProfileViewModel.swift in Sources */,

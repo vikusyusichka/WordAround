@@ -198,6 +198,32 @@ extension Layout {
     static let homeContinueEmptyHeight: CGFloat = isPadLike ? 220 : 180
 }
 
+// MARK: - Home Dashboard Row
+
+extension Layout {
+    static let homeDashboardRowSpacing: CGFloat = isPadLike ? 16 : 12
+    static let homeDashboardCardCornerRadius: CGFloat = isPadLike ? 26 : 22
+    static let homeDashboardCardPadding: CGFloat = isPadLike ? 20 : 15
+
+    static let homeDashboardPrimaryRowHeight: CGFloat = isPadLike ? 196 : 150
+    static let homeDashboardColumnRatio: CGFloat = 0.34
+
+    static let homeDashboardBlobSize: CGSize = CGSize(width: isPadLike ? 120 : 92, height: isPadLike ? 120 : 92)
+
+    static let homeDashboardIconChipSize: CGFloat = isPadLike ? 52 : 42
+    static let homeDashboardIconSize: CGFloat = isPadLike ? 22 : 18
+    static let homeDashboardChevronSize: CGFloat = isPadLike ? 15 : 13
+
+    static let homeDashboardTitleSize: CGFloat = isPadLike ? 20 : 16
+    static let homeDashboardSubtitleSize: CGFloat = isPadLike ? 15 : 12
+    static let homeDashboardActivitySize: CGFloat = isPadLike ? 24 : 19
+    static let homeDashboardEyebrowSize: CGFloat = isPadLike ? 14 : 11
+
+    static let homeDashboardSecondaryRowHeight: CGFloat = isPadLike ? 172 : 134
+    static let homeDashboardStreakValueSize: CGFloat = isPadLike ? 38 : 30
+    static let homeDashboardStreakIconSize: CGFloat = isPadLike ? 30 : 24
+}
+
 // MARK: - Home Create Menu
 
 extension Layout {

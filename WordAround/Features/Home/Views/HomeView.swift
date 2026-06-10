@@ -12,6 +12,10 @@ struct HomeView: View {
     @State private var isImportAudioPresented = false
     @State private var isEssayPracticePresented = false
 
+    @State private var isTipSheetPresented = false
+    @State private var isGuideSheetPresented = false
+    @State private var isStreakSheetPresented = false
+
     @State private var selectedSetForDetails: FlashcardSet?
     @State private var selectedSetForWriting: FlashcardSet?
     @State private var selectedFolderForDetails: Folder?
@@ -100,6 +104,15 @@ struct HomeView: View {
         }
         .fullScreenCover(item: $selectedFolderForDetails) { folder in
             FolderDetailView(folder: folder)
+        }
+        .sheet(isPresented: $isTipSheetPresented) {
+            HomeTipSheet(tip: viewModel.dailyTip)
+        }
+        .sheet(isPresented: $isGuideSheetPresented) {
+            HomeGuideSheet()
+        }
+        .sheet(isPresented: $isStreakSheetPresented) {
+            HomeStreakSheet(state: viewModel.streakState)
         }
         .task {
             await refreshData()
@@ -214,36 +227,28 @@ private extension HomeView {
 
             HomeStatsGridView(stats: viewModel.dailyStats)
 
-            sectionTitle(L10n.string("homeContinueLearning"))
-
-            ContinueLearningSetCardView(
-                set: setsViewModel.continueLearningSet,
+            HomeDashboardSection(
+                continueItem: ContinueLearningItem(set: setsViewModel.continueLearningSet),
+                tip: viewModel.dailyTip,
+                streak: viewModel.streakState,
+                onNote: {
+                    viewModel.selectCategory(.notes)
+                },
                 onContinue: {
                     if let set = setsViewModel.continueLearningSet?.sourceSet {
                         selectedSetForDetails = set
+                    } else {
+                        viewModel.selectedTab = .flashcards
+                        viewModel.selectedCategory = nil
                     }
                 },
-                onCreate: {
-                    isCreateSetPresented = true
-                }
+                onTip: { isTipSheetPresented = true },
+                onGuide: { isGuideSheetPresented = true },
+                onStreak: { isStreakSheetPresented = true }
             )
-
-            SetsListView(
-                title: L10n.string("homeYourSets"),
-                actionTitle: L10n.string("commonViewAll"),
-                sets: setsViewModel.userSets,
-                isLoading: false,
-                errorMessage: nil,
-                showsEditButton: false,
-                onAction: {
-                    viewModel.selectedTab = .flashcards
-                    viewModel.selectedCategory = nil
-                },
-                onSelect: { set in
-                    selectedSetForDetails = set.sourceSet
-                }
-            )
+            .padding(.top, Layout.homeContentSpacing)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
