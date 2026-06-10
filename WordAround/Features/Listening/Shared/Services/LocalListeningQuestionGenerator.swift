@@ -198,7 +198,6 @@ struct LocalListeningQuestionGenerator: ListeningQuestionGenerating {
     }
 
     private static func shuffle(_ options: [String], correct: String) -> (options: [String], correctIndex: Int) {
-        // NSOrderedSet is ObjC-fragile across Swift value types; dedupe with Set instead.
         var seen = Set<String>()
         var unique = options.filter { seen.insert($0).inserted }
 

@@ -194,19 +194,19 @@ extension ReadingUserText {
     }
 
     var actionTitle: String {
-        if isCompleted { return "Read again" }
-        return progress > 0 ? "Continue" : "Start"
+        if isCompleted { return L10n.string("readingReadAgain") }
+        return progress > 0 ? L10n.string("commonContinue") : L10n.string("commonStart")
     }
 
     var dateText: String {
         if let lastOpenedAt, progress > 0 {
-            return "Opened \(Self.relativeDate(lastOpenedAt))"
+            return String(format: L10n.string("readingOpenedFmt"), Self.relativeDate(lastOpenedAt))
         }
-        return "Added \(Self.relativeDate(createdAt))"
+        return String(format: L10n.string("readingAddedFmt"), Self.relativeDate(createdAt))
     }
 
     var lastOpenedText: String {
-        guard let lastOpenedAt else { return "Never" }
+        guard let lastOpenedAt else { return L10n.string("commonNever") }
         return Self.relativeDate(lastOpenedAt)
     }
 

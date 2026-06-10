@@ -89,13 +89,13 @@ enum EssayDifficulty: String, CaseIterable, Identifiable, Equatable, Codable {
     var helperIntensityTitle: String {
         switch self {
         case .a1, .a2:
-            return "Guided"
+            return L10n.string("essayDifficultyGuided")
         case .b1:
-            return "Balanced"
+            return L10n.string("essayDifficultyBalanced")
         case .b2, .c1:
-            return "Limited"
+            return L10n.string("essayDifficultyLimited")
         case .native:
-            return "Independent"
+            return L10n.string("essayDifficultyIndependent")
         }
     }
 

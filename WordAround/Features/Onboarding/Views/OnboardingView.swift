@@ -141,7 +141,7 @@ private extension OnboardingView {
                 .font(.system(size: 40, weight: .bold, design: .rounded))
                 .foregroundColor(Color(red: 0.24, green: 0.32, blue: 0.60))
 
-            Text("Learn words in a fun and\nsimple way")
+            Text(L10n.string("onboardingTagline"))
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                 .foregroundColor(Color(red: 0.51, green: 0.55, blue: 0.67))
                 .multilineTextAlignment(.center)
@@ -154,7 +154,7 @@ private extension OnboardingView {
             hasSeenOnboarding = true
         } label: {
             HStack(spacing: 16) {
-                Text("Let’s Start")
+                Text(L10n.string("onboardingStart"))
                     .font(.system(size: 24, weight: .bold, design: .rounded))
 
                 Image(systemName: "arrow.right")

@@ -1,0 +1,28 @@
+{
+  "readingRenameReading": {
+    "en": "Rename reading", "uk": "Перейменувати читання", "es": "Renombrar lectura",
+    "fr": "Renommer la lecture", "de": "Lesetext umbenennen", "it": "Rinomina lettura",
+    "pt": "Renomear leitura", "ru": "Переименовать чтение", "pl": "Zmień nazwę czytania",
+    "nl": "Leesoefening hernoemen", "ja": "リーディングの名前を変更", "ko": "리딩 이름 변경",
+    "zh": "重命名阅读", "hi": "रीडिंग का नाम बदलें", "ar": "إعادة تسمية القراءة",
+    "bn": "পঠনের নাম পরিবর্তন", "ur": "ریڈنگ کا نام تبدیل کریں", "id": "Ganti nama bacaan",
+    "tr": "Okumayı yeniden adlandır", "vi": "Đổi tên bài đọc", "fa": "تغییر نام مطالعه",
+    "ro": "Redenumește lectura", "th": "เปลี่ยนชื่อบทอ่าน", "el": "Μετονομασία ανάγνωσης",
+    "cs": "Přejmenovat čtení", "hu": "Olvasmány átnevezése", "sv": "Byt namn på läsning",
+    "he": "שנה שם קריאה", "no": "Gi nytt navn til lesing", "da": "Omdøb læsning",
+    "fi": "Nimeä lukukokemus uudelleen", "bg": "Преименувай четенето"
+  },
+  "flashcardAddCardTitle": {
+    "en": "Add card", "uk": "Додати картку", "es": "Añadir tarjeta",
+    "fr": "Ajouter une carte", "de": "Karte hinzufügen", "it": "Aggiungi carta",
+    "pt": "Adicionar cartão", "ru": "Добавить карточку", "pl": "Dodaj kartę",
+    "nl": "Kaart toevoegen", "ja": "カードを追加", "ko": "카드 추가",
+    "zh": "添加词卡", "hi": "कार्ड जोड़ें", "ar": "إضافة بطاقة",
+    "bn": "কার্ড যোগ করুন", "ur": "کارڈ شامل کریں", "id": "Tambah kartu",
+    "tr": "Kart ekle", "vi": "Thêm thẻ", "fa": "افزودن کارت",
+    "ro": "Adaugă card", "th": "เพิ่มการ์ด", "el": "Προσθήκη κάρτας",
+    "cs": "Přidat kartu", "hu": "Kártya hozzáadása", "sv": "Lägg till kort",
+    "he": "הוסף כרטיס", "no": "Legg til kort", "da": "Tilføj kort",
+    "fi": "Lisää kortti", "bg": "Добави карта"
+  }
+}

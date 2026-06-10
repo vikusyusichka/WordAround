@@ -21,7 +21,7 @@ struct ConversationHintBubbleView: View {
         HStack(spacing: 5) {
             Image(systemName: "lightbulb.fill")
                 .font(.system(size: Layout.convBubbleTimeSize, weight: .semibold))
-            Text("Suggested answer")
+            Text(L10n.string("spkSuggestedAnswer"))
                 .font(.system(
                     size: Layout.convBubbleTimeSize,
                     weight: .bold,

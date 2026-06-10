@@ -7,12 +7,12 @@ struct ReadingAssistanceOptionsView: View {
     let accentDark: Color
 
     var body: some View {
-        ReadingSetupSectionCard(title: "Assistance", accentDark: accentDark) {
+        ReadingSetupSectionCard(title: L10n.string("readingAssistance"), accentDark: accentDark) {
             VStack(spacing: 10) {
-                assistToggle("Highlight words on tap", isOn: $options.highlightUnknownWords)
-                assistToggle("Translation on tap", isOn: $options.translationOnTap)
-                assistToggle("Vocabulary hints", isOn: $options.vocabularyHints)
-                assistToggle("Reading timer", isOn: $options.readingTimer)
+                assistToggle(L10n.string("readingAssistHighlight"), isOn: $options.highlightUnknownWords)
+                assistToggle(L10n.string("readingAssistTranslate"), isOn: $options.translationOnTap)
+                assistToggle(L10n.string("readingAssistVocab"), isOn: $options.vocabularyHints)
+                assistToggle(L10n.string("readingAssistTimer"), isOn: $options.readingTimer)
 
                 if options.translationOnTap {
                     translationLanguageSection
@@ -35,7 +35,7 @@ struct ReadingAssistanceOptionsView: View {
     private var translationLanguageSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
-                Text("From")
+                Text(L10n.string("readingFrom"))
                     .font(.system(size: 12, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                 Text(sourceLanguage.title)

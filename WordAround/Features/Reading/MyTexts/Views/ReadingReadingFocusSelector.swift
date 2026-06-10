@@ -6,7 +6,7 @@ struct ReadingReadingFocusSelector: View {
     let accentDark: Color
 
     var body: some View {
-        ReadingSetupSectionCard(title: "Reading focus", accentDark: accentDark) {
+        ReadingSetupSectionCard(title: L10n.string("readingFocusSection"), accentDark: accentDark) {
             ReadingSegmentedSelector(
                 options: ReadingFocus.titles,
                 selection: $selection,

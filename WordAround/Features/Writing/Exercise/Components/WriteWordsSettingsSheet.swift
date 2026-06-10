@@ -22,7 +22,7 @@ struct WriteWordsSettingsSheet: View {
                 .padding(.top, 14)
                 .padding(.bottom, 28)
 
-            sectionHeader("Training mode")
+            sectionHeader(L10n.string("writeWordsTrainingMode"))
                 .padding(.horizontal, hPad)
 
             VStack(spacing: 8) {
@@ -33,7 +33,7 @@ struct WriteWordsSettingsSheet: View {
             .padding(.horizontal, hPad)
             .padding(.top, 10)
 
-            sectionHeader("Difficulty")
+            sectionHeader(L10n.string("writeWordsDifficulty"))
                 .padding(.horizontal, hPad)
                 .padding(.top, 24)
 
@@ -76,7 +76,7 @@ struct WriteWordsSettingsSheet: View {
                         .foregroundColor(isSelected ? .white : AppColors.textSecondary)
                 }
 
-                Text(mode.rawValue)
+                Text(mode.displayName)
                     .font(.system(size: metrics.isRegular ? 15 : 14, weight: .semibold, design: .rounded))
                     .foregroundColor(isSelected ? AppColors.primaryBlueDark : AppColors.textSecondary)
 
@@ -116,7 +116,7 @@ struct WriteWordsSettingsSheet: View {
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(level.rawValue)
+                    Text(level.displayName)
                         .font(.system(size: metrics.isRegular ? 15 : 14, weight: .semibold, design: .rounded))
                         .foregroundColor(isSelected ? AppColors.primaryBlueDark : AppColors.textSecondary)
 
@@ -146,7 +146,7 @@ struct WriteWordsSettingsSheet: View {
 }
 
 #Preview {
-    Text("Settings")
+    Text(L10n.string("commonSettings"))
         .sheet(isPresented: .constant(true)) {
             WriteWordsSettingsSheet(viewModel: WriteWordsViewModel())
         }

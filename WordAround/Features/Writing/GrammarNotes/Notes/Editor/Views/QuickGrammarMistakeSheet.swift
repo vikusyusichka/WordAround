@@ -68,18 +68,18 @@ struct QuickGrammarMistakeSheet: View {
                     header
                     languageAndTopicSection
                     sentenceBlock(
-                        title: "Original sentence",
+                        title: L10n.string("notesOriginalSentence"),
                         helper: "The version that went slightly feral.",
-                        placeholder: "Example: I am agree with you",
+                        placeholder: L10n.string("notesMistakeOriginalPlaceholder"),
                         text: $originalSentence,
                         field: .original,
                         tint: GrammarNoteType.mistake.tintColor,
                         icon: "exclamationmark.circle.fill"
                     )
                     sentenceBlock(
-                        title: "Correction",
+                        title: L10n.string("notesCorrection"),
                         helper: "The fixed version you want to remember.",
-                        placeholder: "Example: I agree with you",
+                        placeholder: L10n.string("notesMistakeCorrectionPlaceholder"),
                         text: $correctedSentence,
                         field: .corrected,
                         tint: CreateSetTheme.green.accent,
@@ -117,7 +117,7 @@ struct QuickGrammarMistakeSheet: View {
         }
         .task(id: didSubmitSave) {
             guard didSubmitSave else { return }
-            try? await Task.sleep(nanoseconds: 12_000_000_000) // 12s
+            try? await Task.sleep(nanoseconds: 12_000_000_000)
             if didSubmitSave {
                 didSubmitSave = false
             }
@@ -139,10 +139,10 @@ struct QuickGrammarMistakeSheet: View {
             .frame(width: Layout.grammarQuickHeaderIconBox, height: Layout.grammarQuickHeaderIconBox)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("Quick Mistake")
+                Text(L10n.string("notesQuickMistake"))
                     .font(.system(size: Layout.grammarQuickTitleSize, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
-                Text("Save one mistake, one correction, and the reason before your brain pretends it never happened.")
+                Text(L10n.string("notesQuickMistakeSubtitle"))
                     .font(.system(size: Layout.grammarQuickSubtitleSize, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                     .lineSpacing(2)
@@ -164,7 +164,7 @@ struct QuickGrammarMistakeSheet: View {
 
     private var languageAndTopicSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Setup")
+            Text(L10n.string("notesSetup"))
                 .font(.system(size: Layout.grammarQuickSectionTitleSize, weight: .black, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
 
@@ -202,7 +202,7 @@ struct QuickGrammarMistakeSheet: View {
             }
         } label: {
             selectorShell(
-                label: "Language",
+                label: L10n.string("profileRowLanguage"),
                 title: selectedLanguage.title,
                 badge: selectedLanguage.shortTitle,
                 icon: "globe.europe.africa.fill",
@@ -221,7 +221,7 @@ struct QuickGrammarMistakeSheet: View {
             }
         } label: {
             selectorShell(
-                label: "Topic",
+                label: L10n.string("notesTopic"),
                 title: selectedTopic.title,
                 badge: selectedTopic.subtitle,
                 icon: selectedTopic.systemImage,
@@ -309,15 +309,15 @@ struct QuickGrammarMistakeSheet: View {
     private var explanationBlock: some View {
         VStack(alignment: .leading, spacing: 9) {
             labelRow(
-                title: "Explanation",
-                helper: "Optional. One small reason is enough.",
+                title: L10n.string("notesExplanation"),
+                helper: L10n.string("notesExplanationHelper"),
                 tint: AppColors.primaryBlue,
                 icon: "lightbulb.fill"
             )
 
             ZStack(alignment: .topLeading) {
                 if explanation.isEmpty {
-                    Text("Example: In English, agree is a verb, so we don't use ‘am’ before it.")
+                    Text(L10n.string("notesExplanationPlaceholder"))
                         .font(.system(size: Layout.grammarQuickEditorTextSize, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppColors.textSecondary.opacity(0.55))
                         .padding(.horizontal, 18)
@@ -372,10 +372,10 @@ struct QuickGrammarMistakeSheet: View {
             .frame(width: 36, height: 36)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Open editor after saving")
+                Text(L10n.string("notesOpenEditorAfterSave"))
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
-                Text("Turn the captured mistake into a structured note.")
+                Text(L10n.string("notesMistakeEditorHelper"))
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
             }
@@ -407,7 +407,7 @@ struct QuickGrammarMistakeSheet: View {
             HStack(spacing: 8) {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.system(size: 12, weight: .bold))
-                Text("Saved to Notes.")
+                Text(L10n.string("notesSavedShort"))
                     .font(.system(size: 12, weight: .bold, design: .rounded))
             }
             .foregroundStyle(CreateSetTheme.green.accent)
@@ -418,7 +418,7 @@ struct QuickGrammarMistakeSheet: View {
 
     private var actions: some View {
         HStack(spacing: 10) {
-            Button("Cancel") {
+            Button(L10n.string("commonCancel")) {
                 didSubmitSave = false
                 didSaveSuccessfully = false
                 onCancel()
@@ -433,9 +433,9 @@ struct QuickGrammarMistakeSheet: View {
                         .tint(Color.white)
                         .scaleEffect(0.9)
                 } else if didSaveSuccessfully {
-                    Text("Saved")
+                    Text(L10n.string("readingSaved"))
                 } else {
-                    Text("Save mistake")
+                    Text(L10n.string("notesSaveMistake"))
                 }
             }
             .buttonStyle(GrammarQuickPrimaryButtonStyle(tint: GrammarNoteType.mistake.tintColor))

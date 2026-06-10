@@ -17,7 +17,7 @@ struct PracticeLibraryErrorView: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 320)
             Button(action: onRetry) {
-                Text("Retry")
+                Text(L10n.localized(.commonRetry))
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                     .padding(.horizontal, 22)

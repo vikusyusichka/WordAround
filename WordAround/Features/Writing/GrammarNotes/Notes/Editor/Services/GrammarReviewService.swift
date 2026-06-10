@@ -54,7 +54,6 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
         sourceType: GrammarReviewSourceType,
         limit: Int
     ) async throws -> [GrammarReviewItem] {
-        // query — Firestore's auto-suggested index covers it.
         let snapshot = try await reviewCollection(ownerUID: ownerUID)
             .whereField("sourceType", isEqualTo: sourceType.rawValue)
             .order(by: "updatedAt", descending: true)
@@ -82,8 +81,6 @@ final class GrammarReviewService: GrammarReviewServicing, @unchecked Sendable {
         if snapshot.exists,
            let data = snapshot.data(),
            let existing = makeItem(from: data, id: snapshot.documentID) {
-            // Upsert metadata from the new source snapshot, but preserve learning
-            // history. Without this, tapping "Add to Review" twice quietly resets
             itemToWrite.reviewCount = existing.reviewCount
             itemToWrite.correctStreak = existing.correctStreak
             itemToWrite.incorrectStreak = existing.incorrectStreak

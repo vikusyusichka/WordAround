@@ -17,25 +17,25 @@ struct FlashcardSetAddCardView: View {
 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 16) {
-                        field("Word", text: $word)
-                        field("Translation", text: $translation)
-                        field("Example", text: $example, axis: .vertical)
+                        field(L10n.string("commonWord"), text: $word)
+                        field(L10n.string("commonTranslation"), text: $translation)
+                        field(L10n.string("flashcardExampleOptional"), text: $example, axis: .vertical)
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 22)
                     .padding(.bottom, 28)
                 }
             }
-            .navigationTitle("Add card")
+            .navigationTitle(L10n.string("flashcardAddCardTitle"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button(L10n.string("commonCancel")) { dismiss() }
                         .foregroundStyle(theme.mutedTextColor)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(L10n.string("commonSave")) {
                         let card = Flashcard(
                             id: UUID().uuidString,
                             word: word.trimmingCharacters(in: .whitespacesAndNewlines),

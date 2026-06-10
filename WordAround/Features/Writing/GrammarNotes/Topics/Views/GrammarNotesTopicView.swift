@@ -65,7 +65,7 @@ struct GrammarNotesTopicView: View {
                         Image(systemName: "doc.badge.plus")
                             .font(.system(size: 13, weight: .bold))
                             .foregroundStyle(Color.white)
-                        Text("Saved as template")
+                        Text(L10n.string("topicToastSaved"))
                             .font(.system(size: 13, weight: .bold, design: .rounded))
                             .foregroundStyle(Color.white)
                     }
@@ -111,18 +111,18 @@ struct GrammarNotesTopicView: View {
             )
         }
         .confirmationDialog(
-            "Delete this note?",
+            L10n.string("editorDeleteNoteTitle"),
             isPresented: noteDeletionBinding,
             titleVisibility: .visible,
             presenting: notePendingDeletion
         ) { note in
-            Button("Delete \"\(note.title)\"", role: .destructive) {
+            Button(String(format: L10n.string("templateLibDeleteFmt"), note.title), role: .destructive) {
                 Task { await viewModel.deleteNote(note) }
                 notePendingDeletion = nil
             }
-            Button("Cancel", role: .cancel) { notePendingDeletion = nil }
+            Button(L10n.localized(.commonCancel), role: .cancel) { notePendingDeletion = nil }
         } message: { _ in
-            Text("This note will be removed from the topic permanently.")
+            Text(L10n.string("topicDeleteNoteMsg"))
         }
         .task {
             await viewModel.loadNotesIfNeeded()
@@ -221,7 +221,7 @@ struct GrammarNotesTopicView: View {
                     Button {
                         toggleEditingNotes()
                     } label: {
-                        Text(isEditingNotes ? "Done" : "Edit")
+                        Text(isEditingNotes ? L10n.localized(.commonDone) : L10n.string("commonEdit"))
                             .font(.system(size: isPadLike ? 13 : 12, weight: .bold, design: .rounded))
                             .foregroundStyle(isEditingNotes ? Color.white : AppColors.primaryBlue)
                             .padding(.horizontal, 14)
@@ -231,20 +231,20 @@ struct GrammarNotesTopicView: View {
                             .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 3)
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(isEditingNotes ? "Done editing notes" : "Edit notes")
+                    .accessibilityLabel(L10n.string(isEditingNotes ? "topicDoneEditNotesA11y" : "topicEditNotesA11y"))
                 }
 
                 if !isEditingNotes {
                     quickActionIconButton(
                         systemImage: "square.and.pencil",
-                        accessibilityLabel: "Quick Note"
+                        accessibilityLabel: L10n.string("notesQuickNote")
                     ) {
                         isQuickNoteSheetPresented = true
                     }
 
                     quickActionIconButton(
                         systemImage: "exclamationmark.bubble.fill",
-                        accessibilityLabel: "Quick Mistake"
+                        accessibilityLabel: L10n.string("notesQuickMistake")
                     ) {
                         isQuickMistakeSheetPresented = true
                     }
@@ -252,7 +252,7 @@ struct GrammarNotesTopicView: View {
                     Button {
                         isCreateSheetPresented = true
                     } label: {
-                        Text("New Note")
+                        Text(L10n.string("createNoteTitle"))
                             .font(.system(size: isPadLike ? 13 : 12, weight: .bold, design: .rounded))
                             .foregroundStyle(AppColors.primaryBlue)
                             .padding(.horizontal, 14)
@@ -298,7 +298,7 @@ struct GrammarNotesTopicView: View {
             }
 
             HStack(spacing: 8) {
-                metaPill(text: "\(viewModel.topic.notesCount) notes", systemImage: "doc.text.fill")
+                metaPill(text: String(format: L10n.string("topicNotesCountFmt"), viewModel.topic.notesCount), systemImage: "doc.text.fill")
                 if !viewModel.topic.languageName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     metaPill(text: viewModel.topic.languageName, systemImage: "globe")
                 }
@@ -316,7 +316,7 @@ struct GrammarNotesTopicView: View {
             Button {
                 saveTopicAsTemplate()
             } label: {
-                Label("Save topic as template", systemImage: "square.and.arrow.down")
+                Label(L10n.string("topicSaveAsTemplate"), systemImage: "square.and.arrow.down")
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -327,7 +327,7 @@ struct GrammarNotesTopicView: View {
                 .clipShape(Circle())
                 .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 3)
         }
-        .accessibilityLabel("More topic actions")
+        .accessibilityLabel(L10n.string("topicMoreA11y"))
     }
 
     private func saveTopicAsTemplate() {
@@ -363,7 +363,7 @@ struct GrammarNotesTopicView: View {
 
     private var searchBar: some View {
         GrammarSearchBar(
-            placeholder: "Search notes",
+            placeholder: L10n.string("topicSearchPh"),
             text: $viewModel.searchText,
             theme: theme,
             isPadLike: isPadLike,
@@ -452,7 +452,7 @@ struct GrammarNotesTopicView: View {
     private var tagsSubFilterRow: some View {
         HStack(spacing: 8) {
             Menu {
-                Button("All tags") {
+                Button(L10n.string("topicTagAll")) {
                     viewModel.selectedTag = nil
                 }
                 if !viewModel.availableTags.isEmpty {
@@ -473,7 +473,7 @@ struct GrammarNotesTopicView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "tag.fill")
                         .font(.system(size: 10, weight: .bold))
-                    Text(viewModel.selectedTag.map { "#\($0)" } ?? "All tags")
+                    Text(viewModel.selectedTag.map { "#\($0)" } ?? L10n.string("topicTagAll"))
                         .font(.system(size: isPadLike ? 12 : 11, weight: .bold, design: .rounded))
                         .lineLimit(1)
                     Image(systemName: "chevron.down")
@@ -489,7 +489,7 @@ struct GrammarNotesTopicView: View {
             .disabled(viewModel.availableTags.isEmpty)
 
             if viewModel.availableTags.isEmpty {
-                Text("No tags yet")
+                Text(L10n.string("topicNoTags"))
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
             }
@@ -515,11 +515,11 @@ struct GrammarNotesTopicView: View {
         } else if viewModel.selectedFilter == .all {
             VStack(alignment: .leading, spacing: isPadLike ? 18 : 14) {
                 if !viewModel.pinnedNotes.isEmpty {
-                    notesSection(title: "PINNED", notes: viewModel.pinnedNotes, isCompact: true)
+                    notesSection(title: L10n.string("topicSectionPinned"), notes: viewModel.pinnedNotes, isCompact: true)
                 }
 
                 if !viewModel.regularNotes.isEmpty {
-                    notesSection(title: "All Notes", notes: viewModel.regularNotes, isCompact: false)
+                    notesSection(title: L10n.string("topicSectionAll"), notes: viewModel.regularNotes, isCompact: false)
                 }
             }
         } else {
@@ -611,27 +611,27 @@ struct GrammarNotesTopicView: View {
                         Button {
                             editorNote = note
                         } label: {
-                            Label("Edit", systemImage: "pencil")
+                            Label(L10n.string("commonEdit"), systemImage: "pencil")
                         }
 
                         Button {
                             Task { await viewModel.toggleFavorite(note) }
                         } label: {
-                            Label(note.isFavorite ? "Remove from Favourites" : "Add to Favourites",
+                            Label(L10n.string(note.isFavorite ? "editorRemoveFromFavorites" : "editorAddToFavorites"),
                                   systemImage: note.isFavorite ? "heart.slash.fill" : "heart.fill")
                         }
 
                         Button {
                             Task { await viewModel.togglePinned(note) }
                         } label: {
-                            Label(note.isPinned ? "Unpin" : "Pin",
+                            Label(L10n.string(note.isPinned ? "editorUnpin" : "topicCtxPin"),
                                   systemImage: note.isPinned ? "pin.slash.fill" : "pin.fill")
                         }
 
                         Button(role: .destructive) {
                             notePendingDeletion = note
                         } label: {
-                            Label("Delete", systemImage: "trash.fill")
+                            Label(L10n.localized(.commonDelete), systemImage: "trash.fill")
                         }
                     }
                 }
@@ -643,7 +643,7 @@ struct GrammarNotesTopicView: View {
         HStack(spacing: 12) {
             ProgressView()
                 .tint(AppColors.primaryBlue)
-            Text("Loading notes...")
+            Text(L10n.string("topicLoading"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
         }
@@ -659,7 +659,7 @@ struct GrammarNotesTopicView: View {
             HStack(spacing: 10) {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .foregroundStyle(CreateSetTheme.red.accent)
-                Text("Something went wrong")
+                Text(L10n.string("commonSomethingWentWrong"))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
             }
@@ -669,7 +669,7 @@ struct GrammarNotesTopicView: View {
             Button {
                 Task { await viewModel.retryLoading() }
             } label: {
-                Text("Retry")
+                Text(L10n.localized(.commonRetry))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 18)
@@ -708,7 +708,7 @@ struct GrammarNotesTopicView: View {
                 Button {
                     isCreateSheetPresented = true
                 } label: {
-                    Text("New Note")
+                    Text(L10n.string("createNoteTitle"))
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .foregroundStyle(Color.white)
                         .padding(.horizontal, 18)

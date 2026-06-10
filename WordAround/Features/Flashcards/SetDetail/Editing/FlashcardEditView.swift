@@ -63,13 +63,13 @@ struct FlashcardEditView: View {
                 toolbarContent
             }
             .alert("Delete card?", isPresented: $showDeleteAlert) {
-                Button("Delete", role: .destructive) {
+                Button(L10n.string("commonDelete"), role: .destructive) {
                     deleteCard()
                 }
 
-                Button("Cancel", role: .cancel) {}
+                Button(L10n.string("commonCancel"), role: .cancel) {}
             } message: {
-                Text("This action cannot be undone.")
+                Text(L10n.string("commonActionCannotBeUndone"))
             }
         }
     }
@@ -78,19 +78,19 @@ struct FlashcardEditView: View {
         ScrollView {
             VStack(spacing: 16) {
                 field(
-                    title: "Word",
+                    title: L10n.string("commonWord"),
                     text: $word,
                     placeholder: "e.g. Hola"
                 )
 
                 field(
-                    title: "Translation",
+                    title: L10n.string("commonTranslation"),
                     text: $translation,
                     placeholder: "e.g. Hello"
                 )
 
                 field(
-                    title: "Example (optional)",
+                    title: L10n.string("flashcardExampleOptional"),
                     text: $example,
                     placeholder: "e.g. Hola, ¿cómo estás?",
                     isMultiline: true
@@ -108,7 +108,7 @@ struct FlashcardEditView: View {
         } label: {
             HStack {
                 Image(systemName: "trash")
-                Text("Delete card")
+                Text(L10n.string("flashcardDeleteCard"))
             }
             .font(.system(size: 16, weight: .semibold, design: .rounded))
             .foregroundStyle(theme.fieldBackground)
@@ -128,7 +128,7 @@ struct FlashcardEditView: View {
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
-            Button("Cancel") {
+            Button(L10n.string("commonCancel")) {
                 dismiss()
             }
             .foregroundStyle(theme.accent)
@@ -136,13 +136,13 @@ struct FlashcardEditView: View {
         }
 
         ToolbarItem(placement: .principal) {
-            Text("Edit card")
+            Text(L10n.string("flashcardEditCard"))
                 .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundStyle(theme.titleColor)
         }
 
         ToolbarItem(placement: .confirmationAction) {
-            Button("Save") {
+            Button(L10n.string("commonSave")) {
                 saveCard()
             }
             .font(.system(size: 16, weight: .bold))

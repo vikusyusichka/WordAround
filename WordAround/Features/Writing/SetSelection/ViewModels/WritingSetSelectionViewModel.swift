@@ -43,7 +43,9 @@ final class WritingSetSelectionViewModel: ObservableObject {
     }
 
     private static func wordsCountText(for set: FlashcardSet) -> String {
-        "\(set.cards.count) words"
+        set.cards.count == 1
+            ? L10n.string("readingOneWord")
+            : String(format: L10n.string("readingWordsCountFmt"), set.cards.count)
     }
 
     private static func iconSystemName(for set: FlashcardSet) -> String {

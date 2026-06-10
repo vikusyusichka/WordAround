@@ -39,7 +39,7 @@ final class GrammarNoteEditorViewModel: ObservableObject {
     private var reviewToastTask: Task<Void, Never>?
     private var isDeleted = false
 
-    private static let autosaveDelay: UInt64 = 1_200_000_000 // 1.2 s in nanoseconds
+    private static let autosaveDelay: UInt64 = 1_200_000_000
 
     init(
         note: GrammarNote,

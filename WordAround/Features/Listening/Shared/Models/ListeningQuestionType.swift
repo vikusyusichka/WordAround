@@ -7,6 +7,15 @@ enum ListeningQuestionType: String, CaseIterable, Identifiable, Codable {
     case trueFalse = "True / False"
 
     var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .mainIdea:   return L10n.string("listenMainIdea")
+        case .details:    return L10n.string("listenDetails")
+        case .vocabulary: return L10n.string("spkVocabulary")
+        case .trueFalse:  return L10n.string("listenTrueFalseShort")
+        }
+    }
 }
 
 enum ListeningPlaybackState: Equatable {
@@ -32,5 +41,13 @@ enum ListeningVoiceType: String, CaseIterable, Identifiable {
     case male = "Male"
 
     var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .default: return L10n.string("listenVoiceDefault")
+        case .female:  return L10n.string("listenVoiceFemale")
+        case .male:    return L10n.string("listenVoiceMale")
+        }
+    }
 }
 

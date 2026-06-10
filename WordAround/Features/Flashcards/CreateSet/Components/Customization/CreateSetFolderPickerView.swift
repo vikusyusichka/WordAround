@@ -9,7 +9,7 @@ struct CreateSetFolderPickerView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.isPadLike ? 12 : 10) {
-            Text("Choose folder")
+            Text(L10n.string("createSetChooseFolder"))
                 .font(.system(size: Layout.isPadLike ? 18 : 16, weight: .bold, design: .rounded))
                 .foregroundColor(theme.titleColor)
 
@@ -17,7 +17,7 @@ struct CreateSetFolderPickerView: View {
                 Button {
                     onSelectFolder(nil)
                 } label: {
-                    Label("No folder", systemImage: "folder")
+                    Label(L10n.string("createSetNoFolder"), systemImage: "folder")
                 }
 
                 ForEach(folders) { folder in
@@ -33,7 +33,7 @@ struct CreateSetFolderPickerView: View {
                         .font(.system(size: Layout.isPadLike ? 22 : 19, weight: .semibold))
                         .foregroundColor(theme.mutedTextColor)
 
-                    Text(selectedFolderName ?? "No folder")
+                    Text(selectedFolderName ?? L10n.string("setsListNoFolder"))
                         .font(.system(size: Layout.isPadLike ? 18 : 16, weight: .semibold, design: .rounded))
                         .foregroundColor(theme.mutedTextColor)
 

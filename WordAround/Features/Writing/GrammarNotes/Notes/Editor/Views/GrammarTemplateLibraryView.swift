@@ -34,21 +34,25 @@ struct GrammarTemplateLibraryView: View {
         self.onCancel = onCancel
     }
 
-    private let languages: [(code: String?, label: String)] = [
-        (nil,  "All languages"),
-        ("en", "English"),
-        ("es", "Spanish"),
-        ("fr", "French"),
-        ("de", "German")
-    ]
+    private var languages: [(code: String?, label: String)] {
+        [
+            (nil,  L10n.string("templateLibLangAll")),
+            ("en", AppLanguage.english.displayName),
+            ("es", AppLanguage.spanish.displayName),
+            ("fr", AppLanguage.french.displayName),
+            ("de", AppLanguage.german.displayName)
+        ]
+    }
 
-    private let difficulties: [(value: String?, label: String)] = [
-        (nil,  "Any"),
-        ("A1", "A1"),
-        ("A2", "A2"),
-        ("B1", "B1"),
-        ("B2", "B2")
-    ]
+    private var difficulties: [(value: String?, label: String)] {
+        [
+            (nil,  L10n.string("templateLibDifficultyAny")),
+            ("A1", "A1"),
+            ("A2", "A2"),
+            ("B1", "B1"),
+            ("B2", "B2")
+        ]
+    }
 
     var body: some View {
         NavigationStack {
@@ -94,7 +98,7 @@ struct GrammarTemplateLibraryView: View {
             )
         }
         .confirmationDialog(
-            "Delete this template?",
+            L10n.string("templateLibDeleteTitle"),
             isPresented: Binding(
                 get: { topicTemplatePendingDeletion != nil },
                 set: { if !$0 { topicTemplatePendingDeletion = nil } }
@@ -102,16 +106,16 @@ struct GrammarTemplateLibraryView: View {
             titleVisibility: .visible,
             presenting: topicTemplatePendingDeletion
         ) { template in
-            Button("Delete \"\(template.title)\"", role: .destructive) {
+            Button(String(format: L10n.string("templateLibDeleteFmt"), template.title), role: .destructive) {
                 userStore.deleteTopicTemplate(id: template.id)
                 topicTemplatePendingDeletion = nil
             }
-            Button("Cancel", role: .cancel) { topicTemplatePendingDeletion = nil }
+            Button(L10n.localized(.commonCancel), role: .cancel) { topicTemplatePendingDeletion = nil }
         } message: { _ in
-            Text("This saved topic template will be removed. Your notes and topics are not affected.")
+            Text(L10n.string("templateLibDeleteTopicMsg"))
         }
         .confirmationDialog(
-            "Delete this template?",
+            L10n.string("templateLibDeleteTitle"),
             isPresented: Binding(
                 get: { noteTemplatePendingDeletion != nil },
                 set: { if !$0 { noteTemplatePendingDeletion = nil } }
@@ -119,13 +123,13 @@ struct GrammarTemplateLibraryView: View {
             titleVisibility: .visible,
             presenting: noteTemplatePendingDeletion
         ) { template in
-            Button("Delete \"\(template.title)\"", role: .destructive) {
+            Button(String(format: L10n.string("templateLibDeleteFmt"), template.title), role: .destructive) {
                 userStore.deleteNoteTemplate(id: template.id)
                 noteTemplatePendingDeletion = nil
             }
-            Button("Cancel", role: .cancel) { noteTemplatePendingDeletion = nil }
+            Button(L10n.localized(.commonCancel), role: .cancel) { noteTemplatePendingDeletion = nil }
         } message: { _ in
-            Text("This saved note template will be removed. Your notes are not affected.")
+            Text(L10n.string("templateLibDeleteNoteMsg"))
         }
     }
 
@@ -135,7 +139,7 @@ struct GrammarTemplateLibraryView: View {
 
             Spacer()
 
-            Text(kind == .topic ? "Topic templates" : "Note templates")
+            Text(L10n.string(kind == .topic ? "templateLibTopicTitle" : "templateLibNoteTitle"))
                 .font(.system(size: 24, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlue)
                 .lineLimit(1)
@@ -143,7 +147,7 @@ struct GrammarTemplateLibraryView: View {
             Spacer()
 
             Button(action: onCancel) {
-                Text("Close")
+                Text(L10n.string("templateLibClose"))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 20)
@@ -161,7 +165,7 @@ struct GrammarTemplateLibraryView: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(AppColors.textSecondary)
-            TextField("Search templates", text: $searchText)
+            TextField(L10n.string("templateLibSearchPlaceholder"), text: $searchText)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
                 .tint(AppColors.primaryBlue)
@@ -254,14 +258,14 @@ struct GrammarTemplateLibraryView: View {
             } else {
                 VStack(spacing: 14) {
                     if !mine.isEmpty {
-                        templateSection(title: "My templates") {
+                        templateSection(title: L10n.string("templateLibMyTemplates")) {
                             ForEach(mine) { template in
                                 topicCard(template, deletable: true)
                             }
                         }
                     }
                     if !builtIn.isEmpty {
-                        templateSection(title: mine.isEmpty ? nil : "Built-in templates") {
+                        templateSection(title: mine.isEmpty ? nil : L10n.string("templateLibBuiltIn")) {
                             ForEach(builtIn) { template in
                                 topicCard(template, deletable: false)
                             }
@@ -294,7 +298,7 @@ struct GrammarTemplateLibraryView: View {
                 Button(role: .destructive) {
                     topicTemplatePendingDeletion = template
                 } label: {
-                    Label("Delete template", systemImage: "trash")
+                    Label(L10n.string("templateLibDeleteAction"), systemImage: "trash")
                 }
             }
         } else {
@@ -317,14 +321,14 @@ struct GrammarTemplateLibraryView: View {
             } else {
                 VStack(spacing: 14) {
                     if !mine.isEmpty {
-                        templateSection(title: "My templates") {
+                        templateSection(title: L10n.string("templateLibMyTemplates")) {
                             ForEach(mine) { template in
                                 noteCard(template, deletable: true)
                             }
                         }
                     }
                     if !builtIn.isEmpty {
-                        templateSection(title: mine.isEmpty ? nil : "Built-in templates") {
+                        templateSection(title: mine.isEmpty ? nil : L10n.string("templateLibBuiltIn")) {
                             ForEach(builtIn) { template in
                                 noteCard(template, deletable: false)
                             }
@@ -356,7 +360,7 @@ struct GrammarTemplateLibraryView: View {
                 Button(role: .destructive) {
                     noteTemplatePendingDeletion = template
                 } label: {
-                    Label("Delete template", systemImage: "trash")
+                    Label(L10n.string("templateLibDeleteAction"), systemImage: "trash")
                 }
             }
         } else {
@@ -412,7 +416,7 @@ struct GrammarTemplateLibraryView: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 24, weight: .bold))
                 .foregroundStyle(AppColors.textSecondary)
-            Text("No templates match your filters.")
+            Text(L10n.string("templateLibEmpty"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
         }

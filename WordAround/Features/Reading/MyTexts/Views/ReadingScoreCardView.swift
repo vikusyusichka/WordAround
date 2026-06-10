@@ -9,7 +9,7 @@ struct ReadingScoreCardView: View {
             Text("\(comprehensionPercent)%")
                 .font(.system(size: 44, weight: .bold, design: .rounded))
                 .foregroundColor(accent)
-            Text("Comprehension")
+            Text(L10n.string("readingComprehension"))
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
         }

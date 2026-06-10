@@ -10,10 +10,10 @@ enum FlashcardSetDetailCardFilter: CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .all: "All"
-        case .studied: "Studied"
-        case .remaining: "Remaining"
-        case .mastered: "Mastered"
+        case .all: L10n.string("filterAll")
+        case .studied: L10n.string("filterStudied")
+        case .remaining: L10n.string("filterRemaining")
+        case .mastered: L10n.string("filterMastered")
         }
     }
 }

@@ -17,7 +17,7 @@ struct EssayHelperToolbarView: View {
     var body: some View {
         HStack(spacing: Layout.essayHelperToolbarButtonSpacing) {
             helperButton(
-                title: "Hint",
+                title: L10n.string("essayHint"),
                 subtitle: "\(hintsLeft) left",
                 systemImage: "lightbulb.fill",
                 isEnabled: canUseHint,
@@ -25,7 +25,7 @@ struct EssayHelperToolbarView: View {
             )
 
             helperButton(
-                title: "Translate",
+                title: L10n.string("essayTranslate"),
                 subtitle: "\(translateLeft) left",
                 systemImage: "character.book.closed.fill",
                 isEnabled: canUseTranslation,
@@ -33,7 +33,7 @@ struct EssayHelperToolbarView: View {
             )
 
             helperButton(
-                title: "Synonym",
+                title: L10n.string("essaySynonym"),
                 subtitle: "\(synonymLeft) left",
                 systemImage: "textformat.abc.dottedunderline",
                 isEnabled: canUseSynonym,
@@ -41,7 +41,7 @@ struct EssayHelperToolbarView: View {
             )
 
             helperButton(
-                title: "Sets",
+                title: L10n.string("essaySets"),
                 subtitle: "\(setsCount) selected",
                 systemImage: "shippingbox.fill",
                 isEnabled: true,

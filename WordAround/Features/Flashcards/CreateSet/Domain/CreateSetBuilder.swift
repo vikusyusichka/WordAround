@@ -58,4 +58,3 @@ struct CreateSetBuilder {
     }
 }
 
-// `String.trimmed` is defined in `CreateSetValidator.swift` and reused here.

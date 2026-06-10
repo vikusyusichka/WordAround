@@ -168,7 +168,7 @@ extension Layout {
     static let profileAvatarSize: CGFloat = isPadLike ? 120 : 96
 }
 
-// MARK: - Home Dashboard (daily stats grid + continue learning tile)
+// MARK: - Home Dashboard
 
 extension Layout {
     static let homeDailyStatGridSpacing: CGFloat = isPadLike ? 16 : 12

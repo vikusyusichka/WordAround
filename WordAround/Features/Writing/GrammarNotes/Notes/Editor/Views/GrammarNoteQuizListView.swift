@@ -109,11 +109,11 @@ struct GrammarNoteQuizListView: View {
 
     private var modalHeader: some View {
         HStack(spacing: 12) {
-            headerButton(title: "Done", systemImage: nil, action: onDismiss)
+            headerButton(title: L10n.localized(.commonDone), systemImage: nil, action: onDismiss)
 
             Spacer()
 
-            Text("Quizzes")
+            Text(L10n.string("quizListTitle"))
                 .font(.system(size: 24, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlue)
                 .lineLimit(1)
@@ -224,7 +224,7 @@ struct GrammarNoteQuizListView: View {
                         .lineLimit(2)
 
                     HStack(spacing: 8) {
-                        metaPill("\(quiz.questions.count) questions", systemImage: "list.bullet")
+                        metaPill(String(format: L10n.string("quizQuestionsMetaFmt"), quiz.questions.count), systemImage: "list.bullet")
                         metaPill(relativeDate(quiz.updatedAt), systemImage: "clock")
                     }
                 }
@@ -249,7 +249,7 @@ struct GrammarNoteQuizListView: View {
             } label: {
                 HStack(spacing: 7) {
                     Image(systemName: "play.fill")
-                    Text("Start Quiz")
+                    Text(L10n.string("quizStartButton"))
                 }
                 .font(.system(size: 13, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.white)
@@ -270,18 +270,18 @@ struct GrammarNoteQuizListView: View {
         )
         .shadow(color: Color.black.opacity(0.05), radius: 14, x: 0, y: 7)
         .confirmationDialog(
-            "Delete \"\(quiz.title)\"?",
+            String(format: L10n.string("quizDeleteTitleFmt"), quiz.title),
             isPresented: Binding(
                 get: { deleteTarget?.id == quiz.id },
                 set: { if !$0 { deleteTarget = nil } }
             ),
             titleVisibility: .visible
         ) {
-            Button("Delete", role: .destructive) {
+            Button(L10n.localized(.commonDelete), role: .destructive) {
                 Task { await quizVM.deleteQuiz(quiz) }
                 deleteTarget = nil
             }
-            Button("Cancel", role: .cancel) { deleteTarget = nil }
+            Button(L10n.localized(.commonCancel), role: .cancel) { deleteTarget = nil }
         }
     }
 
@@ -303,7 +303,7 @@ struct GrammarNoteQuizListView: View {
             ProgressView()
                 .tint(AppColors.primaryBlue)
                 .scaleEffect(1.1)
-            Text("Loading quizzes…")
+            Text(L10n.string("quizLoadingList"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
         }
@@ -320,17 +320,17 @@ struct GrammarNoteQuizListView: View {
                     .font(.system(size: 30, weight: .bold))
                     .foregroundStyle(AppColors.primaryBlue)
             }
-            Text("No quizzes yet")
+            Text(L10n.string("quizListEmptyTitle"))
                 .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
-            Text("Create a quiz from this note to start practising.")
+            Text(L10n.string("quizListEmptySubtitle"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             if allowsCreation {
                 Button { isCreateSheetPresented = true } label: {
-                    Text("Create Quiz")
+                    Text(L10n.string("editorCreateQuiz"))
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                         .foregroundStyle(Color.white)
                         .padding(.horizontal, 22)
@@ -358,7 +358,7 @@ struct GrammarNoteQuizListView: View {
             Button {
                 Task { await quizVM.loadQuizzes() }
             } label: {
-                Text("Retry")
+                Text(L10n.localized(.commonRetry))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 20)

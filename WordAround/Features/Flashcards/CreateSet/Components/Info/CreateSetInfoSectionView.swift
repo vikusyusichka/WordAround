@@ -14,11 +14,11 @@ struct CreateSetInfoSectionView: View {
 
     private var titleField: some View {
         VStack(alignment: .leading, spacing: Layout.createSetSmallVerticalSpacing) {
-            CreateSetSectionLabel(text: "Set title", theme: viewModel.theme)
+            CreateSetSectionLabel(text: L10n.string("createSetSetTitle"), theme: viewModel.theme)
 
             ZStack(alignment: .leading) {
                 if viewModel.draft.title.isEmpty {
-                    Text("e.g. Basic Spanish Words")
+                    Text(L10n.string("createSetPlaceholderTitle"))
                         .foregroundColor(viewModel.theme.mutedTextColor.opacity(0.55))
                 }
 
@@ -38,7 +38,7 @@ struct CreateSetInfoSectionView: View {
     private var descriptionField: some View {
         VStack(alignment: .leading, spacing: Layout.createSetSmallVerticalSpacing) {
             HStack(spacing: 4) {
-                CreateSetSectionLabel(text: "Description", theme: viewModel.theme)
+                CreateSetSectionLabel(text: L10n.string("folderDescField"), theme: viewModel.theme)
                 CreateSetOptionalText(theme: viewModel.theme)
             }
 
@@ -52,7 +52,7 @@ struct CreateSetInfoSectionView: View {
     private var descriptionTextField: some View {
         ZStack(alignment: .topLeading) {
             if viewModel.draft.description.isEmpty {
-                Text("What is this set about?")
+                Text(L10n.string("createSetWhatAbout"))
                     .foregroundColor(viewModel.theme.mutedTextColor.opacity(0.55))
                     .font(.system(size: Layout.createSetDescriptionPlaceholderFontSize, weight: .semibold))
                     .padding(.top, 12)

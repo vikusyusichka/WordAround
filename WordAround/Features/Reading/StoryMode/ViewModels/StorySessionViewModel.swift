@@ -410,7 +410,7 @@ final class StorySessionViewModel: ObservableObject {
     }
 
     func selectChoice(_ choice: StoryChoice) async {
-        guard !isGeneratingNextChapter else { return }       // no double generation
+        guard !isGeneratingNextChapter else { return }
         guard var current = session, let userId = currentUserId() else { return }
         guard branches else { return }
 

@@ -73,7 +73,7 @@ struct GrammarReviewSessionView: View {
     private var header: some View {
         HStack {
             Button(action: onDismiss) {
-                Text("Close")
+                Text(L10n.string("commonClose"))
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
                     .padding(.horizontal, 14)
@@ -85,7 +85,7 @@ struct GrammarReviewSessionView: View {
 
             Spacer()
 
-            Text("Review")
+            Text(L10n.string("commonReview"))
                 .font(.system(size: 18, weight: .black, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
 
@@ -94,7 +94,7 @@ struct GrammarReviewSessionView: View {
             Button {
                 viewModel.skipCurrent()
             } label: {
-                Text("Skip")
+                Text(L10n.string("commonSkip"))
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlue)
                     .padding(.horizontal, 14)
@@ -111,7 +111,7 @@ struct GrammarReviewSessionView: View {
     private var progressSection: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text("Item \(min(viewModel.currentIndex + 1, viewModel.totalCards)) of \(viewModel.totalCards)")
+                Text(String(format: L10n.string("spkItemOfFmt"), min(viewModel.currentIndex + 1, viewModel.totalCards), viewModel.totalCards))
                     .font(.system(size: 11, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                     .textCase(.uppercase)
@@ -136,7 +136,7 @@ struct GrammarReviewSessionView: View {
         let (label, color): (String, Color) = {
             switch viewModel.phase {
             case .source:   return ("Study", AppColors.primaryBlue)
-            case .question: return ("Answer", Color(red: 0.55, green: 0.35, blue: 0.85))
+            case .question: return (L10n.string("notesQuizAnswer"), Color(red: 0.55, green: 0.35, blue: 0.85))
             case .result:   return ("Rate", CreateSetTheme.green.accent)
             }
         }()
@@ -159,7 +159,7 @@ struct GrammarReviewSessionView: View {
             viewModel.continueFromSource()
         } label: {
             HStack(spacing: 8) {
-                Text("Continue to Question")
+                Text(L10n.string("notesContinueToQuestion"))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .bold))
@@ -392,7 +392,7 @@ struct GrammarReviewSessionView: View {
 
     private func textInputArea(_ question: GrammarQuizQuestion) -> some View {
         TextField(
-            question.type == .fillGap ? "Type the missing word" : "Type your answer",
+            question.type == .fillGap ? L10n.string("notesTypeMissingWord") : L10n.string("notesTypeYourAnswer"),
             text: $currentInput,
             axis: .vertical
         )
@@ -415,7 +415,7 @@ struct GrammarReviewSessionView: View {
         return Button {
             viewModel.submitAnswer(currentInput)
         } label: {
-            Text(question.type == .shortAnswer ? "Show Answer" : "Submit Answer")
+            Text(question.type == .shortAnswer ? L10n.string("notesShowAnswer") : L10n.string("notesSubmitAnswer"))
                 .font(.system(size: 15, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)
@@ -448,7 +448,7 @@ struct GrammarReviewSessionView: View {
             HStack(spacing: 8) {
                 Image(systemName: "doc.text")
                     .font(.system(size: 12, weight: .bold))
-                Text("Open full note")
+                Text(L10n.string("notesOpenFullNote"))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
             }
             .foregroundStyle(AppColors.primaryBlue)
@@ -471,14 +471,14 @@ struct GrammarReviewSessionView: View {
                     Image(systemName: "text.magnifyingglass")
                         .font(.system(size: 16, weight: .bold))
                         .foregroundStyle(AppColors.primaryBlue)
-                    Text("Compare your answer")
+                    Text(L10n.string("notesCompareAnswer"))
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                         .foregroundStyle(AppColors.primaryBlueDark)
                 }
 
                 if !userAnswer.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Your answer:")
+                        Text(L10n.string("notesYourAnswer"))
                             .font(.system(size: 11, weight: .bold, design: .rounded))
                             .foregroundStyle(AppColors.textSecondary)
                         Text(userAnswer)
@@ -489,7 +489,7 @@ struct GrammarReviewSessionView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Reference answer:")
+                    Text(L10n.string("notesReferenceAnswer"))
                         .font(.system(size: 11, weight: .bold, design: .rounded))
                         .foregroundStyle(AppColors.textSecondary)
                     Text(question.correctAnswer)
@@ -510,7 +510,7 @@ struct GrammarReviewSessionView: View {
 
                 if !isCorrect {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Correct answer:")
+                        Text(L10n.string("notesCorrectAnswerLabel"))
                             .font(.system(size: 11, weight: .bold, design: .rounded))
                             .foregroundStyle(AppColors.textSecondary)
                         Text(question.correctAnswer)
@@ -532,7 +532,7 @@ struct GrammarReviewSessionView: View {
 
             Divider().opacity(0.5)
 
-            Text("How well did you recall this?")
+            Text(L10n.string("notesHowWellRecall"))
                 .font(.system(size: 12, weight: .bold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
         }
@@ -620,7 +620,7 @@ struct GrammarReviewSessionView: View {
     private var loadingState: some View {
         VStack(spacing: 14) {
             ProgressView().tint(AppColors.primaryBlue).scaleEffect(1.1)
-            Text("Preparing review queue…")
+            Text(L10n.string("notesPreparingQueue"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
         }
@@ -638,7 +638,7 @@ struct GrammarReviewSessionView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             Button(action: onDismiss) {
-                Text("Close")
+                Text(L10n.string("commonClose"))
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 20)

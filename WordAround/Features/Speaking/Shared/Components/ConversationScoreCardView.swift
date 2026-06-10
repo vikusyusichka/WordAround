@@ -9,7 +9,7 @@ struct ConversationScoreCardView: View {
             scoreCircle
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Overall Score")
+                Text(L10n.string("spkOverallScore"))
                     .font(.system(
                         size: Layout.isPadLike ? 18 : 16,
                         weight: .bold,

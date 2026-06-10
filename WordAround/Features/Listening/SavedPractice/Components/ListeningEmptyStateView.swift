@@ -16,18 +16,18 @@ struct ListeningEmptyStateView: View {
                     .foregroundColor(accent)
             }
 
-            Text("No listening practice yet")
+            Text(L10n.string("listeningNoSavedPractice"))
                 .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
                 .multilineTextAlignment(.center)
 
-            Text("Start with text, audio, or video to build your listening library.")
+            Text(L10n.string("listeningNoSavedSubtitle"))
                 .font(.system(size: 15, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
                 .multilineTextAlignment(.center)
 
             Button(action: onStart) {
-                Text("Start Listening")
+                Text(L10n.string("listeningStartListening"))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                     .padding(.horizontal, 24)

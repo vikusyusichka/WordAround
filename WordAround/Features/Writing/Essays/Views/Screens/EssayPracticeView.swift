@@ -150,7 +150,7 @@ struct EssayPracticeView: View {
                 ProgressView()
                     .tint(AppColors.primaryBlue)
 
-                Text("Loading sets")
+                Text(L10n.string("essayLoadingSets"))
                     .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
             }
@@ -245,7 +245,7 @@ struct EssayPracticeView: View {
 
     private var topBar: some View {
         ZStack {
-            Text("Essay Practice")
+            Text(L10n.string("essayTitle"))
                 .font(.system(
                     size: Layout.homePlaceholderTitleSize - 4,
                     weight: .bold,
@@ -348,7 +348,7 @@ struct EssayPracticeView: View {
                         .font(.system(size: 14, weight: .semibold))
                 }
 
-                Text(viewModel.isGeneratingTask ? "Generating" : "Generate essay task")
+                Text(viewModel.isGeneratingTask ? L10n.string("essayGenerating") : L10n.string("essayGenerateTask"))
             }
             .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
             .foregroundColor(.white)
@@ -369,7 +369,7 @@ struct EssayPracticeView: View {
                         viewModel.selectTopicMode(mode)
                     }
                 } label: {
-                    Text(mode.rawValue)
+                    Text(mode.displayName)
                         .font(.system(size: Layout.essayTopicModeTextSize, weight: .bold, design: .rounded))
                         .foregroundColor(viewModel.topicMode == mode ? .white : AppColors.primaryBlue)
                         .frame(maxWidth: .infinity)
@@ -393,13 +393,13 @@ struct EssayPracticeView: View {
                     .font(.system(size: Layout.essaySetupIconSize, weight: .semibold))
                     .foregroundColor(AppColors.primaryBlue)
 
-                Text("Writing setup")
+                Text(L10n.string("essayWritingSetup"))
                     .font(.system(size: Layout.essaySetupTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
                 Spacer(minLength: 0)
 
-                Text("Hints left: \(viewModel.hintsLeft)")
+                Text(String(format: L10n.string("essayHintsLeftFormat"), viewModel.hintsLeft))
                     .font(.system(size: Layout.essayHintsBadgeTextSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlue)
                     .padding(.horizontal, Layout.essayHintsBadgeHorizontalPadding)

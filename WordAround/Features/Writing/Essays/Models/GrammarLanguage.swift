@@ -108,13 +108,8 @@ enum GrammarLanguage: String, CaseIterable, Identifiable, Equatable, Codable {
         }
     }
 
-    /// LanguageTool API language code. For languages LanguageTool does not
-    /// support, falls back to the ISO 639-1 code so the value is still a
-    /// meaningful identifier (used by AI prompts and logging); the actual
-    /// grammar-check call is gated upstream by `supportsGrammarCheck`.
     var languageToolCode: String {
         switch self {
-        // Supported directly by LanguageTool
         case .english:    return "en-US"
         case .spanish:    return "es"
         case .french:     return "fr"
@@ -134,7 +129,6 @@ enum GrammarLanguage: String, CaseIterable, Identifiable, Equatable, Codable {
         case .swedish:    return "sv"
         case .danish:     return "da-DK"
         case .norwegian:  return "nb"
-        // Not supported by LanguageTool — kept as ISO 639-1 so AI prompts
         case .czech:      return "cs"
         case .croatian:   return "hr"
         case .serbian:    return "sr"

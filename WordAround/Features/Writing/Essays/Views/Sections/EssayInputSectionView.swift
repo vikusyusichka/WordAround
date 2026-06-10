@@ -60,7 +60,7 @@ struct EssayInputSectionView: View {
 
     private var header: some View {
         HStack {
-            Text("Your essay")
+            Text(L10n.string("essayYourEssay"))
                 .font(.system(size: Layout.essayWritingTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
 
@@ -169,7 +169,7 @@ struct EssayInputSectionView: View {
                 )
 
             if essayText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                Text("Write your essay here...")
+                Text(L10n.string("essayWritePlaceholder"))
                     .font(.system(size: Layout.essayEditorPlaceholderSize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary.opacity(0.65))
                     .padding(.horizontal, 16)
@@ -212,7 +212,7 @@ struct EssayInputSectionView: View {
             Button {
                 onReset()
             } label: {
-                Text("Reset")
+                Text(L10n.string("essayReset"))
                     .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlue)
                     .frame(maxWidth: .infinity)
@@ -234,7 +234,7 @@ struct EssayInputSectionView: View {
                             .font(.system(size: 14, weight: .semibold))
                     }
 
-                    Text(isLoading ? "Checking" : "Check grammar")
+                    Text(isLoading ? L10n.string("essayChecking") : L10n.string("essayCheckGrammar"))
                 }
                 .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
                 .foregroundColor(.white)

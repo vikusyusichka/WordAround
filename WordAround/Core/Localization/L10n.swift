@@ -82,62 +82,93 @@ enum L10n {
         case deleteAccountSuccess
     }
 
-    @MainActor
-    static func string(_ key: Key) -> String {
-        let language = UserPreferencesStore.shared.language
-        return string(key, language: language)
+    private static let missingSentinel = "__L10N_MISSING__"
+
+    // MARK: - Current language
+
+    private nonisolated(unsafe) static var _currentLanguage: AppLanguage = .default
+    private static let currentLanguageLock = NSLock()
+
+    nonisolated static var currentLanguage: AppLanguage {
+        get {
+            currentLanguageLock.lock()
+            defer { currentLanguageLock.unlock() }
+            return _currentLanguage
+        }
+        set {
+            currentLanguageLock.lock()
+            _currentLanguage = newValue
+            currentLanguageLock.unlock()
+        }
+    }
+
+    // MARK: - Bundle resolution
+
+    private nonisolated(unsafe) static var bundleCache: [String: Bundle] = [:]
+    private static let bundleCacheLock = NSLock()
+
+    private static func bundle(for code: String) -> Bundle? {
+        bundleCacheLock.lock()
+        defer { bundleCacheLock.unlock() }
+
+        if let cached = bundleCache[code] {
+            return cached
+        }
+        guard
+            let path = Bundle.main.path(forResource: code, ofType: "lproj"),
+            let bundle = Bundle(path: path)
+        else {
+            return nil
+        }
+        bundleCache[code] = bundle
+        return bundle
+    }
+
+    // MARK: - Lookup
+
+    nonisolated static func string(_ key: Key) -> String {
+        string(key.rawValue, language: currentLanguage)
+    }
+
+    nonisolated static func localized(_ key: Key) -> String { string(key) }
+
+    nonisolated static func string(_ rawKey: String) -> String {
+        string(rawKey, language: currentLanguage)
     }
 
     static func string(_ key: Key, language: AppLanguage) -> String {
-        let table = Self.table(for: language)
-        if let value = table[key] { return value }
-        if language != .english, let fallback = Self.table(for: .english)[key] {
-            return fallback
-        }
-        return key.rawValue
+        string(key.rawValue, language: language)
     }
 
-    static func table(for language: AppLanguage) -> [Key: String] {
-        switch language {
-        case .english:    return english
-        case .ukrainian:  return ukrainian
-        case .spanish:    return spanish
-        case .chinese:    return chinese
-        case .hindi:      return hindi
-        case .french:     return french
-        case .arabic:     return arabic
-        case .bengali:    return bengali
-        case .portuguese: return portuguese
-        case .russian:    return russian
-        case .urdu:       return urdu
-        case .indonesian: return indonesian
-        case .german:     return german
-        case .japanese:   return japanese
-        case .turkish:    return turkish
-        case .vietnamese: return vietnamese
-        case .korean:     return korean
-        case .italian:    return italian
-        case .persian:    return persian
-        case .polish:     return polish
-        case .dutch:      return dutch
-        case .romanian:   return romanian
-        case .thai:       return thai
-        case .greek:      return greek
-        case .czech:      return czech
-        case .hungarian:  return hungarian
-        case .swedish:    return swedish
-        case .hebrew:     return hebrew
-        case .norwegian:  return norwegian
-        case .danish:     return danish
-        case .finnish:    return finnish
-        case .bulgarian:  return bulgarian
+    static func string(_ rawKey: String, language: AppLanguage) -> String {
+        if let value = lookup(rawKey, in: language.rawValue) { return value }
+        if language != .english, let value = lookup(rawKey, in: AppLanguage.english.rawValue) {
+            return value
         }
+        return rawKey
     }
-}
 
-extension L10n {
-    @MainActor
-    static func localized(_ key: Key) -> String { string(key) }
+    private static func lookup(_ key: String, in languageCode: String) -> String? {
+        guard let bundle = bundle(for: languageCode) else { return nil }
+        let value = bundle.localizedString(forKey: key, value: missingSentinel, table: nil)
+        return value == missingSentinel ? nil : value
+    }
+
+    // MARK: - Plural helpers
+
+    nonisolated static func cardsCount(_ count: Int) -> String {
+        let key: String
+        let mod10 = count % 10
+        let mod100 = count % 100
+        if mod10 == 1 && mod100 != 11 {
+            key = "cardsCountOneFmt"
+        } else if (2...4).contains(mod10) && !(12...14).contains(mod100) {
+            key = "cardsCountFewFmt"
+        } else {
+            key = "cardsCountManyFmt"
+        }
+        return String(format: string(key), count)
+    }
 }
 
 // MARK: - Language

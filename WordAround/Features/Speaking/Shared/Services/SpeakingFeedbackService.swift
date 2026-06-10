@@ -37,7 +37,7 @@ final class SpeakingFeedbackService {
                 reason: .noUserMessages,
                 includeDebateMetrics: includeDebateMetrics
             )
-            return (fb, "No speaking answers were recorded.")
+            return (fb, L10n.string("spkNoSpeakingAnswers"))
         }
 
         let request = SpeakingFeedbackRequest(
@@ -201,10 +201,10 @@ final class SpeakingFeedbackService {
         let summary: String
         switch reason {
         case .noUserMessages:
-            summary = "No speaking answers were recorded."
+            summary = L10n.string("spkNoSpeakingAnswers")
         case .aiFailed:
             if userMessages.isEmpty {
-                summary = "No speaking answers were recorded."
+                summary = L10n.string("spkNoSpeakingAnswers")
             } else if totalWords < 12 {
                 summary = "You answered briefly. Try giving longer answers next time."
             } else {

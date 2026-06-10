@@ -10,32 +10,32 @@ enum GrammarNoteFilter: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .all:       return "All"
-        case .types:     return "Types"
-        case .favorites: return "Favourites"
-        case .tags:      return "Tags"
+        case .all:       return L10n.string("notesFilterAll")
+        case .types:     return L10n.string("notesFilterTypes")
+        case .favorites: return L10n.string("notesFilterFavorites")
+        case .tags:      return L10n.string("editorTagsTitle")
         }
     }
 
     var emptyStateTitle: String {
         switch self {
-        case .all:       return "No notes yet"
-        case .types:     return "No notes for this type"
-        case .favorites: return "No favourite notes yet"
-        case .tags:      return "No notes with this tag"
+        case .all:       return L10n.string("notesNoNotesYet")
+        case .types:     return L10n.string("notesEmptyTypes")
+        case .favorites: return L10n.string("notesEmptyFavorites")
+        case .tags:      return L10n.string("notesEmptyTags")
         }
     }
 
     var emptyStateSubtitle: String {
         switch self {
         case .all:
-            return "Create your first note for this topic."
+            return L10n.string("notesNoNotesHint")
         case .types:
-            return "Pick another type or create a note of this type."
+            return L10n.string("notesEmptyTypesHint")
         case .favorites:
-            return "Long-press a note and choose Add to Favourites."
+            return L10n.string("notesEmptyFavoritesHint")
         case .tags:
-            return "Tag notes when you create or edit them to filter by tag."
+            return L10n.string("notesEmptyTagsHint")
         }
     }
 }

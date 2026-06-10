@@ -1,0 +1,54 @@
+{
+  "readingSignInToSaveTextsMessage": {
+    "en": "Sign in to save texts and sync across devices.", "uk": "Увійдіть, щоб зберігати тексти та синхронізувати між пристроями.", "es": "Inicia sesión para guardar textos y sincronizar entre dispositivos.",
+    "fr": "Connectez-vous pour enregistrer et synchroniser vos textes sur vos appareils.", "de": "Melde dich an, um Texte zu speichern und geräteübergreifend zu synchronisieren.", "it": "Accedi per salvare i testi e sincronizzarli tra i dispositivi.",
+    "pt": "Entre para salvar textos e sincronizar entre dispositivos.", "ru": "Войдите, чтобы сохранять тексты и синхронизировать их между устройствами.", "pl": "Zaloguj się, aby zapisywać teksty i synchronizować je między urządzeniami.",
+    "nl": "Log in om teksten op te slaan en te synchroniseren tussen apparaten.", "ja": "サインインするとテキストを保存し、デバイス間で同期できます。", "ko": "로그인하면 텍스트를 저장하고 기기 간에 동기화할 수 있습니다.",
+    "zh": "登录以保存文本并在设备间同步。", "hi": "टेक्स्ट सहेजने और डिवाइसों के बीच सिंक करने के लिए साइन इन करें।", "ar": "سجّل الدخول لحفظ النصوص ومزامنتها عبر الأجهزة.",
+    "bn": "টেক্সট সংরক্ষণ এবং ডিভাইসজুড়ে সিঙ্ক করতে সাইন ইন করুন।", "ur": "متون محفوظ کرنے اور آلات کے درمیان ہم آہنگ کرنے کے لیے سائن ان کریں۔", "id": "Masuk untuk menyimpan teks dan menyinkronkan antar perangkat.",
+    "tr": "Metinleri kaydetmek ve cihazlar arasında eşitlemek için giriş yap.", "vi": "Đăng nhập để lưu văn bản và đồng bộ giữa các thiết bị.", "fa": "برای ذخیره متن‌ها و همگام‌سازی بین دستگاه‌ها وارد شوید.",
+    "ro": "Conectează-te pentru a salva texte și a le sincroniza între dispozitive.", "th": "เข้าสู่ระบบเพื่อบันทึกข้อความและซิงค์ระหว่างอุปกรณ์", "el": "Συνδέσου για να αποθηκεύεις κείμενα και να συγχρονίζεις μεταξύ συσκευών.",
+    "cs": "Přihlas se pro ukládání textů a synchronizaci mezi zařízeními.", "hu": "Jelentkezz be a szövegek mentéséhez és eszközök közötti szinkronizáláshoz.", "sv": "Logga in för att spara texter och synka mellan enheter.",
+    "he": "התחברו כדי לשמור טקסטים ולסנכרן בין מכשירים.", "no": "Logg inn for å lagre tekster og synkronisere mellom enheter.", "da": "Log ind for at gemme tekster og synkronisere på tværs af enheder.",
+    "fi": "Kirjaudu sisään tallentaaksesi tekstejä ja synkronoidaksesi laitteiden välillä.", "bg": "Влезте, за да запазвате текстове и да синхронизирате между устройства."
+  },
+  "readingSignInToSeeLibraryMessage": {
+    "en": "Your saved readings sync to your account. Sign in to add and continue them.", "uk": "Збережені тексти синхронізуються з вашим акаунтом. Увійдіть, щоб додавати й продовжувати їх.", "es": "Tus lecturas guardadas se sincronizan con tu cuenta. Inicia sesión para añadirlas y continuarlas.",
+    "fr": "Vos lectures enregistrées se synchronisent avec votre compte. Connectez-vous pour les ajouter et les continuer.", "de": "Deine gespeicherten Lesetexte werden mit deinem Konto synchronisiert. Melde dich an, um sie hinzuzufügen und fortzusetzen.", "it": "Le tue letture salvate si sincronizzano con il tuo account. Accedi per aggiungerle e continuarle.",
+    "pt": "Suas leituras salvas sincronizam com sua conta. Entre para adicioná-las e continuá-las.", "ru": "Сохранённые тексты синхронизируются с вашим аккаунтом. Войдите, чтобы добавлять и продолжать их.", "pl": "Twoje zapisane czytania synchronizują się z kontem. Zaloguj się, aby je dodawać i kontynuować.",
+    "nl": "Je opgeslagen leesteksten synchroniseren met je account. Log in om ze toe te voegen en voort te zetten.", "ja": "保存した読み物はアカウントに同期されます。サインインして追加・継続しましょう。", "ko": "저장한 읽기 자료는 계정에 동기화됩니다. 로그인하여 추가하고 이어서 읽으세요.",
+    "zh": "你保存的阅读内容会同步到账户。登录以添加并继续阅读。", "hi": "आपकी सहेजी गई रीडिंग आपके खाते में सिंक होती है। जोड़ने और जारी रखने के लिए साइन इन करें।", "ar": "تتم مزامنة قراءاتك المحفوظة مع حسابك. سجّل الدخول لإضافتها ومتابعتها.",
+    "bn": "আপনার সংরক্ষিত পঠন আপনার অ্যাকাউন্টে সিঙ্ক হয়। যোগ করতে এবং চালিয়ে যেতে সাইন ইন করুন।", "ur": "آپ کی محفوظ کردہ پڑھائی آپ کے اکاؤنٹ سے ہم آہنگ ہوتی ہے۔ شامل کرنے اور جاری رکھنے کے لیے سائن ان کریں۔", "id": "Bacaan tersimpan Anda disinkronkan ke akun. Masuk untuk menambah dan melanjutkannya.",
+    "tr": "Kaydettiğin okumalar hesabınla eşitlenir. Eklemek ve devam etmek için giriş yap.", "vi": "Bài đọc đã lưu được đồng bộ với tài khoản của bạn. Đăng nhập để thêm và tiếp tục.", "fa": "خواندنی‌های ذخیره‌شده شما با حساب‌تان همگام می‌شوند. برای افزودن و ادامه وارد شوید.",
+    "ro": "Lecturile tale salvate se sincronizează cu contul tău. Conectează-te pentru a le adăuga și continua.", "th": "บทอ่านที่บันทึกไว้จะซิงค์กับบัญชีของคุณ เข้าสู่ระบบเพื่อเพิ่มและอ่านต่อ", "el": "Οι αποθηκευμένες αναγνώσεις σου συγχρονίζονται με τον λογαριασμό σου. Συνδέσου για να τις προσθέσεις και να συνεχίσεις.",
+    "cs": "Tvá uložená čtení se synchronizují s účtem. Přihlas se, abys je přidal a pokračoval v nich.", "hu": "A mentett olvasmányaid szinkronizálódnak a fiókoddal. Jelentkezz be a hozzáadásukhoz és folytatásukhoz.", "sv": "Dina sparade läsningar synkas till ditt konto. Logga in för att lägga till och fortsätta dem.",
+    "he": "הקריאות השמורות שלך מסתנכרנות לחשבונך. התחברו כדי להוסיף ולהמשיך אותן.", "no": "De lagrede lesetekstene dine synkroniseres til kontoen din. Logg inn for å legge til og fortsette dem.", "da": "Dine gemte læsninger synkroniseres til din konto. Log ind for at tilføje og fortsætte dem.",
+    "fi": "Tallennetut lukutekstisi synkronoituvat tiliisi. Kirjaudu sisään lisätäksesi ja jatkaaksesi niitä.", "bg": "Запазените ви четива се синхронизират с акаунта ви. Влезте, за да ги добавяте и продължавате."
+  },
+  "readingLoadingTexts": {
+    "en": "Loading your texts…", "uk": "Завантажуємо ваші тексти…", "es": "Cargando tus textos…",
+    "fr": "Chargement de vos textes…", "de": "Deine Texte werden geladen…", "it": "Caricamento dei tuoi testi…",
+    "pt": "Carregando seus textos…", "ru": "Загружаем ваши тексты…", "pl": "Ładowanie tekstów…",
+    "nl": "Je teksten worden geladen…", "ja": "テキストを読み込み中…", "ko": "텍스트 불러오는 중…",
+    "zh": "正在加载你的文本…", "hi": "आपके पाठ लोड हो रहे हैं…", "ar": "جارٍ تحميل نصوصك…",
+    "bn": "আপনার টেক্সট লোড হচ্ছে…", "ur": "آپ کے متون لوڈ ہو رہے ہیں…", "id": "Memuat teks Anda…",
+    "tr": "Metinlerin yükleniyor…", "vi": "Đang tải văn bản của bạn…", "fa": "در حال بارگذاری متن‌های شما…",
+    "ro": "Se încarcă textele tale…", "th": "กำลังโหลดข้อความของคุณ…", "el": "Φόρτωση των κειμένων σου…",
+    "cs": "Načítání vašich textů…", "hu": "Szövegeid betöltése…", "sv": "Laddar dina texter…",
+    "he": "טוען את הטקסטים שלך…", "no": "Laster tekstene dine…", "da": "Indlæser dine tekster…",
+    "fi": "Ladataan tekstejäsi…", "bg": "Зареждане на текстовете ви…"
+  },
+  "readingLoadingLibrary": {
+    "en": "Loading your library…", "uk": "Завантажуємо вашу бібліотеку…", "es": "Cargando tu biblioteca…",
+    "fr": "Chargement de votre bibliothèque…", "de": "Deine Bibliothek wird geladen…", "it": "Caricamento della tua libreria…",
+    "pt": "Carregando sua biblioteca…", "ru": "Загружаем вашу библиотеку…", "pl": "Ładowanie biblioteki…",
+    "nl": "Je bibliotheek wordt geladen…", "ja": "ライブラリを読み込み中…", "ko": "라이브러리 불러오는 중…",
+    "zh": "正在加载你的书库…", "hi": "आपकी लाइब्रेरी लोड हो रही है…", "ar": "جارٍ تحميل مكتبتك…",
+    "bn": "আপনার লাইব্রেরি লোড হচ্ছে…", "ur": "آپ کی لائبریری لوڈ ہو رہی ہے…", "id": "Memuat pustaka Anda…",
+    "tr": "Kitaplığın yükleniyor…", "vi": "Đang tải thư viện của bạn…", "fa": "در حال بارگذاری کتابخانه شما…",
+    "ro": "Se încarcă biblioteca ta…", "th": "กำลังโหลดคลังของคุณ…", "el": "Φόρτωση της βιβλιοθήκης σου…",
+    "cs": "Načítání vaší knihovny…", "hu": "Könyvtárad betöltése…", "sv": "Laddar ditt bibliotek…",
+    "he": "טוען את הספרייה שלך…", "no": "Laster biblioteket ditt…", "da": "Indlæser dit bibliotek…",
+    "fi": "Ladataan kirjastoasi…", "bg": "Зареждане на библиотеката ви…"
+  }
+}

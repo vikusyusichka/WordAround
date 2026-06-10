@@ -11,7 +11,7 @@ struct PronunciationProgressCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("Item \(min(currentIndex + 1, max(total, 1))) of \(total)")
+                Text(String(format: L10n.string("spkItemOfFmt"), min(currentIndex + 1, max(total, 1)), total))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
                 Spacer()

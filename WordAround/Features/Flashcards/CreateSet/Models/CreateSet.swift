@@ -8,6 +8,13 @@ enum FlashcardSetPrivacy: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    var displayName: String {
+        switch self {
+        case .privateSet: return L10n.string("privacyPrivate")
+        case .publicSet:  return L10n.string("privacyPublic")
+        }
+    }
+
     var iconName: String {
         switch self {
         case .privateSet:
@@ -84,5 +91,4 @@ struct CreateFlashcardSetDraft {
     var selectedColor: SetColor = .red
     var selectedIcon: String = "rectangle.stack.fill"
 }
-
 

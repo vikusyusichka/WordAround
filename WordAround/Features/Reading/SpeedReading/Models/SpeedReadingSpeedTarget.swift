@@ -40,7 +40,7 @@ extension ReadingSpeedTarget {
         let hi = wpmRange.upperBound
         if achieved >= hi + 40 { return .excellent }
         if achieved >= lo      { return .balanced }
-        if achieved >= lo - 30 { return .fast }   // slightly under but close
+        if achieved >= lo - 30 { return .fast }
         return .tooSlow
     }
 }

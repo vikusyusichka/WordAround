@@ -1,6 +1,5 @@
 import Foundation
 
-/// Gemini API key lives only in the Worker.
 final class CloudflareShadowingPhraseClient {
 
     private let endpointURL: URL

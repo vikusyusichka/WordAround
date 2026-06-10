@@ -10,12 +10,12 @@ enum ReadingQuestionType: String, Codable, CaseIterable, Equatable, Hashable {
 
     var displayTitle: String {
         switch self {
-        case .comprehension: return "Comprehension"
-        case .trueFalse: return "True / False"
-        case .fillGap: return "Fill Gaps"
-        case .vocabulary: return "Vocabulary"
-        case .findEvidence: return "Find Evidence"
-        case .orderReconstruction: return "Order Reconstruction"
+        case .comprehension:       return L10n.string("readingComprehension")
+        case .trueFalse:           return L10n.string("listenTrueFalseShort")
+        case .fillGap:             return L10n.string("readingQTypeFillGaps")
+        case .vocabulary:          return L10n.string("spkVocabulary")
+        case .findEvidence:        return L10n.string("readingQTypeFindEvidence")
+        case .orderReconstruction: return L10n.string("readingQTypeOrderReconstruction")
         }
     }
 

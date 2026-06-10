@@ -26,7 +26,7 @@ struct ReadingFeaturedModeCardView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Featured")
+                    Text(L10n.string("readingFeatured"))
                         .font(.system(size: 12, weight: .bold, design: .rounded))
                         .foregroundColor(.white.opacity(0.9))
                         .padding(.horizontal, 10)

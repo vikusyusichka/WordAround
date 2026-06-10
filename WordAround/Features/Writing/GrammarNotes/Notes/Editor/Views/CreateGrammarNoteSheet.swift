@@ -38,10 +38,10 @@ struct CreateGrammarNoteSheet: View {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: Layout.grammarNoteCreateSpacing) {
                         header
-                        inputField(title: "Title", placeholder: "Example: Ser vs Estar", text: $title, limit: 60)
+                        inputField(title: L10n.string("createNoteFieldTitle"), placeholder: L10n.string("createNoteFieldTitlePh"), text: $title, limit: 60)
                         previewField
                         typePicker
-                        inputField(title: "Tags", placeholder: "A1, verbs, articles", text: $tagsText, limit: nil)
+                        inputField(title: L10n.string("editorTagsTitle"), placeholder: L10n.string("editorTagsPlaceholder"), text: $tagsText, limit: nil)
 
                         if let validationMessage {
                             Text(validationMessage)
@@ -94,7 +94,7 @@ struct CreateGrammarNoteSheet: View {
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
-                Text("New Note")
+                Text(L10n.string("createNoteTitle"))
                     .font(.system(size: Layout.grammarNoteCreateTitleSize, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
                 Text(topic.title)
@@ -144,7 +144,7 @@ struct CreateGrammarNoteSheet: View {
     private var previewField: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("Preview")
+                Text(L10n.string("commonPreview"))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
                 Spacer()
@@ -169,7 +169,7 @@ struct CreateGrammarNoteSheet: View {
 
     private var typePicker: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Note type")
+            Text(L10n.string("createNoteType"))
                 .font(.system(size: 13, weight: .bold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
 
@@ -202,7 +202,7 @@ struct CreateGrammarNoteSheet: View {
                 didSubmit = false
                 onCancel()
             } label: {
-                Text("Cancel")
+                Text(L10n.localized(.commonCancel))
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                     .frame(maxWidth: .infinity)
@@ -216,7 +216,7 @@ struct CreateGrammarNoteSheet: View {
             Button(action: validateAndCreate) {
                 HStack(spacing: 8) {
                     if effectiveIsCreating { ProgressView().tint(Color.white) }
-                    Text("Create").font(.system(size: 14, weight: .bold, design: .rounded))
+                    Text(L10n.string("quizCreateButton")).font(.system(size: 14, weight: .bold, design: .rounded))
                 }
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)
@@ -236,9 +236,9 @@ struct CreateGrammarNoteSheet: View {
         let cleanTitle   = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let cleanPreview = previewText.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        guard !cleanTitle.isEmpty          else { validationMessage = "Title is required.";                    return }
-        guard cleanTitle.count   <= 60     else { validationMessage = "Title must be under 60 characters.";    return }
-        guard cleanPreview.count <= 180    else { validationMessage = "Preview must be under 180 characters."; return }
+        guard !cleanTitle.isEmpty          else { validationMessage = L10n.string("createNoteErrTitleRequired"); return }
+        guard cleanTitle.count   <= 60     else { validationMessage = L10n.string("createNoteErrTitleLong");    return }
+        guard cleanPreview.count <= 180    else { validationMessage = L10n.string("createNoteErrPreviewLong");  return }
 
         validationMessage = nil
         didSubmit = true

@@ -79,7 +79,7 @@ struct ListeningAudioPlayerCard: View {
                         HStack(spacing: 5) {
                             Image(systemName: "arrow.counterclockwise")
                                 .font(.system(size: 12, weight: .semibold))
-                            Text("Replay")
+                            Text(L10n.string("listenReplay"))
                                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                         }
                         .foregroundColor(accentDark)

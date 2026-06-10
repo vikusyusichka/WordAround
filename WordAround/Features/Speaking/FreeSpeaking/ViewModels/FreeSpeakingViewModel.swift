@@ -180,7 +180,6 @@ final class FreeSpeakingViewModel: ObservableObject {
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
             guard let self else { return }
-            // Late partial results can arrive after stop; ignore unless still listening.
             guard self.state.isListening else { return }
             #if DEBUG
             print("[FreeSpeakingVM] partial transcript update (len=\(text.count))")

@@ -64,7 +64,7 @@ struct ImportAudioSessionView: View {
                     hiddenTranscriptNote
 
                     if viewModel.setup.addQuestions {
-                        ListeningSetupSectionTitle("Questions", accentDark: accentDark)
+                        ListeningSetupSectionTitle(L10n.string("listenSectionQuestions"), accentDark: accentDark)
                         ForEach(Array(viewModel.questions.enumerated()), id: \.element.id) { index, question in
                             questionBlock(question, index: index)
                         }
@@ -121,7 +121,7 @@ struct ImportAudioSessionView: View {
         HStack(spacing: 10) {
             Image(systemName: "eye.slash.fill")
                 .foregroundColor(accent)
-            Text("Transcript is hidden to keep this a real listening exercise.")
+            Text(L10n.string("listeningTranscriptHidden"))
                 .font(.system(size: 13, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
         }

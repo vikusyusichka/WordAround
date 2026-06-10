@@ -126,10 +126,10 @@ struct CreateGrammarTopicSheet: View {
                 }
                 .frame(width: 38, height: 38)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Use a template")
+                    Text(L10n.string("notesUseTemplate"))
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                         .foregroundStyle(theme.titleColor)
-                    Text("Start from a curated topic with ready notes inside.")
+                    Text(L10n.string("notesUseTemplateSubtitle"))
                         .font(.system(size: 11, weight: .semibold, design: .rounded))
                         .foregroundStyle(theme.mutedTextColor)
                         .lineLimit(2)
@@ -187,7 +187,7 @@ struct CreateGrammarTopicSheet: View {
                 Spacer()
 
                 HStack(spacing: 10) {
-                    Text("Choose icon")
+                    Text(L10n.string("createSetChooseIcon"))
                         .font(.system(size: isPadLike ? 15 : 13, weight: .bold, design: .rounded))
                         .foregroundStyle(theme.accent)
 
@@ -205,13 +205,13 @@ struct CreateGrammarTopicSheet: View {
 
             HStack(alignment: .center, spacing: 14) {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("New Topic")
+                    Text(L10n.string("notesNewTopic"))
                         .font(.system(size: isPadLike ? 34 : 28, weight: .bold, design: .rounded))
                         .foregroundStyle(theme.titleColor)
                         .lineLimit(1)
                         .minimumScaleFactor(0.82)
 
-                    Text("Create a container for rules, examples and future notes.")
+                    Text(L10n.string("notesNewTopicSubtitle"))
                         .font(.system(size: isPadLike ? 16 : 14, weight: .semibold, design: .rounded))
                         .foregroundStyle(theme.mutedTextColor)
                         .lineLimit(2)
@@ -269,7 +269,7 @@ struct CreateGrammarTopicSheet: View {
             ZStack(alignment: .bottomTrailing) {
                 ZStack(alignment: .topLeading) {
                     if description.isEmpty {
-                        Text("What should this topic collect?")
+                        Text(L10n.string("notesTopicCollectPlaceholder"))
                             .font(.system(size: isPadLike ? 16 : 14, weight: .semibold, design: .rounded))
                             .foregroundStyle(theme.mutedTextColor.opacity(0.55))
                             .padding(.top, 12)
@@ -380,7 +380,7 @@ struct CreateGrammarTopicSheet: View {
 
     private var colorSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionLabel("Choose color")
+            sectionLabel(L10n.string("setsListChooseColor"))
 
             HStack {
                 ForEach(SetColor.allCases) { setColor in
@@ -465,7 +465,7 @@ struct CreateGrammarTopicSheet: View {
                 didSubmit = false
                 onCancel()
             } label: {
-                Text("Cancel")
+                Text(L10n.string("commonCancel"))
             }
                 .font(.system(size: isPadLike ? 16 : 15, weight: .bold, design: .rounded))
                 .foregroundStyle(theme.accent)
@@ -490,7 +490,7 @@ struct CreateGrammarTopicSheet: View {
                             .tint(Color.white)
                             .scaleEffect(0.85)
                     }
-                    Text("Create")
+                    Text(L10n.string("homeCreate"))
                         .font(.system(size: isPadLike ? 16 : 15, weight: .bold, design: .rounded))
                         .foregroundStyle(Color.white)
                 }

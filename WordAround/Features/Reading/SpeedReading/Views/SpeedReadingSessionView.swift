@@ -153,10 +153,10 @@ struct SpeedReadingSessionView: View {
 
     private var controlRow: some View {
         HStack(spacing: 10) {
-            secondaryButton("Previous", systemImage: "chevron.left") { viewModel.goPreviousChunk() }
+            secondaryButton(L10n.string("commonPrevious"), systemImage: "chevron.left") { viewModel.goPreviousChunk() }
                 .disabled(viewModel.currentChunkIndex == 0)
                 .opacity(viewModel.currentChunkIndex == 0 ? 0.45 : 1)
-            secondaryButton(viewModel.isPaused ? "Resume" : "Pause",
+            secondaryButton(L10n.string(viewModel.isPaused ? "speedReadingResume" : "speedReadingPause"),
                             systemImage: viewModel.isPaused ? "play.fill" : "pause.fill") {
                 viewModel.togglePause()
             }
@@ -196,7 +196,7 @@ struct SpeedReadingSessionView: View {
                 )
             }
         } else {
-            Text("Wrapping up your session…")
+            Text(L10n.string("speedReadingWrapping"))
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -233,7 +233,7 @@ struct SpeedReadingSessionView: View {
         switch viewModel.phase {
         case .reading:
             ReadingPrimaryButton(
-                title: viewModel.isLastChunk ? (viewModel.hasQuestions ? "Start Questions" : "Finish") : "Next Chunk",
+                title: viewModel.isLastChunk ? (viewModel.hasQuestions ? L10n.string("readingStartQuestions") : L10n.string("commonFinish")) : L10n.string("speedReadingNextChunk"),
                 icon: viewModel.isLastChunk ? "checkmark" : "arrow.right",
                 accent: accent,
                 accentDark: accentDark,
@@ -241,7 +241,7 @@ struct SpeedReadingSessionView: View {
             )
         case .questions:
             ReadingPrimaryButton(
-                title: viewModel.isLastQuestion ? "Finish" : "Next",
+                title: viewModel.isLastQuestion ? L10n.string("commonFinish") : L10n.string("commonNext"),
                 icon: viewModel.isLastQuestion ? "checkmark" : "arrow.right",
                 accent: accent,
                 accentDark: accentDark
@@ -266,7 +266,7 @@ struct SpeedReadingSessionView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 40, weight: .bold))
                 .foregroundColor(.orange)
-            Text("Couldn't start the session")
+            Text(L10n.string("speedReadingCantStart"))
                 .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
             Text(message)
@@ -276,7 +276,7 @@ struct SpeedReadingSessionView: View {
                 .padding(.horizontal, 20)
             Spacer()
             ReadingPrimaryButton(
-                title: "Try Again",
+                title: L10n.string("commonTryAgain"),
                 icon: "arrow.clockwise",
                 accent: accent,
                 accentDark: accentDark,
@@ -289,7 +289,7 @@ struct SpeedReadingSessionView: View {
                 viewModel.onDisappear()
                 onExitToReading()
             }) {
-                Text("Back to Library")
+                Text(L10n.string("readingBackToLibrary"))
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
                     .frame(maxWidth: .infinity)

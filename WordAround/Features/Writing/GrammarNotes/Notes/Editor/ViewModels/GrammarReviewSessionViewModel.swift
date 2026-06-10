@@ -7,14 +7,6 @@ enum GrammarReviewSessionPhase: Equatable {
     case result
 }
 
-/// Drives the multi-phase review session.
-///
-/// Phase lifecycle per card:
-///   source → question → result → (next card)
-///
-/// Every card is guaranteed to have a question — the queue builder skips
-/// items that can't produce a usable question rather than degrading to
-/// rate-only mode. The session has no rate-only fallback.
 @MainActor
 final class GrammarReviewSessionViewModel: ObservableObject {
 
@@ -28,19 +20,12 @@ final class GrammarReviewSessionViewModel: ObservableObject {
     @Published private(set) var isFinished = false
     @Published private(set) var isRating = false
 
-    /// Set after the user submits an answer in `.question` phase. Only
-    /// meaningful for auto-graded question types (MC, TF, fill-gap). Short
-    /// answer questions cannot be auto-graded so `lastAnswerCorrect` stays
-    /// false and the session treats them as "self-rated".
     @Published private(set) var lastAnswerCorrect: Bool = false
     @Published private(set) var lastUserAnswer: String = ""
     @Published private(set) var lastAnswerWasAutoGraded: Bool = false
 
     @Published private(set) var totalReviewed: Int = 0
-    /// Correct quiz answers — counted only for auto-graded question types.
     @Published private(set) var correctAnswerCount: Int = 0
-    /// Incorrect quiz answers — counted only for auto-graded question types.
-    /// Short-answer "incorrect" doesn't increment this; rating handles that.
     @Published private(set) var incorrectAnswerCount: Int = 0
     @Published private(set) var forgotCount: Int = 0
     @Published private(set) var hardCount: Int = 0
@@ -180,8 +165,6 @@ final class GrammarReviewSessionViewModel: ObservableObject {
         lastAnswerCorrect = isCorrect
         lastAnswerWasAutoGraded = autoGraded
 
-        // The spec is strict: "incorrect" in the summary means an actually
-        // wrong auto-graded answer, not just a low recall rating.
         if autoGraded {
             if isCorrect {
                 correctAnswerCount += 1
@@ -218,7 +201,6 @@ final class GrammarReviewSessionViewModel: ObservableObject {
         switch result {
         case .forgot:
             forgotCount += 1
-            // Spec: "Do not count Forgot as incorrect unless no quiz answer
             if !lastAnswerWasAutoGraded {
                 forgotCountWithoutQuiz += 1
             }

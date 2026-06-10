@@ -19,7 +19,7 @@ struct ShadowingPhraseCardView: View {
                 phraseContent(phrase)
                 playButton
             } else {
-                Text("No phrase available.")
+                Text(L10n.string("spkNoPhraseAvailable"))
                     .font(.system(size: 15, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .padding(.vertical, 16)
@@ -107,7 +107,7 @@ struct ShadowingPhraseCardView: View {
     private var loadingState: some View {
         VStack(spacing: 12) {
             ProgressView().tint(accent)
-            Text("Generating phrases…")
+            Text(L10n.string("spkGeneratingPhrases"))
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .foregroundColor(accentDark)
         }

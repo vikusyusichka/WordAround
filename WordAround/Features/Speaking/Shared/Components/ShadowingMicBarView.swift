@@ -62,7 +62,7 @@ struct ShadowingMicBarView: View {
                         .font(.system(size: Layout.convMicSideIconSize, weight: .semibold))
                         .foregroundColor(canRetry ? accent : AppColors.mutedText)
                 }
-                Text("Retry")
+                Text(L10n.localized(.commonRetry))
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                     .foregroundColor(canRetry ? accent : AppColors.mutedText)
             }

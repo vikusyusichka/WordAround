@@ -6,7 +6,7 @@ struct ReadingImportSourceSelector: View {
     let accentDark: Color
 
     var body: some View {
-        ReadingSetupSectionCard(title: "Input source", accentDark: accentDark) {
+        ReadingSetupSectionCard(title: L10n.string("readingInputSource"), accentDark: accentDark) {
             ReadingSegmentedSelector(
                 options: ReadingTextImportSource.segmentTitles,
                 selection: $selection,

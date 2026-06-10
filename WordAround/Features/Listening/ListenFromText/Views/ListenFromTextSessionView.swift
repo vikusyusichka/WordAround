@@ -63,7 +63,7 @@ struct ListenFromTextSessionView: View {
                     }
 
                     if viewModel.setup.addQuestions {
-                        ListeningSetupSectionTitle("Questions", accentDark: accentDark)
+                        ListeningSetupSectionTitle(L10n.string("listenSectionQuestions"), accentDark: accentDark)
                         if viewModel.isGeneratingQuestions {
                             ListeningLoadingRow(message: "Creating questions…", accent: accent)
                         }

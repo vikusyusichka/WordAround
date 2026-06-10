@@ -27,7 +27,7 @@ final class SetsListViewModel: ObservableObject {
         guard let user = Auth.auth().currentUser else {
             userSets = []
             continueLearningSet = nil
-            errorMessage = "User is not signed in."
+            errorMessage = L10n.string("commonNotSignedIn")
             return
         }
 
@@ -50,13 +50,13 @@ final class SetsListViewModel: ObservableObject {
     @discardableResult
     func deleteSet(_ item: HomeSetPreviewItem) async -> Bool {
         guard let user = Auth.auth().currentUser else {
-            errorMessage = "User is not signed in."
+            errorMessage = L10n.string("commonNotSignedIn")
             await refresh()
             return false
         }
 
         guard let sourceSet = item.sourceSet else {
-            errorMessage = "Set data is missing."
+            errorMessage = L10n.string("flashcardSetDataMissing")
             await refresh()
             return false
         }
@@ -89,7 +89,7 @@ final class SetsListViewModel: ObservableObject {
     @discardableResult
     func updateSet(_ item: HomeSetPreviewItem, title: String, description: String) async -> Bool {
         guard let sourceSet = item.sourceSet else {
-            errorMessage = "Set data is missing."
+            errorMessage = L10n.string("flashcardSetDataMissing")
             return false
         }
 
@@ -133,11 +133,11 @@ final class SetsListViewModel: ObservableObject {
         return HomeSetPreviewItem(
             sourceSet: set,
             title: set.title,
-            subtitle: set.description.isEmpty ? "\(set.cards.count) cards" : set.description,
+            subtitle: set.description.isEmpty ? L10n.cardsCount(set.cards.count) : set.description,
             iconSystemName: iconName(from: set.icon),
             currentValue: 0,
             totalValue: max(set.cards.count, 1),
-            unit: "cards",
+            unit: L10n.string("commonCards"),
             progress: 0,
             accentColor: theme.accent,
             backgroundColor: theme.previewBackground,

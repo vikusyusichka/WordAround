@@ -28,7 +28,7 @@ final class CreateFolderViewModel: ObservableObject {
         guard !isSaving else { return }
 
         guard let user = Auth.auth().currentUser else {
-            errorMessage = "User is not signed in."
+            errorMessage = L10n.string("commonNotSignedIn")
             return
         }
 
@@ -36,17 +36,17 @@ final class CreateFolderViewModel: ObservableObject {
         let cleanDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !cleanTitle.isEmpty else {
-            errorMessage = "Folder name is required."
+            errorMessage = L10n.string("folderNameRequired")
             return
         }
 
         guard cleanTitle.count <= 80 else {
-            errorMessage = "Folder name must be under 80 characters."
+            errorMessage = L10n.string("folderNameTooLong")
             return
         }
 
         guard cleanDescription.count <= 120 else {
-            errorMessage = "Description must be under 120 characters."
+            errorMessage = L10n.string("folderDescTooLong")
             return
         }
 

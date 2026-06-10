@@ -67,7 +67,7 @@ struct ListeningResultView: View {
                     .foregroundColor(accent)
             }
 
-            Text("Practice Complete")
+            Text(L10n.string("readingPracticeComplete"))
                 .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
 
@@ -116,13 +116,13 @@ struct ListeningResultView: View {
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 40, weight: .semibold))
                 .foregroundColor(accent)
-            Text("Listening completed")
+            Text(L10n.string("listeningCompleted"))
                 .font(.system(size: 18, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
-            Text("You listened for \(formattedTime).")
+            Text(String(format: L10n.string("listeningListenedForFormat"), formattedTime))
                 .font(.system(size: 14, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
-            Text("No questions were set for this session, so there's no comprehension score.")
+            Text(L10n.string("listeningNoQuestionsScore"))
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.mutedText)
                 .multilineTextAlignment(.center)

@@ -85,7 +85,7 @@ struct FreeSpeakingTopicCardView: View {
                         size: Layout.convScenarioChangeButtonIconSize,
                         weight: .bold
                     ))
-                Text("Edit")
+                Text(L10n.string("commonEdit"))
                     .font(.system(
                         size: Layout.convScenarioChangeButtonTextSize,
                         weight: .bold,
@@ -157,7 +157,7 @@ struct FreeSpeakingTopicCardView: View {
     private var footerRow: some View {
         HStack(spacing: 8) {
             Label {
-                Text("Free speaking topic")
+                Text(L10n.string("spkFreeSpeakingTopic"))
                     .font(.system(
                         size: Layout.convScenarioFooterTextSize,
                         weight: .semibold,

@@ -39,7 +39,7 @@ struct EssayScoreCardView: View {
     private var header: some View {
         HStack(alignment: .center, spacing: Layout.essayScoreHeaderSpacing) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Essay score")
+                Text(L10n.string("essayScore"))
                     .font(.system(size: Layout.essayScoreTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
@@ -68,12 +68,12 @@ struct EssayScoreCardView: View {
 
     private var scoreBreakdown: some View {
         VStack(spacing: Layout.essayScoreBreakdownSpacing) {
-            scoreRow(title: "Grammar", value: score.grammar)
-            scoreRow(title: "Vocabulary", value: score.vocabulary)
-            scoreRow(title: "Length", value: score.length)
-            scoreRow(title: "Complexity", value: score.complexity)
-            scoreRow(title: "Relevance", value: score.relevance)
-            scoreRow(title: "Independence", value: score.independence)
+            scoreRow(title: L10n.string("essayScoreGrammar"), value: score.grammar)
+            scoreRow(title: L10n.string("essayScoreVocabulary"), value: score.vocabulary)
+            scoreRow(title: L10n.string("essayScoreLength"), value: score.length)
+            scoreRow(title: L10n.string("essayScoreComplexity"), value: score.complexity)
+            scoreRow(title: L10n.string("essayScoreRelevance"), value: score.relevance)
+            scoreRow(title: L10n.string("essayScoreIndependence"), value: score.independence)
         }
     }
 
@@ -159,7 +159,7 @@ struct EssayScoreCardView: View {
             relevance: 18,
             independence: 51,
             cefrLevel: "A1",
-            qualityLabel: "Needs work"
+            qualityLabel: L10n.string("essayNeedsWork")
         ),
         wordCount: 108,
         issues: [],

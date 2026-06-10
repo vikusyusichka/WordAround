@@ -5,10 +5,10 @@ struct CreateGrammarNoteUseCase {
     struct Input {
         let ownerUID: String
         let topic: GrammarNoteTopic
-        let title: String        // already trimmed by caller
-        let previewText: String  // already trimmed by caller
+        let title: String
+        let previewText: String
         let noteType: GrammarNoteType
-        let tags: [String]       // already cleaned by caller
+        let tags: [String]
         let hasQuiz: Bool
         let template: GrammarNoteTemplate?
     }

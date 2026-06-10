@@ -108,15 +108,15 @@ struct FlashcardExpandedView: View {
     private var rotatingCard: some View {
         ZStack {
             cardSideView(
-                title: viewModel.activeRoundCard?.word ?? "No cards",
-                subtitle: "word",
+                title: viewModel.activeRoundCard?.word ?? L10n.string("flashcardNoCards"),
+                subtitle: L10n.string("flashcardCardSubWord"),
                 isBackSide: false
             )
             .opacity(isFlipped ? 0 : 1)
 
             cardSideView(
                 title: viewModel.activeRoundCard?.translation ?? "",
-                subtitle: "translation",
+                subtitle: L10n.string("flashcardCardSubTranslation"),
                 isBackSide: true
             )
             .opacity(isFlipped ? 1 : 0)
@@ -266,7 +266,7 @@ struct FlashcardExpandedView: View {
                 .foregroundStyle(viewModel.theme.mutedTextColor)
 
             HStack(spacing: isPadLike ? 22 : 14) {
-                progressCounter(count: inProgressCount, title: "Learning")
+                progressCounter(count: inProgressCount, title: L10n.string("flashcardLearning"))
 
                 GeometryReader { proxy in
                     ZStack(alignment: .leading) {
@@ -282,7 +282,7 @@ struct FlashcardExpandedView: View {
                 .frame(height: isPadLike ? 14 : 12)
                 .frame(maxWidth: .infinity)
 
-                progressCounter(count: knownCount, title: "Known")
+                progressCounter(count: knownCount, title: L10n.string("flashcardKnown"))
             }
         }
     }

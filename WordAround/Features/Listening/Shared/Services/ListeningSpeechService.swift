@@ -143,6 +143,5 @@ extension AVFoundationListeningSpeechService: AVSpeechSynthesizerDelegate {
     }
 
     nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
-        // Cancellation must not fire onFinish — distinguish user stop from natural EOF.
     }
 }

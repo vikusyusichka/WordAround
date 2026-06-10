@@ -73,7 +73,7 @@ private extension VerifyEmailView {
         VStack(spacing: 18) {
             ZStack {
                 animatedBadge(
-                    text: "Check inbox",
+                    text: L10n.string("authStepCheckInbox"),
                     color: Color(red: 0.98, green: 0.79, blue: 0.50),
                     x: -140,
                     y: -14,
@@ -81,7 +81,7 @@ private extension VerifyEmailView {
                 )
 
                 animatedBadge(
-                    text: "Confirm",
+                    text: L10n.string("authStepConfirm"),
                     color: Color(red: 0.66, green: 0.84, blue: 0.72),
                     x: 108,
                     y: -22,
@@ -89,7 +89,7 @@ private extension VerifyEmailView {
                 )
 
                 animatedBadge(
-                    text: "Done",
+                    text: L10n.string("commonDone"),
                     color: Color(red: 0.72, green: 0.79, blue: 0.98),
                     x: 82,
                     y: 72,
@@ -155,12 +155,12 @@ private extension VerifyEmailView {
             .frame(height: 182)
 
             VStack(spacing: 10) {
-                Text("Verify Your Email")
+                Text(L10n.string("authVerifyTitle"))
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundColor(Color(red: 0.24, green: 0.32, blue: 0.60))
                     .multilineTextAlignment(.center)
 
-                Text("One more step before you start learning")
+                Text(L10n.string("authVerifySubtitle"))
                     .font(.system(size: 17, weight: .medium, design: .rounded))
                     .foregroundColor(Color(red: 0.51, green: 0.55, blue: 0.67))
                     .multilineTextAlignment(.center)
@@ -171,7 +171,7 @@ private extension VerifyEmailView {
     var contentSection: some View {
         VStack(spacing: 18) {
             VStack(spacing: 14) {
-                Text("We sent a verification link to")
+                Text(L10n.string("authVerifySentTo"))
                     .font(.system(size: 16, weight: .medium, design: .rounded))
                     .foregroundColor(Color(red: 0.51, green: 0.55, blue: 0.67))
                     .multilineTextAlignment(.center)
@@ -183,9 +183,9 @@ private extension VerifyEmailView {
                     .padding(.horizontal, 8)
 
                 VStack(spacing: 8) {
-                    verificationStep(number: "1", text: "Open the email in your inbox")
-                    verificationStep(number: "2", text: "Tap the confirmation link")
-                    verificationStep(number: "3", text: "Return here and continue")
+                    verificationStep(number: "1", text: L10n.string("authVerifyStep1"))
+                    verificationStep(number: "2", text: L10n.string("authVerifyStep2"))
+                    verificationStep(number: "3", text: L10n.string("authVerifyStep3"))
                 }
                 .padding(.top, 6)
             }
@@ -228,7 +228,7 @@ private extension VerifyEmailView {
                 }
             } label: {
                 ZStack {
-                    Text(viewModel.isLoading ? "Checking..." : "I Verified My Email")
+                    Text(viewModel.isLoading ? L10n.string("authVerifyChecking") : L10n.string("authVerifyIVerified"))
                         .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -265,7 +265,7 @@ private extension VerifyEmailView {
                     await viewModel.resendVerificationEmail()
                 }
             } label: {
-                Text("Resend Email")
+                Text(L10n.string("authResendEmail"))
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(Color(red: 0.25, green: 0.56, blue: 0.97))
                     .frame(maxWidth: .infinity)
@@ -283,7 +283,7 @@ private extension VerifyEmailView {
             Button {
                 sessionStore.signOut()
             } label: {
-                Text("Use Another Account")
+                Text(L10n.string("authUseAnotherAccount"))
                     .font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundColor(Color(red: 0.25, green: 0.56, blue: 0.97))
             }
@@ -300,7 +300,7 @@ private extension VerifyEmailView {
             return sessionStore.currentEmail
         }
 
-        return "your email"
+        return L10n.string("authYourEmail")
     }
 
     func animatedBadge(

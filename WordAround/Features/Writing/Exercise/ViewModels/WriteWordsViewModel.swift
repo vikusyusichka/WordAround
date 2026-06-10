@@ -5,6 +5,13 @@ enum WriteWordsTrainingMode: String, CaseIterable, Identifiable {
     case wordToTranslation = "Word → Translation"
     case translationToWord = "Translation → Word"
     var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .wordToTranslation: return L10n.string("writeWordsModeW2T")
+        case .translationToWord: return L10n.string("writeWordsModeT2W")
+        }
+    }
 }
 
 enum WriteWordsDifficulty: String, CaseIterable, Identifiable {
@@ -13,6 +20,14 @@ enum WriteWordsDifficulty: String, CaseIterable, Identifiable {
     case hard   = "Hard"
 
     var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .easy:   return L10n.string("writeWordsDiffEasy")
+        case .medium: return L10n.string("writeWordsDiffMedium")
+        case .hard:   return L10n.string("writeWordsDiffHard")
+        }
+    }
 
     var icon: String {
         switch self {
@@ -24,9 +39,9 @@ enum WriteWordsDifficulty: String, CaseIterable, Identifiable {
 
     var description: String {
         switch self {
-        case .easy:   return "Unlimited hints, unlimited skips"
-        case .medium: return "1 hint letter, max 25% skips"
-        case .hard:   return "No hints, no skips, timed"
+        case .easy:   return L10n.string("writeWordsEasyDesc")
+        case .medium: return L10n.string("writeWordsMediumDesc")
+        case .hard:   return L10n.string("writeWordsHardDesc")
         }
     }
 }
@@ -126,16 +141,16 @@ final class WriteWordsViewModel: ObservableObject {
                     id: card.id,
                     sourceLanguageWord: card.word,
                     hint: "",
-                    targetLanguageTitle: "Translate to your language",
+                    targetLanguageTitle: L10n.string("writeWordsTranslateToLang"),
                     answer: card.translation
                 )
             }
         } else {
             self.exercises = [
-                WriteWordsExercise(id: UUID().uuidString, sourceLanguageWord: "manzana", hint: "", targetLanguageTitle: "Translate to your language", answer: "яблуко"),
-                WriteWordsExercise(id: UUID().uuidString, sourceLanguageWord: "casa", hint: "", targetLanguageTitle: "Translate to your language", answer: "будинок"),
-                WriteWordsExercise(id: UUID().uuidString, sourceLanguageWord: "perro", hint: "", targetLanguageTitle: "Translate to your language", answer: "собака"),
-                WriteWordsExercise(id: UUID().uuidString, sourceLanguageWord: "gato", hint: "", targetLanguageTitle: "Translate to your language", answer: "кіт")
+                WriteWordsExercise(id: UUID().uuidString, sourceLanguageWord: "manzana", hint: "", targetLanguageTitle: L10n.string("writeWordsTranslateToLang"), answer: "яблуко"),
+                WriteWordsExercise(id: UUID().uuidString, sourceLanguageWord: "casa", hint: "", targetLanguageTitle: L10n.string("writeWordsTranslateToLang"), answer: "будинок"),
+                WriteWordsExercise(id: UUID().uuidString, sourceLanguageWord: "perro", hint: "", targetLanguageTitle: L10n.string("writeWordsTranslateToLang"), answer: "собака"),
+                WriteWordsExercise(id: UUID().uuidString, sourceLanguageWord: "gato", hint: "", targetLanguageTitle: L10n.string("writeWordsTranslateToLang"), answer: "кіт")
             ]
         }
         resetAnswerState()
@@ -159,7 +174,7 @@ final class WriteWordsViewModel: ObservableObject {
 
     var displayTitle: String {
         switch trainingMode {
-        case .wordToTranslation: return "Translate to your language"
+        case .wordToTranslation: return L10n.string("writeWordsTranslateToLang")
         case .translationToWord: return exercise.targetLanguageTitle
         }
     }

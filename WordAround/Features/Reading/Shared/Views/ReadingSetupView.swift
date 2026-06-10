@@ -24,7 +24,7 @@ struct ReadingSetupView: View {
                     )
                     .padding(.bottom, 4)
 
-                    ReadingSetupSectionCard(title: "Language", accentDark: config.accentDark) {
+                    ReadingSetupSectionCard(title: L10n.string("spkSectionLanguage"), accentDark: config.accentDark) {
                         LanguageSelectorView(
                             selectedLanguage: viewModel.selectedLanguage,
                             onSelect: { viewModel.selectedLanguage = $0 },
@@ -43,7 +43,7 @@ struct ReadingSetupView: View {
                         }
                     }
 
-                    ReadingSetupSectionCard(title: "Preview", accentDark: config.accentDark) {
+                    ReadingSetupSectionCard(title: L10n.string("commonPreview"), accentDark: config.accentDark) {
                         ReadingPreviewCard(
                             title: config.previewTitle,
                             subtitle: config.previewSubtitle,

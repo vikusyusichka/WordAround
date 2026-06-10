@@ -23,13 +23,13 @@ struct DescribePicturePromptCardView: View {
                         .foregroundColor(orange)
                 }
 
-                Text("Describe what you can see in this picture.")
+                Text(L10n.string("spkDescribeWhatYouSee"))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.orangeTitle)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            Text("Try to mention:")
+            Text(L10n.string("spkTryToMention"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
 

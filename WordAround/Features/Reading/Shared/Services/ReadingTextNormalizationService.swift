@@ -39,10 +39,10 @@ enum ReadingTextNormalizationService {
     private static func removeMarkdown(_ text: String) -> String {
         var result = text
         let patterns = [
-            "\\*\\*(.+?)\\*\\*",   // **bold**
-            "__(.+?)__",           // __bold__
-            "\\*(.+?)\\*",          // *italic*
-            "(?<!\\w)_(.+?)_(?!\\w)" // _italic_
+            "\\*\\*(.+?)\\*\\*",
+            "__(.+?)__",
+            "\\*(.+?)\\*",
+            "(?<!\\w)_(.+?)_(?!\\w)"
         ]
         for pattern in patterns {
             result = replace(pattern: pattern, in: result, with: "$1")

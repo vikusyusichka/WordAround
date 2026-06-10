@@ -25,7 +25,7 @@ struct SpeakingView: View {
                 totalMinutes: viewModel.dailyGoalMinutes
             )
 
-            Text("Practice modes")
+            Text(L10n.string("readingPracticeModes"))
                 .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
                 .padding(.top, Layout.homeSectionTitleTopPadding)

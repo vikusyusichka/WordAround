@@ -48,10 +48,10 @@ final class ReadingModeLibraryViewModel: ObservableObject {
 
     var addButtonTitle: String {
         switch mode.id {
-        case "reading-from-sets":   return "Create From Set"
-        case "story-mode":          return "Start Story"
-        case "speed-reading":       return "Start Speed Practice"
-        default:                    return "Add"
+        case "reading-from-sets":   return L10n.string("readingAddFromSet")
+        case "story-mode":          return L10n.string("readingStartStory")
+        case "speed-reading":       return L10n.string("readingStartSpeed")
+        default:                    return L10n.string("commonAdd")
         }
     }
 
@@ -66,19 +66,19 @@ final class ReadingModeLibraryViewModel: ObservableObject {
 
     var emptyTitle: String {
         switch mode.id {
-        case "reading-from-sets":   return "No set-based readings yet"
-        case "story-mode":          return "No stories yet"
-        case "speed-reading":       return "No speed sessions yet"
-        default:                    return "Nothing here yet"
+        case "reading-from-sets":   return L10n.string("readingEmptyFromSetsTitle")
+        case "story-mode":          return L10n.string("readingEmptyStoryTitle")
+        case "speed-reading":       return L10n.string("readingEmptySpeedTitle")
+        default:                    return L10n.string("readingEmptyDefaultTitle")
         }
     }
 
     var emptySubtitle: String {
         switch mode.id {
-        case "reading-from-sets":   return "Create reading sessions from your flashcard sets."
-        case "story-mode":          return "Start stories, unlock chapters, and continue reading."
-        case "speed-reading":       return "Train faster reading with timed exercises."
-        default:                    return "Tap add to get started."
+        case "reading-from-sets":   return L10n.string("readingEmptyFromSetsSubtitle")
+        case "story-mode":          return L10n.string("readingEmptyStorySubtitle")
+        case "speed-reading":       return L10n.string("readingEmptySpeedSubtitle")
+        default:                    return L10n.string("readingEmptyDefaultSubtitle")
         }
     }
 
@@ -112,7 +112,7 @@ final class ReadingModeLibraryViewModel: ObservableObject {
 
     func deleteItem(_ item: ReadingLibraryItem) {
         guard let userId = currentUserId() else { return }
-        items.removeAll { $0.id == item.id } // optimistic
+        items.removeAll { $0.id == item.id }
         Task {
             do {
                 try await storage.deleteItem(item, for: userId)

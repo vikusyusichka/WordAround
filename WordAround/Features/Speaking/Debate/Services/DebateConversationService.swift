@@ -171,7 +171,6 @@ final class DebateConversationService {
         "AI limit reached. Using fallback."
     }
 
-    /// Local-only hints; never sent to the AI or added to the transcript.
     static func localHints(for language: GrammarLanguage) -> [String] {
         switch language {
         case .spanish:

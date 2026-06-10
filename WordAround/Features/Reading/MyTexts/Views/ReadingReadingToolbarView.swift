@@ -40,7 +40,7 @@ struct ReadingReadingToolbarView: View {
 
     private var textCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Text")
+            Text(L10n.string("homeCreateText"))
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(accent)
 
@@ -83,7 +83,7 @@ struct ReadingReadingToolbarView: View {
     private var translationLanguageCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
-                Text("From")
+                Text(L10n.string("readingFrom"))
                     .font(.system(size: 12, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                 Text(sourceLanguage.title)
@@ -98,7 +98,7 @@ struct ReadingReadingToolbarView: View {
             LanguageSelectorView(
                 selectedLanguage: translationTargetLanguage,
                 onSelect: onSelectTranslationTarget,
-                label: "Translate to",
+                label: L10n.string("readingTranslateTo"),
                 excludedLanguages: [sourceLanguage],
                 accent: accent,
                 accentDark: accentDark
@@ -122,7 +122,7 @@ struct ReadingReadingToolbarView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Translation")
+                    Text(L10n.string("commonTranslation"))
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                         .foregroundColor(accentDark)
                     Text("\(sourceLanguage.title) → \(translationTargetLanguage.title)")
@@ -137,7 +137,7 @@ struct ReadingReadingToolbarView: View {
                 HStack(spacing: 10) {
                     ProgressView()
                         .tint(accent)
-                    Text("Translating…")
+                    Text(L10n.string("readingTranslating"))
                         .font(.system(size: 14, weight: .medium, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                 }

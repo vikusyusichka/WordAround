@@ -1,0 +1,41 @@
+{
+  "readingActionStart": {
+    "en": "Start", "uk": "Почати", "es": "Empezar",
+    "fr": "Commencer", "de": "Starten", "it": "Inizia",
+    "pt": "Começar", "ru": "Начать", "pl": "Rozpocznij",
+    "nl": "Start", "ja": "開始", "ko": "시작",
+    "zh": "开始", "hi": "शुरू करें", "ar": "ابدأ",
+    "bn": "শুরু করুন", "ur": "شروع کریں", "id": "Mulai",
+    "tr": "Başla", "vi": "Bắt đầu", "fa": "شروع",
+    "ro": "Începe", "th": "เริ่ม", "el": "Έναρξη",
+    "cs": "Začít", "hu": "Kezdés", "sv": "Starta",
+    "he": "התחל", "no": "Start", "da": "Start",
+    "fi": "Aloita", "bg": "Започни"
+  },
+  "readingOpenedFormat": {
+    "en": "Opened %@", "uk": "Відкрито %@", "es": "Abierto %@",
+    "fr": "Ouvert %@", "de": "Geöffnet %@", "it": "Aperto %@",
+    "pt": "Aberto %@", "ru": "Открыто %@", "pl": "Otwarto %@",
+    "nl": "Geopend %@", "ja": "開いた %@", "ko": "%@에 열림",
+    "zh": "打开于 %@", "hi": "%@ को खोला", "ar": "فُتح %@",
+    "bn": "%@ এ খোলা হয়েছে", "ur": "%@ کو کھولا", "id": "Dibuka %@",
+    "tr": "%@ açıldı", "vi": "Đã mở %@", "fa": "باز شده %@",
+    "ro": "Deschis %@", "th": "เปิดเมื่อ %@", "el": "Άνοιξε %@",
+    "cs": "Otevřeno %@", "hu": "Megnyitva %@", "sv": "Öppnad %@",
+    "he": "נפתח %@", "no": "Åpnet %@", "da": "Åbnet %@",
+    "fi": "Avattu %@", "bg": "Отворено %@"
+  },
+  "readingAddedFormat": {
+    "en": "Added %@", "uk": "Додано %@", "es": "Añadido %@",
+    "fr": "Ajouté %@", "de": "Hinzugefügt %@", "it": "Aggiunto %@",
+    "pt": "Adicionado %@", "ru": "Добавлено %@", "pl": "Dodano %@",
+    "nl": "Toegevoegd %@", "ja": "追加 %@", "ko": "%@에 추가됨",
+    "zh": "添加于 %@", "hi": "%@ को जोड़ा", "ar": "أُضيف %@",
+    "bn": "%@ এ যোগ করা হয়েছে", "ur": "%@ کو شامل کیا", "id": "Ditambahkan %@",
+    "tr": "%@ eklendi", "vi": "Đã thêm %@", "fa": "افزوده شده %@",
+    "ro": "Adăugat %@", "th": "เพิ่มเมื่อ %@", "el": "Προστέθηκε %@",
+    "cs": "Přidáno %@", "hu": "Hozzáadva %@", "sv": "Tillagd %@",
+    "he": "נוסף %@", "no": "Lagt til %@", "da": "Tilføjet %@",
+    "fi": "Lisätty %@", "bg": "Добавено %@"
+  }
+}

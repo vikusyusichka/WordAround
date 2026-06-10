@@ -23,15 +23,15 @@ struct ShadowingSetupView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     SpeakingSetupTopBar(
-                        title: "Shadowing",
-                        subtitle: "Listen, repeat, and improve pronunciation.",
+                        title: L10n.string("spkShadowing"),
+                        subtitle: L10n.string("spkShadowingSubtitle"),
                         accent: accent,
                         accentDark: accentDark,
                         onBack: { dismiss() }
                     )
                     .padding(.bottom, 4)
 
-                    SpeakingSetupSectionTitle("Language", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLanguage"), accentDark: accentDark)
                     LanguageSelectorView(
                         selectedLanguage: selectedLanguage,
                         onSelect: { selectedLanguage = $0 },
@@ -39,7 +39,7 @@ struct ShadowingSetupView: View {
                         accentDark: accentDark
                     )
 
-                    SpeakingSetupSectionTitle("Level", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLevel"), accentDark: accentDark)
                     DifficultySelectorView(
                         selectedDifficulty: selectedLevel,
                         onSelect: { selectedLevel = $0 },
@@ -47,10 +47,10 @@ struct ShadowingSetupView: View {
                         accentDark: accentDark
                     )
 
-                    SpeakingSetupSectionTitle("Phrase set", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionPhraseSet"), accentDark: accentDark)
                     categoryGrid
 
-                    SpeakingSetupSectionTitle("Preview", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("commonPreview"), accentDark: accentDark)
                     previewCard
 
                     Spacer().frame(height: Layout.convSetupStartButtonHeight + 32)
@@ -63,7 +63,7 @@ struct ShadowingSetupView: View {
             }
 
             SpeakingSetupStartButton(
-                title: "Start Shadowing",
+                title: L10n.string("spkStartShadowing"),
                 icon: "headphones",
                 accent: accent,
                 accentDark: accentDark,
@@ -137,7 +137,7 @@ struct ShadowingSetupView: View {
                 Text(selectedCategory.title)
                     .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
-                Text("Listen and repeat \(selectedCategory.title.lowercased()) in \(selectedLanguage.title) · \(selectedLevel.title).")
+                Text(String(format: L10n.string("spkListenAndRepeatFmt"), selectedCategory.title.lowercased(), selectedLanguage.title, selectedLevel.title))
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .lineSpacing(2)

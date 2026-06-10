@@ -10,7 +10,7 @@ struct ListeningShadowingPlaceholderView: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                 ListeningSetupTopBar(
-                    title: "Shadowing",
+                    title: L10n.string("spkShadowing"),
                     subtitle: payload.title,
                     accent: accent,
                     accentDark: accentDark,
@@ -25,10 +25,10 @@ struct ListeningShadowingPlaceholderView: View {
                                 .font(.system(size: 28, weight: .semibold))
                                 .foregroundColor(accent)
                         }
-                        Text("Shadowing practice")
+                        Text(L10n.string("listeningShadowingTitle"))
                             .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
                             .foregroundColor(accentDark)
-                        Text("Shadowing practice will help you repeat video phrases and improve pronunciation.")
+                        Text(L10n.string("listeningShadowingDesc"))
                             .font(.system(size: 14, weight: .medium, design: .rounded))
                             .foregroundColor(AppColors.textSecondary)
                             .multilineTextAlignment(.center)
@@ -37,7 +37,7 @@ struct ListeningShadowingPlaceholderView: View {
                 }
 
                 if !payload.selectedWords.isEmpty {
-                    ListeningSetupSectionTitle("Saved words", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenSectionSavedWords"), accentDark: accentDark)
                     card {
                         VStack(alignment: .leading, spacing: 8) {
                             ForEach(payload.selectedWords) { word in
@@ -56,7 +56,7 @@ struct ListeningShadowingPlaceholderView: View {
                 }
 
                 if !payload.phrases.isEmpty {
-                    ListeningSetupSectionTitle("Phrases to practice", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenSectionPhrasesToPractice"), accentDark: accentDark)
                     card {
                         VStack(alignment: .leading, spacing: 8) {
                             ForEach(Array(payload.phrases.enumerated()), id: \.offset) { _, phrase in

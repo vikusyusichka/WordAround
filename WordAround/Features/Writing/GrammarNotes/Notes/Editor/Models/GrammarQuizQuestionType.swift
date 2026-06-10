@@ -10,10 +10,10 @@ enum GrammarQuizQuestionType: String, Codable, CaseIterable, Identifiable, Equat
 
     var title: String {
         switch self {
-        case .multipleChoice: return "Multiple Choice"
-        case .trueFalse:      return "True / False"
-        case .fillGap:        return "Fill Gap"
-        case .shortAnswer:    return "Short Answer"
+        case .multipleChoice: return L10n.string("notesQTypeMultiple")
+        case .trueFalse:      return L10n.string("notesQTypeTrueFalse")
+        case .fillGap:        return L10n.string("notesQTypeFillGap")
+        case .shortAnswer:    return L10n.string("notesQTypeShortAnswer")
         }
     }
 

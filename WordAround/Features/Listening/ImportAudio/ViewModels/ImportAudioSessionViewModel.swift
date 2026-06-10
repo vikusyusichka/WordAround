@@ -70,7 +70,6 @@ final class ImportAudioSessionViewModel: ObservableObject {
         guard !didLoad else { return }
         didLoad = true
 
-        // Validate the file exists before loading — storedFileName can be empty
         let url = setup.audioURL
         guard !setup.storedFileName.isEmpty,
               FileManager.default.fileExists(atPath: url.path) else {

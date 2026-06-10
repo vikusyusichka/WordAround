@@ -67,19 +67,19 @@ struct GrammarReviewSessionSummaryView: View {
 
     private var motivationalMessage: String {
         guard totalReviewed > 0 else {
-            return "Nothing was due this session. Come back later or add more notes to review."
+            return L10n.string("notesSummaryNothingDue")
         }
         let failedCount = forgotCount + hardCount
         if failedCount == 0 {
-            return "Perfect recall on every card. Outstanding session."
+            return L10n.string("notesSummaryPerfect")
         }
         if failedCount == totalReviewed {
-            return "Tough one — these items will resurface sooner to help them stick."
+            return L10n.string("notesSummaryTough")
         }
         if correctCount > incorrectCount {
-            return "Nice work. A few items will come back sooner for extra practice."
+            return L10n.string("notesSummaryNice")
         }
-        return "Keep going — repetition builds memory. You'll get there."
+        return L10n.string("notesSummaryKeepGoing")
     }
 
     private var statsGrid: some View {
@@ -109,7 +109,7 @@ struct GrammarReviewSessionSummaryView: View {
 
     private var ratingBreakdown: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Rating Breakdown")
+            Text(L10n.string("notesRatingBreakdown"))
                 .font(.system(size: 13, weight: .black, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
                 .textCase(.uppercase)
@@ -153,7 +153,7 @@ struct GrammarReviewSessionSummaryView: View {
                 .foregroundStyle(AppColors.primaryBlue)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Next review")
+                Text(L10n.string("notesNextReview"))
                     .font(.system(size: 11, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlue)
 
@@ -170,16 +170,16 @@ struct GrammarReviewSessionSummaryView: View {
     }
 
     private var nextReviewHintText: String {
-        if forgotCount > 0 { return "Some items are due in 4 hours." }
-        if hardCount > 0 { return "Hard items return tomorrow." }
-        if goodCount > 0 { return "Good items return in 3 days." }
-        if easyCount > 0 { return "All items return in 7 days." }
-        return "Items are scheduled based on your ratings."
+        if forgotCount > 0 { return L10n.string("notesNextDue4h") }
+        if hardCount > 0 { return L10n.string("notesNextHardTomorrow") }
+        if goodCount > 0 { return L10n.string("notesNextGood3d") }
+        if easyCount > 0 { return L10n.string("notesNextEasy7d") }
+        return L10n.string("notesNextScheduled")
     }
 
     private var doneButton: some View {
         Button(action: onDone) {
-            Text("Back to Notes")
+            Text(L10n.string("notesBackToNotes"))
                 .font(.system(size: 15, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)

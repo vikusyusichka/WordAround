@@ -140,7 +140,8 @@ struct GrammarNoteEditorView: View {
             if shown { pendingTagsText = viewModel.note.tags.joined(separator: ", ") }
         }
         .confirmationDialog(
-            pendingTemplate.map { "Apply \"\($0.title)\"?" } ?? "Apply template?",
+            pendingTemplate.map { String(format: L10n.string("editorApplyTemplateTitleFmt"), $0.title) }
+                ?? L10n.string("editorApplyTemplateTitleGeneric"),
             isPresented: Binding(
                 get: { pendingTemplate != nil },
                 set: { if !$0 { pendingTemplate = nil } }
@@ -148,26 +149,26 @@ struct GrammarNoteEditorView: View {
             titleVisibility: .visible,
             presenting: pendingTemplate
         ) { template in
-            Button("Replace current content", role: .destructive) {
+            Button(L10n.string("editorApplyTemplateReplace"), role: .destructive) {
                 viewModel.applyTemplate(template, mode: .replace, allowsQuiz: allowsQuiz)
                 pendingTemplate = nil
             }
-            Button("Append template blocks") {
+            Button(L10n.string("editorApplyTemplateAppend")) {
                 viewModel.applyTemplate(template, mode: .append, allowsQuiz: allowsQuiz)
                 pendingTemplate = nil
             }
-            Button("Cancel", role: .cancel) {
+            Button(L10n.localized(.commonCancel), role: .cancel) {
                 pendingTemplate = nil
             }
         } message: { _ in
-            Text("This note already has content. Choose how to apply the template.")
+            Text(L10n.string("editorApplyTemplateMessage"))
         }
         .confirmationDialog(
-            "Delete this note?",
+            L10n.string("editorDeleteNoteTitle"),
             isPresented: $isDeleteConfirmPresented,
             titleVisibility: .visible
         ) {
-            Button("Delete Note", role: .destructive) {
+            Button(L10n.string("editorDeleteNoteButton"), role: .destructive) {
                 Task {
                     let deletedNote = viewModel.note
                     if await viewModel.deleteNote() {
@@ -176,9 +177,9 @@ struct GrammarNoteEditorView: View {
                     }
                 }
             }
-            Button("Cancel", role: .cancel) {}
+            Button(L10n.localized(.commonCancel), role: .cancel) {}
         } message: {
-            Text("This note and its content will be permanently deleted.")
+            Text(L10n.string("editorDeleteNoteMessage"))
         }
         .onDisappear {
             Task { await viewModel.saveIfDirty() }
@@ -212,7 +213,7 @@ struct GrammarNoteEditorView: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 TextField(
-                    "Untitled note",
+                    L10n.string("editorUntitledNote"),
                     text: Binding(
                         get: { viewModel.title },
                         set: { viewModel.updateTitle($0) }
@@ -234,7 +235,7 @@ struct GrammarNoteEditorView: View {
                 headerIconButton(
                     systemImage: viewModel.note.isFavorite ? "heart.fill" : "heart",
                     tint: viewModel.note.isFavorite ? GrammarNoteType.mistake.tintColor : AppColors.primaryBlueDark,
-                    accessibilityLabel: viewModel.note.isFavorite ? "Remove from Favourites" : "Add to Favourites"
+                    accessibilityLabel: L10n.string(viewModel.note.isFavorite ? "editorRemoveFromFavorites" : "editorAddToFavorites")
                 ) {
                     viewModel.toggleFavorite()
                 }
@@ -246,7 +247,7 @@ struct GrammarNoteEditorView: View {
                 headerIconButton(
                     systemImage: "tag",
                     tint: viewModel.note.tags.isEmpty ? AppColors.primaryBlueDark : AppColors.primaryBlue,
-                    accessibilityLabel: "Edit Tags"
+                    accessibilityLabel: L10n.string("editorEditTagsA11y")
                 ) {
                     isTagsSheetPresented = true
                 }
@@ -268,17 +269,17 @@ struct GrammarNoteEditorView: View {
                     Button {
                         isCreateQuizSheetPresented = true
                     } label: {
-                        Label("Create New Quiz", systemImage: "plus.circle")
+                        Label(L10n.string("editorCreateNewQuiz"), systemImage: "plus.circle")
                     }
                     Button {
                         isQuizListSheetPresented = true
                     } label: {
-                        Label("View Quizzes", systemImage: "list.bullet.rectangle")
+                        Label(L10n.string("editorViewQuizzes"), systemImage: "list.bullet.rectangle")
                     }
                     Button {
                         isQuizListSheetPresented = true
                     } label: {
-                        Label("Manage Quizzes", systemImage: "slider.horizontal.3")
+                        Label(L10n.string("editorManageQuizzes"), systemImage: "slider.horizontal.3")
                     }
                 } label: {
                     quizButtonLabel(
@@ -286,7 +287,7 @@ struct GrammarNoteEditorView: View {
                         tint: AppColors.primaryBlue
                     )
                 }
-                .accessibilityLabel("Quiz options")
+                .accessibilityLabel(L10n.string("editorQuizOptions"))
             } else {
                 Button {
                     isCreateQuizSheetPresented = true
@@ -297,7 +298,7 @@ struct GrammarNoteEditorView: View {
                     )
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Create Quiz")
+                .accessibilityLabel(L10n.string("editorCreateQuiz"))
             }
         }
     }
@@ -316,43 +317,43 @@ struct GrammarNoteEditorView: View {
             Button {
                 isTitleFocused = true
             } label: {
-                Label("Rename Note", systemImage: "pencil")
+                Label(L10n.string("editorRenameNote"), systemImage: "pencil")
             }
             Button {
                 isNoteTypePickerPresented = true
             } label: {
-                Label("Change Note Type", systemImage: "arrow.triangle.2.circlepath")
+                Label(L10n.string("editorChangeNoteType"), systemImage: "arrow.triangle.2.circlepath")
             }
             Button {
                 viewModel.togglePinned()
             } label: {
                 Label(
-                    viewModel.note.isPinned ? "Unpin" : "Pin to Top",
+                    L10n.string(viewModel.note.isPinned ? "editorUnpin" : "editorPinToTop"),
                     systemImage: viewModel.note.isPinned ? "pin.slash" : "pin"
                 )
             }
 
             Divider()
 
-            Button("Use template") { isTemplateSheetPresented = true }
+            Button(L10n.string("editorUseTemplate")) { isTemplateSheetPresented = true }
             Button {
                 viewModel.saveAsTemplate()
             } label: {
-                Label("Save as Template", systemImage: "square.and.arrow.down")
+                Label(L10n.string("editorSaveAsTemplate"), systemImage: "square.and.arrow.down")
             }
             Button {
                 viewModel.addToReview()
             } label: {
-                Label("Add to Review", systemImage: "brain.head.profile")
+                Label(L10n.string("editorAddToReview"), systemImage: "brain.head.profile")
             }
-            Button("Save now") { Task { await viewModel.saveNow() } }
+            Button(L10n.string("editorSaveNow")) { Task { await viewModel.saveNow() } }
 
             Divider()
 
             Button(role: .destructive) {
                 isDeleteConfirmPresented = true
             } label: {
-                Label("Delete Note", systemImage: "trash")
+                Label(L10n.string("editorDeleteNoteButton"), systemImage: "trash")
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -418,14 +419,14 @@ struct GrammarNoteEditorView: View {
 
     private var toolbarItems: some View {
         HStack(spacing: 9) {
-            toolbarButton("H1",      type: .heading)
-            toolbarButton("H2",      type: .subheading)
-            toolbarButton("Text",    type: .paragraph)
-            toolbarButton("Bullets", type: .bulletList)
-            toolbarButton("Numbers", type: .numberedList)
-            toolbarButton("Check",   type: .checklist)
-            toolbarButton("Quote",   type: .quote)
-            toolbarButton("Image",   type: .image)
+            toolbarButton("H1",                                  type: .heading)
+            toolbarButton("H2",                                  type: .subheading)
+            toolbarButton(L10n.string("noteBlockTitleParagraph"), type: .paragraph)
+            toolbarButton(L10n.string("editorToolbarBullets"),    type: .bulletList)
+            toolbarButton(L10n.string("editorToolbarNumbers"),    type: .numberedList)
+            toolbarButton(L10n.string("editorToolbarCheck"),      type: .checklist)
+            toolbarButton(L10n.string("noteBlockTitleQuote"),     type: .quote)
+            toolbarButton(L10n.string("noteBlockTitleImage"),     type: .image)
             moreBlocksMenu
         }
     }
@@ -448,30 +449,30 @@ struct GrammarNoteEditorView: View {
     private var moreBlocksMenu: some View {
         Menu {
             Button { insertBlock(.rule) } label: {
-                Label("Rule", systemImage: GrammarNoteBlockType.rule.systemImage)
+                Label(L10n.string("noteBlockTitleRule"), systemImage: GrammarNoteBlockType.rule.systemImage)
             }
             Button { insertBlock(.example) } label: {
-                Label("Example", systemImage: GrammarNoteBlockType.example.systemImage)
+                Label(L10n.string("noteBlockTitleExample"), systemImage: GrammarNoteBlockType.example.systemImage)
             }
             Button { insertBlock(.warning) } label: {
-                Label("Warning", systemImage: GrammarNoteBlockType.warning.systemImage)
+                Label(L10n.string("noteBlockTitleWarning"), systemImage: GrammarNoteBlockType.warning.systemImage)
             }
             Button { insertBlock(.comparison) } label: {
-                Label("Comparison", systemImage: GrammarNoteBlockType.comparison.systemImage)
+                Label(L10n.string("noteBlockTitleComparison"), systemImage: GrammarNoteBlockType.comparison.systemImage)
             }
             Button { insertBlock(.exercise) } label: {
-                Label("Exercise", systemImage: GrammarNoteBlockType.exercise.systemImage)
+                Label(L10n.string("noteBlockTitleExercise"), systemImage: GrammarNoteBlockType.exercise.systemImage)
             }
             Button { insertBlock(.divider) } label: {
-                Label("Divider", systemImage: GrammarNoteBlockType.divider.systemImage)
+                Label(L10n.string("noteBlockTitleDivider"), systemImage: GrammarNoteBlockType.divider.systemImage)
             }
             if allowsQuiz {
                 Button { insertBlock(.quiz) } label: {
-                    Label("Quiz", systemImage: GrammarNoteBlockType.quiz.systemImage)
+                    Label(L10n.string("noteBlockTitleQuiz"), systemImage: GrammarNoteBlockType.quiz.systemImage)
                 }
             }
         } label: {
-            Text("More")
+            Text(L10n.string("editorToolbarMore"))
                 .font(.system(size: 12, weight: .bold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlue)
                 .padding(.horizontal, 13)
@@ -534,7 +535,7 @@ struct GrammarNoteEditorView: View {
             ProgressView()
                 .tint(AppColors.primaryBlue)
                 .scaleEffect(1.1)
-            Text("Loading note…")
+            Text(L10n.string("editorLoadingNote"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
         }
@@ -553,19 +554,19 @@ struct GrammarNoteEditorView: View {
                     .foregroundStyle(AppColors.primaryBlue)
             }
 
-            Text("Start building your note")
+            Text(L10n.string("editorEmptyTitle"))
                 .font(.system(size: isRegular ? 22 : 18, weight: .black, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
 
-            Text("Tap a block above, or start from one of these.")
+            Text(L10n.string("editorEmptySubtitle"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
 
             HStack(spacing: 8) {
-                emptyActionPill("Text",    systemImage: "text.alignleft")    { insertBlock(.paragraph) }
-                emptyActionPill("Rule",    systemImage: GrammarNoteBlockType.rule.systemImage) { insertBlock(.rule) }
-                emptyActionPill("Example", systemImage: GrammarNoteBlockType.example.systemImage) { insertBlock(.example) }
-                emptyActionPill("Quote",   systemImage: "quote.opening")     { insertBlock(.quote) }
+                emptyActionPill(L10n.string("noteBlockTitleParagraph"), systemImage: "text.alignleft")               { insertBlock(.paragraph) }
+                emptyActionPill(L10n.string("noteBlockTitleRule"),      systemImage: GrammarNoteBlockType.rule.systemImage)    { insertBlock(.rule) }
+                emptyActionPill(L10n.string("noteBlockTitleExample"),   systemImage: GrammarNoteBlockType.example.systemImage) { insertBlock(.example) }
+                emptyActionPill(L10n.string("noteBlockTitleQuote"),     systemImage: "quote.opening")                { insertBlock(.quote) }
             }
         }
         .padding(22)
@@ -617,11 +618,11 @@ struct GrammarNoteEditorView: View {
             ZStack {
                 AppColors.appBackground.ignoresSafeArea()
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("Separate tags with commas.")
+                    Text(L10n.string("editorTagsHint"))
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppColors.textSecondary)
 
-                    TextField("A1, verbs, articles", text: $pendingTagsText)
+                    TextField(L10n.string("editorTagsPlaceholder"), text: $pendingTagsText)
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppColors.primaryBlueDark)
                         .tint(AppColors.primaryBlue)
@@ -637,11 +638,11 @@ struct GrammarNoteEditorView: View {
                 }
                 .padding(20)
             }
-            .navigationTitle("Tags")
+            .navigationTitle(L10n.string("editorTagsTitle"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
+                    Button(L10n.localized(.commonDone)) {
                         viewModel.updateTags(parsedTags(from: pendingTagsText))
                         isTagsSheetPresented = false
                     }
@@ -649,7 +650,7 @@ struct GrammarNoteEditorView: View {
                     .foregroundStyle(AppColors.primaryBlue)
                 }
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { isTagsSheetPresented = false }
+                    Button(L10n.localized(.commonCancel)) { isTagsSheetPresented = false }
                         .foregroundStyle(AppColors.textSecondary)
                 }
             }
@@ -685,7 +686,7 @@ struct GrammarNoteEditorView: View {
                     .padding(.top, 12)
                     .padding(.bottom, 20)
 
-                Text("Note Type")
+                Text(L10n.string("editorNoteTypeTitle"))
                     .font(.system(size: 20, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
                     .frame(maxWidth: .infinity, alignment: .leading)

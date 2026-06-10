@@ -14,13 +14,13 @@ final class VerifyEmailViewModel: ObservableObject {
         defer { isLoading = false }
 
         guard let user = Auth.auth().currentUser else {
-            errorMessage = "No active account found"
+            errorMessage = L10n.string("authNoActiveAccount")
             return
         }
 
         do {
             try await user.sendEmailVerification()
-            infoMessage = "Verification email sent again"
+            infoMessage = L10n.string("authVerifyResent")
         } catch {
             errorMessage = mapFirebaseError(error)
         }
@@ -32,7 +32,7 @@ final class VerifyEmailViewModel: ObservableObject {
         defer { isLoading = false }
 
         guard let user = Auth.auth().currentUser else {
-            errorMessage = "No active account found"
+            errorMessage = L10n.string("authNoActiveAccount")
             return
         }
 
@@ -42,7 +42,7 @@ final class VerifyEmailViewModel: ObservableObject {
             if user.isEmailVerified {
                 await sessionStore.refreshAuthState()
             } else {
-                errorMessage = "Email is not verified yet"
+                errorMessage = L10n.string("authEmailNotVerified")
             }
         } catch {
             errorMessage = mapFirebaseError(error)
@@ -59,11 +59,11 @@ final class VerifyEmailViewModel: ObservableObject {
 
         switch AuthErrorCode(rawValue: nsError.code) {
         case .networkError:
-            return "Network error. Check your internet connection"
+            return L10n.string("authErrNetwork")
         case .userNotFound:
-            return "No active account found"
+            return L10n.string("authNoActiveAccount")
         case .tooManyRequests:
-            return "Too many attempts. Try again later"
+            return L10n.string("authErrTooManyAttempts")
         default:
             return nsError.localizedDescription
         }

@@ -154,7 +154,7 @@ struct ImportVideoSessionView: View {
 
     private var questionCardsList: some View {
         VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-            ListeningSetupSectionTitle("Questions", accentDark: accentDark)
+            ListeningSetupSectionTitle(L10n.string("listenSectionQuestions"), accentDark: accentDark)
             if viewModel.isGeneratingQuestions {
                 ListeningLoadingRow(message: "Creating questions…", accent: accent)
             }
@@ -170,7 +170,7 @@ struct ImportVideoSessionView: View {
     private var watchOnlyNote: some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "captions.bubble").foregroundColor(accent)
-            Text("No questions for this session. Watch the video and tap subtitle words to translate and save them.")
+            Text(L10n.string("listeningVideoNoQuestions"))
                 .font(.system(size: 13, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)

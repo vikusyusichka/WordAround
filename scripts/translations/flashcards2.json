@@ -1,0 +1,54 @@
+{
+  "commonWord": {
+    "en": "Word", "uk": "Слово", "es": "Palabra",
+    "fr": "Mot", "de": "Wort", "it": "Parola",
+    "pt": "Palavra", "ru": "Слово", "pl": "Słowo",
+    "nl": "Woord", "ja": "単語", "ko": "단어",
+    "zh": "单词", "hi": "शब्द", "ar": "كلمة",
+    "bn": "শব্দ", "ur": "لفظ", "id": "Kata",
+    "tr": "Kelime", "vi": "Từ", "fa": "کلمه",
+    "ro": "Cuvânt", "th": "คำ", "el": "Λέξη",
+    "cs": "Slovo", "hu": "Szó", "sv": "Ord",
+    "he": "מילה", "no": "Ord", "da": "Ord",
+    "fi": "Sana", "bg": "Дума"
+  },
+  "commonTranslation": {
+    "en": "Translation", "uk": "Переклад", "es": "Traducción",
+    "fr": "Traduction", "de": "Übersetzung", "it": "Traduzione",
+    "pt": "Tradução", "ru": "Перевод", "pl": "Tłumaczenie",
+    "nl": "Vertaling", "ja": "翻訳", "ko": "번역",
+    "zh": "翻译", "hi": "अनुवाद", "ar": "ترجمة",
+    "bn": "অনুবাদ", "ur": "ترجمہ", "id": "Terjemahan",
+    "tr": "Çeviri", "vi": "Bản dịch", "fa": "ترجمه",
+    "ro": "Traducere", "th": "คำแปล", "el": "Μετάφραση",
+    "cs": "Překlad", "hu": "Fordítás", "sv": "Översättning",
+    "he": "תרגום", "no": "Oversettelse", "da": "Oversættelse",
+    "fi": "Käännös", "bg": "Превод"
+  },
+  "flashcardExampleOptional": {
+    "en": "Example (optional)", "uk": "Приклад (необов'язково)", "es": "Ejemplo (opcional)",
+    "fr": "Exemple (facultatif)", "de": "Beispiel (optional)", "it": "Esempio (facoltativo)",
+    "pt": "Exemplo (opcional)", "ru": "Пример (необязательно)", "pl": "Przykład (opcjonalnie)",
+    "nl": "Voorbeeld (optioneel)", "ja": "例文(任意)", "ko": "예문(선택)",
+    "zh": "示例(可选)", "hi": "उदाहरण (वैकल्पिक)", "ar": "مثال (اختياري)",
+    "bn": "উদাহরণ (ঐচ্ছিক)", "ur": "مثال (اختیاری)", "id": "Contoh (opsional)",
+    "tr": "Örnek (isteğe bağlı)", "vi": "Ví dụ (tùy chọn)", "fa": "مثال (اختیاری)",
+    "ro": "Exemplu (opțional)", "th": "ตัวอย่าง (ไม่บังคับ)", "el": "Παράδειγμα (προαιρετικό)",
+    "cs": "Příklad (volitelné)", "hu": "Példa (opcionális)", "sv": "Exempel (valfritt)",
+    "he": "דוגמה (אופציונלי)", "no": "Eksempel (valgfritt)", "da": "Eksempel (valgfrit)",
+    "fi": "Esimerkki (valinnainen)", "bg": "Пример (по избор)"
+  },
+  "flashcardExampleFormat": {
+    "en": "Example: %@", "uk": "Приклад: %@", "es": "Ejemplo: %@",
+    "fr": "Exemple : %@", "de": "Beispiel: %@", "it": "Esempio: %@",
+    "pt": "Exemplo: %@", "ru": "Пример: %@", "pl": "Przykład: %@",
+    "nl": "Voorbeeld: %@", "ja": "例: %@", "ko": "예: %@",
+    "zh": "示例:%@", "hi": "उदाहरण: %@", "ar": "مثال: %@",
+    "bn": "উদাহরণ: %@", "ur": "مثال: %@", "id": "Contoh: %@",
+    "tr": "Örnek: %@", "vi": "Ví dụ: %@", "fa": "مثال: %@",
+    "ro": "Exemplu: %@", "th": "ตัวอย่าง: %@", "el": "Παράδειγμα: %@",
+    "cs": "Příklad: %@", "hu": "Példa: %@", "sv": "Exempel: %@",
+    "he": "דוגמה: %@", "no": "Eksempel: %@", "da": "Eksempel: %@",
+    "fi": "Esimerkki: %@", "bg": "Пример: %@"
+  }
+}

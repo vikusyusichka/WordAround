@@ -21,7 +21,7 @@ struct DebateTopicCardView: View {
                         .foregroundColor(accent)
                 }
 
-                Text("Debate topic")
+                Text(L10n.string("spkDebateTopic"))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
 
@@ -31,10 +31,10 @@ struct DebateTopicCardView: View {
             }
 
             if isLoading {
-                Text("Generating a topic…")
+                Text(L10n.string("spkGeneratingTopic"))
                     .font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
-                Text("Picking something debate-worthy for your level.")
+                Text(L10n.string("spkPickingDebateTopic"))
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
             } else {
@@ -64,7 +64,7 @@ struct DebateTopicCardView: View {
         HStack(spacing: 5) {
             Image(systemName: learnerSide.systemImage)
                 .font(.system(size: 11, weight: .bold))
-            Text("You: \(learnerSide.title)")
+            Text(String(format: L10n.string("spkYouSideFmt"), learnerSide.title))
                 .font(.system(size: 12, weight: .bold, design: .rounded))
         }
         .foregroundColor(accent)

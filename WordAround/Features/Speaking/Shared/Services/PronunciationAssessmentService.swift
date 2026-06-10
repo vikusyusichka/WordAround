@@ -31,7 +31,6 @@ protocol PronunciationAssessing {
     ) async throws -> PronunciationAssessmentResult
 }
 
-/// Azure Speech SDK not wired yet; throws `.notImplemented` until audio assessment lands.
 final class AzurePronunciationAssessmentService: PronunciationAssessing {
 
     private let tokenProvider: AzureSpeechTokenProviding

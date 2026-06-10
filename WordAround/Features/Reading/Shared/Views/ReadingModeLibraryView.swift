@@ -90,13 +90,13 @@ struct ReadingModeLibraryView: View {
         .onChange(of: viewModel.isShowingSetup) { _, newValue in
             if newValue == false { Task { await viewModel.refresh() } }
         }
-        .alert("Rename reading", isPresented: Binding(
+        .alert(L10n.string("readingRenameReading"), isPresented: Binding(
             get: { renameTarget != nil },
             set: { if !$0 { renameTarget = nil } }
         )) {
-            TextField("Title", text: $renameDraft)
-            Button("Cancel", role: .cancel) { renameTarget = nil }
-            Button("Save") {
+            TextField(L10n.string("commonTitle"), text: $renameDraft)
+            Button(L10n.localized(.commonCancel), role: .cancel) { renameTarget = nil }
+            Button(L10n.localized(.commonSave)) {
                 if let target = renameTarget {
                     viewModel.renameItem(target, newTitle: renameDraft)
                 }
@@ -111,13 +111,13 @@ struct ReadingModeLibraryView: View {
             ),
             titleVisibility: .visible
         ) {
-            Button("Delete", role: .destructive) {
+            Button(L10n.string("commonDelete"), role: .destructive) {
                 if let target = deleteTarget { viewModel.deleteItem(target) }
                 deleteTarget = nil
             }
-            Button("Cancel", role: .cancel) { deleteTarget = nil }
+            Button(L10n.string("commonCancel"), role: .cancel) { deleteTarget = nil }
         } message: {
-            Text("This can't be undone.")
+            Text(L10n.string("commonCantBeUndone"))
         }
         .fullScreenCover(item: $viewModel.presentedSet) { set in
             FlashcardSetDetailView(set: set)
@@ -130,7 +130,7 @@ struct ReadingModeLibraryView: View {
             ),
             presenting: viewModel.sourceSetUnavailableMessage
         ) { _ in
-            Button("OK", role: .cancel) { viewModel.sourceSetUnavailableMessage = nil }
+            Button(L10n.string("commonOK"), role: .cancel) { viewModel.sourceSetUnavailableMessage = nil }
         } message: { message in
             Text(message)
         }
@@ -179,13 +179,13 @@ struct ReadingModeLibraryView: View {
     private var content: some View {
         if viewModel.isLoggedOut {
             PracticeLibraryLoggedOutView(
-                title: "Sign in to see your library",
-                message: "Your saved readings sync to your account. Sign in to add and continue them.",
+                title: L10n.string("readingSignInToSeeLibrary"),
+                message: L10n.string("readingSignInToSeeLibraryMessage"),
                 accent: viewModel.accent,
                 accentDark: viewModel.accentDark
             )
         } else if viewModel.isLoading {
-            PracticeLibraryLoadingView(message: "Loading your library…", accent: viewModel.accent)
+            PracticeLibraryLoadingView(message: L10n.string("readingLoadingLibrary"), accent: viewModel.accent)
         } else if let error = viewModel.errorMessage {
             PracticeLibraryErrorView(
                 message: error,
@@ -211,7 +211,7 @@ struct ReadingModeLibraryView: View {
 
     private var savedItemsSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Saved")
+            Text(L10n.string("readingSaved"))
                 .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(viewModel.accentDark)
                 .padding(.top, Layout.homeSectionTitleTopPadding)
@@ -243,8 +243,8 @@ struct ReadingModeLibraryView: View {
 #Preview("With items") {
     let mode = ReadingMode(
         id: "story-mode",
-        title: "Story Mode",
-        subtitle: "Read interactive stories with branching choices.",
+        title: L10n.string("storyModeTitle"),
+        subtitle: L10n.string("readingStoryModeSubtitle"),
         systemImage: "books.vertical.fill",
         accentColor: ReadingSetupConfig.storyMode.accent,
         blobColor: AppColors.blobPink
@@ -267,8 +267,8 @@ struct ReadingModeLibraryView: View {
 
 #Preview("Empty") {
     let mode = ReadingMode(
-        id: "story-mode", title: "Story Mode",
-        subtitle: "Read short stories that adapt to you.",
+        id: "story-mode", title: L10n.string("storyModeTitle"),
+        subtitle: L10n.string("readingStoryShortSubtitle"),
         systemImage: "books.vertical.fill",
         accentColor: ReadingSetupConfig.storyMode.accent,
         blobColor: AppColors.blobPink

@@ -28,7 +28,6 @@ enum DescribePictureImageConfiguration {
 
     static let workerPath = "/api/describe-picture/random-image"
 
-    /// The Unsplash key lives only in the Worker — the app never sees it.
     static var endpointURL: URL? {
         guard
             let base = GrammarQuizAIConfiguration.endpointURL,

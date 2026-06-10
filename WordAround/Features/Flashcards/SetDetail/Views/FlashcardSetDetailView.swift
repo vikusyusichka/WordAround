@@ -133,7 +133,7 @@ private extension FlashcardSetDetailView {
                     Button(role: .destructive) {
                         viewModel.deleteCard(card)
                     } label: {
-                        Label("Delete", systemImage: "trash")
+                        Label(L10n.string("commonDelete"), systemImage: "trash")
                     }
                 }
 

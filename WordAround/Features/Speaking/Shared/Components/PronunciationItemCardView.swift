@@ -20,7 +20,7 @@ struct PronunciationItemCardView: View {
                 content(item)
                 playButtons(item)
             } else {
-                Text("No item available.")
+                Text(L10n.string("spkNoItemAvailable"))
                     .font(.system(size: 15, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .padding(.vertical, 16)
@@ -108,7 +108,7 @@ struct PronunciationItemCardView: View {
                     HStack(spacing: 6) {
                         Image(systemName: "text.bubble")
                             .font(.system(size: 13, weight: .semibold))
-                        Text("Play example")
+                        Text(L10n.string("spkPlayExample"))
                             .font(.system(size: 13, weight: .bold, design: .rounded))
                     }
                     .foregroundColor(accent)
@@ -126,7 +126,7 @@ struct PronunciationItemCardView: View {
     private var loadingState: some View {
         VStack(spacing: 12) {
             ProgressView().tint(accent)
-            Text("Generating items…")
+            Text(L10n.string("spkGeneratingItems"))
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .foregroundColor(accentDark)
         }

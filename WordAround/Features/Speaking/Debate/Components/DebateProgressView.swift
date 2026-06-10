@@ -23,7 +23,7 @@ struct DebateProgressView: View {
                     .font(.system(size: 12, weight: .bold, design: .rounded))
                     .foregroundColor(accent)
             } else {
-                Text("Debate complete")
+                Text(L10n.string("spkDebateComplete"))
                     .font(.system(size: 12, weight: .bold, design: .rounded))
                     .foregroundColor(accent)
             }

@@ -116,7 +116,7 @@ struct ConversationScenarioCardView: View {
                         size: Layout.convScenarioChangeButtonIconSize,
                         weight: .bold
                     ))
-                Text("Change")
+                Text(L10n.string("spkChange"))
                     .font(.system(
                         size: Layout.convScenarioChangeButtonTextSize,
                         weight: .bold,

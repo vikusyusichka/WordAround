@@ -18,15 +18,15 @@ struct DescribePictureSetupView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     SpeakingSetupTopBar(
-                        title: "Describe Picture",
-                        subtitle: "Describe images and improve your speaking.",
+                        title: L10n.string("dpDescribePicture"),
+                        subtitle: L10n.string("dpSubtitle"),
                         accent: orange,
                         accentDark: orangeDark,
                         onBack: { dismiss() }
                     )
                     .padding(.bottom, 4)
 
-                    SpeakingSetupSectionTitle("Language", accentDark: orangeDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLanguage"), accentDark: orangeDark)
                     LanguageSelectorView(
                         selectedLanguage: selectedLanguage,
                         onSelect: { selectedLanguage = $0 },
@@ -34,7 +34,7 @@ struct DescribePictureSetupView: View {
                         accentDark: orangeDark
                     )
 
-                    SpeakingSetupSectionTitle("Level", accentDark: orangeDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLevel"), accentDark: orangeDark)
                     DifficultySelectorView(
                         selectedDifficulty: selectedLevel,
                         onSelect: { selectedLevel = $0 },
@@ -42,14 +42,14 @@ struct DescribePictureSetupView: View {
                         accentDark: orangeDark
                     )
 
-                    SpeakingSetupSectionTitle("Session length", accentDark: orangeDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionSessionLength"), accentDark: orangeDark)
                     SpeakingSetupDurationPicker(
                         selection: $selectedLength,
                         accent: orange,
                         accentDark: orangeDark
                     )
 
-                    SpeakingSetupSectionTitle("Preview", accentDark: orangeDark)
+                    SpeakingSetupSectionTitle(L10n.string("commonPreview"), accentDark: orangeDark)
                     previewCard
 
                     Spacer().frame(height: Layout.convSetupStartButtonHeight + 32)
@@ -62,7 +62,7 @@ struct DescribePictureSetupView: View {
             }
 
             SpeakingSetupStartButton(
-                title: "Start Describe Picture",
+                title: L10n.string("dpStartDescribePicture"),
                 icon: "photo.fill",
                 accent: orange,
                 accentDark: orangeDark,
@@ -98,10 +98,10 @@ struct DescribePictureSetupView: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("Random picture")
+                Text(L10n.string("speakingRandomPicture"))
                     .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundColor(orangeDark)
-                Text("We'll load a fresh photo for \(selectedLanguage.title) · \(selectedLevel.title) when you start.")
+                Text(String(format: L10n.string("dpPhotoDescFmt"), selectedLanguage.title, selectedLevel.title))
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .lineSpacing(2)

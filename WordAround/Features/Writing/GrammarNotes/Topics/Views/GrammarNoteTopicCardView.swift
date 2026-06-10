@@ -112,7 +112,7 @@ struct GrammarNoteTopicCardView: View {
     }
 
     private var badgeView: some View {
-        Text("Mistakes")
+        Text(L10n.string("notesMistakesBadge"))
             .font(.system(size: 10, weight: .bold, design: .rounded))
             .foregroundStyle(theme.accent)
             .padding(.horizontal, 8)

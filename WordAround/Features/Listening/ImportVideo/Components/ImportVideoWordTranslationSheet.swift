@@ -36,13 +36,13 @@ struct ImportVideoWordTranslationSheet: View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 6) {
-                    Text("From").font(.system(size: 13, weight: .bold, design: .rounded)).foregroundColor(AppColors.mutedText)
+                    Text(L10n.string("ivWordFrom")).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundColor(AppColors.mutedText)
                     Text(viewModel.setup.language.title).font(.system(size: 15, weight: .bold, design: .rounded)).foregroundColor(accentDark)
                     Image(systemName: "arrow.right").font(.system(size: 12, weight: .bold)).foregroundColor(AppColors.mutedText)
                 }
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Translate to").font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundColor(AppColors.mutedText)
+                        Text(L10n.string("ivWordTranslateTo")).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundColor(AppColors.mutedText)
                         Text(viewModel.translationTarget.title).font(.system(size: 17, weight: .bold, design: .rounded)).foregroundColor(accentDark)
                     }
                     Spacer()
@@ -58,7 +58,7 @@ struct ImportVideoWordTranslationSheet: View {
                 Text(viewModel.selectedWord ?? "")
                     .font(.system(size: 22, weight: .bold, design: .rounded)).foregroundColor(accentDark)
                 if viewModel.isTranslating {
-                    ListeningLoadingRow(message: "Translating…", accent: accent)
+                    ListeningLoadingRow(message: L10n.string("ivWordTranslating"), accent: accent)
                 } else if let result = viewModel.wordTranslation {
                     Text(result.translatedText).font(.system(size: 18, weight: .semibold, design: .rounded)).foregroundColor(accent)
                 } else if let error = viewModel.wordTranslationError {
@@ -70,10 +70,10 @@ struct ImportVideoWordTranslationSheet: View {
             }
 
             if let savedName = viewModel.savedToSetName {
-                successBanner("Saved to \(savedName)")
+                successBanner(String(format: L10n.string("ivSavedToFmt"), savedName))
             }
 
-            ListeningPrimaryButton(title: "Add to Set", icon: "plus.rectangle.on.folder.fill", accent: accent, accentDark: accentDark) {
+            ListeningPrimaryButton(title: L10n.string("ivAddToSet"), icon: "plus.rectangle.on.folder.fill", accent: accent, accentDark: accentDark) {
                 viewModel.loadSetsIfNeeded()
                 mode = .setPicker
             }
@@ -102,7 +102,7 @@ struct ImportVideoWordTranslationSheet: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 backButton { mode = .translation }
-                Text("Choose a set").font(.system(size: 18, weight: .bold, design: .rounded)).foregroundColor(accentDark)
+                Text(L10n.string("ivChooseSet")).font(.system(size: 18, weight: .bold, design: .rounded)).foregroundColor(accentDark)
                 Spacer()
                 Button {
                     newSetTitle = ""; newSetDescription = ""; mode = .createSet
@@ -113,15 +113,15 @@ struct ImportVideoWordTranslationSheet: View {
                 .buttonStyle(.plain)
             }
 
-            if let savedName = viewModel.savedToSetName { successBanner("Saved to \(savedName)") }
+            if let savedName = viewModel.savedToSetName { successBanner(String(format: L10n.string("ivSavedToFmt"), savedName)) }
             if let error = viewModel.setSaveError {
                 Text(error).font(.system(size: 13, weight: .medium, design: .rounded)).foregroundColor(Color(red: 0.95, green: 0.42, blue: 0.40))
             }
 
             if viewModel.isLoadingSets {
-                ListeningLoadingRow(message: "Loading your sets…", accent: accent)
+                ListeningLoadingRow(message: L10n.string("ivLoadingSets"), accent: accent)
             } else if viewModel.availableSets.isEmpty {
-                Text("You have no sets yet. Tap + to create one.")
+                Text(L10n.string("ivNoSets"))
                     .font(.system(size: 14, weight: .medium, design: .rounded)).foregroundColor(AppColors.textSecondary)
             } else {
                 ForEach(viewModel.availableSets) { set in
@@ -131,7 +131,7 @@ struct ImportVideoWordTranslationSheet: View {
                                 .fill(Color(hex: set.colorHex) ?? accent).frame(width: 30, height: 30)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(set.title).font(.system(size: 15, weight: .bold, design: .rounded)).foregroundColor(accentDark)
-                                Text("\(set.cards.count) cards").font(.system(size: 12, weight: .medium, design: .rounded)).foregroundColor(AppColors.mutedText)
+                                Text(L10n.cardsCount(set.cards.count)).font(.system(size: 12, weight: .medium, design: .rounded)).foregroundColor(AppColors.mutedText)
                             }
                             Spacer()
                             Image(systemName: "plus.circle.fill").foregroundColor(accent)
@@ -150,13 +150,13 @@ struct ImportVideoWordTranslationSheet: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 backButton { mode = .setPicker }
-                Text("New set").font(.system(size: 18, weight: .bold, design: .rounded)).foregroundColor(accentDark)
+                Text(L10n.string("ivNewSet")).font(.system(size: 18, weight: .bold, design: .rounded)).foregroundColor(accentDark)
                 Spacer()
             }
-            field("Set name") { TextField("e.g. Video words", text: $newSetTitle) }
-            field("Description") { TextField("Optional", text: $newSetDescription) }
+            field(L10n.string("ivSetName")) { TextField(L10n.string("ivSetNamePh"), text: $newSetTitle) }
+            field(L10n.string("ivDescription")) { TextField(L10n.string("ivOptional"), text: $newSetDescription) }
 
-            Text("Color").font(.system(size: 13, weight: .semibold, design: .rounded)).foregroundColor(AppColors.textSecondary)
+            Text(L10n.string("ivColor")).font(.system(size: 13, weight: .semibold, design: .rounded)).foregroundColor(AppColors.textSecondary)
             HStack(spacing: 10) {
                 ForEach(SetColor.allCases) { color in
                     Circle().fill(color.color).frame(width: 32, height: 32)
@@ -170,7 +170,7 @@ struct ImportVideoWordTranslationSheet: View {
             }
 
             ListeningPrimaryButton(
-                title: viewModel.isSavingToSet ? "Saving…" : "Create & Add Word",
+                title: viewModel.isSavingToSet ? L10n.string("ivSaving") : L10n.string("ivCreateAndAdd"),
                 icon: "checkmark.circle.fill", accent: accent, accentDark: accentDark
             ) {
                 viewModel.createSetAndAdd(title: newSetTitle, description: newSetDescription, color: newSetColor)

@@ -1,0 +1,28 @@
+{
+  "essayWritePlaceholder": {
+    "en": "Write your essay here...", "uk": "Напишіть своє есе тут...", "es": "Escribe tu ensayo aquí...",
+    "fr": "Écrivez votre essai ici...", "de": "Schreibe deinen Aufsatz hier...", "it": "Scrivi qui il tuo saggio...",
+    "pt": "Escreva seu ensaio aqui...", "ru": "Напишите эссе здесь...", "pl": "Napisz tu swoje wypracowanie...",
+    "nl": "Schrijf hier je essay...", "ja": "ここにエッセイを書いてください...", "ko": "여기에 에세이를 쓰세요...",
+    "zh": "在此处撰写你的作文...", "hi": "अपना निबंध यहाँ लिखें...", "ar": "اكتب مقالك هنا...",
+    "bn": "এখানে আপনার প্রবন্ধ লিখুন...", "ur": "اپنا مضمون یہاں لکھیں...", "id": "Tulis esai Anda di sini...",
+    "tr": "Denemeni buraya yaz...", "vi": "Viết bài luận của bạn ở đây...", "fa": "مقاله خود را اینجا بنویسید...",
+    "ro": "Scrie-ți eseul aici...", "th": "เขียนเรียงความที่นี่...", "el": "Γράψε το δοκίμιο εδώ...",
+    "cs": "Napište zde svou esej...", "hu": "Írd ide az esszéd...", "sv": "Skriv din uppsats här...",
+    "he": "כתוב את החיבור כאן...", "no": "Skriv essayet ditt her...", "da": "Skriv dit essay her...",
+    "fi": "Kirjoita esseesi tähän...", "bg": "Напиши есето си тук..."
+  },
+  "notesCreatesNoteFmt": {
+    "en": "Creates: %@ note", "uk": "Створює: нотатка типу «%@»", "es": "Crea: nota %@",
+    "fr": "Crée : note %@", "de": "Erstellt: %@-Notiz", "it": "Crea: nota %@",
+    "pt": "Cria: nota %@", "ru": "Создаёт: заметка типа «%@»", "pl": "Tworzy: notatka %@",
+    "nl": "Maakt: %@-notitie", "ja": "作成: %@ のノート", "ko": "생성: %@ 노트",
+    "zh": "创建：%@ 笔记", "hi": "बनाता है: %@ नोट", "ar": "ينشئ: ملاحظة %@",
+    "bn": "তৈরি করে: %@ নোট", "ur": "بناتا ہے: %@ نوٹ", "id": "Membuat: catatan %@",
+    "tr": "Oluşturur: %@ notu", "vi": "Tạo: ghi chú %@", "fa": "می‌سازد: یادداشت %@",
+    "ro": "Creează: notă %@", "th": "สร้าง: บันทึก %@", "el": "Δημιουργεί: σημείωση %@",
+    "cs": "Vytvoří: poznámka typu %@", "hu": "Létrehoz: %@ jegyzet", "sv": "Skapar: %@-anteckning",
+    "he": "יוצר: הערה מסוג %@", "no": "Oppretter: %@-notat", "da": "Opretter: %@-note",
+    "fi": "Luo: %@-muistiinpano", "bg": "Създава: бележка %@"
+  }
+}

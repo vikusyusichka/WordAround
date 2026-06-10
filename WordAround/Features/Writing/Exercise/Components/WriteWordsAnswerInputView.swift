@@ -31,7 +31,7 @@ struct WriteWordsAnswerInputView: View {
                     .allowsHitTesting(false)
             }
 
-            TextField("Type the translation", text: $text)
+            TextField(L10n.string("writeWordsTypeTranslation"), text: $text)
                 .focused($isFocused)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)

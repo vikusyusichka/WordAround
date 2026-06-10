@@ -1,0 +1,28 @@
+{
+  "readingAddTextTitle": {
+    "en": "Add Text", "uk": "Додати текст", "es": "Añadir texto",
+    "fr": "Ajouter du texte", "de": "Text hinzufügen", "it": "Aggiungi testo",
+    "pt": "Adicionar texto", "ru": "Добавить текст", "pl": "Dodaj tekst",
+    "nl": "Tekst toevoegen", "ja": "テキストを追加", "ko": "텍스트 추가",
+    "zh": "添加文本", "hi": "पाठ जोड़ें", "ar": "إضافة نص",
+    "bn": "টেক্সট যোগ করুন", "ur": "متن شامل کریں", "id": "Tambahkan teks",
+    "tr": "Metin ekle", "vi": "Thêm văn bản", "fa": "افزودن متن",
+    "ro": "Adaugă text", "th": "เพิ่มข้อความ", "el": "Προσθήκη κειμένου",
+    "cs": "Přidat text", "hu": "Szöveg hozzáadása", "sv": "Lägg till text",
+    "he": "הוסף טקסט", "no": "Legg til tekst", "da": "Tilføj tekst",
+    "fi": "Lisää teksti", "bg": "Добави текст"
+  },
+  "readingDetectedFmt": {
+    "en": "Detected: %@", "uk": "Виявлено: %@", "es": "Detectado: %@",
+    "fr": "Détecté : %@", "de": "Erkannt: %@", "it": "Rilevato: %@",
+    "pt": "Detectado: %@", "ru": "Обнаружено: %@", "pl": "Wykryto: %@",
+    "nl": "Gedetecteerd: %@", "ja": "検出: %@", "ko": "감지됨: %@",
+    "zh": "检测到：%@", "hi": "पता चला: %@", "ar": "تم اكتشاف: %@",
+    "bn": "শনাক্ত: %@", "ur": "شناخت شدہ: %@", "id": "Terdeteksi: %@",
+    "tr": "Algılandı: %@", "vi": "Đã phát hiện: %@", "fa": "شناسایی‌شده: %@",
+    "ro": "Detectat: %@", "th": "ตรวจพบ: %@", "el": "Εντοπίστηκε: %@",
+    "cs": "Detekováno: %@", "hu": "Észlelve: %@", "sv": "Upptäckt: %@",
+    "he": "זוהה: %@", "no": "Oppdaget: %@", "da": "Registreret: %@",
+    "fi": "Havaittu: %@", "bg": "Открито: %@"
+  }
+}

@@ -1,10 +1,6 @@
 import SwiftUI
 
 struct CategorySidebarView: View {
-    /// Reflects the shared selection (owned by `HomeViewModel`) so the rail can
-    /// highlight the active section. Selection itself is routed through
-    /// `onSelect` so the view model can also switch to the Home tab — this is
-    /// what lets the sidebar work from any bottom-tab screen.
     @Binding var selectedCategory: HomeCategory?
     let onSelect: (HomeCategory) -> Void
 
@@ -32,7 +28,7 @@ struct CategorySidebarView: View {
     }
 }
 
-// MARK: - Extracted item view (equatable = skips diff when unchanged)
+// MARK: - Extracted item view
 
 private struct SidebarItemView: View, Equatable {
     let category: HomeCategory

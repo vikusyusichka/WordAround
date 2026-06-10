@@ -71,7 +71,7 @@ struct ReadingLibraryEmptyStateView: View {
         AppColors.appBackground.ignoresSafeArea()
         ReadingLibraryEmptyStateView(
             title: "No stories yet",
-            subtitle: "Start a story and practise with branching choices.",
+            subtitle: L10n.string("readingStartStoryHint"),
             systemImage: "books.vertical.fill",
             accent: ReadingSetupConfig.storyMode.accent,
             accentDark: ReadingSetupConfig.storyMode.accentDark,

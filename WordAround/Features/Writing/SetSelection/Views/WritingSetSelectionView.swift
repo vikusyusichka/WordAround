@@ -66,7 +66,7 @@ struct WritingSetSelectionView: View {
 
     private func topBar(_ metrics: ScreenMetrics) -> some View {
         ZStack {
-            Text("Choose set")
+            Text(L10n.string("writingChooseSet"))
                 .font(.system(
                     size: LayoutConstants.WritingSetSelection.titleSize(metrics),
                     weight: .bold,
@@ -103,7 +103,7 @@ struct WritingSetSelectionView: View {
 
     private func emptyState(_ metrics: ScreenMetrics) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("No sets with words")
+            Text(L10n.string("writingNoSetsWithWords"))
                 .font(.system(
                     size: LayoutConstants.WritingSetSelection.emptyTitleSize(metrics),
                     weight: .bold,
@@ -111,7 +111,7 @@ struct WritingSetSelectionView: View {
                 ))
                 .foregroundColor(AppColors.primaryBlueDark)
 
-            Text("Create a set with at least one card before starting writing practice.")
+            Text(L10n.string("writingCreateSetHint"))
                 .font(.system(
                     size: LayoutConstants.WritingSetSelection.emptySubtitleSize(metrics),
                     weight: .medium,

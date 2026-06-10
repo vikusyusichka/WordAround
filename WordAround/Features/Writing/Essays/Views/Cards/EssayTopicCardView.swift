@@ -105,7 +105,7 @@ struct EssayTopicCardView: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("Task")
+                Text(L10n.string("essayTask"))
                     .font(.system(size: Layout.essayTopicSectionLabelSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlue)
 

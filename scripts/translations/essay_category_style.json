@@ -1,0 +1,15 @@
+{
+  "essayCategoryStyle": {
+    "en": "Style", "uk": "Стиль", "es": "Estilo",
+    "fr": "Style", "de": "Stil", "it": "Stile",
+    "pt": "Estilo", "ru": "Стиль", "pl": "Styl",
+    "nl": "Stijl", "ja": "スタイル", "ko": "스타일",
+    "zh": "风格", "hi": "शैली", "ar": "الأسلوب",
+    "bn": "শৈলী", "ur": "انداز", "id": "Gaya",
+    "tr": "Biçem", "vi": "Phong cách", "fa": "سبک",
+    "ro": "Stil", "th": "สไตล์", "el": "Στυλ",
+    "cs": "Styl", "hu": "Stílus", "sv": "Stil",
+    "he": "סגנון", "no": "Stil", "da": "Stil",
+    "fi": "Tyyli", "bg": "Стил"
+  }
+}

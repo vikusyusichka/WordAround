@@ -17,18 +17,18 @@ struct ImportAudioSetupView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     ListeningSetupTopBar(
-                        title: "Import Audio",
-                        subtitle: "Turn your own audio into listening practice.",
+                        title: L10n.string("listenImportAudio"),
+                        subtitle: L10n.string("importAudioSubtitle"),
                         accent: accent,
                         accentDark: accentDark,
                         onBack: { dismiss() }
                     )
                     .padding(.bottom, 4)
 
-                    ListeningSetupSectionTitle("Audio Upload", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenSectionAudioUpload"), accentDark: accentDark)
                     uploadCard
 
-                    ListeningSetupSectionTitle("Language", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("spkSectionLanguage"), accentDark: accentDark)
                     LanguageSelectorView(
                         selectedLanguage: viewModel.selectedLanguage,
                         onSelect: { viewModel.selectedLanguage = $0 },
@@ -36,7 +36,7 @@ struct ImportAudioSetupView: View {
                         accentDark: accentDark
                     )
 
-                    ListeningSetupSectionTitle("Level", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("spkSectionLevel"), accentDark: accentDark)
                     DifficultySelectorView(
                         selectedDifficulty: viewModel.selectedLevel,
                         onSelect: { viewModel.selectedLevel = $0 },
@@ -44,7 +44,7 @@ struct ImportAudioSetupView: View {
                         accentDark: accentDark
                     )
 
-                    ListeningSetupSectionTitle("Questions", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenSectionQuestions"), accentDark: accentDark)
                     ListeningQuestionSettingsCard(
                         addQuestions: $viewModel.addQuestions,
                         questionCount: $viewModel.questionCount,
@@ -69,7 +69,7 @@ struct ImportAudioSetupView: View {
             }
 
             ListeningSetupStartButton(
-                title: "Continue",
+                title: L10n.string("commonContinue"),
                 icon: "arrow.right",
                 accent: accent,
                 accentDark: accentDark,
@@ -136,18 +136,18 @@ struct ImportAudioSetupView: View {
                             .font(.system(size: 32, weight: .semibold))
                             .foregroundColor(accent)
 
-                        Text("Upload audio file")
+                        Text(L10n.string("listeningUploadAudio"))
                             .font(.system(size: 17, weight: .bold, design: .rounded))
                             .foregroundColor(accentDark)
 
-                        Text("MP3, M4A, WAV or AAC")
+                        Text(L10n.string("listeningAudioFormats"))
                             .font(.system(size: 14, weight: .medium, design: .rounded))
                             .foregroundColor(AppColors.textSecondary)
 
                         Button {
                             viewModel.showFileImporter = true
                         } label: {
-                            Text("Choose File")
+                            Text(L10n.string("listeningChooseFile"))
                                 .font(.system(size: 14, weight: .bold, design: .rounded))
                                 .foregroundColor(accentDark)
                                 .padding(.horizontal, 18)
@@ -175,7 +175,7 @@ struct ImportAudioSetupView: View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "info.circle.fill")
                 .foregroundColor(accent)
-            Text("Your audio will be transcribed in the background. The transcript stays hidden during practice.")
+            Text(L10n.string("listeningAudioPrivacy"))
                 .font(.system(size: 13, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
         }

@@ -1,8 +1,5 @@
 import Foundation
 
-/// JSON payload sent to the backend AI quiz endpoint.
-/// The backend is responsible for prompting the LLM and returning a
-/// `GrammarQuizAIResponseDTO`. The iOS app never sees an API key.
 struct GrammarQuizAIRequest: Codable, Equatable {
     let noteTitle: String
     let noteLanguageCode: String?

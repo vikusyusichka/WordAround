@@ -6,7 +6,7 @@ struct ConversationCorrectionCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.isPadLike ? 14 : 12) {
             feedbackRow(
-                title: "You said",
+                title: L10n.string("spkYouSaid"),
                 text: correction.youSaid,
                 icon: "exclamationmark.circle.fill",
                 tint: Color(red: 0.78, green: 0.55, blue: 0.26),
@@ -14,7 +14,7 @@ struct ConversationCorrectionCardView: View {
             )
 
             feedbackRow(
-                title: "Better",
+                title: L10n.string("spkBetter"),
                 text: correction.better,
                 icon: "checkmark.circle.fill",
                 tint: AppColors.primaryBlue,
@@ -22,7 +22,7 @@ struct ConversationCorrectionCardView: View {
             )
 
             VStack(alignment: .leading, spacing: 5) {
-                Text("Why")
+                Text(L10n.string("spkWhy"))
                     .font(.system(
                         size: Layout.isPadLike ? 13 : 12,
                         weight: .bold,

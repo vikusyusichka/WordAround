@@ -7,14 +7,14 @@ struct CreateSetCardExampleField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.createSetCardsFieldSpacing) {
             HStack(spacing: 4) {
-                CreateSetSectionLabel(text: "Example", theme: theme)
+                CreateSetSectionLabel(text: L10n.string("createSetExample"), theme: theme)
                 CreateSetOptionalText(theme: theme, fontSize: Layout.createSetCardsOptionalTextSize)
             }
 
             ZStack(alignment: .bottomTrailing) {
                 ZStack(alignment: .topLeading) {
                     if example.isEmpty {
-                        Text("e.g. Hola, ¿cómo estás?")
+                        Text(L10n.string("createSetPlaceholderExample"))
                             .foregroundColor(theme.mutedTextColor.opacity(0.55))
                             .padding(.top, 12)
                             .padding(.leading, 14)

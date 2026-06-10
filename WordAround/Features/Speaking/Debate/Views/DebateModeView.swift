@@ -133,11 +133,11 @@ struct DebateModeView: View {
     private var topBar: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Debate Mode")
+                Text(L10n.string("spkDebateMode"))
                     .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
 
-                Text("Defend your ideas against an AI opponent.")
+                Text(L10n.string("spkDebateModeSubtitle"))
                     .font(.system(size: Layout.homeHeaderSubtitleSize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.mutedText)
                     .lineLimit(1)

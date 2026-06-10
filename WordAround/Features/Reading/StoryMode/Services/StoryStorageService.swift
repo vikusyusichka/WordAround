@@ -27,8 +27,8 @@ final class StoryStorageService: StoryStorageServicing {
     private static var storyReadingMode: ReadingMode {
         ReadingMode(
             id: "story-mode",
-            title: "Story Mode",
-            subtitle: "Read short stories that adapt to you.",
+            title: L10n.string("storyModeTitle"),
+            subtitle: L10n.string("readingStoryShortSubtitle"),
             systemImage: "books.vertical.fill",
             accentColor: ReadingSetupConfig.storyMode.accent,
             blobColor: AppColors.blobPink

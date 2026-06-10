@@ -26,18 +26,6 @@ enum GrammarQuizAIClientError: LocalizedError, Equatable {
     }
 }
 
-/// POSTs `{ "prompt": "..." }` to a configured Cloudflare Worker which
-/// owns the Gemini API key and forwards the prompt server-side, then
-/// returns `{ "text": "..." }`. The iOS app NEVER sees the key — it
-/// only knows the Worker URL.
-///
-/// Wire-level contract:
-///   Request  → `{ "prompt": "<full prompt>" }`
-///   Response → `{ "text": "<model output as JSON string>" }`
-///
-/// We parse `text` as the canonical `GrammarQuizAIResponseDTO` shape so
-/// the downstream validator stays unchanged. The Worker is responsible
-/// for asking Gemini to return JSON that matches that schema.
 final class GrammarQuizAIHTTPClient: GrammarQuizAIClient {
 
     private let endpointURL: URL

@@ -102,14 +102,14 @@ private extension SetsListView {
     var content: some View {
         if isLoading {
             placeholderCard(
-                title: "Loading",
-                subtitle: "Loading your flashcard sets...",
+                title: L10n.string("homeLoadingTitle"),
+                subtitle: L10n.string("flashcardLoadingSets"),
                 height: Layout.homePlaceholderHeight
             )
         } else if visibleSets.isEmpty {
             placeholderCard(
-                title: "No sets yet",
-                subtitle: "Create your first flashcard set using the Create button.",
+                title: L10n.string("flashcardNoSets"),
+                subtitle: L10n.string("flashcardNoSetsSubtitle"),
                 height: Layout.homeEmptySetHeight
             )
         } else if showsLayoutToggle && layoutMode == .grid {
@@ -198,7 +198,7 @@ private extension SetsListView {
             accentColor: set.accentColor,
             titleColor: set.titleColor,
             backgroundColor: set.backgroundColor,
-            trailingText: "Review",
+            trailingText: L10n.string("commonReview"),
             blobColor: set.blobColor
         )
     }
@@ -289,7 +289,7 @@ private struct SetGridCellView: View {
                                 accentColor: set.accentColor,
                                 titleColor: set.titleColor,
                                 backgroundColor: set.backgroundColor,
-                                trailingText: "Review",
+                                trailingText: L10n.string("commonReview"),
                                 blobColor: set.blobColor,
                                 height: proxy.size.height
                             )
@@ -300,19 +300,19 @@ private struct SetGridCellView: View {
                             Button {
                                 onEdit()
                             } label: {
-                                Label("Edit name", systemImage: "pencil")
+                                Label(L10n.string("flashcardEditName"), systemImage: "pencil")
                             }
 
                             Button {
                                 onEdit()
                             } label: {
-                                Label("Edit description", systemImage: "text.alignleft")
+                                Label(L10n.string("flashcardEditDescription"), systemImage: "text.alignleft")
                             }
 
                             Button(role: .destructive) {
                                 onDelete()
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label(L10n.string("commonDelete"), systemImage: "trash")
                             }
                         } label: {
                             ZStack {
@@ -336,7 +336,7 @@ private struct SetGridCellView: View {
 
 #Preview {
     SetsListView(
-        title: "Your sets",
+        title: L10n.string("setsListYourSets"),
         actionTitle: "Create",
         sets: [],
         isLoading: false,

@@ -10,7 +10,7 @@ struct StoryChapterHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
-                Text("Chapter \(chapterNumber)")
+                Text(String(format: L10n.string("storyChapterFmt"), chapterNumber))
                     .font(.system(size: 12, weight: .bold, design: .rounded))
                     .foregroundColor(accent)
                     .padding(.horizontal, 10)

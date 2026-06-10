@@ -183,7 +183,7 @@ struct WriteWordsResultScreenView: View {
 
     private var hardModeSuccessMessage: some View {
         VStack(spacing: 6) {
-            Text("Perfect round!")
+            Text(L10n.string("writeWordsPerfect"))
                 .font(.system(
                     size: Layout.writeWordsLoseCaptionSize,
                     weight: .bold,
@@ -192,7 +192,7 @@ struct WriteWordsResultScreenView: View {
                 .foregroundColor(AppColors.primaryBlueDark)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            Text("You completed Hard Mode without mistakes.\nNo skips. No hints. Just skill.")
+            Text(L10n.string("writeWordsPerfectSub"))
                 .font(.system(
                     size: Layout.writeWordsLoseCaptionSize,
                     weight: .semibold,
@@ -207,7 +207,7 @@ struct WriteWordsResultScreenView: View {
     private var actions: some View {
         VStack(spacing: Layout.writeWordsLoseActionsSpacing) {
             Button(action: onTryAgain) {
-                Text("Try again")
+                Text(L10n.string("commonTryAgain"))
                     .font(.system(
                         size: Layout.writeWordsLoseBodyTextSize,
                         weight: .bold,
@@ -234,7 +234,7 @@ struct WriteWordsResultScreenView: View {
             .buttonStyle(.plain)
 
             Button(action: onBack) {
-                Text("Back")
+                Text(L10n.string("commonBack"))
                     .font(.system(
                         size: Layout.writeWordsLoseBodyTextSize,
                         weight: .bold,
@@ -334,22 +334,22 @@ struct WriteWordsResultScreenView: View {
     private var title: String {
         switch resultType {
         case .win:
-            return "Round completed!"
+            return L10n.string("flashcardRoundCompleted")
         case .timeoutLose:
-            return "Time’s up"
+            return L10n.string("writeWordsTimesUp")
         case .wrongAnswerLose:
-            return "Wrong answer"
+            return L10n.string("writeWordsWrongAnswer")
         }
     }
 
     private var subtitle: String {
         switch resultType {
         case .win:
-            return "Great work. You finished this writing round. Here is your result."
+            return L10n.string("writeWordsRoundCompletedSub")
         case .timeoutLose:
-            return "The hard mode timer reached zero. Try again from the first word."
+            return L10n.string("writeWordsTimesUpSub")
         case .wrongAnswerLose:
-            return "One mistake ends the round in Hard Mode."
+            return L10n.string("writeWordsWrongAnswerSub")
         }
     }
 

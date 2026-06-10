@@ -9,24 +9,26 @@ final class WritingViewModel: ObservableObject {
 
     private let statsService: DailyPracticeStatsService
 
-    let menuItems: [WritingMenuItem] = [
-        WritingMenuItem(
-            title: "Write from sets",
-            subtitle: "Practice spelling and writing words from your sets.",
-            systemImage: "square.grid.2x2.fill",
-            accentColor: Color(red: 0.52, green: 0.39, blue: 1.00),
-            blobColor: Color(red: 0.90, green: 0.86, blue: 1.00),
-            action: .writeFromSets
-        ),
-        WritingMenuItem(
-            title: "Essays",
-            subtitle: "Write texts and get AI feedback on grammar and style.",
-            systemImage: "note.text.badge.plus",
-            accentColor: Color(red: 0.36, green: 0.58, blue: 1.00),
-            blobColor: AppColors.blobBlue,
-            action: .essays
-        )
-    ]
+    var menuItems: [WritingMenuItem] {
+        [
+            WritingMenuItem(
+                title: L10n.string("writingModeSetsTitle"),
+                subtitle: L10n.string("writingModeSetsSubtitle"),
+                systemImage: "square.grid.2x2.fill",
+                accentColor: Color(red: 0.52, green: 0.39, blue: 1.00),
+                blobColor: Color(red: 0.90, green: 0.86, blue: 1.00),
+                action: .writeFromSets
+            ),
+            WritingMenuItem(
+                title: L10n.string("writingModeEssaysTitle"),
+                subtitle: L10n.string("writingModeEssaysSubtitle"),
+                systemImage: "note.text.badge.plus",
+                accentColor: Color(red: 0.36, green: 0.58, blue: 1.00),
+                blobColor: AppColors.blobBlue,
+                action: .essays
+            )
+        ]
+    }
 
     init(statsService: DailyPracticeStatsService = .shared) {
         self.statsService = statsService

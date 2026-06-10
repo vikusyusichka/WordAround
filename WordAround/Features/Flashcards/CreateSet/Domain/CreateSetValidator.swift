@@ -10,15 +10,15 @@ enum CreateSetValidationError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .emptyTitle:
-            return "Set title is required."
+            return L10n.string("createSetTitleRequired")
         case .titleTooLong:
-            return "Set title must be under 150 characters."
+            return L10n.string("createSetTitleTooLong")
         case .descriptionTooLong:
-            return "Description must be under 200 characters."
+            return L10n.string("createSetDescTooLong")
         case .noValidCards:
-            return "Add at least one card with a word and translation."
+            return L10n.string("createSetAddAtLeastOne")
         case .exampleTooLong:
-            return "Card examples must be under 150 characters."
+            return L10n.string("createSetExampleTooLong")
         }
     }
 }
@@ -56,10 +56,6 @@ struct CreateSetValidator {
     }
 }
 
-/// Shared whitespace trim used across the CreateSet Domain layer
-/// (`CreateSetValidator`, `CreateSetBuilder`). Kept here rather than in a
-/// separate file to avoid scattering single-line helpers; intentionally
-/// internal so the Builder can reuse it without redefining the same logic.
 extension String {
     var trimmed: String {
         trimmingCharacters(in: .whitespacesAndNewlines)

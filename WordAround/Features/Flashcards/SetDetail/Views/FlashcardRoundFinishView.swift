@@ -77,12 +77,12 @@ struct FlashcardRoundFinishView: View {
             }
 
             VStack(spacing: isPadLike ? 12 : 8) {
-                Text("Round completed!")
+                Text(L10n.string("flashcardRoundCompleted"))
                     .font(.system(size: isPadLike ? 42 : 32, weight: .bold, design: .rounded))
                     .foregroundStyle(theme.titleColor)
                     .multilineTextAlignment(.center)
 
-                Text("Great work. You finished this round. Here is what you know and what still needs practice.")
+                Text(L10n.string("flashcardRoundCompletedSubtitle"))
                     .font(.system(size: isPadLike ? 18 : 15, weight: .semibold, design: .rounded))
                     .foregroundStyle(theme.mutedTextColor)
                     .multilineTextAlignment(.center)
@@ -96,7 +96,7 @@ struct FlashcardRoundFinishView: View {
         HStack(spacing: 0) {
             statItem(
                 count: knownCount,
-                title: "Known",
+                title: L10n.string("flashcardKnown"),
                 systemImage: "checkmark"
             )
 
@@ -104,15 +104,16 @@ struct FlashcardRoundFinishView: View {
 
             statItem(
                 count: totalCount,
-                title: "Total",
-                systemImage: "book.closed"
+                title: L10n.string("flashcardTotal"),
+                systemImage: "book.closed",
+                isMuted: true
             )
 
             divider
 
             statItem(
                 count: unknownCount,
-                title: "Learning",
+                title: L10n.string("flashcardLearning"),
                 systemImage: "xmark"
             )
         }
@@ -130,11 +131,11 @@ struct FlashcardRoundFinishView: View {
         )
     }
 
-    private func statItem(count: Int, title: String, systemImage: String) -> some View {
+    private func statItem(count: Int, title: String, systemImage: String, isMuted: Bool = false) -> some View {
         VStack(spacing: isPadLike ? 13 : 10) {
             Text("\(count)")
                 .font(.system(size: isPadLike ? 36 : 28, weight: .bold, design: .rounded))
-                .foregroundStyle(title == "Total" ? theme.mutedTextColor : theme.titleColor)
+                .foregroundStyle(isMuted ? theme.mutedTextColor : theme.titleColor)
                 .monospacedDigit()
 
             Text(title)
@@ -150,7 +151,7 @@ struct FlashcardRoundFinishView: View {
 
                 Image(systemName: systemImage)
                     .font(.system(size: isPadLike ? 20 : 16, weight: .bold))
-                    .foregroundStyle(title == "Total" ? theme.mutedTextColor : theme.accent)
+                    .foregroundStyle(isMuted ? theme.mutedTextColor : theme.accent)
             }
         }
         .frame(maxWidth: .infinity)
@@ -165,18 +166,18 @@ struct FlashcardRoundFinishView: View {
     private var actionButtons: some View {
         VStack(spacing: isPadLike ? 18 : 14) {
             finishActionButton(
-                title: "Review learning words",
+                title: L10n.string("flashcardReviewLearning"),
                 subtitle: hasUnknownWords
                     ? "Go through only the words you marked as learning"
-                    : "No learning words left, so a full round will open",
+                    : L10n.string("flashcardNoLearningLeft"),
                 systemImage: "arrow.triangle.2.circlepath",
                 isPrimary: true,
                 action: onRepeatUnknown
             )
 
             finishActionButton(
-                title: "Restart all words",
-                subtitle: "Start a new round with every word",
+                title: L10n.string("flashcardRestartAll"),
+                subtitle: L10n.string("flashcardRestartAllSubtitle"),
                 systemImage: "arrow.clockwise",
                 isPrimary: false,
                 action: onRestartAll

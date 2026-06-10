@@ -15,10 +15,10 @@ struct GrammarNoteQuizResultView: View {
 
     private var scoreGrade: (label: String, color: Color) {
         switch score {
-        case 90...100: return ("Excellent!", .green)
-        case 70..<90:  return ("Good job!", AppColors.primaryBlue)
-        case 50..<70:  return ("Keep practicing", Color.orange)
-        default:       return ("Review the note", CreateSetTheme.red.accent)
+        case 90...100: return (L10n.string("resultGradeExcellent"), .green)
+        case 70..<90:  return (L10n.string("resultGradeGood"), AppColors.primaryBlue)
+        case 50..<70:  return (L10n.string("resultGradeKeepPracticing"), Color.orange)
+        default:       return (L10n.string("resultGradeReview"), CreateSetTheme.red.accent)
         }
     }
 
@@ -67,7 +67,7 @@ struct GrammarNoteQuizResultView: View {
                 Text(scoreGrade.label)
                     .font(.system(size: Layout.value(pad: 22, phone: 18), weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
-                Text("\(correct) of \(total) questions answered correctly")
+                Text(String(format: L10n.string("resultCorrectCountFmt"), correct, total))
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
             }
@@ -81,7 +81,7 @@ struct GrammarNoteQuizResultView: View {
 
     private var incorrectSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionHeader("Incorrect", systemImage: "xmark.circle.fill", color: CreateSetTheme.red.accent)
+            sectionHeader(L10n.string("resultSectionIncorrect"), systemImage: "xmark.circle.fill", color: CreateSetTheme.red.accent)
             VStack(spacing: 8) {
                 ForEach(incorrectAnswers) { q in
                     resultRow(question: q, isCorrect: false)
@@ -92,7 +92,7 @@ struct GrammarNoteQuizResultView: View {
 
     private var correctSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionHeader("Correct", systemImage: "checkmark.circle.fill", color: .green)
+            sectionHeader(L10n.string("resultSectionCorrect"), systemImage: "checkmark.circle.fill", color: .green)
             VStack(spacing: 8) {
                 ForEach(correctAnswers) { q in
                     resultRow(question: q, isCorrect: true)
@@ -125,9 +125,9 @@ struct GrammarNoteQuizResultView: View {
             if !isCorrect {
                 VStack(alignment: .leading, spacing: 4) {
                     if let userAnswer = question.userAnswer, !userAnswer.isEmpty {
-                        answerPill("Your answer: \(userAnswer)", color: CreateSetTheme.red.accent)
+                        answerPill(String(format: L10n.string("resultYourAnswerFmt"), userAnswer), color: CreateSetTheme.red.accent)
                     }
-                    answerPill("Correct: \(question.correctAnswer)", color: .green)
+                    answerPill(String(format: L10n.string("resultCorrectAnswerFmt"), question.correctAnswer), color: .green)
                 }
             }
 
@@ -164,7 +164,7 @@ struct GrammarNoteQuizResultView: View {
             Button(action: onTryAgain) {
                 HStack(spacing: 8) {
                     Image(systemName: "arrow.counterclockwise")
-                    Text("Try Again")
+                    Text(L10n.string("commonTryAgain"))
                 }
                 .font(.system(size: 15, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.white)
@@ -178,7 +178,7 @@ struct GrammarNoteQuizResultView: View {
             Button(action: onReviewNote) {
                 HStack(spacing: 8) {
                     Image(systemName: "doc.text")
-                    Text("Review Note")
+                    Text(L10n.string("resultReviewNote"))
                 }
                 .font(.system(size: 15, weight: .bold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlue)
@@ -190,7 +190,7 @@ struct GrammarNoteQuizResultView: View {
             .buttonStyle(.plain)
 
             Button(action: onDismiss) {
-                Text("Done")
+                Text(L10n.localized(.commonDone))
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
             }

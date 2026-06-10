@@ -85,7 +85,7 @@ final class PronunciationTrainerViewModel: ObservableObject {
             description: "Practise difficult sounds, words and minimal pairs.",
             firstAIMessage: "",
             promptContext: "The learner is doing focused pronunciation training: they repeat individual words, minimal pairs and short sound-focused phrases. Evaluate only the learner's spoken repetitions (pronunciation as estimated from the transcript, plus vocabulary). There is no AI interlocutor.",
-            category: "Pronunciation"
+            category: L10n.string("spkPronunciation")
         )
     )
 

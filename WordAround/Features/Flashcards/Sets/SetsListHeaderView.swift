@@ -80,7 +80,7 @@ struct SetsListHeaderView: View {
 
 #Preview {
     SetsListHeaderView(
-        title: "Your sets",
+        title: L10n.string("setsListYourSets"),
         actionTitle: "Create",
         showsEditButton: true,
         isEditing: false,

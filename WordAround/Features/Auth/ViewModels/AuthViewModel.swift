@@ -51,7 +51,7 @@ final class AuthViewModel: ObservableObject {
 
         do {
             try await authService.signUp(email: email, password: password)
-            infoMessage = "Account created. We sent a verification email."
+            infoMessage = L10n.string("authAccountCreated")
             await sessionStore?.refreshAuthState()
         } catch {
             errorMessage = mapFirebaseError(error)
@@ -78,12 +78,12 @@ final class AuthViewModel: ObservableObject {
         let cleanEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !cleanEmail.isEmpty else {
-            errorMessage = "Enter your email first"
+            errorMessage = L10n.string("authEnterEmailFirst")
             return
         }
 
         guard isValidEmail(cleanEmail) else {
-            errorMessage = "Enter a valid email"
+            errorMessage = L10n.string("authEnterValidEmail")
             return
         }
 
@@ -92,7 +92,7 @@ final class AuthViewModel: ObservableObject {
 
         do {
             try await authService.sendPasswordReset(to: cleanEmail)
-            infoMessage = "Password reset email sent"
+            infoMessage = L10n.string("authPasswordResetSent")
         } catch {
             errorMessage = mapFirebaseError(error)
         }
@@ -107,17 +107,17 @@ final class AuthViewModel: ObservableObject {
         let cleanEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !cleanEmail.isEmpty else {
-            errorMessage = "Email is required"
+            errorMessage = L10n.string("authEmailRequired")
             return false
         }
 
         guard isValidEmail(cleanEmail) else {
-            errorMessage = "Enter a valid email"
+            errorMessage = L10n.string("authEnterValidEmail")
             return false
         }
 
         guard !password.isEmpty else {
-            errorMessage = "Password is required"
+            errorMessage = L10n.string("authPasswordRequired")
             return false
         }
 
@@ -128,22 +128,22 @@ final class AuthViewModel: ObservableObject {
         let cleanEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !cleanEmail.isEmpty else {
-            errorMessage = "Email is required"
+            errorMessage = L10n.string("authEmailRequired")
             return false
         }
 
         guard isValidEmail(cleanEmail) else {
-            errorMessage = "Enter a valid email"
+            errorMessage = L10n.string("authEnterValidEmail")
             return false
         }
 
         guard !password.isEmpty else {
-            errorMessage = "Password is required"
+            errorMessage = L10n.string("authPasswordRequired")
             return false
         }
 
         guard password.count >= 6 else {
-            errorMessage = "Password must be at least 6 characters"
+            errorMessage = L10n.string("authPasswordTooShort")
             return false
         }
 
@@ -160,23 +160,23 @@ final class AuthViewModel: ObservableObject {
 
         switch nsError.code {
         case 17008:
-            return "Invalid email format"
+            return L10n.string("authErrInvalidEmail")
         case 17009:
-            return "Incorrect password"
+            return L10n.string("authErrIncorrectPassword")
         case 17011:
-            return "No account found with this email"
+            return L10n.string("authErrNoAccount")
         case 17007:
-            return "This account already exists"
+            return L10n.string("authErrAccountExists")
         case 17026:
-            return "Password must be at least 6 characters"
+            return L10n.string("authPasswordTooShort")
         case 17020:
-            return "Network error. Check your internet connection"
+            return L10n.string("authErrNetwork")
         case 17010:
-            return "Too many attempts. Try again later"
+            return L10n.string("authErrTooManyAttempts")
         case 17012:
-            return "This email is already used with another sign-in method"
+            return L10n.string("authErrDifferentMethod")
         case 17999:
-            return "Authentication failed. Please try again"
+            return L10n.string("authErrGeneric")
         default:
             return nsError.localizedDescription
         }

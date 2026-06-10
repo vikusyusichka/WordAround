@@ -17,18 +17,18 @@ struct ImportVideoSetupView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     ListeningSetupTopBar(
-                        title: "Import Video",
-                        subtitle: "Upload a video and we'll generate subtitles and questions.",
+                        title: L10n.string("listenImportVideo"),
+                        subtitle: L10n.string("importVideoSubtitle"),
                         accent: accent,
                         accentDark: accentDark,
                         onBack: { dismiss() }
                     )
                     .padding(.bottom, 4)
 
-                    ListeningSetupSectionTitle("Video Upload", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenSectionVideoUpload"), accentDark: accentDark)
                     uploadCard
 
-                    ListeningSetupSectionTitle("Language", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("spkSectionLanguage"), accentDark: accentDark)
                     LanguageSelectorView(
                         selectedLanguage: viewModel.selectedLanguage,
                         onSelect: { viewModel.selectedLanguage = $0 },
@@ -36,7 +36,7 @@ struct ImportVideoSetupView: View {
                         accentDark: accentDark
                     )
 
-                    ListeningSetupSectionTitle("Level", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("spkSectionLevel"), accentDark: accentDark)
                     DifficultySelectorView(
                         selectedDifficulty: viewModel.selectedLevel,
                         onSelect: { viewModel.selectedLevel = $0 },
@@ -44,7 +44,7 @@ struct ImportVideoSetupView: View {
                         accentDark: accentDark
                     )
 
-                    ListeningSetupSectionTitle("Questions", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenSectionQuestions"), accentDark: accentDark)
                     ListeningQuestionSettingsCard(
                         addQuestions: $viewModel.addQuestions,
                         questionCount: $viewModel.questionCount,
@@ -69,7 +69,7 @@ struct ImportVideoSetupView: View {
             }
 
             ListeningSetupStartButton(
-                title: "Continue",
+                title: L10n.string("commonContinue"),
                 icon: "arrow.right",
                 accent: accent,
                 accentDark: accentDark,
@@ -130,23 +130,23 @@ struct ImportVideoSetupView: View {
                     VStack(spacing: 10) {
                         if viewModel.isImporting {
                             ProgressView().tint(accent)
-                            Text("Importing…")
+                            Text(L10n.string("listeningImporting"))
                                 .font(.system(size: 14, weight: .medium, design: .rounded))
                                 .foregroundColor(AppColors.textSecondary)
                         } else {
                             Image(systemName: "arrow.up.doc.fill")
                                 .font(.system(size: 32, weight: .semibold))
                                 .foregroundColor(accent)
-                            Text("Upload video file")
+                            Text(L10n.string("listeningUploadVideo"))
                                 .font(.system(size: 17, weight: .bold, design: .rounded))
                                 .foregroundColor(accentDark)
-                            Text("MP4, MOV or M4V • up to 80 MB")
+                            Text(L10n.string("listeningVideoFormats"))
                                 .font(.system(size: 14, weight: .medium, design: .rounded))
                                 .foregroundColor(AppColors.textSecondary)
                             Button {
                                 viewModel.showFileImporter = true
                             } label: {
-                                Text("Choose File")
+                                Text(L10n.string("listeningChooseFile"))
                                     .font(.system(size: 14, weight: .bold, design: .rounded))
                                     .foregroundColor(accentDark)
                                     .padding(.horizontal, 18)
@@ -167,7 +167,7 @@ struct ImportVideoSetupView: View {
     private var infoNote: some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "captions.bubble.fill").foregroundColor(accent)
-            Text("We extract the audio and transcribe it securely to build synced subtitles. The video never leaves your control.")
+            Text(L10n.string("listeningVideoPrivacy"))
                 .font(.system(size: 13, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
         }

@@ -39,7 +39,7 @@ struct ReadingTextCardView: View {
             HStack(spacing: 6) {
                 ReadingMetadataChip(text: languageTitle, accent: accent)
                 ReadingMetadataChip(text: levelTitle, accent: accent)
-                ReadingMetadataChip(text: "\(wordCount) words", accent: accent)
+                ReadingMetadataChip(text: String(format: L10n.string("readingWordsCountFmt"), wordCount), accent: accent)
                 if let statusLabel {
                     ReadingMetadataChip(text: statusLabel, accent: accent)
                 }
@@ -90,17 +90,17 @@ struct ReadingTextCardView: View {
                     Menu {
                         if let onRename {
                             Button(action: onRename) {
-                                Label("Rename", systemImage: "pencil")
+                                Label(L10n.string("commonRename"), systemImage: "pencil")
                             }
                         }
                         if let onMarkCompleted {
                             Button(action: onMarkCompleted) {
-                                Label("Mark completed", systemImage: "checkmark.circle")
+                                Label(L10n.string("readingMarkCompleted"), systemImage: "checkmark.circle")
                             }
                         }
                         if let onDelete {
                             Button(role: .destructive, action: onDelete) {
-                                Label("Delete", systemImage: "trash")
+                                Label(L10n.localized(.commonDelete), systemImage: "trash")
                             }
                         }
                     } label: {
@@ -112,7 +112,7 @@ struct ReadingTextCardView: View {
                             .clipShape(Circle())
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("More options")
+                    .accessibilityLabel(L10n.string("readingMoreOptions"))
                 }
             }
         }

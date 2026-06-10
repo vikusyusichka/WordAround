@@ -12,7 +12,6 @@ struct DescribePictureView: View {
 
     private let orange = AppColors.orangeAccent
 
-    /// Local hint phrases only — never sent to AI, never added to transcript.
     private let hints = [
         "In this picture I can see…",
         "It looks like…",
@@ -89,10 +88,10 @@ struct DescribePictureView: View {
         }
         .onDisappear { viewModel.endSession() }
         .alert("Change picture?", isPresented: $showRefreshConfirm) {
-            Button("Cancel", role: .cancel) {}
-            Button("New Picture", role: .destructive) { viewModel.refreshImage() }
+            Button(L10n.string("commonCancel"), role: .cancel) {}
+            Button(L10n.string("speakingNewPicture"), role: .destructive) { viewModel.refreshImage() }
         } message: {
-            Text("Changing the picture will reset your current transcript.")
+            Text(L10n.string("speakingChangePictureReset"))
         }
         .navigationDestination(isPresented: $showResult) {
             ConversationResultView(
@@ -119,11 +118,11 @@ struct DescribePictureView: View {
     private var topBar: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Describe Picture")
+                Text(L10n.string("speakingModePictureTitle"))
                     .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.orangeTitle)
 
-                Text("Describe images and improve your speaking.")
+                Text(L10n.string("speakingDescribeSubtitle"))
                     .font(.system(size: Layout.homeHeaderSubtitleSize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.mutedText)
                     .lineLimit(1)
@@ -184,7 +183,7 @@ struct DescribePictureView: View {
 
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Transcript")
+            Text(L10n.string("speakingTranscript"))
                 .font(.system(size: 16, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.orangeTitle)
 
@@ -222,12 +221,12 @@ struct DescribePictureView: View {
             }
             .padding(.top, 16)
 
-            Text("Start speaking to build your description")
+            Text(L10n.string("speakingStartDescribing"))
                 .font(.system(size: 16, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.orangeTitle)
                 .multilineTextAlignment(.center)
 
-            Text("Your description will appear here while you speak.")
+            Text(L10n.string("speakingDescriptionAppear"))
                 .font(.system(size: 14, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
                 .multilineTextAlignment(.center)

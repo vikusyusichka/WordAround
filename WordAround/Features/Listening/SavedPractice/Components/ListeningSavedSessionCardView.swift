@@ -28,10 +28,10 @@ struct ListeningSavedSessionCardView: View {
 
                 Menu {
                     if let onReview {
-                        Button("Review result", action: onReview)
+                        Button(L10n.string("listenReviewResult"), action: onReview)
                     }
                     if let onDelete {
-                        Button("Delete session", role: .destructive, action: onDelete)
+                        Button(L10n.string("listenDeleteSession"), role: .destructive, action: onDelete)
                     }
                 } label: {
                     Image(systemName: "ellipsis")
@@ -62,7 +62,7 @@ struct ListeningSavedSessionCardView: View {
             }
 
             Button(action: onContinue) {
-                Text(session.isInProgress ? "Continue" : "Review")
+                Text(session.isInProgress ? L10n.string("commonContinue") : L10n.string("writingReview"))
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
                     .frame(maxWidth: .infinity)

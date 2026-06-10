@@ -34,10 +34,10 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
                             fallbackBanner(banner)
                         }
 
-                        sectionTitle("Metrics")
+                        sectionTitle(L10n.string("spkMetrics"))
                         metricsGrid(fb.metrics)
 
-                        sectionTitle("Corrections")
+                        sectionTitle(L10n.string("spkCorrections"))
                         correctionsSection(fb.corrections)
 
                         transcriptToggle
@@ -150,11 +150,11 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("Great job")
+                Text(L10n.string("speakingGreatJob"))
                     .font(.system(size: Layout.isPadLike ? 16 : 14, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
-                Text("No major corrections found.")
+                Text(L10n.string("speakingNoCorrections"))
                     .font(.system(size: Layout.isPadLike ? 14 : 13, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .lineSpacing(2)
@@ -175,12 +175,12 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
                 .tint(AppColors.primaryBlue)
                 .scaleEffect(1.1)
 
-            Text("Analyzing your conversation…")
+            Text(L10n.string("speakingAnalyzing"))
                 .font(.system(size: 16, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
                 .multilineTextAlignment(.center)
 
-            Text("Reading your answers and preparing personalised feedback.")
+            Text(L10n.string("speakingAnalyzingSub"))
                 .font(.system(size: 13, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
                 .multilineTextAlignment(.center)
@@ -226,7 +226,7 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
                     ))
                     .foregroundColor(AppColors.primaryBlueDark)
 
-                Text("Here is your speaking feedback.")
+                Text(L10n.string("speakingFeedbackHere"))
                     .font(.system(
                         size: Layout.homeHeaderSubtitleSize,
                         weight: .medium,
@@ -294,7 +294,7 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
     private var transcriptContent: some View {
         VStack(alignment: .leading, spacing: 8) {
             if viewModel.messages.isEmpty {
-                Text("No conversation recorded yet.")
+                Text(L10n.string("speakingNoConversation"))
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.mutedText)
             } else {
@@ -331,7 +331,7 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
             Button {
                 onPracticeAgain()
             } label: {
-                Text("Practice Again")
+                Text(L10n.string("speakingPracticeAgain"))
                     .font(.system(
                         size: Layout.convResultActionTextSize,
                         weight: .bold,
@@ -351,7 +351,7 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
             Button {
                 onBackToSpeaking()
             } label: {
-                Text("Back to Speaking")
+                Text(L10n.string("speakingBackToSpeaking"))
                     .font(.system(
                         size: Layout.convResultActionTextSize,
                         weight: .bold,
@@ -369,7 +369,7 @@ struct ConversationResultView<VM: SpeakingResultProvidable>: View {
             .buttonStyle(.plain)
 
             Button {  } label: {
-                Text("Save mistakes")
+                Text(L10n.string("speakingSaveMistakes"))
                     .font(.system(
                         size: Layout.isPadLike ? 15 : 13,
                         weight: .semibold,

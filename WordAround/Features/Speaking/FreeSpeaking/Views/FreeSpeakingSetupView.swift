@@ -20,15 +20,15 @@ struct FreeSpeakingSetupView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     SpeakingSetupTopBar(
-                        title: "Free Speaking",
-                        subtitle: "Speak freely on a topic and get feedback.",
+                        title: L10n.string("spkFreeSpeaking"),
+                        subtitle: L10n.string("fsSubtitle"),
                         accent: green,
                         accentDark: greenDark,
                         onBack: { dismiss() }
                     )
                     .padding(.bottom, 4)
 
-                    SpeakingSetupSectionTitle("Language", accentDark: greenDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLanguage"), accentDark: greenDark)
                     LanguageSelectorView(
                         selectedLanguage: selectedLanguage,
                         onSelect: { selectedLanguage = $0 },
@@ -36,7 +36,7 @@ struct FreeSpeakingSetupView: View {
                         accentDark: greenDark
                     )
 
-                    SpeakingSetupSectionTitle("Level", accentDark: greenDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLevel"), accentDark: greenDark)
                     DifficultySelectorView(
                         selectedDifficulty: selectedLevel,
                         onSelect: { selectedLevel = $0 },
@@ -44,14 +44,14 @@ struct FreeSpeakingSetupView: View {
                         accentDark: greenDark
                     )
 
-                    SpeakingSetupSectionTitle("Session length", accentDark: greenDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionSessionLength"), accentDark: greenDark)
                     SpeakingSetupDurationPicker(
                         selection: $selectedLength,
                         accent: green,
                         accentDark: greenDark
                     )
 
-                    SpeakingSetupSectionTitle("Preview", accentDark: greenDark)
+                    SpeakingSetupSectionTitle(L10n.string("commonPreview"), accentDark: greenDark)
                     previewCard
                         .animation(.easeInOut(duration: 0.22), value: selectedLanguage)
                         .animation(.easeInOut(duration: 0.22), value: selectedLevel)
@@ -67,7 +67,7 @@ struct FreeSpeakingSetupView: View {
             }
 
             SpeakingSetupStartButton(
-                title: "Start Free Speaking",
+                title: L10n.string("fsStartFreeSpeaking"),
                 icon: "mic.fill",
                 accent: green,
                 accentDark: greenDark,
@@ -95,9 +95,9 @@ struct FreeSpeakingSetupView: View {
 
     private var previewCard: some View {
         FreeSpeakingTopicCardView(
-            title: "AI-generated topic",
-            description: "We'll pick a fresh topic for \(selectedLanguage.title) · \(selectedLevel.title) when you start.",
-            chips: [selectedLevel.title, selectedLength.title, "Auto"]
+            title: L10n.string("aiConvAIGeneratedTopic"),
+            description: String(format: L10n.string("fsTopicDescFmt"), selectedLanguage.title, selectedLevel.title),
+            chips: [selectedLevel.title, selectedLength.title, L10n.string("aiConvAutoChip")]
         )
     }
 }

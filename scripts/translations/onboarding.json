@@ -1,0 +1,28 @@
+{
+  "onboardingTagline": {
+    "en": "Learn words in a fun and simple way", "uk": "Вивчайте слова цікаво й просто", "es": "Aprende palabras de forma divertida y sencilla",
+    "fr": "Apprenez des mots de façon ludique et simple", "de": "Lerne Wörter auf spielerische und einfache Weise", "it": "Impara le parole in modo divertente e semplice",
+    "pt": "Aprenda palavras de forma divertida e simples", "ru": "Учите слова легко и весело", "pl": "Ucz się słów w zabawny i prosty sposób",
+    "nl": "Leer woorden op een leuke en eenvoudige manier", "ja": "楽しく簡単に単語を学ぼう", "ko": "재미있고 간단하게 단어를 배우세요",
+    "zh": "用有趣又简单的方式学单词", "hi": "मज़ेदार और आसान तरीके से शब्द सीखें", "ar": "تعلّم الكلمات بطريقة ممتعة وبسيطة",
+    "bn": "মজাদার ও সহজ উপায়ে শব্দ শিখুন", "ur": "تفریحی اور آسان طریقے سے الفاظ سیکھیں", "id": "Belajar kata dengan cara seru dan sederhana",
+    "tr": "Kelimeleri eğlenceli ve basit bir şekilde öğren", "vi": "Học từ vựng một cách thú vị và đơn giản", "fa": "کلمات را به‌شکلی سرگرم‌کننده و ساده یاد بگیرید",
+    "ro": "Învață cuvinte într-un mod distractiv și simplu", "th": "เรียนคำศัพท์อย่างสนุกและง่ายดาย", "el": "Μάθε λέξεις με διασκεδαστικό και απλό τρόπο",
+    "cs": "Uč se slovíčka zábavně a jednoduše", "hu": "Tanulj szavakat szórakoztató és egyszerű módon", "sv": "Lär dig ord på ett roligt och enkelt sätt",
+    "he": "למדו מילים בדרך כיפית ופשוטה", "no": "Lær ord på en morsom og enkel måte", "da": "Lær ord på en sjov og enkel måde",
+    "fi": "Opi sanoja hauskasti ja helposti", "bg": "Учете думи по забавен и лесен начин"
+  },
+  "onboardingStart": {
+    "en": "Let’s Start", "uk": "Почнімо", "es": "Empecemos",
+    "fr": "C'est parti", "de": "Los geht's", "it": "Iniziamo",
+    "pt": "Vamos começar", "ru": "Начнём", "pl": "Zaczynamy",
+    "nl": "Laten we beginnen", "ja": "始めよう", "ko": "시작하기",
+    "zh": "开始吧", "hi": "चलिए शुरू करें", "ar": "لنبدأ",
+    "bn": "চলুন শুরু করি", "ur": "آئیے شروع کریں", "id": "Ayo mulai",
+    "tr": "Hadi başlayalım", "vi": "Bắt đầu nào", "fa": "بزن بریم",
+    "ro": "Să începem", "th": "เริ่มกันเลย", "el": "Ας ξεκινήσουμε",
+    "cs": "Začněme", "hu": "Kezdjük", "sv": "Nu kör vi",
+    "he": "בואו נתחיל", "no": "La oss starte", "da": "Lad os begynde",
+    "fi": "Aloitetaan", "bg": "Да започнем"
+  }
+}

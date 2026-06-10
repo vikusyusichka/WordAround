@@ -12,7 +12,7 @@ struct GrammarIssueCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: isPadLike ? 14 : 12) {
             feedbackRow(
-                title: "Original",
+                title: L10n.string("essayGrammarOriginal"),
                 text: issue.incorrectText,
                 systemImage: "exclamationmark.circle.fill",
                 tint: Color(red: 0.78, green: 0.55, blue: 0.26),
@@ -21,7 +21,7 @@ struct GrammarIssueCardView: View {
 
             if issue.hasSuggestion, let suggestion = issue.suggestedCorrection {
                 feedbackRow(
-                    title: "Suggestion",
+                    title: L10n.string("essayGrammarSuggestion"),
                     text: suggestion,
                     systemImage: "checkmark.circle.fill",
                     tint: AppColors.primaryBlue,
@@ -30,7 +30,7 @@ struct GrammarIssueCardView: View {
             }
 
             VStack(alignment: .leading, spacing: 5) {
-                Text("Reason")
+                Text(L10n.string("essayGrammarReason"))
                     .font(.system(size: isPadLike ? 13 : 12, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
@@ -85,10 +85,10 @@ struct GrammarIssueCardView: View {
 
     private var saveButtonTitle: String {
         switch saveState {
-        case .idle: return "Save to Grammar Notes"
-        case .saving: return "Saving..."
-        case .saved: return "Saved"
-        case .duplicate: return "Already saved"
+        case .idle: return L10n.string("essaySaveToNotes")
+        case .saving: return L10n.string("commonSaving")
+        case .saved: return L10n.string("readingSaved")
+        case .duplicate: return L10n.string("essayAlreadySaved")
         case .failed: return "Try saving again"
         }
     }

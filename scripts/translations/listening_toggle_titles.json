@@ -1,0 +1,28 @@
+{
+  "listenShowText": {
+    "en": "Show text while listening", "uk": "Показувати текст під час слухання", "es": "Mostrar texto al escuchar",
+    "fr": "Afficher le texte pendant l'écoute", "de": "Text beim Hören anzeigen", "it": "Mostra testo durante l'ascolto",
+    "pt": "Mostrar texto durante a audição", "ru": "Показывать текст во время прослушивания", "pl": "Pokaż tekst podczas słuchania",
+    "nl": "Toon tekst tijdens luisteren", "ja": "リスニング中に文字を表示", "ko": "듣는 중 텍스트 표시",
+    "zh": "听音时显示文本", "hi": "सुनते समय पाठ दिखाएँ", "ar": "إظهار النص أثناء الاستماع",
+    "bn": "শোনার সময় টেক্সট দেখান", "ur": "سنتے وقت متن دکھائیں", "id": "Tampilkan teks saat mendengarkan",
+    "tr": "Dinlerken metni göster", "vi": "Hiển thị văn bản khi nghe", "fa": "نمایش متن هنگام گوش دادن",
+    "ro": "Arată textul în timp ce asculți", "th": "แสดงข้อความขณะฟัง", "el": "Εμφάνιση κειμένου κατά την ακρόαση",
+    "cs": "Zobrazit text při poslechu", "hu": "Szöveg megjelenítése hallgatás közben", "sv": "Visa text under lyssning",
+    "he": "הצג טקסט בזמן ההאזנה", "no": "Vis tekst under lytting", "da": "Vis tekst under lytning",
+    "fi": "Näytä teksti kuuntelun aikana", "bg": "Покажи текст по време на слушане"
+  },
+  "listenAddQuestions": {
+    "en": "Add comprehension questions", "uk": "Додати питання на розуміння", "es": "Añadir preguntas de comprensión",
+    "fr": "Ajouter des questions de compréhension", "de": "Verständnisfragen hinzufügen", "it": "Aggiungi domande di comprensione",
+    "pt": "Adicionar perguntas de compreensão", "ru": "Добавить вопросы на понимание", "pl": "Dodaj pytania zrozumienia",
+    "nl": "Begripsvragen toevoegen", "ja": "理解度の質問を追加", "ko": "이해도 질문 추가",
+    "zh": "添加理解题", "hi": "समझ के प्रश्न जोड़ें", "ar": "إضافة أسئلة فهم",
+    "bn": "বোঝার প্রশ্ন যোগ করুন", "ur": "فہم کے سوالات شامل کریں", "id": "Tambahkan pertanyaan pemahaman",
+    "tr": "Anlama soruları ekle", "vi": "Thêm câu hỏi hiểu bài", "fa": "افزودن سؤالات درک مطلب",
+    "ro": "Adaugă întrebări de înțelegere", "th": "เพิ่มคำถามความเข้าใจ", "el": "Προσθήκη ερωτήσεων κατανόησης",
+    "cs": "Přidat otázky porozumění", "hu": "Megértési kérdések hozzáadása", "sv": "Lägg till förståelsefrågor",
+    "he": "הוסף שאלות הבנה", "no": "Legg til forståelsesspørsmål", "da": "Tilføj forståelsesspørgsmål",
+    "fi": "Lisää ymmärryskysymyksiä", "bg": "Добави въпроси за разбиране"
+  }
+}

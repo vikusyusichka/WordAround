@@ -7,13 +7,13 @@ struct CreateSetPreviewCardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.createSetPreviewSectionSpacing) {
-            sectionLabel("Preview")
+            sectionLabel(L10n.string("commonPreview"))
 
             HStack(spacing: Layout.createSetPreviewCardSpacing) {
                 iconView
 
                 VStack(alignment: .leading, spacing: Layout.createSetPreviewTitleStackSpacing) {
-                    Text(viewModel.draft.title.isEmpty ? "New Set" : viewModel.draft.title)
+                    Text(viewModel.draft.title.isEmpty ? L10n.string("setsListNewSet") : viewModel.draft.title)
                         .font(.system(
                             size: Layout.createSetPreviewTitleSize,
                             weight: .bold,
@@ -22,7 +22,7 @@ struct CreateSetPreviewCardView: View {
                         .foregroundStyle(viewModel.theme.titleColor)
                         .lineLimit(1)
 
-                    Text("\(viewModel.draft.cards.count) cards")
+                    Text(L10n.cardsCount(viewModel.draft.cards.count))
                         .font(.system(size: Layout.createSetPreviewSubtitleSize, weight: .semibold))
                         .foregroundStyle(viewModel.theme.mutedTextColor)
                 }

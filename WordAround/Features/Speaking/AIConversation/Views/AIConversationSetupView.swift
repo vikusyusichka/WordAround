@@ -22,15 +22,15 @@ struct AIConversationSetupView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     SpeakingSetupTopBar(
-                        title: "Set up conversation",
-                        subtitle: "Choose what to practice today.",
+                        title: L10n.string("aiConvSetupTitle"),
+                        subtitle: L10n.string("aiConvSetupSubtitle"),
                         accent: accent,
                         accentDark: accentDark,
                         onBack: { dismiss() }
                     )
                     .padding(.bottom, 4)
 
-                    SpeakingSetupSectionTitle("Language", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLanguage"), accentDark: accentDark)
                     LanguageSelectorView(
                         selectedLanguage: selectedLanguage,
                         onSelect: { selectedLanguage = $0 },
@@ -38,7 +38,7 @@ struct AIConversationSetupView: View {
                         accentDark: accentDark
                     )
 
-                    SpeakingSetupSectionTitle("Level", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLevel"), accentDark: accentDark)
                     DifficultySelectorView(
                         selectedDifficulty: selectedLevel,
                         onSelect: { selectedLevel = $0 },
@@ -46,17 +46,17 @@ struct AIConversationSetupView: View {
                         accentDark: accentDark
                     )
 
-                    SpeakingSetupSectionTitle("Scenario", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkScenario"), accentDark: accentDark)
                     ConversationScenarioPickerView(selectedScenario: selectedScenario) { selectedScenario = $0 }
 
-                    SpeakingSetupSectionTitle("Session length", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionSessionLength"), accentDark: accentDark)
                     SpeakingSetupDurationPicker(
                         selection: $selectedLength,
                         accent: accent,
                         accentDark: accentDark
                     )
 
-                    SpeakingSetupSectionTitle("Preview", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("commonPreview"), accentDark: accentDark)
                     previewCard
                         .transition(.opacity.combined(with: .scale(scale: 0.97)))
 
@@ -71,7 +71,7 @@ struct AIConversationSetupView: View {
             }
 
             SpeakingSetupStartButton(
-                title: "Start Conversation",
+                title: L10n.string("aiConvStartConversation"),
                 icon: "bubble.left.and.bubble.right.fill",
                 accent: accent,
                 accentDark: accentDark,
@@ -108,10 +108,10 @@ struct AIConversationSetupView: View {
             )
         } else {
             ConversationScenarioCardView(
-                title: "AI-generated topic",
-                description: "We'll pick a fresh topic that fits \(selectedLanguage.title) · \(selectedLevel.title) when you start.",
+                title: L10n.string("aiConvAIGeneratedTopic"),
+                description: String(format: L10n.string("aiConvAIGenTopicDescFmt"), selectedLanguage.title, selectedLevel.title),
                 icon: "sparkles",
-                chips: [selectedLevel.title, selectedLength.title, "Auto"]
+                chips: [selectedLevel.title, selectedLength.title, L10n.string("aiConvAutoChip")]
             )
         }
     }

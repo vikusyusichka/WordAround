@@ -8,8 +8,8 @@ struct ReadingQuestionOptionsView: View {
 
     var body: some View {
         ReadingSetupSectionCard(
-            title: "Question types",
-            subtitle: "Choose which exercises to generate",
+            title: L10n.string("listenQuestionTypes"),
+            subtitle: L10n.string("readingQTypesSubtitle"),
             accentDark: accentDark
         ) {
             VStack(spacing: 8) {

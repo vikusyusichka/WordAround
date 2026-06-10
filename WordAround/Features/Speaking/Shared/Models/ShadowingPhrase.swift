@@ -17,13 +17,13 @@ enum ShadowingCategory: String, CaseIterable, Identifiable, Equatable {
 
     var title: String {
         switch self {
-        case .daily:         return "Daily phrases"
-        case .travel:        return "Travel"
-        case .cafe:          return "Cafe"
-        case .interview:     return "Interview"
-        case .academic:      return "Academic"
-        case .pronunciation: return "Pronunciation"
-        case .fromVideo:     return "From video"
+        case .daily:         return L10n.string("spkCatDaily")
+        case .travel:        return L10n.string("spkCatTravel")
+        case .cafe:          return L10n.string("spkCatCafe")
+        case .interview:     return L10n.string("spkCatInterview")
+        case .academic:      return L10n.string("spkCatAcademic")
+        case .pronunciation: return L10n.string("spkPronunciation")
+        case .fromVideo:     return L10n.string("spkCatFromVideo")
         }
     }
 

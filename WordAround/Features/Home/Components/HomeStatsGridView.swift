@@ -1,11 +1,6 @@
 import SwiftUI
 
-/// One day's practice metric for a single learning section, shown in the Home
-/// dashboard grid. Values are produced by `HomeViewModel` from the real
-/// `DailyPracticeStatsService` / listening session store — they are never
-/// hardcoded outside of previews.
 struct HomeDailyStat: Identifiable {
-    /// Reuses the learning-section identity so the card maps 1:1 to a section.
     let id: HomeCategory
     let title: String
     let value: String
@@ -13,8 +8,6 @@ struct HomeDailyStat: Identifiable {
     let iconSystemName: String
 }
 
-/// White, blue-accented stat card. No gradients: a soft blue icon chip and a
-/// subtle shadow keep it aligned with the rest of the WordAround card style.
 struct HomeStatCardView: View {
     let stat: HomeDailyStat
 
@@ -71,10 +64,6 @@ struct HomeStatCardView: View {
     }
 }
 
-/// Adaptive grid of daily-practice stat cards.
-/// - iPhone → 2×2
-/// - iPad / Mac → one row of four
-/// Cards are equal width (flexible columns) and equal height (fixed height).
 struct HomeStatsGridView: View {
     let stats: [HomeDailyStat]
 

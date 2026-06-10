@@ -37,7 +37,7 @@ struct EditFolderSheet: View {
 
                 VStack(alignment: .leading, spacing: 14) {
                     inputBlock(
-                        title: "Folder name",
+                        title: L10n.string("folderNameField"),
                         text: $title,
                         placeholder: "Spanish"
                     )
@@ -71,11 +71,11 @@ struct EditFolderSheet: View {
     private var sheetHeader: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
-                Text("Edit folder")
+                Text(L10n.string("folderEdit"))
                     .font(.system(size: Layout.isPadLike ? 30 : 26, weight: .bold, design: .rounded))
                     .foregroundColor(theme.titleColor)
 
-                Text("Update the name and description.")
+                Text(L10n.string("folderEditSubtitle"))
                     .font(.system(size: 14, weight: .medium, design: .rounded))
                     .foregroundColor(theme.mutedTextColor)
             }
@@ -121,7 +121,7 @@ struct EditFolderSheet: View {
 
     private var descriptionBlock: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Description")
+            Text(L10n.string("folderDescField"))
                 .font(.system(size: 13, weight: .bold, design: .rounded))
                 .foregroundColor(theme.titleColor)
 
@@ -146,7 +146,7 @@ struct EditFolderSheet: View {
                 let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
 
                 guard !trimmedTitle.isEmpty else {
-                    validationMessage = "Folder name cannot be empty."
+                    validationMessage = L10n.string("folderNameEmpty")
                     return
                 }
 
@@ -165,7 +165,7 @@ struct EditFolderSheet: View {
                         .tint(.white)
                 }
 
-                Text(isSaving ? "Saving..." : "Save changes")
+                Text(isSaving ? L10n.string("commonSaving") : L10n.string("commonSaveChanges"))
                     .font(.system(size: 16, weight: .bold, design: .rounded))
             }
             .foregroundColor(.white)

@@ -19,19 +19,19 @@ struct SpeedReadingResultCardView: View {
 
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("\(result.wordsPerMinute) WPM")
+                    Text(String(format: L10n.string("readingWPMFmt"), result.wordsPerMinute))
                         .font(.system(size: 32, weight: .bold, design: .rounded))
                         .foregroundColor(accent)
-                    Text("Average pace")
+                    Text(L10n.string("readingAveragePace"))
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("\(result.targetWPM) WPM")
+                    Text(String(format: L10n.string("readingWPMFmt"), result.targetWPM))
                         .font(.system(size: 17, weight: .bold, design: .rounded))
                         .foregroundColor(accentDark)
-                    Text("Target")
+                    Text(L10n.string("readingTarget"))
                         .font(.system(size: 12, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                 }
@@ -40,12 +40,12 @@ struct SpeedReadingResultCardView: View {
             Divider().opacity(0.4)
 
             HStack(spacing: 0) {
-                metric(value: formattedReadingTime, label: "Reading time")
+                metric(value: formattedReadingTime, label: L10n.string("readingReadingTime"))
                 Divider().frame(height: 36).opacity(0.4)
-                metric(value: "\(result.comprehensionPercentInt)%", label: "Comprehension")
+                metric(value: "\(result.comprehensionPercentInt)%", label: L10n.string("readingComprehension"))
                 if configuration.timer.penalisesViolations {
                     Divider().frame(height: 36).opacity(0.4)
-                    metric(value: "\(result.timerViolations)", label: "Timer misses")
+                    metric(value: "\(result.timerViolations)", label: L10n.string("readingTimerMisses"))
                 }
             }
         }

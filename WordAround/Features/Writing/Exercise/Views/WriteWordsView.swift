@@ -121,7 +121,7 @@ struct WriteWordsView: View {
                     viewModel.selectDifficulty(level)
                 }
             }
-            Button("Cancel", role: .cancel) {}
+            Button(L10n.string("commonCancel"), role: .cancel) {}
         }
     }
 
@@ -153,7 +153,7 @@ struct WriteWordsView: View {
 
             Spacer()
 
-            Text("Write Words")
+            Text(L10n.string("writeWordsTitle"))
                 .font(.system(
                     size: LayoutConstants.WriteWords.topBarTitleSize(metrics),
                     weight: .bold,

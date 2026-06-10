@@ -424,7 +424,7 @@ final class GrammarNotesHomeViewModel: ObservableObject {
             targetTopic = found
         } else {
             guard let mistakes = await getOrCreateMistakesTopic() else {
-                quickMistakeError = "Could not find or create Common Mistakes topic."
+                quickMistakeError = L10n.string("notesCommonMistakesError")
                 #if DEBUG
                 print("[QuickMistake] save failed: could not resolve mistakes topic")
                 #endif

@@ -103,7 +103,7 @@ struct QuickGrammarNoteSheet: View {
         }
         .task(id: didSubmitSave) {
             guard didSubmitSave else { return }
-            try? await Task.sleep(nanoseconds: 12_000_000_000) // 12s
+            try? await Task.sleep(nanoseconds: 12_000_000_000)
             if didSubmitSave {
                 didSubmitSave = false
             }
@@ -129,10 +129,10 @@ struct QuickGrammarNoteSheet: View {
             .frame(width: Layout.grammarQuickHeaderIconBox, height: Layout.grammarQuickHeaderIconBox)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("Quick Note")
+                Text(L10n.string("notesQuickNote"))
                     .font(.system(size: Layout.grammarQuickTitleSize, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
-                Text("Capture a grammar idea without opening the full editor.")
+                Text(L10n.string("notesQuickNoteSubtitle"))
                     .font(.system(size: Layout.grammarQuickSubtitleSize, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                     .lineSpacing(2)
@@ -145,8 +145,8 @@ struct QuickGrammarNoteSheet: View {
     }
 
     private var titleSection: some View {
-        quickSection(title: "Title", helper: "Keep it short. Future you already has enough enemies.") {
-            TextField("Example: Ser vs Estar", text: $title)
+        quickSection(title: L10n.string("commonTitle"), helper: L10n.string("notesTitleHelper")) {
+            TextField(L10n.string("notesTitlePlaceholder"), text: $title)
                 .focused($focusedField, equals: .title)
                 .submitLabel(.next)
                 .font(.system(size: Layout.grammarQuickTitleFieldSize, weight: .bold, design: .rounded))
@@ -161,10 +161,10 @@ struct QuickGrammarNoteSheet: View {
     }
 
     private var noteSection: some View {
-        quickSection(title: "Note", helper: "A rule, tiny explanation, or sentence you want to remember.") {
+        quickSection(title: L10n.string("notesNote"), helper: L10n.string("notesNoteHelper")) {
             ZStack(alignment: .topLeading) {
                 if noteText.isEmpty {
-                    Text("Write the useful part here")
+                    Text(L10n.string("notesNotePlaceholder"))
                         .font(.system(size: Layout.grammarQuickEditorTextSize, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppColors.textSecondary.opacity(0.58))
                         .padding(.horizontal, 18)
@@ -187,7 +187,7 @@ struct QuickGrammarNoteSheet: View {
     }
 
     private var topicSelector: some View {
-        quickSection(title: "Topic", helper: "Choose where this note should visually belong.") {
+        quickSection(title: L10n.string("notesTopic"), helper: L10n.string("notesTopicHelper")) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 9) {
                     ForEach(topics) { topic in
@@ -238,11 +238,11 @@ struct QuickGrammarNoteSheet: View {
             Image(systemName: quickNoteType.systemImage)
                 .font(.system(size: 11, weight: .bold))
                 .foregroundStyle(quickNoteType.tintColor)
-            Text("Creates: \(quickNoteType.title) note")
+            Text(String(format: L10n.string("notesCreatesNoteFmt"), quickNoteType.title))
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
             Spacer(minLength: 0)
-            Text("Change in Settings")
+            Text(L10n.string("notesChangeInSettings"))
                 .font(.system(size: 10, weight: .bold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary.opacity(0.55))
         }
@@ -263,10 +263,10 @@ struct QuickGrammarNoteSheet: View {
             .frame(width: 36, height: 36)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Open editor after saving")
+                Text(L10n.string("notesOpenEditorAfterSave"))
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
-                Text("Useful when the quick version grows legs and becomes a full note.")
+                Text(L10n.string("notesNoteEditorHelper"))
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                     .lineLimit(2)
@@ -304,7 +304,7 @@ struct QuickGrammarNoteSheet: View {
 
     private var actions: some View {
         HStack(spacing: 10) {
-            Button("Cancel") {
+            Button(L10n.string("commonCancel")) {
                 didSubmitSave = false
                 onCancel()
             }
@@ -318,7 +318,7 @@ struct QuickGrammarNoteSheet: View {
                         .tint(Color.white)
                         .scaleEffect(0.9)
                 } else {
-                    Text("Save quick note")
+                    Text(L10n.string("notesSaveQuickNote"))
                 }
             }
             .buttonStyle(GrammarQuickPrimaryButtonStyle(tint: AppColors.primaryBlue))
@@ -388,7 +388,7 @@ struct QuickGrammarNoteSheet: View {
         didSubmitSave = true
         onSave(
             QuickGrammarNoteDraft(
-                title: trimmedTitle.isEmpty ? "Untitled quick note" : trimmedTitle,
+                title: trimmedTitle.isEmpty ? L10n.string("notesUntitledQuickNote") : trimmedTitle,
                 text: trimmedText,
                 topic: selectedTopic,
                 noteType: quickNoteType,

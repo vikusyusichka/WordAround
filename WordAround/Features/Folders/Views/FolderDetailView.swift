@@ -21,11 +21,11 @@ struct FolderDetailView: View {
                 header
 
                 if viewModel.isLoading {
-                    placeholderCard(title: "Loading", subtitle: "Loading folder sets...")
+                    placeholderCard(title: L10n.string("homeLoadingTitle"), subtitle: L10n.string("folderLoadingSets"))
                 } else if let errorMessage = viewModel.errorMessage {
-                    placeholderCard(title: "Error", subtitle: errorMessage)
+                    placeholderCard(title: L10n.string("commonError"), subtitle: errorMessage)
                 } else if viewModel.sets.isEmpty {
-                    placeholderCard(title: "No sets", subtitle: "This folder does not contain any sets yet.")
+                    placeholderCard(title: L10n.string("folderNoSets"), subtitle: L10n.string("folderEmptySubtitle"))
                 } else {
                     setsList
                 }
@@ -136,7 +136,7 @@ struct FolderDetailView: View {
                             accentColor: set.accentColor,
                             titleColor: set.titleColor,
                             backgroundColor: set.backgroundColor,
-                            trailingText: "Review",
+                            trailingText: L10n.string("commonReview"),
                             blobColor: set.blobColor
                         )
                     }

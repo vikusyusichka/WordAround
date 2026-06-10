@@ -41,7 +41,6 @@ final class SpeechSynthesisService: NSObject {
                     synthesizer.stopSpeaking(at: .immediate)
                 }
 
-                // Callers must pass the target phrase only (never the translation).
                 let utterance = AVSpeechUtterance(string: trimmed)
                 let resolvedVoice = Self.resolveVoice(localeIdentifier: localeIdentifier)
                 utterance.voice = resolvedVoice
@@ -69,7 +68,6 @@ final class SpeechSynthesisService: NSObject {
             return prefixed
         }
 
-        // Last resort: system default voice rather than forcing en-US on non-English phrases.
         return AVSpeechSynthesisVoice(language: languagePrefix)
     }
 

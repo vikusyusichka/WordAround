@@ -53,7 +53,7 @@ struct ImportVideoProcessingView: View {
 
     private var progressState: some View {
         VStack(spacing: 20) {
-            Text("Preparing your video practice")
+            Text(L10n.string("listeningPreparingVideo"))
                 .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
                 .multilineTextAlignment(.center)
@@ -100,7 +100,7 @@ struct ImportVideoProcessingView: View {
                     .font(.system(size: 26, weight: .semibold))
                     .foregroundColor(Color(red: 0.95, green: 0.42, blue: 0.40))
             }
-            Text("We couldn't prepare this video")
+            Text(L10n.string("listeningVideoFailed"))
                 .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
                 .multilineTextAlignment(.center)
@@ -113,7 +113,7 @@ struct ImportVideoProcessingView: View {
                     viewModel.retry()
                 }
                 Button { onExitToSetup?() } label: {
-                    Text("Choose another video")
+                    Text(L10n.string("listeningChooseAnotherVideo"))
                         .font(.system(size: 15, weight: .bold, design: .rounded))
                         .foregroundColor(accentDark)
                         .frame(maxWidth: .infinity)

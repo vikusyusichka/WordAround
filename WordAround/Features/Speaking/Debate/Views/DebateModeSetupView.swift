@@ -19,15 +19,15 @@ struct DebateModeSetupView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     SpeakingSetupTopBar(
-                        title: "Debate Mode",
-                        subtitle: "Defend your ideas against an AI opponent.",
+                        title: L10n.string("spkDebateMode"),
+                        subtitle: L10n.string("spkDebateModeSubtitle"),
                         accent: accent,
                         accentDark: accentDark,
                         onBack: { dismiss() }
                     )
                     .padding(.bottom, 4)
 
-                    SpeakingSetupSectionTitle("Language", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLanguage"), accentDark: accentDark)
                     LanguageSelectorView(
                         selectedLanguage: selectedLanguage,
                         onSelect: { selectedLanguage = $0 },
@@ -35,7 +35,7 @@ struct DebateModeSetupView: View {
                         accentDark: accentDark
                     )
 
-                    SpeakingSetupSectionTitle("Level", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLevel"), accentDark: accentDark)
                     DifficultySelectorView(
                         selectedDifficulty: selectedLevel,
                         onSelect: { selectedLevel = $0 },
@@ -43,17 +43,17 @@ struct DebateModeSetupView: View {
                         accentDark: accentDark
                     )
 
-                    SpeakingSetupSectionTitle("Your side", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionYourSide"), accentDark: accentDark)
                     DebateSidePickerView(selectedSide: selectedSide) { selectedSide = $0 }
 
-                    SpeakingSetupSectionTitle("Session length", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionSessionLength"), accentDark: accentDark)
                     SpeakingSetupDurationPicker(
                         selection: $selectedLength,
                         accent: accent,
                         accentDark: accentDark
                     )
 
-                    SpeakingSetupSectionTitle("Preview", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("commonPreview"), accentDark: accentDark)
                     previewCard
 
                     Spacer().frame(height: Layout.convSetupStartButtonHeight + 32)
@@ -66,7 +66,7 @@ struct DebateModeSetupView: View {
             }
 
             SpeakingSetupStartButton(
-                title: "Start Debate",
+                title: L10n.string("spkStartDebate"),
                 icon: "person.2.fill",
                 accent: accent,
                 accentDark: accentDark,
@@ -103,10 +103,10 @@ struct DebateModeSetupView: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("AI-generated debate")
+                Text(L10n.string("spkAIGenDebate"))
                     .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
-                Text("We'll pick a topic for \(selectedLanguage.title) · \(selectedLevel.title) and argue the \(opposingSideText) side.")
+                Text(String(format: L10n.string("spkDebatePickFmt"), selectedLanguage.title, selectedLevel.title, opposingSideText))
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .lineSpacing(2)

@@ -137,13 +137,13 @@ struct GrammarNotesHomeView: View {
                 }
             )
         }
-        .alert("Nothing to review yet", isPresented: $isEmptyReviewAlertPresented) {
-            Button("OK", role: .cancel) { }
+        .alert(L10n.string("notesNothingToReview"), isPresented: $isEmptyReviewAlertPresented) {
+            Button(L10n.string("commonOK"), role: .cancel) { }
         } message: {
-            Text("Add notes or save mistakes from writing practice to build your review queue.")
+            Text(L10n.string("notesNothingToReviewMsg"))
         }
         .confirmationDialog(
-            "Delete this topic?",
+            L10n.string("notesDeleteTopicQuestion"),
             isPresented: topicDeletionBinding,
             titleVisibility: .visible,
             presenting: topicPendingDeletion
@@ -152,7 +152,7 @@ struct GrammarNotesHomeView: View {
                 Task { await viewModel.deleteTopic(topic) }
                 topicPendingDeletion = nil
             }
-            Button("Cancel", role: .cancel) { topicPendingDeletion = nil }
+            Button(L10n.string("commonCancel"), role: .cancel) { topicPendingDeletion = nil }
         } message: { topic in
             Text("This topic and its \(topic.notesCount) note\(topic.notesCount == 1 ? "" : "s") will be permanently deleted. This cannot be undone.")
         }
@@ -212,22 +212,22 @@ struct GrammarNotesHomeView: View {
     private var quickActionsRow: some View {
         LazyVGrid(columns: quickActionColumns, spacing: Layout.grammarNotesQuickActionSpacing) {
             quickActionButton(
-                title: "Quick Note",
+                title: L10n.string("notesQuickNote"),
                 systemImage: "square.and.pencil",
                 action: { isQuickNoteSheetPresented = true }
             )
             quickActionButton(
-                title: "Quick Mistake",
+                title: L10n.string("notesQuickMistake"),
                 systemImage: "exclamationmark.bubble.fill",
                 action: { isQuickMistakeSheetPresented = true }
             )
             quickActionButton(
-                title: "New Topic",
+                title: L10n.string("notesNewTopic"),
                 systemImage: "folder.badge.plus",
                 action: { isCreateSheetPresented = true }
             )
             quickActionButton(
-                title: "Templates",
+                title: L10n.string("notesTemplates"),
                 systemImage: "doc.on.doc.fill",
                 action: { isTemplateLibraryPresented = true }
             )
@@ -381,7 +381,7 @@ struct GrammarNotesHomeView: View {
     private var toolbarRow: some View {
         HStack(spacing: 10) {
             GrammarSearchBar(
-                placeholder: "Search topics",
+                placeholder: L10n.string("notesSearchTopics"),
                 text: $viewModel.searchText,
                 theme: theme,
                 isPadLike: isPadLike,
@@ -401,13 +401,13 @@ struct GrammarNotesHomeView: View {
                     .shadow(color: Color.black.opacity(0.045), radius: 10, x: 0, y: 5)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Notes settings")
+            .accessibilityLabel(L10n.string("notesSettingsA11y"))
         }
     }
 
     private var sectionHeader: some View {
         HStack(spacing: 8) {
-            Text("My Topics")
+            Text(L10n.string("notesMyTopics"))
                 .font(.system(size: isPadLike ? 20 : 17, weight: .black, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
 
@@ -415,15 +415,15 @@ struct GrammarNotesHomeView: View {
 
             if canShowEditButton {
                 sectionActionButton(
-                    title: isEditingTopics ? "Done" : "Edit",
+                    title: isEditingTopics ? L10n.string("commonDone") : L10n.string("commonEdit"),
                     isFilled: isEditingTopics,
                     action: toggleEditingTopics
                 )
-                .accessibilityLabel(isEditingTopics ? "Done editing topics" : "Edit topics")
+                .accessibilityLabel(isEditingTopics ? L10n.string("notesDoneEditingA11y") : L10n.string("notesEditTopicsA11y"))
             }
 
             sectionActionButton(
-                title: "New Topic",
+                title: L10n.string("notesNewTopic"),
                 isFilled: false,
                 action: { isCreateSheetPresented = true }
             )
@@ -497,7 +497,7 @@ struct GrammarNotesHomeView: View {
                         Button(role: .destructive) {
                             topicPendingDeletion = topic
                         } label: {
-                            Label("Delete topic", systemImage: "trash.fill")
+                            Label(L10n.string("notesDeleteTopicLabel"), systemImage: "trash.fill")
                         }
                     }
                 }
@@ -561,7 +561,7 @@ struct GrammarNotesHomeView: View {
         HStack(spacing: 12) {
             ProgressView()
                 .tint(AppColors.primaryBlue)
-            Text("Loading topics...")
+            Text(L10n.string("notesLoadingTopics"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
         }
@@ -575,7 +575,7 @@ struct GrammarNotesHomeView: View {
             HStack(spacing: 10) {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .foregroundStyle(CreateSetTheme.red.accent)
-                Text("Something went wrong")
+                Text(L10n.string("commonSomethingWentWrong"))
                     .font(.system(size: 15, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
             }
@@ -588,7 +588,7 @@ struct GrammarNotesHomeView: View {
             Button {
                 Task { await viewModel.loadTopics() }
             } label: {
-                Text("Retry")
+                Text(L10n.string("commonRetry"))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 18)
@@ -606,9 +606,9 @@ struct GrammarNotesHomeView: View {
     private var topicsEmptyState: some View {
         dashboardEmptyCard(
             icon: "text.book.closed.fill",
-            title: "No grammar topics yet",
-            subtitle: "Create your first topic or save a mistake from writing practice.",
-            buttonTitle: "New Topic",
+            title: L10n.string("notesNoTopics"),
+            subtitle: L10n.string("notesNoTopicsSubtitle"),
+            buttonTitle: L10n.string("notesNewTopic"),
             action: { isCreateSheetPresented = true }
         )
     }
@@ -616,8 +616,8 @@ struct GrammarNotesHomeView: View {
     private var searchEmptyState: some View {
         dashboardEmptyCard(
             icon: "magnifyingglass",
-            title: "Nothing found",
-            subtitle: "Try another word or topic name.",
+            title: L10n.string("commonNothingFound"),
+            subtitle: L10n.string("notesNothingFoundSubtitle"),
             buttonTitle: nil,
             action: {}
         )

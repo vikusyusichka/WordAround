@@ -1,6 +1,5 @@
 import Foundation
 
-/// `accuracy` is transcript similarity only — not acoustic pronunciation analysis.
 struct ShadowingAttempt: Identifiable, Equatable {
     let id: UUID
     let phraseID: UUID

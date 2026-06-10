@@ -1,6 +1,5 @@
 import Foundation
 
-/// Shared load-state handling for signed-in user libraries (Reading modes, etc.).
 @MainActor
 enum PracticeLibraryLoadCoordinator {
     static func begin(

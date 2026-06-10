@@ -33,7 +33,7 @@ struct DifficultySelectorView: View {
                     .foregroundColor(accent)
 
                 VStack(alignment: .leading, spacing: Layout.essaySelectorLabelSpacing) {
-                    Text("Level")
+                    Text(L10n.string("spkSectionLevel"))
                         .font(.system(size: Layout.essaySelectorLabelSize, weight: .bold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
 

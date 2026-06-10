@@ -30,15 +30,15 @@ struct SavedPracticeView: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                 ListeningSetupTopBar(
-                    title: "Saved Practice",
-                    subtitle: "Continue sessions and review your listening mistakes.",
+                    title: L10n.string("listenSavedPractice"),
+                    subtitle: L10n.string("savedPracticeSubtitle"),
                     accent: accent,
                     accentDark: accentDark,
                     onBack: { dismiss() }
                 )
 
                 if let continueSession = viewModel.continueSession {
-                    ListeningSetupSectionTitle("Continue listening", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenContinueListening"), accentDark: accentDark)
                     ListeningContinueCardView(
                         session: continueSession.toSavedSession(),
                         onContinue: { open(continueSession) },
@@ -53,7 +53,7 @@ struct SavedPracticeView: View {
                         dismiss()
                     }, accent: accent, accentDark: accentDark)
                 } else {
-                    ListeningSetupSectionTitle("Saved sessions", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenSectionSavedSessions"), accentDark: accentDark)
                     LazyVGrid(columns: columns, spacing: Layout.listeningModeGridSpacing) {
                         ForEach(viewModel.savedSessions) { session in
                             ListeningSavedSessionCardView(

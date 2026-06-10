@@ -26,7 +26,7 @@ struct ReadingContinueReadingCardView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Continue reading")
+                    Text(L10n.string("readingContinueReading"))
                         .font(.system(size: 12, weight: .bold, design: .rounded))
                         .foregroundColor(accent)
                         .textCase(.uppercase)
@@ -45,14 +45,14 @@ struct ReadingContinueReadingCardView: View {
                 ReadingMetadataChip(text: languageTitle, accent: accent)
                 ReadingMetadataChip(text: levelTitle, accent: accent)
                 Spacer(minLength: 0)
-                Text("Opened \(lastOpenedText)")
+                Text(String(format: L10n.string("readingOpenedFmt"), lastOpenedText))
                     .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.mutedText)
             }
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Text("\(progressPercent)% complete")
+                    Text(String(format: L10n.string("readingPercentCompleteFmt"), progressPercent))
                         .font(.system(size: 12, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                     Spacer()
@@ -73,7 +73,7 @@ struct ReadingContinueReadingCardView: View {
 
             Button(action: onContinue) {
                 HStack(spacing: 6) {
-                    Text("Continue")
+                    Text(L10n.string("commonContinue"))
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                     Image(systemName: "arrow.right")
                         .font(.system(size: 12, weight: .bold))

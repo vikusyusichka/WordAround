@@ -9,7 +9,7 @@ struct CreateSetImagePickerView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.createSetCardsFieldSpacing) {
             HStack(spacing: 4) {
-                CreateSetSectionLabel(text: "Image", theme: theme)
+                CreateSetSectionLabel(text: L10n.string("createSetImage"), theme: theme)
                 CreateSetOptionalText(theme: theme, fontSize: Layout.createSetCardsOptionalTextSize)
             }
 
@@ -38,12 +38,12 @@ struct CreateSetImagePickerView: View {
                             .font(.system(size: Layout.createSetCardsImageIconSize))
                             .foregroundStyle(theme.accent)
 
-                        Text("Add image")
+                        Text(L10n.string("createSetAddImage"))
                             .font(.system(size: Layout.createSetCardsImageTitleSize, weight: .bold))
                             .foregroundStyle(theme.textColor)
                             .lineLimit(1)
 
-                        Text(Layout.isPadLike ? "Tap to upload or choose from gallery" : "Upload")
+                        Text(Layout.isPadLike ? L10n.string("createSetUploadHint") : L10n.string("createSetUpload"))
                             .font(.system(size: Layout.createSetCardsImageSubtitleSize, weight: .semibold))
                             .multilineTextAlignment(.center)
                             .foregroundStyle(theme.mutedTextColor)

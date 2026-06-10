@@ -37,7 +37,7 @@ struct ConversationTopicPickerSheetView<VM: SpeakingTopicPickable>: View {
             .background(AppColors.appBackground.ignoresSafeArea())
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { viewModel.showTopicPicker = false }
+                    Button(L10n.string("commonDone")) { viewModel.showTopicPicker = false }
                         .font(.system(size: 16, weight: .bold, design: .rounded))
                         .foregroundColor(AppColors.primaryBlue)
                 }
@@ -55,11 +55,11 @@ struct ConversationTopicPickerSheetView<VM: SpeakingTopicPickable>: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Choose a topic")
+            Text(L10n.string("speakingChooseTopic"))
                 .font(.system(size: Layout.isPadLike ? 28 : 24, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
 
-            Text("Switching topic will reset the current conversation.")
+            Text(L10n.string("speakingSwitchTopicReset"))
                 .font(.system(size: Layout.isPadLike ? 15 : 13, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
                 .lineSpacing(2)
@@ -122,7 +122,7 @@ struct ConversationTopicPickerSheetView<VM: SpeakingTopicPickable>: View {
                     .foregroundColor(AppColors.primaryBlue)
             }
 
-            Text("AI-generated topic")
+            Text(L10n.string("speakingAIGenTopic"))
                 .font(.system(size: Layout.isPadLike ? 18 : 15, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
 
@@ -133,16 +133,16 @@ struct ConversationTopicPickerSheetView<VM: SpeakingTopicPickable>: View {
     private var aiEmptyBody: some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Generate fresh topic")
+                Text(L10n.string("speakingGenFreshTopic"))
                     .font(.system(size: Layout.isPadLike ? 18 : 16, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
-                Text("AI will create a topic for your level.")
+                Text(L10n.string("speakingAIWillCreate"))
                     .font(.system(size: Layout.isPadLike ? 14 : 13, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
             }
 
-            primaryButton("Generate", icon: "sparkles") {
+            primaryButton(L10n.string("commonGenerate"), icon: "sparkles") {
                 viewModel.generateFreshTopic(forceRefresh: false)
             }
         }
@@ -155,11 +155,11 @@ struct ConversationTopicPickerSheetView<VM: SpeakingTopicPickable>: View {
                 .tint(AppColors.primaryBlue)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Generating topic…")
+                Text(L10n.string("speakingGeneratingTopic"))
                     .font(.system(size: Layout.isPadLike ? 17 : 15, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
-                Text("Picking something for your level.")
+                Text(L10n.string("speakingPickingLevel"))
                     .font(.system(size: Layout.isPadLike ? 14 : 12, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
             }
@@ -191,10 +191,10 @@ struct ConversationTopicPickerSheetView<VM: SpeakingTopicPickable>: View {
             }
 
             HStack(spacing: 8) {
-                secondaryButton("Regenerate", icon: "arrow.clockwise") {
+                secondaryButton(L10n.string("commonRegenerate"), icon: "arrow.clockwise") {
                     viewModel.generateFreshTopic(forceRefresh: true)
                 }
-                primaryButton("Use topic", icon: "checkmark") {
+                primaryButton(L10n.string("speakingUseTopic"), icon: "checkmark") {
                     viewModel.applyGeneratedTopic()
                 }
             }

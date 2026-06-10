@@ -7,24 +7,24 @@ enum ReadingLibraryItemStatus: String, Codable, CaseIterable {
 
     var label: String {
         switch self {
-        case .new:        return "New"
-        case .inProgress: return "In Progress"
-        case .completed:  return "Completed"
+        case .new:        return L10n.string("readingStatusNew")
+        case .inProgress: return L10n.string("readingStatusInProgress")
+        case .completed:  return L10n.string("readingStatusCompleted")
         }
     }
 }
 
 enum ReadingSourceType: String, Codable, CaseIterable {
-    case generated      // legacy: pre-refactor generated-reading items still in Firebase
+    case generated
     case pastedText
     case photoImport
     case pdfImport
     case flashcardSet
     case story
     case speedPractice
-    case interactive    // legacy: pre-refactor interactive-reading items still in Firebase
-    case aiGenerated    // new: AI-generated text saved under My Texts
-    case exploredArticle // new: Explore Reading (Wikipedia / public article) saved under My Texts
+    case interactive
+    case aiGenerated
+    case exploredArticle
 
     static func forMode(_ modeID: String) -> ReadingSourceType {
         switch modeID {
@@ -136,21 +136,21 @@ extension ReadingLibraryItem {
 
     var actionTitle: String {
         switch status {
-        case .completed: return "Read again"
-        case .inProgress: return "Continue"
-        case .new: return progress > 0 ? "Continue" : "Start"
+        case .completed: return L10n.string("readingActionReadAgain")
+        case .inProgress: return L10n.string("commonContinue")
+        case .new: return progress > 0 ? L10n.string("commonContinue") : L10n.string("readingActionStart")
         }
     }
 
     var dateText: String {
         if let lastOpenedAt, progress > 0 {
-            return "Opened \(Self.relativeDate(lastOpenedAt))"
+            return String(format: L10n.string("readingOpenedFormat"), Self.relativeDate(lastOpenedAt))
         }
-        return "Added \(Self.relativeDate(createdAt))"
+        return String(format: L10n.string("readingAddedFormat"), Self.relativeDate(createdAt))
     }
 
     var lastOpenedText: String {
-        guard let lastOpenedAt else { return "Never" }
+        guard let lastOpenedAt else { return L10n.string("readingNever") }
         return Self.relativeDate(lastOpenedAt)
     }
 

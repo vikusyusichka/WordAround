@@ -24,7 +24,7 @@ struct EssayAssistanceModalView: View {
         case .hint:
             return "Writing hint"
         case .translate:
-            return "Translate"
+            return L10n.string("essayTranslate")
         case .synonym:
             return "Synonyms"
         }
@@ -35,7 +35,7 @@ struct EssayAssistanceModalView: View {
         case .hint:
             return isLoading ? "Generating..." : "Generate hint"
         case .translate:
-            return isLoading ? "Translating..." : "Translate"
+            return isLoading ? L10n.string("essayTranslating") : L10n.string("essayTranslate")
         case .synonym:
             return isLoading ? "Searching..." : "Find synonyms"
         }
@@ -446,7 +446,7 @@ struct EssayAssistanceModalView: View {
     private var actions: some View {
         HStack(spacing: Layout.essayModalActionsSpacing) {
             Button(action: onClose) {
-                Text("Close")
+                Text(L10n.string("templateLibClose"))
                     .font(.system(size: Layout.essayButtonTextSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlue)
                     .frame(maxWidth: .infinity)

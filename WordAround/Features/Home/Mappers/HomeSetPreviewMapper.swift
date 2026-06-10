@@ -36,4 +36,3 @@ enum HomeSetPreviewMapper {
     }
 }
 
-// `Color(hex:)` moved to `Shared/Theme/Color+Hex.swift`.

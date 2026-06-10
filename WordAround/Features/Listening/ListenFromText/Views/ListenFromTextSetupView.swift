@@ -16,15 +16,15 @@ struct ListenFromTextSetupView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     ListeningSetupTopBar(
-                        title: "Listen From Text",
-                        subtitle: "Paste text and turn it into listening practice.",
+                        title: L10n.string("listenFromTextTitle"),
+                        subtitle: L10n.string("listenFromTextSubtitle"),
                         accent: accent,
                         accentDark: accentDark,
                         onBack: { dismiss() }
                     )
                     .padding(.bottom, 4)
 
-                    ListeningSetupSectionTitle("Language", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("spkSectionLanguage"), accentDark: accentDark)
                     LanguageSelectorView(
                         selectedLanguage: viewModel.selectedLanguage,
                         onSelect: { viewModel.selectedLanguage = $0 },
@@ -32,7 +32,7 @@ struct ListenFromTextSetupView: View {
                         accentDark: accentDark
                     )
 
-                    ListeningSetupSectionTitle("Level", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("spkSectionLevel"), accentDark: accentDark)
                     DifficultySelectorView(
                         selectedDifficulty: viewModel.selectedLevel,
                         onSelect: { viewModel.selectedLevel = $0 },
@@ -40,7 +40,7 @@ struct ListenFromTextSetupView: View {
                         accentDark: accentDark
                     )
 
-                    ListeningSetupSectionTitle("Voice Settings", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenSectionVoiceSettings"), accentDark: accentDark)
                     ListeningVoiceSettingsCard(
                         voiceSpeed: $viewModel.voiceSpeed,
                         voiceType: $viewModel.voiceType,
@@ -49,7 +49,7 @@ struct ListenFromTextSetupView: View {
                         accentDark: accentDark
                     )
 
-                    ListeningSetupSectionTitle("Questions", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenSectionQuestions"), accentDark: accentDark)
                     ListeningQuestionSettingsCard(
                         addQuestions: $viewModel.addQuestions,
                         questionCount: $viewModel.questionCount,
@@ -58,7 +58,7 @@ struct ListenFromTextSetupView: View {
                         accentDark: accentDark
                     )
 
-                    ListeningSetupSectionTitle("Text Input", accentDark: accentDark)
+                    ListeningSetupSectionTitle(L10n.string("listenSectionTextInput"), accentDark: accentDark)
                     textInputCard
 
                     if let validationMessage = viewModel.validationMessage {
@@ -77,7 +77,7 @@ struct ListenFromTextSetupView: View {
             }
 
             ListeningSetupStartButton(
-                title: "Start Listening",
+                title: L10n.string("listenStartListening"),
                 icon: "headphones",
                 accent: accent,
                 accentDark: accentDark,
@@ -103,11 +103,11 @@ struct ListenFromTextSetupView: View {
         ListeningWhiteCard {
             VStack(alignment: .leading, spacing: 14) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Optional title")
+                    Text(L10n.string("listeningOptionalTitle"))
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
 
-                    TextField("Give your text a name", text: $viewModel.optionalTitle)
+                    TextField(L10n.string("listenGiveTextName"), text: $viewModel.optionalTitle)
                         .font(.system(size: 15, weight: .medium, design: .rounded))
                         .foregroundColor(accentDark)
                         .padding(.horizontal, 14)
@@ -116,13 +116,13 @@ struct ListenFromTextSetupView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Text")
+                    Text(L10n.string("homeCreateText"))
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
 
                     ZStack(alignment: .topLeading) {
                         if viewModel.textBody.isEmpty {
-                            Text("Paste your text here...")
+                            Text(L10n.string("readingPastePlaceholder"))
                                 .font(.system(size: 15, weight: .medium, design: .rounded))
                                 .foregroundColor(AppColors.textSecondary.opacity(0.65))
                                 .padding(.top, 12)
@@ -140,7 +140,7 @@ struct ListenFromTextSetupView: View {
                     .background(fieldBackground)
                 }
 
-                Text("Recommended: 80–500 words.")
+                Text(L10n.string("listeningRecommendedWords"))
                     .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.mutedText)
             }

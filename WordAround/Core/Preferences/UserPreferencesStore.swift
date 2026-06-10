@@ -51,7 +51,7 @@ struct ReminderTime: Codable, Equatable {
 final class UserPreferencesStore: ObservableObject {
     static let shared = UserPreferencesStore()
 
-    // MARK: - Keys (centralized so a typo doesn't silently break persistence)
+    // MARK: - Keys
 
     private enum Keys {
         static let theme = "preferences.appearanceTheme"
@@ -71,7 +71,10 @@ final class UserPreferencesStore: ObservableObject {
     }
 
     @Published var language: AppLanguage {
-        didSet { defaults.set(language.rawValue, forKey: Keys.language) }
+        didSet {
+            defaults.set(language.rawValue, forKey: Keys.language)
+            L10n.currentLanguage = language
+        }
     }
 
     @Published var avatarColor: ProfileAvatarColor {
@@ -121,9 +124,11 @@ final class UserPreferencesStore: ObservableObject {
 
         self.weeklySummaryEnabled = defaults.object(forKey: Keys.weeklySummaryEnabled) as? Bool ?? false
         self.streakAlertsEnabled = defaults.object(forKey: Keys.streakAlertsEnabled) as? Bool ?? false
+
+        L10n.currentLanguage = self.language
     }
 
-    // MARK: - Reset (used after Sign Out / Delete Account)
+    // MARK: - Reset
 
     func resetToDefaults() {
         theme = .system

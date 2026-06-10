@@ -57,7 +57,6 @@ enum ListeningSubtitleBuilder {
         return result
     }
 
-    // Whisper VTT: one word per cue — merge into sentences for display, keep word-level taps.
     static func sentenceCues(from cues: [ListeningSubtitleCue]) -> [ListeningSubtitleCue] {
         guard shouldMergeIntoSentences(cues) else { return cues }
         return mergeIntoSentences(cues)

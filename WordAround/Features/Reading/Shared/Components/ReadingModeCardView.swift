@@ -95,7 +95,7 @@ struct ReadingModeCardView: View {
     }
 
     private var featuredBadge: some View {
-        Text("Featured")
+        Text(L10n.string("readingFeatured"))
             .font(.system(size: Layout.readingModeFeaturedBadgeTextSize, weight: .bold, design: .rounded))
             .foregroundColor(.white)
             .padding(.horizontal, 8)

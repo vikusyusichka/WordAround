@@ -46,11 +46,11 @@ struct SaveGrammarMistakeConfirmationSheet: View {
             .frame(width: Layout.grammarQuickHeaderIconBox, height: Layout.grammarQuickHeaderIconBox)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("Save mistake")
+                Text(L10n.string("notesSaveMistake"))
                     .font(.system(size: Layout.grammarQuickTitleSize, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
 
-                Text("Confirm this correction before saving it to Notes.")
+                Text(L10n.string("notesConfirmCorrection"))
                     .font(.system(size: Layout.grammarQuickSubtitleSize, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                     .lineSpacing(2)
@@ -73,8 +73,8 @@ struct SaveGrammarMistakeConfirmationSheet: View {
 
     private var previewSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            previewRow(title: "Original", text: originalSentence, icon: "quote.bubble.fill", tint: GrammarNoteType.mistake.tintColor)
-            previewRow(title: "Correction", text: correctedSentence, icon: "checkmark.bubble.fill", tint: CreateSetTheme.green.accent)
+            previewRow(title: L10n.string("essayGrammarOriginal"), text: originalSentence, icon: "quote.bubble.fill", tint: GrammarNoteType.mistake.tintColor)
+            previewRow(title: L10n.string("notesCorrection"), text: correctedSentence, icon: "checkmark.bubble.fill", tint: CreateSetTheme.green.accent)
 
             if !explanation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 previewRow(title: "Why", text: explanation, icon: "lightbulb.fill", tint: CreateSetTheme.yellow.accent)
@@ -100,7 +100,7 @@ struct SaveGrammarMistakeConfirmationSheet: View {
                 Text(title)
                     .font(.system(size: 11, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
-                Text(text.isEmpty ? "Empty" : text)
+                Text(text.isEmpty ? L10n.string("commonEmpty") : text)
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
                     .lineSpacing(3)
@@ -116,9 +116,9 @@ struct SaveGrammarMistakeConfirmationSheet: View {
         case .saving:
             statusCard(text: "Saving mistake...", icon: "arrow.triangle.2.circlepath", tint: AppColors.primaryBlue)
         case .saved:
-            statusCard(text: "Saved to Grammar Notes.", icon: "checkmark.circle.fill", tint: CreateSetTheme.green.accent)
+            statusCard(text: L10n.string("notesSavedToNotesLong"), icon: "checkmark.circle.fill", tint: CreateSetTheme.green.accent)
         case .duplicate:
-            statusCard(text: "Already saved. Duplicate was skipped.", icon: "doc.on.doc.fill", tint: CreateSetTheme.yellow.accent)
+            statusCard(text: L10n.string("notesAlreadySavedDup"), icon: "doc.on.doc.fill", tint: CreateSetTheme.yellow.accent)
         case .failed(let message):
             statusCard(text: message, icon: "exclamationmark.triangle.fill", tint: GrammarNoteType.mistake.tintColor)
         }
@@ -141,7 +141,7 @@ struct SaveGrammarMistakeConfirmationSheet: View {
 
     private var actions: some View {
         HStack(spacing: 10) {
-            Button("Cancel", action: onCancel)
+            Button(L10n.string("commonCancel"), action: onCancel)
                 .buttonStyle(.plain)
                 .font(.system(size: 14, weight: .black, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
@@ -156,7 +156,7 @@ struct SaveGrammarMistakeConfirmationSheet: View {
                     ProgressView()
                         .tint(.white)
                 } else {
-                    Text("Save")
+                    Text(L10n.string("commonSave"))
                         .font(.system(size: 14, weight: .black, design: .rounded))
                 }
             }

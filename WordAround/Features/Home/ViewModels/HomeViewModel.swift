@@ -53,31 +53,31 @@ final class HomeViewModel: ObservableObject {
         if selectedTab == nil || selectedTab == .home {
             switch selectedCategory {
             case .speaking:
-                return "Speaking"
+                return L10n.string("categorySpeaking")
             case .listening:
-                return "Listening"
+                return L10n.string("categoryListening")
             case .reading:
-                return "Reading"
+                return L10n.string("categoryReading")
             case .writing:
-                return "Writing"
+                return L10n.string("categoryWriting")
             case .notes:
-                return "Notes"
+                return L10n.string("categoryNotes")
             case .none:
-                return "Flashcards"
+                return L10n.string("categoryFlashcards")
             }
         }
 
         switch selectedTab {
         case .folders:
-            return "Folders"
+            return L10n.string("homeTabFolders")
         case .flashcards:
-            return "Sets"
+            return L10n.string("homeTabSets")
         case .create:
-            return "Create"
+            return L10n.string("homeCreate")
         case .profile:
-            return "Profile"
+            return L10n.localized(.profileTitle)
         case .home, .none:
-            return "Flashcards"
+            return L10n.string("categoryFlashcards")
         }
     }
 
@@ -85,31 +85,31 @@ final class HomeViewModel: ObservableObject {
         if selectedTab == nil || selectedTab == .home {
             switch selectedCategory {
             case .speaking:
-                return "Practice speaking skills."
+                return L10n.string("homeSubtitleSpeaking")
             case .listening:
-                return "Train your ears to understand language naturally."
+                return L10n.string("homeSubtitleListening")
             case .reading:
-                return "Read and review language materials."
+                return L10n.string("homeSubtitleReading")
             case .writing:
-                return "Practice your language actively."
+                return L10n.string("homeSubtitleWriting")
             case .notes:
-                return "Your grammar notes and mistakes."
+                return L10n.string("homeSubtitleNotes")
             case .none:
-                return "Pick a set to practice"
+                return L10n.string("homeSubtitleDefault")
             }
         }
 
         switch selectedTab {
         case .folders:
-            return "Manage your folders"
+            return L10n.string("homeSubtitleFolders")
         case .flashcards:
-            return "Manage your flashcard sets"
+            return L10n.string("homeSubtitleSets")
         case .create:
-            return "Build a new study set"
+            return L10n.string("homeSubtitleCreate")
         case .profile:
             return currentEmail
         case .home, .none:
-            return "Pick a set to practice"
+            return L10n.string("homeSubtitleDefault")
         }
     }
 
@@ -140,38 +140,35 @@ final class HomeViewModel: ObservableObject {
         dailyStats = [
             HomeDailyStat(
                 id: .speaking,
-                title: "Speaking",
+                title: L10n.string("categorySpeaking"),
                 value: "\(speakingSeconds / 60)",
-                label: "minutes",
+                label: L10n.string("commonMinutes"),
                 iconSystemName: HomeCategory.speaking.icon
             ),
             HomeDailyStat(
                 id: .listening,
-                title: "Listening",
+                title: L10n.string("categoryListening"),
                 value: "\(listeningMinutes)",
-                label: "minutes",
+                label: L10n.string("commonMinutes"),
                 iconSystemName: HomeCategory.listening.icon
             ),
             HomeDailyStat(
                 id: .reading,
-                title: "Reading",
+                title: L10n.string("categoryReading"),
                 value: "\(readingSeconds / 60)",
-                label: "minutes",
+                label: L10n.string("commonMinutes"),
                 iconSystemName: HomeCategory.reading.icon
             ),
             HomeDailyStat(
                 id: .writing,
-                title: "Writing",
+                title: L10n.string("categoryWriting"),
                 value: "\(writingWords)",
-                label: "words",
+                label: L10n.string("commonWords"),
                 iconSystemName: HomeCategory.writing.icon
             )
         ]
     }
 
-    /// Listening records to its own session store rather than the shared stats
-    /// service, so today's minutes are aggregated here the same way the
-    /// Listening home screen does (completed sessions only, each id counted once).
     private func listeningMinutesToday() async -> Int {
         let sessions = await listeningStore.fetchSessions()
         let calendar = Calendar.current

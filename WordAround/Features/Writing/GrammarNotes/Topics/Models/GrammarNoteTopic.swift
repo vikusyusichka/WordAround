@@ -22,10 +22,10 @@ struct GrammarNoteTopic: Identifiable, Codable, Equatable {
         return GrammarNoteTopic(
             id: "common_mistakes",
             ownerUID: ownerUID,
-            title: "Common Mistakes",
+            title: L10n.string("notesCommonMistakes"),
             description: "Saved grammar corrections from essays and writing practice.",
             languageCode: "all",
-            languageName: "All languages",
+            languageName: L10n.string("notesAllLanguages"),
             icon: "exclamationmark.triangle.fill",
             colorHex: "#F4729A",
             notesCount: 0,

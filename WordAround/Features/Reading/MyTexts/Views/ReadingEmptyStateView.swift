@@ -19,12 +19,12 @@ struct ReadingEmptyStateView: View {
             }
 
             VStack(spacing: 6) {
-                Text("No texts yet")
+                Text(L10n.string("readingEmptyNoTextsTitle"))
                     .font(.system(size: Layout.isPadLike ? 20 : 17, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
                     .multilineTextAlignment(.center)
 
-                Text("Paste an article, story, dialogue, or any text you want to practice with.")
+                Text(L10n.string("readingEmptyNoTextsSubtitle"))
                     .font(.system(size: Layout.isPadLike ? 15 : 13, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .multilineTextAlignment(.center)
@@ -36,7 +36,7 @@ struct ReadingEmptyStateView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "plus")
                         .font(.system(size: 14, weight: .bold))
-                    Text("Add your first text")
+                    Text(L10n.string("readingAddFirstText"))
                         .font(.system(size: Layout.isPadLike ? 15 : 14, weight: .bold, design: .rounded))
                 }
                 .foregroundColor(.white)

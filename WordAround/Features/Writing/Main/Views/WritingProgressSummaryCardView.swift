@@ -7,11 +7,11 @@ struct WritingProgressSummaryCardView: View {
     var body: some View {
         ProgressCardView(
             layout: .goal,
-            title: "Today progress",
+            title: L10n.string("progressToday"),
             currentValue: currentWords,
             totalValue: totalWords,
-            unit: "words",
-            subtitle: "of writing practice",
+            unit: L10n.string("commonWords"),
+            subtitle: L10n.string("progressOfWriting"),
             progress: Double(currentWords) / Double(max(totalWords, 1)),
             tint: AppColors.primaryBlue,
             backgroundColor: AppColors.goalBackground,

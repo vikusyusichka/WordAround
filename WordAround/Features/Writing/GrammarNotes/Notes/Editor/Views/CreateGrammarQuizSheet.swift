@@ -128,7 +128,7 @@ struct CreateGrammarQuizSheet: View {
         }
         .onAppear {
             if title.isEmpty {
-                title = "Quiz: \(note.title)"
+                title = String(format: L10n.string("quizTitleDefaultFmt"), note.title)
             }
             withAnimation(.spring(response: 0.45, dampingFraction: 0.88)) {
                 hasAppeared = true
@@ -145,7 +145,7 @@ struct CreateGrammarQuizSheet: View {
     private var sheetHeader: some View {
         HStack {
             Button(action: onCancel) {
-                Text("Cancel")
+                Text(L10n.localized(.commonCancel))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 18)
@@ -160,14 +160,14 @@ struct CreateGrammarQuizSheet: View {
 
             Spacer()
 
-            Text("Create Quiz")
+            Text(L10n.string("quizCreateHeader"))
                 .font(.system(size: 21, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlue)
 
             Spacer()
 
             Button(action: submit) {
-                Text("Create")
+                Text(L10n.string("quizCreateButton"))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 24)
@@ -184,8 +184,8 @@ struct CreateGrammarQuizSheet: View {
 
     private var titleSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionLabel("Quiz Title")
-            TextField("e.g. Quick Review", text: $title)
+            sectionLabel(L10n.string("quizSectionTitle"))
+            TextField(L10n.string("quizTitlePlaceholder"), text: $title)
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .padding(.horizontal, 14)
                 .frame(height: 48)
@@ -203,7 +203,7 @@ struct CreateGrammarQuizSheet: View {
 
     private var modeSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionLabel("Creation Mode")
+            sectionLabel(L10n.string("quizCreationMode"))
             customModePicker
 
             HStack(spacing: 10) {
@@ -288,7 +288,7 @@ struct CreateGrammarQuizSheet: View {
         VStack(alignment: .leading, spacing: 12) {
             questionCountField
             questionTypesField
-            Text("Questions are generated locally from this note's content blocks. If the note is too short, AI fills in the gaps automatically.")
+            Text(L10n.string("quizLocalHint"))
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -304,7 +304,7 @@ struct CreateGrammarQuizSheet: View {
                     } else {
                         Image(systemName: "wand.and.stars")
                     }
-                    Text(hasPreviewed ? "Regenerate Preview" : "Preview Questions")
+                    Text(L10n.string(hasPreviewed ? "quizRegenerateButton" : "quizPreviewButton"))
                 }
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlue)
@@ -329,8 +329,8 @@ struct CreateGrammarQuizSheet: View {
             questionTypesField
 
             VStack(alignment: .leading, spacing: 8) {
-                sectionLabel("Focus (optional)")
-                TextField("e.g. Focus on common mistakes", text: $focusInstructions, axis: .vertical)
+                sectionLabel(L10n.string("quizFocusOptional"))
+                TextField(L10n.string("quizFocusPlaceholder"), text: $focusInstructions, axis: .vertical)
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
                     .tint(AppColors.primaryBlue)
@@ -356,12 +356,12 @@ struct CreateGrammarQuizSheet: View {
     private var manualSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                sectionLabel("Questions (\(manualQuestions.count))")
+                sectionLabel(String(format: L10n.string("quizQuestionsCountFmt"), manualQuestions.count))
                 Spacer()
                 Button {
                     isAddingQuestion = true
                 } label: {
-                    Label("Add", systemImage: "plus")
+                    Label(L10n.string("commonAdd"), systemImage: "plus")
                         .font(.system(size: 12, weight: .bold, design: .rounded))
                         .foregroundStyle(AppColors.primaryBlue)
                         .padding(.horizontal, 12)
@@ -373,7 +373,7 @@ struct CreateGrammarQuizSheet: View {
             }
 
             if manualQuestions.isEmpty {
-                Text("Tap Add to create your first question.")
+                Text(L10n.string("quizManualEmpty"))
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                     .padding(14)
@@ -428,7 +428,7 @@ struct CreateGrammarQuizSheet: View {
 
     private var questionCountField: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionLabel("Number of Questions")
+            sectionLabel(L10n.string("quizNumberOfQuestions"))
             HStack(spacing: 10) {
                 ForEach(counts, id: \.self) { n in
                     countButton(n)
@@ -456,7 +456,7 @@ struct CreateGrammarQuizSheet: View {
 
     private var questionTypesField: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionLabel("Question Types")
+            sectionLabel(L10n.string("quizQuestionTypes"))
             VStack(spacing: 8) {
                 HStack(spacing: 8) {
                     typeToggle(.multipleChoice)
@@ -500,7 +500,7 @@ struct CreateGrammarQuizSheet: View {
 
     private var previewQuestionsList: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionLabel("Preview (\(previewQuestions.count))")
+            sectionLabel(String(format: L10n.string("quizPreviewCountFmt"), previewQuestions.count))
             VStack(spacing: 8) {
                 ForEach(Array(previewQuestions.enumerated()), id: \.element.id) { index, q in
                     questionPreviewRow(index: index + 1, question: q)
@@ -550,7 +550,7 @@ struct CreateGrammarQuizSheet: View {
                         ProgressView()
                             .tint(Color.white)
                             .scaleEffect(0.9)
-                        Text(quizVM.createState == .saving ? "Saving…" : "Generating…")
+                        Text(L10n.string(quizVM.createState == .saving ? "quizSavingEllipsis" : "quizGeneratingEllipsis"))
                             .font(.system(size: 14, weight: .bold, design: .rounded))
                             .foregroundStyle(Color.white)
                     }
@@ -582,7 +582,7 @@ struct CreateGrammarQuizSheet: View {
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "wand.and.stars")
-                Text("Use Smart Local Instead")
+                Text(L10n.string("quizUseLocalFallback"))
             }
             .font(.system(size: 13, weight: .bold, design: .rounded))
             .foregroundStyle(AppColors.primaryBlue)
@@ -642,12 +642,12 @@ struct CreateGrammarQuizSheet: View {
                 focusInstructions: focusInstructions
             )
             if aiQuestions.isEmpty {
-                previewError = "Couldn't build a quiz from this note. Add more content (rules, examples, or a comparison)."
+                previewError = L10n.string("quizPreviewErrorEmpty")
             } else {
                 previewQuestions = aiQuestions
             }
         } catch {
-            previewError = "Couldn't build a quiz from this note. Add a rule, an example, or a few more sentences and try again."
+            previewError = L10n.string("quizPreviewErrorRetry")
             #if DEBUG
             print("[QuizPreview] AI fallback also failed:", error)
             #endif
@@ -727,7 +727,7 @@ private struct AddManualQuizQuestionSheet: View {
 
     private var validationError: String? {
         let trimmedQuestion = questionText.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmedQuestion.isEmpty { return "Question text is required." }
+        if trimmedQuestion.isEmpty { return L10n.string("manualErrQuestionRequired") }
 
         switch type {
         case .multipleChoice:
@@ -735,27 +735,27 @@ private struct AddManualQuizQuestionSheet: View {
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                 .filter { !$0.isEmpty }
             if opts.count < 2 {
-                return "Multiple choice needs at least 2 options."
+                return L10n.string("manualErrMCMinOptions")
             }
             let trimmedAnswer = correctAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmedAnswer.isEmpty {
-                return "Pick the correct answer."
+                return L10n.string("manualErrPickCorrect")
             }
             if !opts.contains(where: { $0.caseInsensitiveCompare(trimmedAnswer) == .orderedSame }) {
-                return "Correct answer must match one of the options."
+                return L10n.string("manualErrMatchOption")
             }
         case .trueFalse:
             break
         case .fillGap:
             if !trimmedQuestion.contains("_") {
-                return "Add a blank (e.g. _____) inside the question."
+                return L10n.string("manualErrAddBlank")
             }
             if correctAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                return "Enter the missing word."
+                return L10n.string("manualErrMissingWord")
             }
         case .shortAnswer:
             if correctAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                return "Enter the correct answer."
+                return L10n.string("manualShortAnswerPlaceholder")
             }
         }
         return nil
@@ -816,7 +816,7 @@ private struct AddManualQuizQuestionSheet: View {
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("Done") { focusedField = nil }
+                    Button(L10n.localized(.commonDone)) { focusedField = nil }
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                 }
             }
@@ -847,7 +847,7 @@ private struct AddManualQuizQuestionSheet: View {
     private var manualQuestionHeader: some View {
         HStack {
             Button(action: onCancel) {
-                Text("Cancel")
+                Text(L10n.localized(.commonCancel))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 18)
@@ -859,7 +859,7 @@ private struct AddManualQuizQuestionSheet: View {
 
             Spacer()
 
-            Text("Add Question")
+            Text(L10n.string("manualQuestionAddTitle"))
                 .font(.system(size: 20, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlue)
 
@@ -878,7 +878,7 @@ private struct AddManualQuizQuestionSheet: View {
                 )
                 onAdd(q)
             } label: {
-                Text("Add")
+                Text(L10n.string("commonAdd"))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 24)
@@ -892,7 +892,7 @@ private struct AddManualQuizQuestionSheet: View {
 
     private var typePicker: some View {
         VStack(alignment: .leading, spacing: 8) {
-            label("Question Type")
+            label(L10n.string("manualQuestionTypeLabel"))
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(GrammarQuizQuestionType.allCases) { t in
@@ -914,7 +914,7 @@ private struct AddManualQuizQuestionSheet: View {
 
     private var questionTextField: some View {
         VStack(alignment: .leading, spacing: 6) {
-            label("Question")
+            label(L10n.string("manualQuestionLabel"))
             TextField(placeholderFor(type), text: $questionText, axis: .vertical)
                 .focused($focusedField, equals: .question)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
@@ -925,7 +925,7 @@ private struct AddManualQuizQuestionSheet: View {
                 .background(Color.white.opacity(0.92))
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             if type == .fillGap {
-                Text("Use ___ inside the sentence to mark the blank.")
+                Text(L10n.string("manualFillGapHint"))
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
             }
@@ -934,12 +934,12 @@ private struct AddManualQuizQuestionSheet: View {
 
     private var optionFields: some View {
         VStack(alignment: .leading, spacing: 8) {
-            label("Options (up to 4)")
+            label(L10n.string("manualOptionsLabel"))
             ForEach(0..<4, id: \.self) { i in
                 let binding = [
                     $option1, $option2, $option3, $option4
                 ][i]
-                TextField("Option \(i + 1)", text: binding)
+                TextField(String(format: L10n.string("manualOptionPlaceholderFmt"), i + 1), text: binding)
                     .focused($focusedField, equals: .option(i))
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
@@ -954,7 +954,7 @@ private struct AddManualQuizQuestionSheet: View {
 
     private var tfPicker: some View {
         VStack(alignment: .leading, spacing: 8) {
-            label("Correct Answer")
+            label(L10n.string("manualCorrectAnswerLabel"))
             HStack(spacing: 10) {
                 ForEach(["True", "False"], id: \.self) { val in
                     Button { tfAnswer = val } label: {
@@ -989,26 +989,26 @@ private struct AddManualQuizQuestionSheet: View {
 
     private var correctAnswerLabel: String {
         switch type {
-        case .multipleChoice: return "Correct Option"
-        case .fillGap:        return "Missing Word"
-        case .shortAnswer:    return "Correct Answer"
-        case .trueFalse:      return "Correct Answer"
+        case .multipleChoice: return L10n.string("manualCorrectOptionLabel")
+        case .fillGap:        return L10n.string("manualMissingWordLabel")
+        case .shortAnswer:    return L10n.string("manualCorrectAnswerLabel")
+        case .trueFalse:      return L10n.string("manualCorrectAnswerLabel")
         }
     }
 
     private var correctAnswerPlaceholder: String {
         switch type {
-        case .multipleChoice: return "Must match one of the options"
-        case .fillGap:        return "The word that fills the blank"
-        case .shortAnswer:    return "Enter the correct answer"
-        case .trueFalse:      return "True / False"
+        case .multipleChoice: return L10n.string("manualMCPlaceholder")
+        case .fillGap:        return L10n.string("manualFillGapPlaceholder")
+        case .shortAnswer:    return L10n.string("manualShortAnswerPlaceholder")
+        case .trueFalse:      return L10n.string("manualTFPlaceholder")
         }
     }
 
     private var explanationField: some View {
         VStack(alignment: .leading, spacing: 8) {
-            label("Explanation (optional)")
-            TextField("Why is this the correct answer?", text: $explanation, axis: .vertical)
+            label(L10n.string("manualExplanationLabel"))
+            TextField(L10n.string("manualExplanationPlaceholder"), text: $explanation, axis: .vertical)
                 .focused($focusedField, equals: .explanation)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
@@ -1030,10 +1030,10 @@ private struct AddManualQuizQuestionSheet: View {
 
     private func placeholderFor(_ t: GrammarQuizQuestionType) -> String {
         switch t {
-        case .fillGap:        return "e.g. Fill in the gap: She _____ to school."
-        case .shortAnswer:    return "e.g. Explain when to use 'ser'."
-        case .multipleChoice: return "e.g. Which verb describes permanent states?"
-        case .trueFalse:      return "e.g. Estar is used for temporary conditions."
+        case .fillGap:        return L10n.string("manualPhFillGap")
+        case .shortAnswer:    return L10n.string("manualPhShortAnswer")
+        case .multipleChoice: return L10n.string("manualPhMultipleChoice")
+        case .trueFalse:      return L10n.string("manualPhTrueFalse")
         }
     }
 }

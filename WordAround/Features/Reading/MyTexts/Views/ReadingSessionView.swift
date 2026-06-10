@@ -52,7 +52,7 @@ private struct ReadingSessionContentView: View {
             AppColors.appBackground.ignoresSafeArea()
 
             if viewModel.isLoadingSession {
-                ProgressView("Preparing session…")
+                ProgressView(L10n.string("readingPreparingSession"))
                     .tint(accent)
             } else {
                 ScrollView(.vertical, showsIndicators: false) {
@@ -175,7 +175,7 @@ private struct ReadingSessionContentView: View {
     }
 
     private var emptyQuestionsNotice: some View {
-        Text("This text is too short for generated questions. You can still finish the reading session.")
+        Text(L10n.string("readingTextTooShort"))
             .font(.system(size: 13, weight: .medium, design: .rounded))
             .foregroundColor(AppColors.textSecondary)
             .padding(14)
@@ -191,7 +191,7 @@ private struct ReadingSessionContentView: View {
         switch viewModel.currentPhase {
         case .reading:
             ReadingPrimaryButton(
-                title: viewModel.hasQuestions ? "Start Questions" : "Finish",
+                title: viewModel.hasQuestions ? L10n.string("readingStartQuestions") : L10n.string("commonFinish"),
                 icon: viewModel.hasQuestions ? "questionmark.circle.fill" : "checkmark",
                 accent: accent,
                 accentDark: accentDark
@@ -204,7 +204,7 @@ private struct ReadingSessionContentView: View {
             }
         case .questions:
             ReadingPrimaryButton(
-                title: viewModel.isLastQuestion ? "Finish" : "Next",
+                title: viewModel.isLastQuestion ? L10n.string("commonFinish") : L10n.string("commonNext"),
                 icon: viewModel.isLastQuestion ? "checkmark" : "arrow.right",
                 accent: accent,
                 accentDark: accentDark

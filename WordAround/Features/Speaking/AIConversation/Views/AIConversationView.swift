@@ -165,7 +165,7 @@ struct AIConversationView: View {
                 title: "Generating topic…",
                 description: "Picking something that fits your level.",
                 icon: "sparkles",
-                chips: chips + ["Auto"],
+                chips: chips + [L10n.string("aiConvAutoChip")],
                 footerLabel: "AI conversation topic",
                 showsFooter: true,
                 isChangeDisabled: true,
@@ -197,10 +197,10 @@ struct AIConversationView: View {
             )
         } else {
             ConversationScenarioCardView(
-                title: "AI-generated topic",
+                title: L10n.string("aiConvAIGeneratedTopic"),
                 description: "Loading…",
                 icon: "sparkles",
-                chips: chips + ["Auto"],
+                chips: chips + [L10n.string("aiConvAutoChip")],
                 footerLabel: "AI conversation topic",
                 showsFooter: true,
                 isChangeDisabled: true,
@@ -212,9 +212,9 @@ struct AIConversationView: View {
     private func contextFooterLabel(for context: SpeakingConversationContext) -> String {
         switch context {
         case .generatedTopic:
-            return "AI conversation topic"
+            return L10n.string("speakingAITopicTitle")
         case .scenario:
-            return "Conversation scenario"
+            return L10n.string("speakingConversationScenario")
         }
     }
 
@@ -242,7 +242,7 @@ struct AIConversationView: View {
     private var topBar: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("AI Conversation")
+                Text(L10n.string("speakingModeAITitle"))
                     .font(.system(
                         size: Layout.homeHeaderTitleSize,
                         weight: .bold,
@@ -250,7 +250,7 @@ struct AIConversationView: View {
                     ))
                     .foregroundColor(AppColors.primaryBlueDark)
 
-                Text("Practice real conversations with an AI tutor.")
+                Text(L10n.string("speakingAISubtitle"))
                     .font(.system(
                         size: Layout.homeHeaderSubtitleSize,
                         weight: .medium,

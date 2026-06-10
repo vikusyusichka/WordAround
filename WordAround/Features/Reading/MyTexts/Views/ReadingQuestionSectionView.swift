@@ -10,7 +10,7 @@ struct ReadingQuestionSectionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Questions")
+            Text(L10n.string("readingQuestions"))
                 .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
 

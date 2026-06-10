@@ -74,11 +74,11 @@ struct EditSetSheet: View {
     private var sheetHeader: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
-                Text("Edit set")
+                Text(L10n.string("flashcardEditSet"))
                     .font(.system(size: Layout.isPadLike ? 30 : 26, weight: .bold, design: .rounded))
                     .foregroundColor(theme.titleColor)
 
-                Text("Update the name and description.")
+                Text(L10n.string("folderEditSubtitle"))
                     .font(.system(size: 14, weight: .medium, design: .rounded))
                     .foregroundColor(theme.mutedTextColor)
             }
@@ -124,7 +124,7 @@ struct EditSetSheet: View {
 
     private var descriptionBlock: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Description")
+            Text(L10n.string("folderDescField"))
                 .font(.system(size: 13, weight: .bold, design: .rounded))
                 .foregroundColor(theme.titleColor)
 
@@ -149,7 +149,7 @@ struct EditSetSheet: View {
                 let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
 
                 guard !trimmedTitle.isEmpty else {
-                    validationMessage = "Set name cannot be empty."
+                    validationMessage = L10n.string("flashcardSetNameEmpty")
                     return
                 }
 

@@ -10,10 +10,10 @@ enum GrammarReviewResult: String, Codable, CaseIterable, Identifiable, Equatable
 
     var title: String {
         switch self {
-        case .forgot: return "Forgot"
-        case .hard:   return "Hard"
-        case .good:   return "Good"
-        case .easy:   return "Easy"
+        case .forgot: return L10n.string("notesRatingForgot")
+        case .hard:   return L10n.string("writeWordsDiffHard")
+        case .good:   return L10n.string("notesRatingGood")
+        case .easy:   return L10n.string("writeWordsDiffEasy")
         }
     }
 
@@ -28,10 +28,10 @@ enum GrammarReviewResult: String, Codable, CaseIterable, Identifiable, Equatable
 
     var nextInterval: TimeInterval {
         switch self {
-        case .forgot: return 4 * 60 * 60          // 4 hours
-        case .hard:   return 1 * 24 * 60 * 60     // 1 day
-        case .good:   return 3 * 24 * 60 * 60     // 3 days
-        case .easy:   return 7 * 24 * 60 * 60     // 7 days
+        case .forgot: return 4 * 60 * 60
+        case .hard:   return 1 * 24 * 60 * 60
+        case .good:   return 3 * 24 * 60 * 60
+        case .easy:   return 7 * 24 * 60 * 60
         }
     }
 

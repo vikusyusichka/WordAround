@@ -49,7 +49,7 @@ struct SFSymbolPickerView: View {
         HStack(alignment: .center, spacing: Layout.symbolPickerTopBarSpacing) {
             closeButton
 
-            Text("Choose icon")
+            Text(L10n.string("createSetChooseIcon"))
                 .font(.system(
                     size: Layout.symbolPickerTitleSize,
                     weight: .bold,
@@ -95,7 +95,7 @@ struct SFSymbolPickerView: View {
                 .font(.system(size: Layout.symbolPickerSearchIconSize, weight: .semibold))
                 .foregroundStyle(theme.accent)
 
-            TextField("Search symbol", text: $searchText)
+            TextField(L10n.string("createSetSearchSymbol"), text: $searchText)
                 .font(.system(
                     size: Layout.symbolPickerSearchTextSize,
                     weight: .regular,

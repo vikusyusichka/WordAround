@@ -71,7 +71,7 @@ struct FolderListView: View {
 
     private var header: some View {
         HStack(alignment: .center, spacing: 8) {
-            Text("Your folders")
+            Text(L10n.string("folderYourFolders"))
                 .font(.system(size: Layout.isPadLike ? 34 : 21, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
                 .lineLimit(1)
@@ -94,7 +94,7 @@ struct FolderListView: View {
             Button {
                 onCreate()
             } label: {
-                Text("Create")
+                Text(L10n.string("homeCreate"))
                     .font(.system(size: Layout.isPadLike ? 18 : 14, weight: .semibold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlue)
                     .lineLimit(1)
@@ -199,11 +199,11 @@ struct FolderListView: View {
             .fill(Color.white.opacity(0.92))
             .overlay(
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("No folders yet")
+                    Text(L10n.string("folderNoFolders"))
                         .font(.system(size: Layout.homeEmptySetTitleSize, weight: .bold, design: .rounded))
                         .foregroundColor(AppColors.primaryBlueDark)
 
-                    Text("Create your first folder using the Create button.")
+                    Text(L10n.string("folderNoFoldersSubtitle"))
                         .font(.system(size: Layout.homePlaceholderSubtitleSize, weight: .medium, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                 }
@@ -321,13 +321,13 @@ private struct FolderGridCellView: View {
                             Button {
                                 onRename()
                             } label: {
-                                Label("Rename", systemImage: "pencil")
+                                Label(L10n.string("commonRename"), systemImage: "pencil")
                             }
 
                             Button(role: .destructive) {
                                 onDelete()
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label(L10n.string("commonDelete"), systemImage: "trash")
                             }
                         } label: {
                             ZStack {

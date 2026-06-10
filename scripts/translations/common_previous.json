@@ -1,0 +1,15 @@
+{
+  "commonPrevious": {
+    "en": "Previous", "uk": "Назад", "es": "Anterior",
+    "fr": "Précédent", "de": "Zurück", "it": "Precedente",
+    "pt": "Anterior", "ru": "Назад", "pl": "Poprzedni",
+    "nl": "Vorige", "ja": "前へ", "ko": "이전",
+    "zh": "上一个", "hi": "पिछला", "ar": "السابق",
+    "bn": "পূর্ববর্তী", "ur": "پچھلا", "id": "Sebelumnya",
+    "tr": "Önceki", "vi": "Trước", "fa": "قبلی",
+    "ro": "Anterior", "th": "ก่อนหน้า", "el": "Προηγούμενο",
+    "cs": "Předchozí", "hu": "Előző", "sv": "Föregående",
+    "he": "הקודם", "no": "Forrige", "da": "Forrige",
+    "fi": "Edellinen", "bg": "Предишен"
+  }
+}

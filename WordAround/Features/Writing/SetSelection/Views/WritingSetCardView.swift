@@ -46,7 +46,7 @@ struct WritingSetCardView: View {
             Spacer(minLength: LayoutConstants.WritingSetSelection.rowContentSpacing(metrics))
 
             HStack(spacing: 6) {
-                Text("Review")
+                Text(L10n.string("writingReview"))
                     .font(.system(
                         size: LayoutConstants.WritingSetSelection.reviewTextSize(metrics),
                         weight: .bold,
@@ -130,7 +130,7 @@ struct WritingSetCardView: View {
 
     private var wordsText: String {
         let count = item.sourceSet.cards.count
-        return count == 1 ? "1 word" : "\(count) words"
+        return count == 1 ? L10n.string("readingOneWord") : String(format: L10n.string("readingWordsCountFmt"), count)
     }
 
     private static func color(from hex: String) -> Color {

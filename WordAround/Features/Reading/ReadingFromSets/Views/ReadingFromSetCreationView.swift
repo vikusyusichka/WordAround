@@ -26,8 +26,8 @@ struct ReadingFromSetCreationView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     ReadingSetupHeaderView(
-                        title: "Create From Set",
-                        subtitle: "Turn a flashcard set into a reading",
+                        title: L10n.string("rfsCreateFromSet"),
+                        subtitle: L10n.string("rfsSubtitle"),
                         accent: accent,
                         accentDark: accentDark,
                         onBack: { dismiss() }
@@ -56,7 +56,7 @@ struct ReadingFromSetCreationView: View {
 
             if viewModel.hasSet {
                 ReadingPrimaryButton(
-                    title: viewModel.isGenerating ? "Creating your reading…" : "Generate Reading",
+                    title: viewModel.isGenerating ? L10n.string("rfsCreating") : L10n.string("rfsGenerate"),
                     icon: viewModel.isGenerating ? nil : "sparkles",
                     accent: accent,
                     accentDark: accentDark
@@ -105,11 +105,11 @@ struct ReadingFromSetCreationView: View {
                     }
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(viewModel.hasSet ? viewModel.setTitle : "Choose a set")
+                    Text(viewModel.hasSet ? viewModel.setTitle : L10n.string("rfsChooseSet"))
                         .font(.system(size: 16, weight: .bold, design: .rounded))
                         .foregroundColor(accentDark)
                         .lineLimit(1)
-                    Text(viewModel.hasSet ? "\(viewModel.wordCount) words • tap to change" : "Pick a flashcard set to read from")
+                    Text(viewModel.hasSet ? String(format: L10n.string("rfsWordsTapHint"), viewModel.wordCount) : L10n.string("rfsPickSetHint"))
                         .font(.system(size: 13, weight: .medium, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                         .lineLimit(1)
@@ -134,9 +134,9 @@ struct ReadingFromSetCreationView: View {
     }
 
     private var vocabularyPreview: some View {
-        sectionCard(title: "Vocabulary") {
+        sectionCard(title: L10n.string("rfsVocabulary")) {
             VStack(alignment: .leading, spacing: 10) {
-                Text("\(viewModel.wordCount) words from \"\(viewModel.setTitle)\"")
+                Text(String(format: L10n.string("rfsWordsFromFmt"), viewModel.wordCount, viewModel.setTitle))
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
 
@@ -147,7 +147,7 @@ struct ReadingFromSetCreationView: View {
                 }
 
                 if viewModel.wordCount > viewModel.previewTerms.count {
-                    Text("+ \(viewModel.wordCount - viewModel.previewTerms.count) more")
+                    Text(String(format: L10n.string("rfsMoreCountFmt"), viewModel.wordCount - viewModel.previewTerms.count))
                         .font(.system(size: 12, weight: .medium, design: .rounded))
                         .foregroundColor(AppColors.mutedText)
                 }
@@ -157,7 +157,7 @@ struct ReadingFromSetCreationView: View {
 
     private var configSection: some View {
         VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-            sectionCard(title: "Generation Mode") {
+            sectionCard(title: L10n.string("rfsGenerationMode")) {
                 segmented(
                     options: viewModel.generationModeOptions.map(\.title),
                     selection: viewModel.generationMode.title
@@ -170,7 +170,7 @@ struct ReadingFromSetCreationView: View {
                     .padding(.top, 6)
             }
 
-            sectionCard(title: "Difficulty") {
+            sectionCard(title: L10n.string("rfsDifficulty")) {
                 segmented(
                     options: viewModel.difficultyOptions.map(\.rawValue),
                     selection: viewModel.difficulty.rawValue
@@ -179,7 +179,7 @@ struct ReadingFromSetCreationView: View {
                 }
             }
 
-            sectionCard(title: "Length") {
+            sectionCard(title: L10n.string("rfsLength")) {
                 segmented(
                     options: viewModel.lengthOptions.map(\.title),
                     selection: viewModel.length.title
@@ -241,7 +241,7 @@ struct ReadingFromSetCreationView: View {
             Color.black.opacity(0.12).ignoresSafeArea()
             VStack(spacing: 14) {
                 ProgressView().scaleEffect(1.2)
-                Text("Creating your reading…")
+                Text(L10n.string("rfsCreating"))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
             }

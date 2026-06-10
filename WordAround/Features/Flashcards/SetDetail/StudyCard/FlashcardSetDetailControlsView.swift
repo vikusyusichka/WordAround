@@ -9,7 +9,7 @@ struct FlashcardSetDetailControlsView: View {
     var body: some View {
         HStack(spacing: 0) {
             HStack(spacing: Layout.flashcardDetailControlsInnerSpacing) {
-                Text("Track progress")
+                Text(L10n.string("flashcardTrackProgress"))
                     .lineLimit(1)
                     .minimumScaleFactor(0.72)
 
@@ -40,7 +40,6 @@ struct FlashcardSetDetailControlsView: View {
         }
         .font(.system(size: Layout.flashcardDetailControlsTextSize, weight: .bold, design: .rounded))
         .foregroundStyle(theme.mutedTextColor)
-        // NOTE: top padding removed from here — the caller (FlashcardSetDetailView) applies it.
     }
 
     private var controlsDivider: some View {

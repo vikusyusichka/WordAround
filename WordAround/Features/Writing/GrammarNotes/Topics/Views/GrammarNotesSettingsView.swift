@@ -57,11 +57,11 @@ struct GrammarNotesSettingsView: View {
             .buttonStyle(.plain)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("Notes")
+                Text(L10n.string("categoryNotes"))
                     .font(.system(size: Layout.grammarSettingsTitleSize, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
 
-                Text("Settings")
+                Text(L10n.string("commonSettings"))
                     .font(.system(size: Layout.grammarSettingsSubtitleSize, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
             }
@@ -73,22 +73,22 @@ struct GrammarNotesSettingsView: View {
 
     private var quickCaptureSection: some View {
         settingsSection(
-            title: "Quick capture",
-            subtitle: "Make fast notes and mistakes feel instant, not like filling tax forms with vowels.",
+            title: L10n.string("notesSetQuickCapture"),
+            subtitle: L10n.string("notesSetQuickCaptureSub"),
             icon: "bolt.fill",
             tint: AppColors.primaryBlue
         ) {
             settingsToggleRow(
-                title: "Open editor after quick save",
-                subtitle: "After saving a quick note, jump straight into the full editor.",
+                title: L10n.string("notesSetOpenEditor"),
+                subtitle: L10n.string("notesSetOpenEditorSub"),
                 icon: "arrow.up.forward.app.fill",
                 tint: AppColors.primaryBlue,
                 isOn: $settings.opensEditorAfterQuickSave
             )
 
             settingsToggleRow(
-                title: "Highlight mistake notes",
-                subtitle: "Use a subtle warm tint for mistake cards and quick mistake blocks.",
+                title: L10n.string("notesSetHighlight"),
+                subtitle: L10n.string("notesSetHighlightSub"),
                 icon: "exclamationmark.triangle.fill",
                 tint: GrammarNoteType.mistake.tintColor,
                 isOn: $settings.showsMistakeHighlights
@@ -98,38 +98,38 @@ struct GrammarNotesSettingsView: View {
 
     private var mistakeNotesSection: some View {
         settingsSection(
-            title: "Mistake notes",
-            subtitle: "Control what gets saved when you capture a quick mistake.",
+            title: L10n.string("notesSetMistakeNotes"),
+            subtitle: L10n.string("notesSetMistakeNotesSub"),
             icon: "exclamationmark.bubble.fill",
             tint: GrammarNoteType.mistake.tintColor
         ) {
             settingsToggleRow(
-                title: "Include original sentence",
-                subtitle: "Save the wrong version as a quote block in the note.",
+                title: L10n.string("notesSetIncludeOriginal"),
+                subtitle: L10n.string("notesSetIncludeOriginalSub"),
                 icon: "quote.bubble.fill",
                 tint: GrammarNoteType.mistake.tintColor,
                 isOn: $settings.includeOriginalSentence
             )
 
             settingsToggleRow(
-                title: "Include corrected sentence",
-                subtitle: "Save the fixed version as an example block.",
+                title: L10n.string("notesSetIncludeCorrected"),
+                subtitle: L10n.string("notesSetIncludeCorrectedSub"),
                 icon: "checkmark.bubble.fill",
                 tint: CreateSetTheme.green.accent,
                 isOn: $settings.includeCorrectedSentence
             )
 
             settingsToggleRow(
-                title: "Include explanation",
-                subtitle: "Add your explanation as a paragraph block below.",
+                title: L10n.string("notesSetIncludeExplanation"),
+                subtitle: L10n.string("notesSetIncludeExplanationSub"),
                 icon: "lightbulb.fill",
                 tint: CreateSetTheme.yellow.accent,
                 isOn: $settings.createMistakeNotesWithExplanation
             )
 
             settingsToggleRow(
-                title: "Group mistakes by topic",
-                subtitle: "Save quick mistakes to the chosen topic instead of Common Mistakes.",
+                title: L10n.string("notesSetGroupByTopic"),
+                subtitle: L10n.string("notesSetGroupByTopicSub"),
                 icon: "folder.fill",
                 tint: CreateSetTheme.purple.accent,
                 isOn: $settings.groupMistakesByTopic
@@ -139,22 +139,22 @@ struct GrammarNotesSettingsView: View {
 
     private var notesAppearanceSection: some View {
         settingsSection(
-            title: "Notes appearance",
-            subtitle: "Tune the list so it looks like an app, not a spreadsheet having a bad day.",
+            title: L10n.string("notesSetAppearance"),
+            subtitle: L10n.string("notesSetAppearanceSub"),
             icon: "rectangle.stack.fill",
             tint: CreateSetTheme.purple.accent
         ) {
             settingsToggleRow(
-                title: "Pinned notes first",
-                subtitle: "Keep important rules at the top of each topic.",
+                title: L10n.string("notesSetPinnedFirst"),
+                subtitle: L10n.string("notesSetPinnedFirstSub"),
                 icon: "pin.fill",
                 tint: CreateSetTheme.purple.accent,
                 isOn: $settings.groupsPinnedNotesFirst
             )
 
             settingsToggleRow(
-                title: "Compact note cards",
-                subtitle: "Show tighter cards when you want more notes visible on screen.",
+                title: L10n.string("notesSetCompact"),
+                subtitle: L10n.string("notesSetCompactSub"),
                 icon: "rectangle.compress.vertical",
                 tint: CreateSetTheme.cyan.accent,
                 isOn: $settings.usesCompactCards
@@ -164,8 +164,8 @@ struct GrammarNotesSettingsView: View {
 
     private var defaultTypeSection: some View {
         settingsSection(
-            title: "Quick Note Type",
-            subtitle: "Choose what type Quick Notes create by default.",
+            title: L10n.string("notesSetQuickNoteType"),
+            subtitle: L10n.string("notesSetQuickNoteTypeSub"),
             icon: "doc.text.fill",
             tint: settings.quickNoteType.tintColor
         ) {
@@ -187,14 +187,14 @@ struct GrammarNotesSettingsView: View {
 
     private var helperSection: some View {
         settingsSection(
-            title: "Learning helpers",
-            subtitle: "Small nudges inside empty states and quick sheets.",
+            title: L10n.string("notesSetHelpers"),
+            subtitle: L10n.string("notesSetHelpersSub"),
             icon: "lightbulb.fill",
             tint: CreateSetTheme.yellow.accent
         ) {
             settingsToggleRow(
-                title: "Show helper tips",
-                subtitle: "Display short contextual hints while creating notes.",
+                title: L10n.string("notesSetShowTips"),
+                subtitle: L10n.string("notesSetShowTipsSub"),
                 icon: "lightbulb.fill",
                 tint: CreateSetTheme.yellow.accent,
                 isOn: $settings.showsHelperTips
@@ -354,11 +354,11 @@ struct GrammarNotesSettingsView: View {
                 .padding(.top, 2)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("Quick tip preview")
+                Text(L10n.string("notesSetTipPreview"))
                     .font(.system(size: 13, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
 
-                Text("Use quick mistakes for sentences you actually wrote wrong. Those are more useful than textbook-perfect examples, naturally.")
+                Text(L10n.string("notesSetTipPreviewText"))
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                     .lineSpacing(3)

@@ -13,7 +13,7 @@ struct ListeningQuestionSettingsCard: View {
         ListeningWhiteCard {
             VStack(alignment: .leading, spacing: 16) {
                 ListeningToggleRow(
-                    title: "Add comprehension questions",
+                    title: L10n.string("listenAddQuestions"),
                     isOn: $addQuestions,
                     accent: accent,
                     accentDark: accentDark
@@ -21,7 +21,7 @@ struct ListeningQuestionSettingsCard: View {
 
                 if addQuestions {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Question count")
+                        Text(L10n.string("listenQuestionCount"))
                             .font(.system(size: 13, weight: .semibold, design: .rounded))
                             .foregroundColor(AppColors.textSecondary)
 
@@ -31,7 +31,7 @@ struct ListeningQuestionSettingsCard: View {
                             }
                         }
 
-                        Text("Question types")
+                        Text(L10n.string("listenQuestionTypes"))
                             .font(.system(size: 13, weight: .semibold, design: .rounded))
                             .foregroundColor(AppColors.textSecondary)
                             .padding(.top, 4)
@@ -78,7 +78,7 @@ struct ListeningQuestionSettingsCard: View {
                 }
             }
         } label: {
-            Text(type.rawValue)
+            Text(type.title)
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundColor(isSelected ? .white : accentDark)
                 .padding(.horizontal, 12)

@@ -18,8 +18,6 @@ final class ListeningHomeViewModel: ObservableObject {
         Task {
             let sessions = await store.fetchSessions()
             let calendar = Calendar.current
-            // Only completed sessions count toward today's progress, and each
-            // session id is taken once so resaving a finished session can't
             var seenIds = Set<String>()
             let todaysSeconds = sessions
                 .filter { $0.isCompleted && calendar.isDateInToday($0.updatedAt) }

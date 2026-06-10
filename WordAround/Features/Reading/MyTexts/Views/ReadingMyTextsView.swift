@@ -31,8 +31,8 @@ struct ReadingMyTextsView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     ReadingSetupHeaderView(
-                        title: "My Texts",
-                        subtitle: "Practice reading with your own saved texts",
+                        title: L10n.string("readingModeMyTextsTitle"),
+                        subtitle: L10n.string("readingMyTextsSubtitle"),
                         accent: accent,
                         accentDark: accentDark,
                         onBack: { dismiss() }
@@ -41,8 +41,8 @@ struct ReadingMyTextsView: View {
 
                     if viewModel.isLoggedOut {
                         PracticeLibraryLoggedOutView(
-                            title: "Sign in to save texts",
-                            message: "Sign in to save texts and sync across devices.",
+                            title: L10n.string("readingSignInToSaveTexts"),
+                            message: L10n.string("readingSignInToSaveTextsMessage"),
                             accent: accent,
                             accentDark: accentDark
                         )
@@ -86,13 +86,13 @@ struct ReadingMyTextsView: View {
         .onChange(of: viewModel.navigateToAddText) { _, isShowing in
             if !isShowing { Task { await viewModel.loadTextsAsync() } }
         }
-        .alert("Rename text", isPresented: Binding(
+        .alert(L10n.string("readingRenameText"), isPresented: Binding(
             get: { renameTarget != nil },
             set: { if !$0 { renameTarget = nil } }
         )) {
-            TextField("Title", text: $renameDraft)
-            Button("Cancel", role: .cancel) { renameTarget = nil }
-            Button("Save") {
+            TextField(L10n.string("commonTitle"), text: $renameDraft)
+            Button(L10n.localized(.commonCancel), role: .cancel) { renameTarget = nil }
+            Button(L10n.localized(.commonSave)) {
                 if let target = renameTarget {
                     viewModel.renameText(target, newTitle: renameDraft)
                 }
@@ -100,27 +100,27 @@ struct ReadingMyTextsView: View {
             }
         }
         .confirmationDialog(
-            deleteTarget.map { "Delete \"\($0.title)\"?" } ?? "Delete this text?",
+            deleteTarget.map { String(format: L10n.string("readingDeleteTextFmt"), $0.title) } ?? L10n.string("readingDeleteTextGeneric"),
             isPresented: Binding(
                 get: { deleteTarget != nil },
                 set: { if !$0 { deleteTarget = nil } }
             ),
             titleVisibility: .visible
         ) {
-            Button("Delete", role: .destructive) {
+            Button(L10n.string("commonDelete"), role: .destructive) {
                 if let target = deleteTarget { viewModel.deleteText(target) }
                 deleteTarget = nil
             }
-            Button("Cancel", role: .cancel) { deleteTarget = nil }
+            Button(L10n.string("commonCancel"), role: .cancel) { deleteTarget = nil }
         } message: {
-            Text("This can't be undone.")
+            Text(L10n.string("commonCantBeUndone"))
         }
     }
 
     @ViewBuilder
     private var libraryContent: some View {
         if viewModel.isLoading {
-            PracticeLibraryLoadingView(message: "Loading your texts…", accent: accent)
+            PracticeLibraryLoadingView(message: L10n.string("readingLoadingTexts"), accent: accent)
         } else if let error = viewModel.errorMessage {
             PracticeLibraryErrorView(
                 message: error,
@@ -142,7 +142,7 @@ struct ReadingMyTextsView: View {
 
     private var addTextButton: some View {
         ReadingPrimaryButton(
-            title: "Add Text",
+            title: L10n.string("readingAddText"),
             icon: "plus",
             accent: accent,
             accentDark: accentDark
@@ -153,7 +153,7 @@ struct ReadingMyTextsView: View {
 
     private func continueSection(_ text: ReadingUserText) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionTitle("Continue reading")
+            sectionTitle(L10n.string("readingContinueReading"))
             ReadingContinueReadingCardView(
                 title: text.title,
                 languageTitle: text.languageTitle,
@@ -168,7 +168,7 @@ struct ReadingMyTextsView: View {
 
     private var savedTextsSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionTitle("Saved texts")
+            sectionTitle(L10n.string("readingSavedTexts"))
                 .padding(.top, viewModel.continueReadingText == nil ? Layout.homeSectionTitleTopPadding : 4)
 
             LazyVGrid(columns: savedTextsColumns, spacing: Layout.readingModeGridSpacing) {

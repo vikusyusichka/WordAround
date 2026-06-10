@@ -11,7 +11,7 @@ struct ListeningVoiceSettingsCard: View {
         ListeningWhiteCard {
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Voice speed")
+                    Text(L10n.string("listenVoiceSpeed"))
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
 
@@ -23,7 +23,7 @@ struct ListeningVoiceSettingsCard: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Voice type")
+                    Text(L10n.string("listenVoiceType"))
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
 
@@ -37,7 +37,7 @@ struct ListeningVoiceSettingsCard: View {
                 Divider().opacity(0.5)
 
                 ListeningToggleRow(
-                    title: "Show text while listening",
+                    title: L10n.string("listenShowText"),
                     isOn: $showTextWhileListening,
                     accent: accent,
                     accentDark: accentDark
@@ -71,7 +71,7 @@ struct ListeningVoiceSettingsCard: View {
         return Button {
             withAnimation(.easeInOut(duration: 0.16)) { voiceType = type }
         } label: {
-            Text(type.rawValue)
+            Text(type.title)
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundColor(isSelected ? .white : accentDark)
                 .frame(maxWidth: .infinity)

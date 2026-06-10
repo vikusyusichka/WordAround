@@ -1,0 +1,15 @@
+{
+  "listenSectionVideoUpload": {
+    "en": "Video Upload", "uk": "Завантаження відео", "es": "Subir vídeo",
+    "fr": "Téléverser vidéo", "de": "Video hochladen", "it": "Carica video",
+    "pt": "Enviar vídeo", "ru": "Загрузка видео", "pl": "Prześlij wideo",
+    "nl": "Video uploaden", "ja": "動画のアップロード", "ko": "동영상 업로드",
+    "zh": "上传视频", "hi": "वीडियो अपलोड", "ar": "تحميل الفيديو",
+    "bn": "ভিডিও আপলোড", "ur": "ویڈیو اپلوڈ", "id": "Unggah video",
+    "tr": "Video yükleme", "vi": "Tải lên video", "fa": "بارگذاری ویدیو",
+    "ro": "Încarcă video", "th": "อัปโหลดวิดีโอ", "el": "Μεταφόρτωση βίντεο",
+    "cs": "Nahrát video", "hu": "Videófeltöltés", "sv": "Videouppladdning",
+    "he": "העלאת וידאו", "no": "Last opp video", "da": "Upload video",
+    "fi": "Videon lataus", "bg": "Качване на видео"
+  }
+}

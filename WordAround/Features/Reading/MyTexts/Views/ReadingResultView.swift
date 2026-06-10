@@ -22,8 +22,8 @@ struct ReadingResultView: View {
         focusTitle: String = "",
         accent: Color = ReadingMyTextsTheme.accent,
         accentDark: Color = ReadingMyTextsTheme.accentDark,
-        readAgainTitle: String = "Read again",
-        backButtonTitle: String = "Back to My Texts",
+        readAgainTitle: String = L10n.string("readingActionReadAgain"),
+        backButtonTitle: String = L10n.string("readingBackToMyTexts"),
         onReadAgain: @escaping () -> Void,
         onBackToLibrary: @escaping () -> Void
     ) {
@@ -51,7 +51,7 @@ struct ReadingResultView: View {
                     summaryCard
 
                     if viewModel.hasMistakes {
-                        sectionTitle("Mistakes")
+                        sectionTitle(L10n.string("notesMistakesBadge"))
                         ForEach(viewModel.result.mistakes) { mistake in
                             mistakeCard(mistake)
                         }
@@ -81,7 +81,7 @@ struct ReadingResultView: View {
                     .foregroundColor(accent)
             }
 
-            Text("Practice Complete")
+            Text(L10n.string("readingPracticeComplete"))
                 .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
 

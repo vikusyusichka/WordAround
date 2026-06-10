@@ -33,7 +33,7 @@ struct ConversationScenarioPickerView: View {
                     .foregroundColor(AppColors.primaryBlue)
 
                 VStack(alignment: .leading, spacing: Layout.essaySelectorLabelSpacing) {
-                    Text("Scenario")
+                    Text(L10n.string("spkScenario"))
                         .font(.system(size: Layout.essaySelectorLabelSize, weight: .bold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
 
@@ -82,8 +82,8 @@ struct ConversationScenarioPickerView: View {
     private var optionsList: some View {
         VStack(spacing: Layout.essaySelectorOptionsSpacing) {
             optionRow(
-                title: "Auto-generate topic",
-                subtitle: "AI picks something for your level",
+                title: L10n.string("spkAutoGenTopic"),
+                subtitle: L10n.string("spkAutoGenTopicSubtitle"),
                 icon: "sparkles",
                 isSelected: selectedScenario == nil
             ) {
@@ -174,7 +174,7 @@ struct ConversationScenarioPickerView: View {
     }
 
     private var badgeForSelection: String {
-        selectedScenario?.category ?? "Auto"
+        selectedScenario?.category ?? L10n.string("aiConvAutoChip")
     }
 }
 

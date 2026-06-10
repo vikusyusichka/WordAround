@@ -1,0 +1,54 @@
+{
+  "readingWPMFmt": {
+    "en": "%d WPM", "uk": "%d сл/хв", "es": "%d PPM",
+    "fr": "%d MPM", "de": "%d WpM", "it": "%d PPM",
+    "pt": "%d PPM", "ru": "%d сл/мин", "pl": "%d WPM",
+    "nl": "%d WPM", "ja": "%d WPM", "ko": "%d WPM",
+    "zh": "%d WPM", "hi": "%d WPM", "ar": "%d كلمة/د",
+    "bn": "%d WPM", "ur": "%d WPM", "id": "%d KPM",
+    "tr": "%d KDS", "vi": "%d WPM", "fa": "%d WPM",
+    "ro": "%d CPM", "th": "%d WPM", "el": "%d ΛΑΛ",
+    "cs": "%d slov/min", "hu": "%d szó/perc", "sv": "%d OPM",
+    "he": "%d מילים/דק'", "no": "%d OPM", "da": "%d OPM",
+    "fi": "%d sanaa/min", "bg": "%d д/мин"
+  },
+  "readingReadingTime": {
+    "en": "Reading time", "uk": "Час читання", "es": "Tiempo de lectura",
+    "fr": "Temps de lecture", "de": "Lesezeit", "it": "Tempo di lettura",
+    "pt": "Tempo de leitura", "ru": "Время чтения", "pl": "Czas czytania",
+    "nl": "Leestijd", "ja": "読書時間", "ko": "읽기 시간",
+    "zh": "阅读时间", "hi": "पढ़ने का समय", "ar": "وقت القراءة",
+    "bn": "পঠন সময়", "ur": "پڑھنے کا وقت", "id": "Waktu membaca",
+    "tr": "Okuma süresi", "vi": "Thời gian đọc", "fa": "زمان مطالعه",
+    "ro": "Timp de citire", "th": "เวลาอ่าน", "el": "Χρόνος ανάγνωσης",
+    "cs": "Doba čtení", "hu": "Olvasási idő", "sv": "Lästid",
+    "he": "זמן קריאה", "no": "Lesetid", "da": "Læsetid",
+    "fi": "Lukuaika", "bg": "Време за четене"
+  },
+  "readingComprehension": {
+    "en": "Comprehension", "uk": "Розуміння", "es": "Comprensión",
+    "fr": "Compréhension", "de": "Verständnis", "it": "Comprensione",
+    "pt": "Compreensão", "ru": "Понимание", "pl": "Zrozumienie",
+    "nl": "Begrip", "ja": "理解度", "ko": "이해도",
+    "zh": "理解力", "hi": "समझ", "ar": "الفهم",
+    "bn": "বোঝাপড়া", "ur": "سمجھ", "id": "Pemahaman",
+    "tr": "Anlama", "vi": "Hiểu", "fa": "درک مطلب",
+    "ro": "Înțelegere", "th": "ความเข้าใจ", "el": "Κατανόηση",
+    "cs": "Porozumění", "hu": "Megértés", "sv": "Förståelse",
+    "he": "הבנה", "no": "Forståelse", "da": "Forståelse",
+    "fi": "Ymmärtäminen", "bg": "Разбиране"
+  },
+  "readingTimerMisses": {
+    "en": "Timer misses", "uk": "Пропуски часу", "es": "Tiempos no cumplidos",
+    "fr": "Temps manqués", "de": "Zeit verfehlt", "it": "Tempi mancati",
+    "pt": "Tempos perdidos", "ru": "Пропуски таймера", "pl": "Niezmieszczenia",
+    "nl": "Tijd gemist", "ja": "タイマー超過", "ko": "타이머 초과",
+    "zh": "超时次数", "hi": "टाइमर मिस", "ar": "تجاوزات الوقت",
+    "bn": "টাইমার মিস", "ur": "ٹائمر مسز", "id": "Lewat waktu",
+    "tr": "Süre kaçırma", "vi": "Lỡ thời gian", "fa": "تأخیر زمان",
+    "ro": "Depășiri timp", "th": "เกินเวลา", "el": "Υπερβάσεις χρόνου",
+    "cs": "Překročení času", "hu": "Időtúllépés", "sv": "Tidsöverskott",
+    "he": "החמצות זמן", "no": "Tidsoverskridelser", "da": "Tidsoverskridelser",
+    "fi": "Aikaylityksiä", "bg": "Просрочвания"
+  }
+}

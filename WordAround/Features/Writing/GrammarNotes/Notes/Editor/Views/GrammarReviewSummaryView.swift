@@ -80,7 +80,7 @@ struct GrammarReviewSummaryView: View {
             )
 
             VStack(alignment: .leading, spacing: 3) {
-                Text("Review Today")
+                Text(L10n.string("notesReviewToday"))
                     .font(.system(size: Layout.grammarSettingsSectionTitleSize, weight: .black, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
                 Text(headlineSubtitle)
@@ -94,10 +94,10 @@ struct GrammarReviewSummaryView: View {
 
             if !isLoading && effectivePool != nil {
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("~\(estimatedMinutes) min")
+                    Text(String(format: L10n.string("notesEstimatedMinFormat"), estimatedMinutes))
                         .font(.system(size: 11, weight: .bold, design: .rounded))
                         .foregroundStyle(AppColors.primaryBlue)
-                    Text("estimated")
+                    Text(L10n.string("notesEstimated"))
                         .font(.system(size: 9, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppColors.textSecondary)
                 }
@@ -106,10 +106,10 @@ struct GrammarReviewSummaryView: View {
     }
 
     private var headlineSubtitle: String {
-        if isLoading { return "Loading review queue…" }
-        if errorMessage != nil { return "Could not load review queue." }
+        if isLoading { return L10n.string("notesLoadingQueue") }
+        if errorMessage != nil { return L10n.string("notesCouldNotLoadQueue") }
         guard let pool = effectivePool else {
-            return "Nothing due. Open a note to add it to review."
+            return L10n.string("notesNothingDue")
         }
         return pool.homeCardSubtitle(count: effectiveCount)
     }
@@ -167,7 +167,7 @@ struct GrammarReviewSummaryView: View {
         Button(action: onStart) {
             HStack(spacing: 8) {
                 Image(systemName: "play.fill").font(.system(size: 13, weight: .bold))
-                Text("Start Review").font(.system(size: 15, weight: .bold, design: .rounded))
+                Text(L10n.string("notesStartReview")).font(.system(size: 15, weight: .bold, design: .rounded))
             }
             .foregroundStyle(Color.white)
             .frame(maxWidth: .infinity)
@@ -185,13 +185,13 @@ struct GrammarReviewSummaryView: View {
                 Image(systemName: "checkmark.seal.fill")
                     .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(CreateSetTheme.green.accent)
-                Text("You're all caught up.")
+                Text(L10n.string("notesAllCaughtUp"))
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
                 Spacer(minLength: 0)
             }
 
-            Text("Open a note and tap \"Add to Review\" to schedule it here.")
+            Text(L10n.string("notesAddToReviewHint"))
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary.opacity(0.75))
                 .lineSpacing(2)
@@ -201,7 +201,7 @@ struct GrammarReviewSummaryView: View {
     private var loadingRow: some View {
         HStack(spacing: 10) {
             ProgressView().tint(AppColors.primaryBlue).scaleEffect(0.85)
-            Text("Loading…")
+            Text(L10n.string("commonLoadingEllipsis"))
                 .font(.system(size: 12, weight: .semibold, design: .rounded))
                 .foregroundStyle(AppColors.textSecondary)
             Spacer(minLength: 0)
@@ -222,7 +222,7 @@ struct GrammarReviewSummaryView: View {
             }
 
             Button(action: onRetry) {
-                Text("Retry")
+                Text(L10n.string("commonRetry"))
                     .font(.system(size: 12, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlue)
                     .padding(.horizontal, 12)

@@ -10,54 +10,56 @@ struct SpeakingMode: Identifiable {
 }
 
 extension SpeakingMode {
-    static let allModes: [SpeakingMode] = [
+    static var allModes: [SpeakingMode] {
+        [
         SpeakingMode(
             id: "ai-conversation",
-            title: "AI Conversation",
-            subtitle: "Talk with an AI tutor in real-time.",
+            title: L10n.string("speakingModeAITitle"),
+            subtitle: L10n.string("speakingModeAISubtitle"),
             systemImage: "bubble.left.and.bubble.right.fill",
             accentColor: AppColors.primaryBlue,
             blobColor: AppColors.blobBlue
         ),
         SpeakingMode(
             id: "free-speaking",
-            title: "Free Speaking",
-            subtitle: "Speak on generated topics and get feedback.",
+            title: L10n.string("speakingModeFreeTitle"),
+            subtitle: L10n.string("speakingModeFreeSubtitle"),
             systemImage: "mic.fill",
             accentColor: AppColors.greenAccent,
             blobColor: AppColors.blobGreen
         ),
         SpeakingMode(
             id: "describe-picture",
-            title: "Describe Picture",
-            subtitle: "Describe images and learn useful vocabulary.",
+            title: L10n.string("speakingModePictureTitle"),
+            subtitle: L10n.string("speakingModePictureSubtitle"),
             systemImage: "photo.fill",
             accentColor: AppColors.orangeAccent,
             blobColor: AppColors.blobYellow
         ),
         SpeakingMode(
             id: "debate-mode",
-            title: "Debate Mode",
-            subtitle: "Discuss topics and build your arguments.",
+            title: L10n.string("speakingModeDebateTitle"),
+            subtitle: L10n.string("speakingModeDebateSubtitle"),
             systemImage: "person.2.fill",
             accentColor: Color(red: 0.93, green: 0.40, blue: 0.60),
             blobColor: AppColors.blobPink
         ),
         SpeakingMode(
             id: "shadowing",
-            title: "Shadowing",
-            subtitle: "Repeat phrases and improve pronunciation.",
+            title: L10n.string("speakingModeShadowingTitle"),
+            subtitle: L10n.string("speakingModeShadowingSubtitle"),
             systemImage: "headphones",
             accentColor: Color(red: 0.54, green: 0.36, blue: 0.88),
             blobColor: Color(red: 0.90, green: 0.84, blue: 0.98)
         ),
         SpeakingMode(
             id: "pronunciation",
-            title: "Pronunciation Trainer",
-            subtitle: "Focus on difficult sounds and words.",
+            title: L10n.string("speakingModePronunciationTitle"),
+            subtitle: L10n.string("speakingModePronunciationSubtitle"),
             systemImage: "waveform",
             accentColor: Color(red: 0.18, green: 0.72, blue: 0.80),
             blobColor: Color(red: 0.80, green: 0.94, blue: 0.96)
         )
-    ]
+        ]
+    }
 }

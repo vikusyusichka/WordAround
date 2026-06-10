@@ -1,6 +1,5 @@
 import Foundation
 
-/// Gemini API key lives only in the Worker.
 final class CloudflarePronunciationContentClient {
 
     private let endpointURL: URL

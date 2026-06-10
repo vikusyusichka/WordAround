@@ -6,8 +6,8 @@ enum ReadingMyTextsMode {
     static var homeCard: ReadingMode {
         ReadingMode(
             id: id,
-            title: "My Texts",
-            subtitle: "Paste your own text and read it with help.",
+            title: L10n.string("readingModeMyTextsTitle"),
+            subtitle: L10n.string("readingModeMyTextsSubtitle"),
             systemImage: "doc.text.fill",
             accentColor: ReadingMyTextsTheme.accent,
             blobColor: ReadingMyTextsTheme.blobColor
@@ -23,8 +23,8 @@ extension ReadingMode {
     static var myTexts: ReadingMode {
         ReadingMode(
             id: myTextsID,
-            title: "My Texts",
-            subtitle: "Paste your own text and read it with help.",
+            title: L10n.string("readingModeMyTextsTitle"),
+            subtitle: L10n.string("readingMyTextsSubtitle"),
             systemImage: "doc.text.fill",
             accentColor: ReadingMyTextsTheme.accent,
             blobColor: ReadingMyTextsTheme.blobColor

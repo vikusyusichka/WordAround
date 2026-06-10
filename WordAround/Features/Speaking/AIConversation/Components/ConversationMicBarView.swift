@@ -46,7 +46,7 @@ struct ConversationMicBarView: View {
                         .foregroundColor(AppColors.foodAccent)
                 }
 
-                Text("End")
+                Text(L10n.string("spkEnd"))
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                     .foregroundColor(AppColors.foodAccent)
             }
@@ -126,7 +126,7 @@ struct ConversationMicBarView: View {
                         .foregroundColor(AppColors.primaryBlue)
                 }
 
-                Text("Hint")
+                Text(L10n.string("spkHint"))
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlue)
             }

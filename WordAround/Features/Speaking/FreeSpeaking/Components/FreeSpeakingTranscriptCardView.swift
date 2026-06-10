@@ -9,7 +9,7 @@ struct FreeSpeakingTranscriptCardView: View {
             Spacer(minLength: 44)
 
             VStack(alignment: .trailing, spacing: 4) {
-                Text("You")
+                Text(L10n.string("spkYou"))
                     .font(.system(size: 11, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.greenAccent)
 

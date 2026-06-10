@@ -40,7 +40,6 @@ struct ListeningImportedVideo: Equatable {
 
 struct ListeningVideoImporter {
     static let supportedExtensions: Set<String> = ["mp4", "mov", "m4v"]
-    /// 80 MB keeps the upload under the Cloudflare 100 MB request-body limit.
     static let maxBytes = 80 * 1024 * 1024
 
     static func videoDirectory() -> URL {

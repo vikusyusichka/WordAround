@@ -37,7 +37,7 @@ struct CreateSetHeaderView: View {
                 isSymbolPickerPresented = true
             } label: {
                 HStack(spacing: 10) {
-                    Text("Choose icon")
+                    Text(L10n.string("createSetChooseIcon"))
                         .font(.system(size: Layout.createSetChooseIconTextSize, weight: .bold))
                         .foregroundStyle(viewModel.theme.accent)
 
@@ -69,7 +69,7 @@ struct CreateSetHeaderView: View {
     private var headerContent: some View {
         HStack(alignment: .center, spacing: Layout.createSetHeaderContentSpacing) {
             VStack(alignment: .leading, spacing: Layout.createSetHeaderTitleStackSpacing) {
-                Text("Create Set")
+                Text(L10n.string("createSetTitle"))
                     .font(.system(
                         size: Layout.createSetHeaderTitleSize,
                         weight: .bold,
@@ -78,7 +78,7 @@ struct CreateSetHeaderView: View {
                     .foregroundStyle(viewModel.theme.titleColor)
                     .lineLimit(1)
 
-                Text("Add a new flashcard set")
+                Text(L10n.string("createSetSubtitle"))
                     .font(.system(size: Layout.createSetHeaderSubtitleSize, weight: .semibold))
                     .foregroundStyle(viewModel.theme.mutedTextColor)
                     .lineLimit(1)
@@ -93,7 +93,7 @@ struct CreateSetHeaderView: View {
     private var privacyControl: some View {
         HStack(spacing: Layout.createSetPrivacySpacing) {
             if Layout.isPadLike {
-                Text("Privacy")
+                Text(L10n.string("createSetPrivacy"))
                     .font(.system(size: Layout.createSetPrivacyLabelSize, weight: .semibold))
                     .foregroundStyle(viewModel.theme.mutedTextColor)
             }
@@ -106,7 +106,7 @@ struct CreateSetHeaderView: View {
                         Image(systemName: privacy.iconName)
                             .font(.system(size: Layout.createSetPrivacyIconSize, weight: .bold))
 
-                        Text(privacy.rawValue)
+                        Text(privacy.displayName)
                             .font(.system(size: Layout.createSetPrivacyTextSize, weight: .bold))
                             .lineLimit(1)
                     }

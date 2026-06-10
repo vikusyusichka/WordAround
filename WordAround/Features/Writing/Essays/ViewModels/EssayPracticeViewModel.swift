@@ -120,10 +120,6 @@ final class EssayPracticeViewModel: ObservableObject {
     private let grammarNotesSettingsStore = GrammarNotesSettingsStore()
     private let statsService: DailyPracticeStatsService
 
-    /// Highest essay word count already recorded against today's writing
-    /// progress for this session. We only credit the *delta* on each successful
-    /// grammar check so re-checking the same text never inflates the dashboard;
-    /// reset whenever the essay is cleared / topic changes.
     private var lastRecordedWordCount: Int = 0
 
     private var didAutoSaveCurrentCheck = false

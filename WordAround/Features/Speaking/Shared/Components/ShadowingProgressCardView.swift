@@ -11,7 +11,7 @@ struct ShadowingProgressCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("Phrase \(min(currentIndex + 1, max(total, 1))) of \(total)")
+                Text(String(format: L10n.string("spkPhraseOfFmt"), min(currentIndex + 1, max(total, 1)), total))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
                 Spacer()

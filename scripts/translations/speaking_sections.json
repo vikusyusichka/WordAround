@@ -1,0 +1,93 @@
+{
+  "spkSectionLanguage": {
+    "en": "Language", "uk": "Мова", "es": "Idioma",
+    "fr": "Langue", "de": "Sprache", "it": "Lingua",
+    "pt": "Idioma", "ru": "Язык", "pl": "Język",
+    "nl": "Taal", "ja": "言語", "ko": "언어",
+    "zh": "语言", "hi": "भाषा", "ar": "اللغة",
+    "bn": "ভাষা", "ur": "زبان", "id": "Bahasa",
+    "tr": "Dil", "vi": "Ngôn ngữ", "fa": "زبان",
+    "ro": "Limbă", "th": "ภาษา", "el": "Γλώσσα",
+    "cs": "Jazyk", "hu": "Nyelv", "sv": "Språk",
+    "he": "שפה", "no": "Språk", "da": "Sprog",
+    "fi": "Kieli", "bg": "Език"
+  },
+  "spkSectionLevel": {
+    "en": "Level", "uk": "Рівень", "es": "Nivel",
+    "fr": "Niveau", "de": "Niveau", "it": "Livello",
+    "pt": "Nível", "ru": "Уровень", "pl": "Poziom",
+    "nl": "Niveau", "ja": "レベル", "ko": "레벨",
+    "zh": "等级", "hi": "स्तर", "ar": "المستوى",
+    "bn": "স্তর", "ur": "سطح", "id": "Level",
+    "tr": "Seviye", "vi": "Cấp độ", "fa": "سطح",
+    "ro": "Nivel", "th": "ระดับ", "el": "Επίπεδο",
+    "cs": "Úroveň", "hu": "Szint", "sv": "Nivå",
+    "he": "רמה", "no": "Nivå", "da": "Niveau",
+    "fi": "Taso", "bg": "Ниво"
+  },
+  "spkSectionDifficulty": {
+    "en": "Difficulty", "uk": "Складність", "es": "Dificultad",
+    "fr": "Difficulté", "de": "Schwierigkeit", "it": "Difficoltà",
+    "pt": "Dificuldade", "ru": "Сложность", "pl": "Trudność",
+    "nl": "Moeilijkheid", "ja": "難易度", "ko": "난이도",
+    "zh": "难度", "hi": "कठिनाई", "ar": "الصعوبة",
+    "bn": "কঠিনতা", "ur": "مشکل", "id": "Kesulitan",
+    "tr": "Zorluk", "vi": "Độ khó", "fa": "دشواری",
+    "ro": "Dificultate", "th": "ความยาก", "el": "Δυσκολία",
+    "cs": "Obtížnost", "hu": "Nehézség", "sv": "Svårighetsgrad",
+    "he": "רמת קושי", "no": "Vanskelighetsgrad", "da": "Sværhedsgrad",
+    "fi": "Vaikeustaso", "bg": "Трудност"
+  },
+  "spkSectionFocusArea": {
+    "en": "Focus area", "uk": "Зона фокусу", "es": "Área de enfoque",
+    "fr": "Domaine d'intérêt", "de": "Schwerpunktbereich", "it": "Area di focus",
+    "pt": "Área de foco", "ru": "Область фокуса", "pl": "Obszar fokusu",
+    "nl": "Focusgebied", "ja": "重点分野", "ko": "집중 영역",
+    "zh": "重点领域", "hi": "फोकस क्षेत्र", "ar": "مجال التركيز",
+    "bn": "ফোকাস এলাকা", "ur": "فوکس کا علاقہ", "id": "Area fokus",
+    "tr": "Odak alanı", "vi": "Khu vực trọng tâm", "fa": "حوزه تمرکز",
+    "ro": "Zonă de focalizare", "th": "พื้นที่โฟกัส", "el": "Τομέας εστίασης",
+    "cs": "Oblast zaměření", "hu": "Fókuszterület", "sv": "Fokusområde",
+    "he": "תחום פוקוס", "no": "Fokusområde", "da": "Fokusområde",
+    "fi": "Painopiste", "bg": "Област на фокус"
+  },
+  "spkSectionPhraseSet": {
+    "en": "Phrase set", "uk": "Набір фраз", "es": "Conjunto de frases",
+    "fr": "Ensemble de phrases", "de": "Phrasensammlung", "it": "Insieme di frasi",
+    "pt": "Conjunto de frases", "ru": "Набор фраз", "pl": "Zestaw fraz",
+    "nl": "Frasenset", "ja": "フレーズセット", "ko": "문구 세트",
+    "zh": "短语集", "hi": "वाक्यांश सेट", "ar": "مجموعة العبارات",
+    "bn": "ফ্রেজ সেট", "ur": "فقرہ سیٹ", "id": "Set frasa",
+    "tr": "İfade seti", "vi": "Bộ cụm từ", "fa": "مجموعه عبارات",
+    "ro": "Set de fraze", "th": "ชุดวลี", "el": "Σύνολο φράσεων",
+    "cs": "Sada frází", "hu": "Kifejezéscsomag", "sv": "Frasset",
+    "he": "ערכת ביטויים", "no": "Frasesett", "da": "Frasesæt",
+    "fi": "Lausejoukko", "bg": "Комплект фрази"
+  },
+  "spkSectionYourSide": {
+    "en": "Your side", "uk": "Ваша сторона", "es": "Tu postura",
+    "fr": "Votre camp", "de": "Deine Seite", "it": "La tua posizione",
+    "pt": "Seu lado", "ru": "Ваша сторона", "pl": "Twoja strona",
+    "nl": "Jouw kant", "ja": "あなたの立場", "ko": "당신의 입장",
+    "zh": "你的立场", "hi": "आपकी ओर", "ar": "موقفك",
+    "bn": "আপনার পক্ষ", "ur": "آپ کی طرف", "id": "Sisi Anda",
+    "tr": "Tarafın", "vi": "Phía của bạn", "fa": "طرف شما",
+    "ro": "Partea ta", "th": "ฝ่ายของคุณ", "el": "Η πλευρά σου",
+    "cs": "Vaše strana", "hu": "A te oldalad", "sv": "Din sida",
+    "he": "הצד שלך", "no": "Din side", "da": "Din side",
+    "fi": "Sinun puolesi", "bg": "Твоята страна"
+  },
+  "spkSectionSessionLength": {
+    "en": "Session length", "uk": "Тривалість сесії", "es": "Duración de la sesión",
+    "fr": "Durée de la session", "de": "Sitzungsdauer", "it": "Durata sessione",
+    "pt": "Duração da sessão", "ru": "Длительность сессии", "pl": "Długość sesji",
+    "nl": "Sessieduur", "ja": "セッションの長さ", "ko": "세션 길이",
+    "zh": "会话长度", "hi": "सत्र की अवधि", "ar": "مدة الجلسة",
+    "bn": "সেশনের দৈর্ঘ্য", "ur": "سیشن کی مدت", "id": "Durasi sesi",
+    "tr": "Oturum süresi", "vi": "Thời lượng phiên", "fa": "مدت جلسه",
+    "ro": "Durată sesiune", "th": "ระยะเวลาเซสชั่น", "el": "Διάρκεια συνεδρίας",
+    "cs": "Délka relace", "hu": "Munkamenet hossza", "sv": "Sessionslängd",
+    "he": "אורך פגישה", "no": "Øktlengde", "da": "Sessionslængde",
+    "fi": "Istunnon kesto", "bg": "Продължителност на сесията"
+  }
+}

@@ -20,11 +20,11 @@ struct ReadingPostSetupRouterView: View {
             StorySessionView(setup: setup, onExitToSetup: onExitToSetup, onExitToReading: onExitToReading)
         case "reading-from-sets":
             unknownModeFallback(
-                message: "Open Reading From Sets from the library to choose a set."
+                message: L10n.string("readingFromSetsHint")
             )
 
         default:
-            unknownModeFallback(message: "This reading mode isn't available.")
+            unknownModeFallback(message: L10n.string("readingModeNotAvailable"))
         }
     }
 
@@ -39,7 +39,7 @@ struct ReadingPostSetupRouterView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
 
-            Button("Back to Reading", action: onExitToReading)
+            Button(L10n.string("readingBackToReading"), action: onExitToReading)
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(setup.accentDark)
                 .padding(.horizontal, 14)

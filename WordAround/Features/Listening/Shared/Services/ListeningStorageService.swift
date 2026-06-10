@@ -77,7 +77,6 @@ final class LocalListeningSessionStore: ListeningSessionStoring, @unchecked Send
 
     private func readAll() -> [ListeningPersistedSession] {
         guard let data = try? Data(contentsOf: fileURL) else { return [] }
-        // Decode tolerantly: a corrupted file should not crash the app.
         return (try? decoder.decode([ListeningPersistedSession].self, from: data)) ?? []
     }
 

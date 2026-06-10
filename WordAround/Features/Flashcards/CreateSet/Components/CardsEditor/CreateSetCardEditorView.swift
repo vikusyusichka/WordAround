@@ -48,8 +48,8 @@ struct CreateSetCardEditorView: View {
 
     private var wordField: some View {
         CreateSetCardTextField(
-            title: "Word",
-            placeholder: "e.g. Hola",
+            title: L10n.string("commonWord"),
+            placeholder: L10n.string("createSetPlaceholderWord"),
             theme: theme,
             submitLabel: .next,
             text: $card.word
@@ -58,8 +58,8 @@ struct CreateSetCardEditorView: View {
 
     private var translationField: some View {
         CreateSetCardTextField(
-            title: "Translation",
-            placeholder: "e.g. Hello",
+            title: L10n.string("commonTranslation"),
+            placeholder: L10n.string("createSetPlaceholderTranslation"),
             theme: theme,
             submitLabel: .next,
             text: $card.translation

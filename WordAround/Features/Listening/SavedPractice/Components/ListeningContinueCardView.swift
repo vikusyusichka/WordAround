@@ -10,9 +10,9 @@ struct ListeningContinueCardView: View {
 
     private var progressLabel: String {
         if session.isInProgress && progressPercent >= 99 && session.score == nil {
-            return "Ready to finish"
+            return L10n.string("listenReadyToFinish")
         }
-        return "\(progressPercent)% complete"
+        return String(format: L10n.string("listenPercentCompleteFmt"), progressPercent)
     }
 
     var body: some View {
@@ -28,7 +28,7 @@ struct ListeningContinueCardView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Continue listening")
+                    Text(L10n.string("listenContinueListening"))
                         .font(.system(size: 12, weight: .bold, design: .rounded))
                         .foregroundColor(accent)
                         .textCase(.uppercase)
@@ -48,7 +48,7 @@ struct ListeningContinueCardView: View {
                 ListeningMetadataChip(text: session.languageTitle, accent: accent)
                 ListeningMetadataChip(text: session.levelTitle, accent: accent)
                 Spacer(minLength: 0)
-                Text("Opened \(session.dateText)")
+                Text(String(format: L10n.string("listenOpenedFmt"), session.dateText))
                     .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.mutedText)
             }
@@ -71,7 +71,7 @@ struct ListeningContinueCardView: View {
 
             Button(action: onContinue) {
                 HStack(spacing: 6) {
-                    Text("Continue")
+                    Text(L10n.string("commonContinue"))
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                     Image(systemName: "arrow.right")
                         .font(.system(size: 12, weight: .bold))

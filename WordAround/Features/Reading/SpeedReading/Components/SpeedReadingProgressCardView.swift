@@ -28,7 +28,7 @@ struct SpeedReadingProgressCardView: View {
                         .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundColor(accent)
                         .monospacedDigit()
-                    Text("WPM")
+                    Text(L10n.string("readingWPM"))
                         .font(.system(size: 11, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                 }
@@ -37,7 +37,7 @@ struct SpeedReadingProgressCardView: View {
             ReadingProgressBar(progress: overallProgress, accent: accent)
 
             HStack {
-                Text("Target: \(targetWPM) WPM")
+                Text(String(format: L10n.string("readingTargetWPMFmt"), targetWPM))
                 Spacer()
                 Text(paceStatus)
             }

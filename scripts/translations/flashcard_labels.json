@@ -1,0 +1,41 @@
+{
+  "flashcardCardSubWord": {
+    "en": "word", "uk": "слово", "es": "palabra",
+    "fr": "mot", "de": "Wort", "it": "parola",
+    "pt": "palavra", "ru": "слово", "pl": "słowo",
+    "nl": "woord", "ja": "単語", "ko": "단어",
+    "zh": "单词", "hi": "शब्द", "ar": "كلمة",
+    "bn": "শব্দ", "ur": "لفظ", "id": "kata",
+    "tr": "kelime", "vi": "từ", "fa": "کلمه",
+    "ro": "cuvânt", "th": "คำ", "el": "λέξη",
+    "cs": "slovo", "hu": "szó", "sv": "ord",
+    "he": "מילה", "no": "ord", "da": "ord",
+    "fi": "sana", "bg": "дума"
+  },
+  "flashcardCardSubTranslation": {
+    "en": "translation", "uk": "переклад", "es": "traducción",
+    "fr": "traduction", "de": "Übersetzung", "it": "traduzione",
+    "pt": "tradução", "ru": "перевод", "pl": "tłumaczenie",
+    "nl": "vertaling", "ja": "翻訳", "ko": "번역",
+    "zh": "翻译", "hi": "अनुवाद", "ar": "ترجمة",
+    "bn": "অনুবাদ", "ur": "ترجمہ", "id": "terjemahan",
+    "tr": "çeviri", "vi": "bản dịch", "fa": "ترجمه",
+    "ro": "traducere", "th": "คำแปล", "el": "μετάφραση",
+    "cs": "překlad", "hu": "fordítás", "sv": "översättning",
+    "he": "תרגום", "no": "oversettelse", "da": "oversættelse",
+    "fi": "käännös", "bg": "превод"
+  },
+  "flashcardNoCards": {
+    "en": "No cards", "uk": "Немає карток", "es": "Sin tarjetas",
+    "fr": "Aucune carte", "de": "Keine Karten", "it": "Nessuna carta",
+    "pt": "Sem cartões", "ru": "Нет карточек", "pl": "Brak kart",
+    "nl": "Geen kaarten", "ja": "カードなし", "ko": "카드 없음",
+    "zh": "无词卡", "hi": "कोई कार्ड नहीं", "ar": "لا توجد بطاقات",
+    "bn": "কোনো কার্ড নেই", "ur": "کوئی کارڈ نہیں", "id": "Tidak ada kartu",
+    "tr": "Kart yok", "vi": "Không có thẻ", "fa": "بدون کارت",
+    "ro": "Niciun card", "th": "ไม่มีการ์ด", "el": "Καμία κάρτα",
+    "cs": "Žádné karty", "hu": "Nincs kártya", "sv": "Inga kort",
+    "he": "אין כרטיסים", "no": "Ingen kort", "da": "Ingen kort",
+    "fi": "Ei kortteja", "bg": "Няма карти"
+  }
+}

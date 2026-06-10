@@ -5,11 +5,6 @@ import FoundationModels
 
 #if canImport(FoundationModels)
 
-/// Apple's `@Generable` macro generates a runtime `GenerationSchema` that
-/// the FoundationModels framework constructs from OUTSIDE this file when
-/// `session.respond(to:, generating:)` is invoked. That means the type
-/// must be at least `internal` — `fileprivate`/`private` break the schema
-/// resolution with "is inaccessible due to ..." errors.
 @available(iOS 26.0, macOS 26.0, *)
 @Generable
 struct OnDeviceQuizPayload {
@@ -36,14 +31,6 @@ struct OnDeviceQuizQuestion {
     let explanation: String
 }
 
-/// On-device AI quiz generator powered by Apple Intelligence
-/// (`FoundationModels`). Zero configuration: no API key, no backend,
-/// no network — the model runs locally on the user's device.
-///
-/// `@MainActor` because `SystemLanguageModel.default` and
-/// `LanguageModelSession` are themselves main-actor isolated. Calling
-/// sites already live on the main actor (view models / views), so this
-/// is the cheapest correct annotation.
 @available(iOS 26.0, macOS 26.0, *)
 @MainActor
 final class OnDeviceGrammarQuizAIClient: GrammarQuizAIClient {

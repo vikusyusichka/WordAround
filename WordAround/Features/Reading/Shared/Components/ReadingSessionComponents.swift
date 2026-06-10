@@ -471,7 +471,7 @@ struct ReadingPaceCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Current pace")
+            Text(L10n.string("readingCurrentPace"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
 
@@ -479,13 +479,13 @@ struct ReadingPaceCard: View {
                 Text("\(currentWPM)")
                     .font(.system(size: 32, weight: .bold, design: .rounded))
                     .foregroundColor(accent)
-                Text("WPM")
+                Text(L10n.string("readingWPM"))
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundColor(AppColors.mutedText)
             }
 
             HStack {
-                Text("Target: \(targetWPM) WPM")
+                Text(String(format: L10n.string("readingTargetWPMFmt"), targetWPM))
                 Spacer()
                 Text(status)
             }

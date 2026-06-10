@@ -1,0 +1,54 @@
+{
+  "writingModeSetsTitle": {
+    "en": "Write from sets", "uk": "Письмо з наборів", "es": "Escribir desde sets",
+    "fr": "Écrire depuis les sets", "de": "Aus Sets schreiben", "it": "Scrivi dai set",
+    "pt": "Escrever a partir de sets", "ru": "Письмо из наборов", "pl": "Pisz z zestawów",
+    "nl": "Schrijven vanuit sets", "ja": "セットから書く", "ko": "세트로 쓰기",
+    "zh": "从套组书写", "hi": "सेट से लिखें", "ar": "الكتابة من المجموعات",
+    "bn": "সেট থেকে লিখুন", "ur": "سیٹس سے لکھیں", "id": "Menulis dari Set",
+    "tr": "Setlerden Yaz", "vi": "Viết từ bộ thẻ", "fa": "نوشتن از مجموعه‌ها",
+    "ro": "Scrie din seturi", "th": "เขียนจากชุด", "el": "Γράψε από σετ",
+    "cs": "Psát ze sad", "hu": "Írás szettekből", "sv": "Skriv från set",
+    "he": "כתיבה מסטים", "no": "Skriv fra sett", "da": "Skriv fra sæt",
+    "fi": "Kirjoita seteistä", "bg": "Писане от комплекти"
+  },
+  "writingModeSetsSubtitle": {
+    "en": "Practice spelling and writing words from your sets.", "uk": "Практикуйте правопис і написання слів з ваших наборів.", "es": "Practica la ortografía y la escritura de palabras de tus sets.",
+    "fr": "Entraînez l'orthographe et l'écriture des mots de vos sets.", "de": "Übe Rechtschreibung und das Schreiben von Wörtern aus deinen Sets.", "it": "Esercita l'ortografia e la scrittura delle parole dei tuoi set.",
+    "pt": "Pratique ortografia e escrita de palavras dos seus sets.", "ru": "Тренируйте орфографию и написание слов из ваших наборов.", "pl": "Ćwicz pisownię i zapisywanie słów z zestawów.",
+    "nl": "Oefen spelling en het schrijven van woorden uit je sets.", "ja": "セットの単語のスペルと書き方を練習しましょう。", "ko": "세트의 단어 철자와 쓰기를 연습하세요.",
+    "zh": "练习拼写并书写你套组中的单词。", "hi": "अपने सेट के शब्दों की वर्तनी और लेखन का अभ्यास करें।", "ar": "تدرّب على تهجئة وكتابة كلمات مجموعاتك.",
+    "bn": "আপনার সেটের শব্দের বানান ও লেখা অনুশীলন করুন।", "ur": "اپنے سیٹس کے الفاظ کی ہجے اور لکھائی کی مشق کریں۔", "id": "Latih ejaan dan menulis kata dari set Anda.",
+    "tr": "Setlerindeki kelimelerin yazımını ve yazmayı çalış.", "vi": "Luyện chính tả và viết từ trong bộ thẻ của bạn.", "fa": "املا و نوشتن کلمات مجموعه‌های خود را تمرین کنید.",
+    "ro": "Exersează ortografia și scrierea cuvintelor din seturile tale.", "th": "ฝึกสะกดและเขียนคำจากชุดของคุณ", "el": "Εξάσκησε την ορθογραφία και τη γραφή λέξεων από τα σετ σου.",
+    "cs": "Procvičuj pravopis a psaní slov ze svých sad.", "hu": "Gyakorold a helyesírást és a szavak írását a szettjeidből.", "sv": "Öva stavning och att skriva ord från dina set.",
+    "he": "תרגלו איות וכתיבת מילים מהסטים שלכם.", "no": "Øv staving og skriving av ord fra settene dine.", "da": "Træn stavning og skrivning af ord fra dine sæt.",
+    "fi": "Harjoittele settiesi sanojen oikeinkirjoitusta ja kirjoittamista.", "bg": "Упражнявайте правопис и писане на думи от комплектите си."
+  },
+  "writingModeEssaysTitle": {
+    "en": "Essays", "uk": "Есе", "es": "Ensayos",
+    "fr": "Essais", "de": "Aufsätze", "it": "Temi",
+    "pt": "Redações", "ru": "Эссе", "pl": "Eseje",
+    "nl": "Essays", "ja": "エッセイ", "ko": "에세이",
+    "zh": "短文", "hi": "निबंध", "ar": "مقالات",
+    "bn": "প্রবন্ধ", "ur": "مضامین", "id": "Esai",
+    "tr": "Denemeler", "vi": "Bài luận", "fa": "انشاها",
+    "ro": "Eseuri", "th": "เรียงความ", "el": "Δοκίμια",
+    "cs": "Eseje", "hu": "Esszék", "sv": "Uppsatser",
+    "he": "חיבורים", "no": "Essays", "da": "Essays",
+    "fi": "Esseet", "bg": "Есета"
+  },
+  "writingModeEssaysSubtitle": {
+    "en": "Write texts and get AI feedback on grammar and style.", "uk": "Пишіть тексти й отримуйте відгук ШІ щодо граматики та стилю.", "es": "Escribe textos y recibe comentarios de IA sobre gramática y estilo.",
+    "fr": "Rédigez des textes et recevez des retours IA sur la grammaire et le style.", "de": "Schreibe Texte und erhalte KI-Feedback zu Grammatik und Stil.", "it": "Scrivi testi e ricevi feedback IA su grammatica e stile.",
+    "pt": "Escreva textos e receba feedback de IA sobre gramática e estilo.", "ru": "Пишите тексты и получайте отзывы ИИ по грамматике и стилю.", "pl": "Pisz teksty i otrzymuj opinie AI o gramatyce i stylu.",
+    "nl": "Schrijf teksten en krijg AI-feedback over grammatica en stijl.", "ja": "文章を書いて、文法と文体についてAIのフィードバックを受けましょう。", "ko": "글을 쓰고 문법과 문체에 대한 AI 피드백을 받으세요.",
+    "zh": "撰写文本并获得关于语法和风格的 AI 反馈。", "hi": "पाठ लिखें और व्याकरण व शैली पर एआई फ़ीडबैक पाएँ।", "ar": "اكتب نصوصًا واحصل على ملاحظات الذكاء الاصطناعي حول القواعد والأسلوب.",
+    "bn": "টেক্সট লিখুন এবং ব্যাকরণ ও শৈলীতে এআই প্রতিক্রিয়া পান।", "ur": "متن لکھیں اور گرامر اور انداز پر اے آئی رائے حاصل کریں۔", "id": "Tulis teks dan dapatkan umpan balik AI tentang tata bahasa dan gaya.",
+    "tr": "Metin yaz ve dil bilgisi ile üslup hakkında yapay zeka geri bildirimi al.", "vi": "Viết văn bản và nhận phản hồi AI về ngữ pháp và văn phong.", "fa": "متن بنویسید و بازخورد هوش مصنوعی درباره گرامر و سبک بگیرید.",
+    "ro": "Scrie texte și primește feedback IA despre gramatică și stil.", "th": "เขียนข้อความและรับข้อเสนอแนะ AI เกี่ยวกับไวยากรณ์และสไตล์", "el": "Γράψε κείμενα και πάρε σχόλια AI για γραμματική και ύφος.",
+    "cs": "Piš texty a získej zpětnou vazbu AI ke gramatice a stylu.", "hu": "Írj szövegeket és kapj AI-visszajelzést a nyelvtanról és stílusról.", "sv": "Skriv texter och få AI-feedback på grammatik och stil.",
+    "he": "כתבו טקסטים וקבלו משוב בינה מלאכותית על דקדוק וסגנון.", "no": "Skriv tekster og få AI-tilbakemelding på grammatikk og stil.", "da": "Skriv tekster og få AI-feedback på grammatik og stil.",
+    "fi": "Kirjoita tekstejä ja saa tekoälypalautetta kieliopista ja tyylistä.", "bg": "Пишете текстове и получавайте ИИ обратна връзка за граматика и стил."
+  }
+}

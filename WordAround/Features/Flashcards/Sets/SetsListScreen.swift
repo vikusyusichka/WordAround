@@ -8,7 +8,7 @@ struct SetsListScreen: View {
 
     var body: some View {
         SetsListView(
-            title: "Your sets",
+            title: L10n.string("setsListYourSets"),
             actionTitle: "Create",
             sets: viewModel.userSets,
             isLoading: viewModel.isLoadingSets,

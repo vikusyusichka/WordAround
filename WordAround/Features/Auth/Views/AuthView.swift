@@ -93,11 +93,11 @@ private extension AuthView {
             }
 
             VStack(spacing: 10) {
-                Text("Welcome Back")
+                Text(L10n.string("authWelcomeBack"))
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundColor(Color(red: 0.24, green: 0.32, blue: 0.60))
 
-                Text("Sign in to continue learning")
+                Text(L10n.string("authSignInSubtitle"))
                     .font(.system(size: 17, weight: .medium, design: .rounded))
                     .foregroundColor(Color(red: 0.51, green: 0.55, blue: 0.67))
             }
@@ -108,23 +108,23 @@ private extension AuthView {
     var formSection: some View {
         VStack(spacing: 18) {
             AuthInputField(
-                title: "Email",
+                title: L10n.string("authEmail"),
                 text: $viewModel.email,
-                placeholder: "Enter your email",
+                placeholder: L10n.string("authEmailPlaceholder"),
                 systemImage: "envelope.fill"
             )
 
             AuthSecureField(
-                title: "Password",
+                title: L10n.string("authPassword"),
                 text: $viewModel.password,
-                placeholder: "Enter your password",
+                placeholder: L10n.string("authPasswordPlaceholder"),
                 systemImage: "lock.fill"
             )
 
             HStack {
                 Spacer()
 
-                Button("Forgot password?") {
+                Button(L10n.string("authForgotPassword")) {
                     Task {
                         await viewModel.resetPassword()
                     }
@@ -158,7 +158,7 @@ private extension AuthView {
                 }
             }) {
                 ZStack {
-                    Text(viewModel.isLoading ? "Signing In..." : "Sign In")
+                    Text(viewModel.isLoading ? L10n.string("authSigningIn") : L10n.string("authSignIn"))
                         .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -199,7 +199,7 @@ private extension AuthView {
                     Image(systemName: "globe")
                         .font(.system(size: 18, weight: .semibold))
 
-                    Text("Continue with Google")
+                    Text(L10n.string("authContinueWithGoogle"))
                         .font(.system(size: 18, weight: .semibold, design: .rounded))
                 }
                 .foregroundColor(.black)
@@ -220,7 +220,7 @@ private extension AuthView {
                     await viewModel.signUp()
                 }
             }) {
-                Text("Create Account")
+                Text(L10n.string("authCreateAccount"))
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(Color(red: 0.25, green: 0.56, blue: 0.97))
             }

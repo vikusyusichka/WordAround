@@ -6,6 +6,14 @@ enum GrammarIssueCategory: String, CaseIterable, Identifiable, Equatable {
     case style = "Style"
 
     var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .grammar:    return L10n.string("spkGrammar")
+        case .vocabulary: return L10n.string("spkVocabulary")
+        case .style:      return L10n.string("essayCategoryStyle")
+        }
+    }
 }
 
 struct GrammarIssue: Identifiable, Equatable {

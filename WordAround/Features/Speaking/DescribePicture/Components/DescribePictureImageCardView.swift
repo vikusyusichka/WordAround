@@ -95,7 +95,7 @@ struct DescribePictureImageCardView: View {
             HStack(spacing: 6) {
                 Image(systemName: "arrow.triangle.2.circlepath")
                     .font(.system(size: 13, weight: .bold))
-                Text("New Picture")
+                Text(L10n.string("spkNewPicture"))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
             }
             .foregroundColor(.white)

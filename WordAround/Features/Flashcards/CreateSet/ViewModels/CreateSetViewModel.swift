@@ -60,7 +60,7 @@ final class CreateSetViewModel: ObservableObject {
             guard let data = try await item.loadTransferable(type: Data.self),
                   let image = UIImage(data: data),
                   let index = draft.cards.firstIndex(where: { $0.id == cardID }) else {
-                errorMessage = "Could not load selected image."
+                errorMessage = L10n.string("createSetCouldNotLoadImage")
                 return
             }
 

@@ -159,7 +159,7 @@ struct ReadingLibraryItemCardView: View {
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("More options")
+                .accessibilityLabel(L10n.string("readingMoreOptions"))
             }
         }
     }

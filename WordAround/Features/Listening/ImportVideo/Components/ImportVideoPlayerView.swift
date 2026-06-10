@@ -40,7 +40,7 @@ struct ImportVideoPlayerView: View {
 
             if subtitlesEnabled {
                 if !hasSubtitles {
-                    Text("No subtitles available for this video.")
+                    Text(L10n.string("listeningNoSubtitles"))
                         .font(.system(size: 13, weight: .medium, design: .rounded))
                         .foregroundColor(AppColors.mutedText)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -92,7 +92,7 @@ struct ImportVideoPlayerView: View {
                     .fill(accent.opacity(0.05))
             )
 
-            Text("Tap a word to translate it.")
+            Text(L10n.string("listeningTapWordTranslate"))
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.mutedText)
         }

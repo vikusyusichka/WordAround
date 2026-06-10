@@ -53,7 +53,7 @@ struct StorySessionView: View {
                     accent: accent,
                     accentDark: accentDark,
                     readAgainTitle: viewModel.postResultPrimaryActionTitle,
-                    backButtonTitle: "Back to Library",
+                    backButtonTitle: L10n.string("readingBackToLibrary"),
                     onReadAgain: {
                         let route = viewModel.handlePostResultPrimaryAction()
                         if route == .exitToLibrary {
@@ -76,7 +76,7 @@ struct StorySessionView: View {
             ProgressView()
                 .scaleEffect(1.3)
                 .tint(accent)
-            Text(viewModel.session?.hasGeneratedContent == true ? "Loading story…" : "Creating your story…")
+            Text(viewModel.session?.hasGeneratedContent == true ? L10n.string("storyLoading") : L10n.string("storyCreating"))
                 .font(.system(size: 16, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
         }
@@ -88,8 +88,8 @@ struct StorySessionView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     ReadingSetupHeaderView(
-                        title: "Story Mode",
-                        subtitle: "Something went wrong.",
+                        title: L10n.string("storyModeTitle"),
+                        subtitle: L10n.string("storyModeError"),
                         accent: accent,
                         accentDark: accentDark,
                         onBack: onExitToReading
@@ -103,7 +103,7 @@ struct StorySessionView: View {
             }
 
             ReadingPrimaryButton(
-                title: "Try Again",
+                title: L10n.string("commonTryAgain"),
                 icon: "arrow.clockwise",
                 accent: accent,
                 accentDark: accentDark
@@ -120,7 +120,7 @@ struct StorySessionView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     ReadingSetupHeaderView(
-                        title: "Story Mode",
+                        title: L10n.string("storyModeTitle"),
                         subtitle: sessionSubtitle,
                         accent: accent,
                         accentDark: accentDark,
@@ -221,12 +221,12 @@ struct StorySessionView: View {
 
     private var choiceSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("What happens next?")
+            Text(L10n.string("storyWhatHappensNext"))
                 .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
 
             if viewModel.availableChoices.isEmpty {
-                Text("No choices are available for this chapter yet. Try again in a moment.")
+                Text(L10n.string("storyNoChoicesYet"))
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .padding(14)
@@ -258,7 +258,7 @@ struct StorySessionView: View {
                         onExitToReading()
                     }
                 } label: {
-                    Text("End Story")
+                    Text(L10n.string("storyEndStory"))
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                         .foregroundColor(accentDark)
                         .frame(maxWidth: .infinity)
@@ -278,7 +278,7 @@ struct StorySessionView: View {
         case .reading:
             if viewModel.isStoryCompleted {
                 ReadingPrimaryButton(
-                    title: "Back to Library",
+                    title: L10n.string("readingBackToLibrary"),
                     icon: "books.vertical.fill",
                     accent: accent,
                     accentDark: accentDark,
@@ -289,7 +289,7 @@ struct StorySessionView: View {
                 )
             } else {
                 ReadingPrimaryButton(
-                    title: viewModel.hasQuestions ? "Start Questions" : "Finish",
+                    title: viewModel.hasQuestions ? L10n.string("readingStartQuestions") : L10n.string("commonFinish"),
                     icon: viewModel.hasQuestions ? "questionmark.circle.fill" : "checkmark",
                     accent: accent,
                     accentDark: accentDark
@@ -304,7 +304,7 @@ struct StorySessionView: View {
             }
         case .questions:
             ReadingPrimaryButton(
-                title: viewModel.isLastQuestion ? "Finish" : "Next",
+                title: viewModel.isLastQuestion ? L10n.string("commonFinish") : L10n.string("commonNext"),
                 icon: viewModel.isLastQuestion ? "checkmark" : "arrow.right",
                 accent: accent,
                 accentDark: accentDark
@@ -324,7 +324,7 @@ struct StorySessionView: View {
         case .results:
             if viewModel.isShortStory || viewModel.isStoryCompleted {
                 ReadingPrimaryButton(
-                    title: "Back to Library",
+                    title: L10n.string("readingBackToLibrary"),
                     icon: "books.vertical.fill",
                     accent: accent,
                     accentDark: accentDark
@@ -334,7 +334,7 @@ struct StorySessionView: View {
                 }
             } else if viewModel.branches {
                 ReadingPrimaryButton(
-                    title: viewModel.isGeneratingNextChapter ? "Generating next chapter…" : "Choose What Happens Next",
+                    title: viewModel.isGeneratingNextChapter ? L10n.string("storyGeneratingChapter") : L10n.string("storyChooseNext"),
                     icon: "arrow.triangle.branch",
                     accent: accent,
                     accentDark: accentDark
@@ -377,7 +377,7 @@ struct StorySessionView: View {
     }
 
     private var emptyQuestionsNotice: some View {
-        Text("This chapter is too short for generated questions. You can still finish the chapter.")
+        Text(L10n.string("storyEmptyQuestionsNotice"))
             .font(.system(size: 13, weight: .medium, design: .rounded))
             .foregroundColor(AppColors.textSecondary)
             .padding(14)

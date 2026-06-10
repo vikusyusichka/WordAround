@@ -76,9 +76,9 @@ struct GrammarTemplatePreviewView: View {
     private var metaRow: some View {
         HStack(spacing: 8) {
             badge(text: difficulty, systemImage: "graduationcap.fill", tint: tint)
-            badge(text: "\(estimatedMinutes) min", systemImage: "clock.fill", tint: AppColors.textSecondary)
+            badge(text: String(format: L10n.string("templatePreviewMinFmt"), estimatedMinutes), systemImage: "clock.fill", tint: AppColors.textSecondary)
             if case .topic(let topic) = kind {
-                badge(text: "\(topic.noteTemplates.count) notes", systemImage: "doc.text.fill", tint: AppColors.primaryBlue)
+                badge(text: String(format: L10n.string("templatePreviewNotesFmt"), topic.noteTemplates.count), systemImage: "doc.text.fill", tint: AppColors.primaryBlue)
             }
             Spacer(minLength: 0)
         }
@@ -100,7 +100,7 @@ struct GrammarTemplatePreviewView: View {
 
     private func includedBlocksSection(_ blocks: [GrammarNoteBlock]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionLabel("Included blocks (\(blocks.count))")
+            sectionLabel(String(format: L10n.string("templatePreviewBlocksFmt"), blocks.count))
             ForEach(blocks, id: \.id) { block in
                 blockRow(block)
             }
@@ -143,7 +143,7 @@ struct GrammarTemplatePreviewView: View {
 
     private func includedNotesSection(_ notes: [GrammarNoteTemplate]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionLabel("Included notes (\(notes.count))")
+            sectionLabel(String(format: L10n.string("templatePreviewNotesIncludedFmt"), notes.count))
             ForEach(notes) { note in
                 HStack(alignment: .top, spacing: 12) {
                     Image(systemName: note.noteType.systemImage)
@@ -174,7 +174,7 @@ struct GrammarTemplatePreviewView: View {
 
     private var useTemplateButton: some View {
         Button(action: onUse) {
-            Text("Use Template")
+            Text(L10n.string("templatePreviewUseButton"))
                 .font(.system(size: 15, weight: .black, design: .rounded))
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)

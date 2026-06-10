@@ -56,7 +56,7 @@ struct WriteWordsExerciseCardView: View {
             Button {
                 viewModel.attemptNext()
             } label: {
-                Text("Next")
+                Text(L10n.string("commonNext"))
                     .font(.system(size: LayoutConstants.Typography.body(metrics), weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -75,7 +75,7 @@ struct WriteWordsExerciseCardView: View {
             .opacity(viewModel.isInteractionLocked ? 0.58 : 1)
 
             HStack(spacing: LayoutConstants.WriteWords.secondaryButtonSpacing(metrics)) {
-                secondaryButton(title: "Hint", icon: "lightbulb") {
+                secondaryButton(title: L10n.string("essayHint"), icon: "lightbulb") {
                     viewModel.revealNextHint()
                 }
                 secondaryButton(title: "Skip", icon: "forward.end") {
@@ -103,7 +103,7 @@ struct WriteWordsExerciseCardView: View {
 
             switch viewModel.validationState {
             case .correct:
-                Text("Correct!")
+                Text(L10n.string("writeWordsCorrect"))
                     .font(.system(size: captionSize, weight: .bold, design: .rounded))
                     .foregroundColor(Color(red: 0.21, green: 0.57, blue: 0.30))
                     .padding(.horizontal, hPad)
@@ -113,7 +113,7 @@ struct WriteWordsExerciseCardView: View {
                     .transition(.scale(scale: 0.85).combined(with: .opacity))
 
             case .incorrect:
-                Text("Incorrect — try again or skip")
+                Text(L10n.string("writeWordsIncorrect"))
                     .font(.system(size: captionSize, weight: .bold, design: .rounded))
                     .foregroundColor(Color(red: 0.78, green: 0.15, blue: 0.18))
                     .padding(.horizontal, hPad)

@@ -8,7 +8,7 @@ struct CreateSetColorPickerView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.createSetColorPickerSpacing) {
-            CreateSetSectionLabel(text: "Choose color", theme: theme)
+            CreateSetSectionLabel(text: L10n.string("setsListChooseColor"), theme: theme)
 
             HStack {
                 ForEach(colors) { setColor in

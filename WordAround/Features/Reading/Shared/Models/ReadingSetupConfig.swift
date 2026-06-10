@@ -38,80 +38,86 @@ struct ReadingSetupConfig {
 
 extension ReadingSetupConfig {
 
-    static let readingFromSets = ReadingSetupConfig(
-        modeID: "reading-from-sets",
-        title: "Reading From Sets",
-        subtitle: "Build a reading from your flashcard sets.",
-        accent: AppColors.orangeAccent,
-        accentDark: AppColors.orangeTitle,
-        previewTitle: "Reading From Set",
-        previewSubtitle: "A reading built from your flashcard vocabulary.",
-        previewIcon: "rectangle.stack.fill",
-        ctaTitle: "Create From Set",
-        ctaIcon: "rectangle.stack.fill",
-        sections: [],
-        chips: { _, _ in [] }
-    )
+    static var readingFromSets: ReadingSetupConfig {
+        ReadingSetupConfig(
+            modeID: "reading-from-sets",
+            title: L10n.string("rfsTitle"),
+            subtitle: L10n.string("rfsHeroSubtitle"),
+            accent: AppColors.orangeAccent,
+            accentDark: AppColors.orangeTitle,
+            previewTitle: L10n.string("rfsPreviewTitle"),
+            previewSubtitle: L10n.string("rfsPreviewSubtitle"),
+            previewIcon: "rectangle.stack.fill",
+            ctaTitle: L10n.string("rfsCreateFromSet"),
+            ctaIcon: "rectangle.stack.fill",
+            sections: [],
+            chips: { _, _ in [] }
+        )
+    }
 
-    static let storyMode = ReadingSetupConfig(
-        modeID: "story-mode",
-        title: "Story Mode",
-        subtitle: "Read short stories that adapt to you.",
-        accent: Color(red: 0.93, green: 0.40, blue: 0.60),
-        accentDark: Color(red: 0.62, green: 0.18, blue: 0.42),
-        previewTitle: "Story Mode",
-        previewSubtitle: "Read a short story and continue through choices.",
-        previewIcon: "books.vertical.fill",
-        ctaTitle: "Start Story",
-        ctaIcon: "books.vertical.fill",
-        sections: [
-            Section(id: "type", title: "Story Type",
-                    kind: .segmented(options: ReadingStoryType.titles, columns: 2, defaultSelection: ReadingStoryType.adventure.title)),
-            Section(id: "length", title: "Story Length",
-                    kind: .segmented(options: ReadingStoryLength.titles, columns: 0, defaultSelection: ReadingStoryLength.shortStory.title)),
-            Section(id: "difficulty", title: "Difficulty",
-                    kind: .segmented(options: ReadingLevel.titles, columns: 0, defaultSelection: ReadingLevel.b1.title)),
-            Section(id: "assistance", title: "Reading assistance",
-                    kind: .toggles([
-                        ToggleSpec(id: "translationOnTap", title: "Translate on tap", defaultOn: true),
-                        ToggleSpec(id: "highlightUnknownWords", title: "Highlight unknown words", defaultOn: true),
-                        ToggleSpec(id: "vocabularyHints", title: "Vocabulary hints", defaultOn: true),
-                        ToggleSpec(id: "readingTimer", title: "Reading timer", defaultOn: true)
-                    ])),
-        ],
-        chips: { sel, _ in
-            var chips = [sel["type"] ?? "", sel["length"] ?? "", sel["difficulty"] ?? ""]
-            if ReadingStoryLength.allCases.first(where: { $0.title == sel["length"] }) != .shortStory {
-                chips.append("Choices")
+    static var storyMode: ReadingSetupConfig {
+        ReadingSetupConfig(
+            modeID: "story-mode",
+            title: L10n.string("storyModeTitle"),
+            subtitle: L10n.string("readingStoryShortSubtitle"),
+            accent: Color(red: 0.93, green: 0.40, blue: 0.60),
+            accentDark: Color(red: 0.62, green: 0.18, blue: 0.42),
+            previewTitle: L10n.string("storyModeTitle"),
+            previewSubtitle: L10n.string("readingStoryPreviewSub"),
+            previewIcon: "books.vertical.fill",
+            ctaTitle: L10n.string("readingStartStory"),
+            ctaIcon: "books.vertical.fill",
+            sections: [
+                Section(id: "type", title: L10n.string("readingStorySectionType"),
+                        kind: .segmented(options: ReadingStoryType.titles, columns: 2, defaultSelection: ReadingStoryType.adventure.title)),
+                Section(id: "length", title: L10n.string("readingStorySectionLength"),
+                        kind: .segmented(options: ReadingStoryLength.titles, columns: 0, defaultSelection: ReadingStoryLength.shortStory.title)),
+                Section(id: "difficulty", title: L10n.string("rfsDifficulty"),
+                        kind: .segmented(options: ReadingLevel.titles, columns: 0, defaultSelection: ReadingLevel.b1.title)),
+                Section(id: "assistance", title: L10n.string("readingAssistanceSection"),
+                        kind: .toggles([
+                            ToggleSpec(id: "translationOnTap", title: L10n.string("readingToggleTranslateOnTap"), defaultOn: true),
+                            ToggleSpec(id: "highlightUnknownWords", title: L10n.string("readingToggleHighlightUnknown"), defaultOn: true),
+                            ToggleSpec(id: "vocabularyHints", title: L10n.string("readingToggleVocabularyHints"), defaultOn: true),
+                            ToggleSpec(id: "readingTimer", title: L10n.string("readingToggleReadingTimer"), defaultOn: true)
+                        ])),
+            ],
+            chips: { sel, _ in
+                var chips = [sel["type"] ?? "", sel["length"] ?? "", sel["difficulty"] ?? ""]
+                if ReadingStoryLength.allCases.first(where: { $0.title == sel["length"] }) != .shortStory {
+                    chips.append(L10n.string("readingChipChoices"))
+                }
+                return chips
             }
-            return chips
-        }
-    )
+        )
+    }
 
-    static let speedReading = ReadingSetupConfig(
-        modeID: "speed-reading",
-        title: "Speed Reading",
-        subtitle: "Train faster reading with timed pacing.",
-        accent: Color(red: 0.95, green: 0.42, blue: 0.40),
-        accentDark: Color(red: 0.70, green: 0.16, blue: 0.18),
-        previewTitle: "Speed Reading",
-        previewSubtitle: "Train reading pace with timed practice.",
-        previewIcon: "bolt.fill",
-        ctaTitle: "Start Challenge",
-        ctaIcon: "bolt.fill",
-        sections: [
-            Section(id: "target", title: "Reading Speed Target",
-                    kind: .segmented(options: ReadingSpeedTarget.titles, columns: 2, defaultSelection: ReadingSpeedTarget.balanced.title)),
-            Section(id: "timer", title: "Timer Style",
-                    kind: .segmented(options: ReadingTimerStyle.titles, columns: 0, defaultSelection: ReadingTimerStyle.soft.title)),
-            Section(id: "length", title: "Reading Length",
-                    kind: .segmented(options: ReadingSpeedLength.titles, columns: 0, defaultSelection: ReadingSpeedLength.five.title)),
-        ],
-        chips: { sel, _ in
-            let wpm = ReadingSpeedTarget.from(title: sel["target"] ?? "").wpmTarget
-            return [sel["target"] ?? "", sel["timer"] ?? "", sel["length"] ?? "", "\(wpm) WPM target"]
-        }
-    )
+    static var speedReading: ReadingSetupConfig {
+        ReadingSetupConfig(
+            modeID: "speed-reading",
+            title: L10n.string("readingSpeedReading"),
+            subtitle: L10n.string("readingSpeedSubtitle"),
+            accent: Color(red: 0.95, green: 0.42, blue: 0.40),
+            accentDark: Color(red: 0.70, green: 0.16, blue: 0.18),
+            previewTitle: L10n.string("readingSpeedReading"),
+            previewSubtitle: L10n.string("readingSpeedPreviewSub"),
+            previewIcon: "bolt.fill",
+            ctaTitle: L10n.string("readingStartChallenge"),
+            ctaIcon: "bolt.fill",
+            sections: [
+                Section(id: "target", title: L10n.string("readingSpeedSectionTarget"),
+                        kind: .segmented(options: ReadingSpeedTarget.titles, columns: 2, defaultSelection: ReadingSpeedTarget.balanced.title)),
+                Section(id: "timer", title: L10n.string("readingSpeedSectionTimer"),
+                        kind: .segmented(options: ReadingTimerStyle.titles, columns: 0, defaultSelection: ReadingTimerStyle.soft.title)),
+                Section(id: "length", title: L10n.string("readingSpeedSectionLength"),
+                        kind: .segmented(options: ReadingSpeedLength.titles, columns: 0, defaultSelection: ReadingSpeedLength.five.title)),
+            ],
+            chips: { sel, _ in
+                let wpm = ReadingSpeedTarget.from(title: sel["target"] ?? "").wpmTarget
+                return [sel["target"] ?? "", sel["timer"] ?? "", sel["length"] ?? "", String(format: L10n.string("readingWPMTargetFmt"), wpm)]
+            }
+        )
+    }
 
     static func make(forModeID id: String) -> ReadingSetupConfig? {
         switch id {

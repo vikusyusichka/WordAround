@@ -195,8 +195,8 @@ private extension HomeView {
 
                 case .create:
                     placeholderCard(
-                        title: "Create",
-                        subtitle: "Тут буде створення нового сету."
+                        title: L10n.string("homeCreate"),
+                        subtitle: L10n.string("homeCreatePlaceholderSubtitle")
                     )
 
                 case .profile:
@@ -210,11 +210,11 @@ private extension HomeView {
 
     var dashboardContent: some View {
         VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-            sectionTitle("Daily practice")
+            sectionTitle(L10n.string("homeDailyPractice"))
 
             HomeStatsGridView(stats: viewModel.dailyStats)
 
-            sectionTitle("Continue learning")
+            sectionTitle(L10n.string("homeContinueLearning"))
 
             ContinueLearningSetCardView(
                 set: setsViewModel.continueLearningSet,
@@ -229,8 +229,8 @@ private extension HomeView {
             )
 
             SetsListView(
-                title: "Your sets",
-                actionTitle: "View all",
+                title: L10n.string("homeYourSets"),
+                actionTitle: L10n.string("commonViewAll"),
                 sets: setsViewModel.userSets,
                 isLoading: false,
                 errorMessage: nil,
@@ -246,7 +246,6 @@ private extension HomeView {
         }
     }
 }
-
 
 // MARK: - Writing
 
@@ -280,7 +279,7 @@ private extension HomeView {
     var foldersContent: some View {
         VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
             if viewModel.isLoadingFolders {
-                placeholderCard(title: "Loading", subtitle: "Loading your folders...")
+                placeholderCard(title: L10n.string("homeLoadingTitle"), subtitle: L10n.string("homeLoadingFolders"))
             } else {
                 FolderListView(
                     folders: viewModel.folders,
@@ -331,7 +330,7 @@ private extension HomeView {
     func categoryPlaceholder(for category: HomeCategory) -> some View {
         placeholderCard(
             title: category.title.capitalized,
-            subtitle: "Тут буде контент вибраної категорії."
+            subtitle: L10n.string("homeCategoryPlaceholderSubtitle")
         )
     }
 
@@ -369,8 +368,6 @@ private extension HomeView {
     var writingSetSelectionCover: some View {
         WritingSetSelectionView(sets: setsViewModel.userSets.compactMap(\.sourceSet)) { set in
             isWritingSetSelectionPresented = false
-            // Small delay lets the dismiss animation finish before the next
-            // fullScreenCover presents, preventing a visual jump on iOS.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 selectedSetForWriting = set
             }
@@ -398,7 +395,7 @@ private extension HomeView {
                 ZStack {
                     createMenuItem(
                         icon: "folder.fill",
-                        title: "Folder",
+                        title: L10n.string("homeCreateFolder"),
                         xOffset: Layout.homeCreateFolderOffset.width,
                         yOffset: Layout.homeCreateFolderOffset.height,
                         delay: 0.04
@@ -408,7 +405,7 @@ private extension HomeView {
 
                     createMenuItem(
                         icon: "square.stack.3d.up.fill",
-                        title: "Set",
+                        title: L10n.string("homeCreateSet"),
                         xOffset: Layout.homeCreateSetOffset.width,
                         yOffset: Layout.homeCreateSetOffset.height,
                         delay: 0.10
@@ -418,7 +415,7 @@ private extension HomeView {
 
                     createMenuItem(
                         icon: "doc.text.fill",
-                        title: "Text",
+                        title: L10n.string("homeCreateText"),
                         xOffset: 0,
                         yOffset: Layout.homeCreateTextOffset.height,
                         delay: 0.16
@@ -428,7 +425,7 @@ private extension HomeView {
 
                     createMenuItem(
                         icon: "waveform",
-                        title: "Audio",
+                        title: L10n.string("homeCreateAudio"),
                         xOffset: Layout.homeCreateAudioOffset.width,
                         yOffset: Layout.homeCreateSetOffset.height,
                         delay: 0.22
@@ -438,7 +435,7 @@ private extension HomeView {
 
                     createMenuItem(
                         icon: "pencil.and.scribble",
-                        title: "Essay",
+                        title: L10n.string("homeCreateEssay"),
                         xOffset: Layout.homeCreateEssayOffset.width,
                         yOffset: Layout.homeCreateFolderOffset.height,
                         delay: 0.28

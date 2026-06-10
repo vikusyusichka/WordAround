@@ -15,7 +15,7 @@ struct EssayFeedbackSectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.essayFeedbackSectionSpacing) {
             HStack {
-                Text("Grammar feedback")
+                Text(L10n.string("essayGrammarFeedback"))
                     .font(.system(size: Layout.essayFeedbackTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
@@ -60,7 +60,7 @@ struct EssayFeedbackSectionView: View {
             emptyCard(
                 icon: "text.magnifyingglass",
                 title: "No feedback yet",
-                message: "Write your essay and check grammar when it is ready."
+                message: L10n.string("essayNoFeedbackHint")
             )
 
         case .loading:

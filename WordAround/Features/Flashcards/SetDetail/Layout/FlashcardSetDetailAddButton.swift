@@ -10,7 +10,7 @@ struct FlashcardSetDetailAddButton: View {
                 Image(systemName: "plus")
                     .font(.system(size: 14, weight: .bold))
 
-                Text("Add card")
+                Text(L10n.string("flashcardAddCard"))
                     .font(.system(size: 15, weight: .semibold, design: .rounded))
             }
             .foregroundStyle(theme.titleColor)

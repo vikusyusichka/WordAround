@@ -112,10 +112,10 @@ struct PronunciationTrainerView: View {
     private var topBar: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Pronunciation Trainer")
+                Text(L10n.string("speakingModePronunciationTitle"))
                     .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
-                Text("Focus on difficult sounds and words.")
+                Text(L10n.string("speakingModePronunciationSubtitle"))
                     .font(.system(size: Layout.homeHeaderSubtitleSize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.mutedText)
                     .lineLimit(1)
@@ -204,7 +204,7 @@ struct PronunciationTrainerView: View {
             Button { viewModel.regenerateItems() } label: {
                 HStack(spacing: 6) {
                     Image(systemName: "arrow.triangle.2.circlepath").font(.system(size: 12, weight: .bold))
-                    Text("Regenerate items").font(.system(size: 13, weight: .bold, design: .rounded))
+                    Text(L10n.string("spkRegenerateItems")).font(.system(size: 13, weight: .bold, design: .rounded))
                 }
                 .foregroundColor(accent)
                 .padding(.horizontal, 12)

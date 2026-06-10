@@ -20,7 +20,7 @@ struct CreateSetCardsSectionView: View {
 
     private var titleRow: some View {
         HStack(spacing: 6) {
-            CreateSetSectionLabel(text: "Cards in this set", theme: viewModel.theme)
+            CreateSetSectionLabel(text: L10n.string("createSetCardsInSet"), theme: viewModel.theme)
 
             Text("(\(viewModel.draft.cards.count))")
                 .font(.system(size: Layout.createSetCardsTitleSize, weight: .bold))
@@ -51,7 +51,7 @@ struct CreateSetCardsSectionView: View {
                     .background(viewModel.theme.softAccent)
                     .clipShape(Circle())
 
-                Text("Add another card")
+                Text(L10n.string("createSetAddAnotherCard"))
                     .font(.system(size: Layout.createSetAddCardTextSize, weight: .bold))
                     .foregroundStyle(viewModel.theme.accent)
             }

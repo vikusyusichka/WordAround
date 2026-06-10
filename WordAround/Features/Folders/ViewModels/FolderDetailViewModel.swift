@@ -20,7 +20,7 @@ final class FolderDetailViewModel: ObservableObject {
 
     func loadSets() async {
         guard let user = Auth.auth().currentUser else {
-            errorMessage = "User is not signed in."
+            errorMessage = L10n.string("commonNotSignedIn")
             sets = []
             return
         }
@@ -54,7 +54,7 @@ final class FolderDetailViewModel: ObservableObject {
         let trimmedDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !trimmedTitle.isEmpty else {
-            errorMessage = "Folder title cannot be empty."
+            errorMessage = L10n.string("folderTitleEmpty")
             return false
         }
 

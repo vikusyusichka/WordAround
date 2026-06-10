@@ -64,7 +64,7 @@ struct ReadingSetupHeaderView: View {
     ZStack {
         AppColors.appBackground.ignoresSafeArea()
         ReadingSetupHeaderView(
-            title: "Generated Reading",
+            title: L10n.string("readingGeneratedReadingTitle"),
             subtitle: "A fresh text created for your level.",
             accent: AppColors.primaryBlue,
             accentDark: AppColors.primaryBlueDark

@@ -1,0 +1,28 @@
+{
+  "readingCharsCountFmt": {
+    "en": "%d chars", "uk": "%d символів", "es": "%d caracteres",
+    "fr": "%d caractères", "de": "%d Zeichen", "it": "%d caratteri",
+    "pt": "%d caracteres", "ru": "%d символов", "pl": "%d znaków",
+    "nl": "%d tekens", "ja": "%d 文字", "ko": "%d 자",
+    "zh": "%d 字符", "hi": "%d अक्षर", "ar": "%d حرفًا",
+    "bn": "%d অক্ষর", "ur": "%d حروف", "id": "%d karakter",
+    "tr": "%d karakter", "vi": "%d ký tự", "fa": "%d نویسه",
+    "ro": "%d caractere", "th": "%d ตัวอักษร", "el": "%d χαρακτήρες",
+    "cs": "%d znaků", "hu": "%d karakter", "sv": "%d tecken",
+    "he": "%d תווים", "no": "%d tegn", "da": "%d tegn",
+    "fi": "%d merkkiä", "bg": "%d знака"
+  },
+  "readingApproxMinFmt": {
+    "en": "~%d min", "uk": "~%d хв", "es": "~%d min",
+    "fr": "~%d min", "de": "~%d Min", "it": "~%d min",
+    "pt": "~%d min", "ru": "~%d мин", "pl": "~%d min",
+    "nl": "~%d min", "ja": "~%d 分", "ko": "~%d 분",
+    "zh": "~%d 分钟", "hi": "~%d मिनट", "ar": "~%d دقيقة",
+    "bn": "~%d মিনিট", "ur": "~%d منٹ", "id": "~%d mnt",
+    "tr": "~%d dk", "vi": "~%d phút", "fa": "~%d دقیقه",
+    "ro": "~%d min", "th": "~%d นาที", "el": "~%d λεπτά",
+    "cs": "~%d min", "hu": "~%d perc", "sv": "~%d min",
+    "he": "~%d דק'", "no": "~%d min", "da": "~%d min",
+    "fi": "~%d min", "bg": "~%d мин"
+  }
+}

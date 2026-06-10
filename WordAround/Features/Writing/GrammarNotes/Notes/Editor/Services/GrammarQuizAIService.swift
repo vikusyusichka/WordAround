@@ -2,15 +2,6 @@ import Foundation
 
 enum GrammarQuizAIConfiguration {
 
-    /// Cloudflare Worker URL that proxies Gemini.
-    ///
-    /// The iOS app stores ONLY this URL — never the Gemini API key, which
-    /// lives as a Cloudflare Worker secret (`GEMINI_API_KEY`) deployed via
-    /// `wrangler secret put GEMINI_API_KEY`.
-    ///
-    /// When the network call fails or the Worker is unreachable, the
-    /// client throws and `CreateGrammarQuizSheet` shows a friendly
-    /// "Use Smart Local Instead" button — local generation always works.
     static let endpointURL: URL? = URL(
         string: "https://wordaround-gemini-proxy.vikusyusichka-ai.workers.dev"
     )

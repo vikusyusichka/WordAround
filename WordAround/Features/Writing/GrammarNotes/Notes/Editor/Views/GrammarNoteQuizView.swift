@@ -61,11 +61,11 @@ struct GrammarNoteQuizView: View {
             .buttonStyle(.plain)
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(quizVM.activeQuiz?.title ?? "Quiz")
+                Text(quizVM.activeQuiz?.title ?? L10n.string("quizGenericTitle"))
                     .font(.system(size: Layout.value(pad: 18, phone: 15), weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryBlueDark)
                     .lineLimit(1)
-                Text("Question \(quizVM.currentQuestionIndex + 1) of \(totalCount)")
+                Text(String(format: L10n.string("quizQuestionOfFmt"), quizVM.currentQuestionIndex + 1, totalCount))
                     .font(.system(size: 11, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.textSecondary)
             }
@@ -263,7 +263,7 @@ struct GrammarNoteQuizView: View {
     private func textInputArea(_ q: GrammarQuizQuestion) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             TextField(
-                q.type == .fillGap ? "Type the missing word" : "Type your answer",
+                L10n.string(q.type == .fillGap ? "quizPhFillGap" : "quizPhShortAnswer"),
                 text: $currentInput,
                 axis: .vertical
             )
@@ -291,14 +291,14 @@ struct GrammarNoteQuizView: View {
                 Image(systemName: isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundStyle(isCorrect ? Color.green : CreateSetTheme.red.accent)
-                Text(isCorrect ? "Correct!" : "Incorrect")
+                Text(L10n.string(isCorrect ? "quizFeedbackCorrect" : "quizFeedbackIncorrect"))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(isCorrect ? Color.green : CreateSetTheme.red.accent)
             }
 
             if !isCorrect {
                 HStack(alignment: .top, spacing: 6) {
-                    Text("Correct answer:")
+                    Text(L10n.string("quizCorrectAnswerLabel"))
                         .font(.system(size: 12, weight: .bold, design: .rounded))
                         .foregroundStyle(AppColors.textSecondary)
                     Text(q.correctAnswer)
@@ -326,7 +326,7 @@ struct GrammarNoteQuizView: View {
         Button {
             if let q = question { submitAnswer(q) }
         } label: {
-            Text("Submit Answer")
+            Text(L10n.string("quizSubmitButton"))
                 .font(.system(size: 15, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)
@@ -352,7 +352,7 @@ struct GrammarNoteQuizView: View {
             }
         } label: {
             HStack(spacing: 8) {
-                Text(quizVM.isLastQuestion ? "Finish Quiz" : "Next Question")
+                Text(L10n.string(quizVM.isLastQuestion ? "quizFinishButton" : "quizNextButton"))
                 Image(systemName: quizVM.isLastQuestion ? "flag.fill" : "chevron.right")
             }
             .font(.system(size: 15, weight: .bold, design: .rounded))

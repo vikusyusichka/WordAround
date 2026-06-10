@@ -8,40 +8,42 @@ struct ListeningMode: Identifiable {
     let accentColor: Color
     let blobColor: Color
 
-    static let allModes: [ListeningMode] = [
-        ListeningMode(
-            id: "listen-from-text",
-            title: "Listen from Text",
-            subtitle: "Paste text, listen to it, and check your understanding.",
-            systemImage: "headphones",
-            accentColor: ListeningTheme.listenFromTextAccent,
-            blobColor: ListeningTheme.listenFromTextBlob
-        ),
-        ListeningMode(
-            id: "import-audio",
-            title: "Import Audio",
-            subtitle: "Upload your own audio and turn it into listening practice.",
-            systemImage: "waveform.badge.plus",
-            accentColor: ListeningTheme.importAudioAccent,
-            blobColor: ListeningTheme.importAudioBlob
-        ),
-        ListeningMode(
-            id: "import-video",
-            title: "Import Video",
-            subtitle: "Upload a video, get subtitles, and practice with questions.",
-            systemImage: "film.stack",
-            accentColor: ListeningTheme.importVideoAccent,
-            blobColor: ListeningTheme.importVideoBlob
-        ),
-        ListeningMode(
-            id: "saved-practice",
-            title: "Saved Practice",
-            subtitle: "Continue previous sessions and review mistakes.",
-            systemImage: "bookmark.fill",
-            accentColor: ListeningTheme.savedPracticeAccent,
-            blobColor: ListeningTheme.savedPracticeBlob
-        )
-    ]
+    static var allModes: [ListeningMode] {
+        [
+            ListeningMode(
+                id: "listen-from-text",
+                title: L10n.string("listeningModeTextTitle"),
+                subtitle: L10n.string("listeningModeTextSubtitle"),
+                systemImage: "headphones",
+                accentColor: ListeningTheme.listenFromTextAccent,
+                blobColor: ListeningTheme.listenFromTextBlob
+            ),
+            ListeningMode(
+                id: "import-audio",
+                title: L10n.string("listeningModeAudioTitle"),
+                subtitle: L10n.string("listeningModeAudioSubtitle"),
+                systemImage: "waveform.badge.plus",
+                accentColor: ListeningTheme.importAudioAccent,
+                blobColor: ListeningTheme.importAudioBlob
+            ),
+            ListeningMode(
+                id: "import-video",
+                title: L10n.string("listeningModeVideoTitle"),
+                subtitle: L10n.string("listeningModeVideoSubtitle"),
+                systemImage: "film.stack",
+                accentColor: ListeningTheme.importVideoAccent,
+                blobColor: ListeningTheme.importVideoBlob
+            ),
+            ListeningMode(
+                id: "saved-practice",
+                title: L10n.string("listeningModeSavedTitle"),
+                subtitle: L10n.string("listeningModeSavedSubtitle"),
+                systemImage: "bookmark.fill",
+                accentColor: ListeningTheme.savedPracticeAccent,
+                blobColor: ListeningTheme.savedPracticeBlob
+            )
+        ]
+    }
 
     var chipTitle: String { title }
 }

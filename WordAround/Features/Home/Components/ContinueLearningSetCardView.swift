@@ -1,11 +1,5 @@
 import SwiftUI
 
-/// Redesigned "Continue learning" tile.
-///
-/// Shows the most relevant flashcard set (chosen by `SetsListViewModel`) with a
-/// progress bar and a Continue action, or a calm empty state when the user has
-/// no sets yet. Blue is the Home accent throughout; the whole card is the tap
-/// target so tapping anywhere — or the Continue label — opens the set.
 struct ContinueLearningSetCardView: View {
     let set: HomeSetPreviewItem?
     let onContinue: () -> Void
@@ -54,7 +48,7 @@ struct ContinueLearningSetCardView: View {
 
     private func progressSection(_ set: HomeSetPreviewItem) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("\(set.currentValue) / \(set.totalValue) cards")
+            Text("\(set.currentValue) / \(set.totalValue) \(L10n.string("commonCards"))")
                 .font(.system(size: Layout.homeContinueProgressTextSize, weight: .semibold, design: .rounded))
                 .foregroundColor(set.subtitleColor)
 
@@ -76,11 +70,9 @@ struct ContinueLearningSetCardView: View {
         .frame(height: Layout.homeContinueProgressBarHeight)
     }
 
-    /// Visual only — the enclosing card Button drives `onContinue`, so this is a
-    /// styled label (avoids a button-inside-button hit-testing conflict).
     private func continueLabel(_ accent: Color) -> some View {
         HStack(spacing: 8) {
-            Text("Continue")
+            Text(L10n.string("commonContinue"))
                 .font(.system(size: Layout.homeContinueButtonFontSize, weight: .bold, design: .rounded))
 
             Image(systemName: "arrow.right")
@@ -113,18 +105,18 @@ struct ContinueLearningSetCardView: View {
             }
 
             VStack(spacing: 4) {
-                Text("No sets yet")
+                Text(L10n.string("homeNoSetsYet"))
                     .font(.system(size: Layout.homeContinueTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(AppColors.primaryBlueDark)
 
-                Text("Create your first set to start learning.")
+                Text(L10n.string("homeCreateFirstSetHint"))
                     .font(.system(size: Layout.homeContinueMetaSize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.textSecondary)
                     .multilineTextAlignment(.center)
             }
 
             Button(action: onCreate) {
-                Text("Create first set")
+                Text(L10n.string("homeCreateFirstSetCTA"))
                     .font(.system(size: Layout.homeContinueButtonFontSize, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                     .padding(.horizontal, 24)
@@ -144,8 +136,6 @@ struct ContinueLearningSetCardView: View {
 
     // MARK: - Shared chrome
 
-    /// Mirrors the set's own theme: a soft-accent tile with the accent-coloured
-    /// icon, matching how the set looks elsewhere in the app.
     private func iconChip(_ set: HomeSetPreviewItem) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: Layout.homeContinueIconCornerRadius, style: .continuous)
@@ -162,7 +152,7 @@ struct ContinueLearningSetCardView: View {
     }
 
     private func flashcardsChip(_ accent: Color) -> some View {
-        Text("Flashcards")
+        Text(L10n.string("categoryFlashcards"))
             .font(.system(size: Layout.homeContinueChipSize, weight: .bold, design: .rounded))
             .foregroundColor(accent)
             .padding(.horizontal, 10)

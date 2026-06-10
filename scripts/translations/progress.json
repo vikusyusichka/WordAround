@@ -1,0 +1,67 @@
+{
+  "progressToday": {
+    "en": "Today progress", "uk": "Прогрес сьогодні", "es": "Progreso de hoy",
+    "fr": "Progression du jour", "de": "Heutiger Fortschritt", "it": "Progresso di oggi",
+    "pt": "Progresso de hoje", "ru": "Прогресс сегодня", "pl": "Dzisiejszy postęp",
+    "nl": "Voortgang vandaag", "ja": "今日の進捗", "ko": "오늘의 진행",
+    "zh": "今日进度", "hi": "आज की प्रगति", "ar": "تقدم اليوم",
+    "bn": "আজকের অগ্রগতি", "ur": "آج کی پیش رفت", "id": "Kemajuan hari ini",
+    "tr": "Bugünkü ilerleme", "vi": "Tiến độ hôm nay", "fa": "پیشرفت امروز",
+    "ro": "Progresul de azi", "th": "ความคืบหน้าวันนี้", "el": "Πρόοδος σήμερα",
+    "cs": "Dnešní pokrok", "hu": "Mai haladás", "sv": "Dagens framsteg",
+    "he": "התקדמות היום", "no": "Dagens fremgang", "da": "Dagens fremskridt",
+    "fi": "Tämän päivän edistyminen", "bg": "Днешен напредък"
+  },
+  "progressOfReading": {
+    "en": "of reading practice", "uk": "практики читання", "es": "de práctica de lectura",
+    "fr": "de pratique de lecture", "de": "Lesepraxis", "it": "di pratica di lettura",
+    "pt": "de prática de leitura", "ru": "практики чтения", "pl": "ćwiczeń czytania",
+    "nl": "leesoefening", "ja": "のリーディング練習", "ko": "읽기 연습",
+    "zh": "的阅读练习", "hi": "पठन अभ्यास", "ar": "من تدريب القراءة",
+    "bn": "পড়ার অনুশীলন", "ur": "پڑھنے کی مشق", "id": "latihan membaca",
+    "tr": "okuma pratiği", "vi": "luyện đọc", "fa": "تمرین خواندن",
+    "ro": "de practică de citire", "th": "ของการฝึกอ่าน", "el": "εξάσκησης ανάγνωσης",
+    "cs": "procvičování čtení", "hu": "olvasásgyakorlás", "sv": "lässträning",
+    "he": "של תרגול קריאה", "no": "leseøving", "da": "læseøvelse",
+    "fi": "lukuharjoitusta", "bg": "практика по четене"
+  },
+  "progressOfListening": {
+    "en": "of listening practice", "uk": "практики слухання", "es": "de práctica de escucha",
+    "fr": "de pratique d'écoute", "de": "Hörpraxis", "it": "di pratica di ascolto",
+    "pt": "de prática de escuta", "ru": "практики слушания", "pl": "ćwiczeń słuchania",
+    "nl": "luisteroefening", "ja": "のリスニング練習", "ko": "듣기 연습",
+    "zh": "的听力练习", "hi": "सुनने का अभ्यास", "ar": "من تدريب الاستماع",
+    "bn": "শোনার অনুশীলন", "ur": "سننے کی مشق", "id": "latihan menyimak",
+    "tr": "dinleme pratiği", "vi": "luyện nghe", "fa": "تمرین شنیدن",
+    "ro": "de practică de ascultare", "th": "ของการฝึกฟัง", "el": "εξάσκησης ακρόασης",
+    "cs": "procvičování poslechu", "hu": "hallgatásgyakorlás", "sv": "lyssningsträning",
+    "he": "של תרגול האזנה", "no": "lytteøving", "da": "lytteøvelse",
+    "fi": "kuunteluharjoitusta", "bg": "практика по слушане"
+  },
+  "progressOfSpeaking": {
+    "en": "of speaking practice", "uk": "практики говоріння", "es": "de práctica de habla",
+    "fr": "de pratique orale", "de": "Sprechpraxis", "it": "di pratica di conversazione",
+    "pt": "de prática de fala", "ru": "практики говорения", "pl": "ćwiczeń mówienia",
+    "nl": "spreekoefening", "ja": "のスピーキング練習", "ko": "말하기 연습",
+    "zh": "的口语练习", "hi": "बोलने का अभ्यास", "ar": "من تدريب التحدث",
+    "bn": "কথা বলার অনুশীলন", "ur": "بولنے کی مشق", "id": "latihan berbicara",
+    "tr": "konuşma pratiği", "vi": "luyện nói", "fa": "تمرین گفتار",
+    "ro": "de practică de vorbire", "th": "ของการฝึกพูด", "el": "εξάσκησης ομιλίας",
+    "cs": "procvičování mluvení", "hu": "beszédgyakorlás", "sv": "talträning",
+    "he": "של תרגול דיבור", "no": "taleøving", "da": "taleøvelse",
+    "fi": "puheharjoitusta", "bg": "практика по говорене"
+  },
+  "progressOfWriting": {
+    "en": "of writing practice", "uk": "практики письма", "es": "de práctica de escritura",
+    "fr": "de pratique d'écriture", "de": "Schreibpraxis", "it": "di pratica di scrittura",
+    "pt": "de prática de escrita", "ru": "практики письма", "pl": "ćwiczeń pisania",
+    "nl": "schrijfoefening", "ja": "のライティング練習", "ko": "쓰기 연습",
+    "zh": "的写作练习", "hi": "लेखन अभ्यास", "ar": "من تدريب الكتابة",
+    "bn": "লেখার অনুশীলন", "ur": "لکھنے کی مشق", "id": "latihan menulis",
+    "tr": "yazma pratiği", "vi": "luyện viết", "fa": "تمرین نوشتن",
+    "ro": "de practică de scriere", "th": "ของการฝึกเขียน", "el": "εξάσκησης γραφής",
+    "cs": "procvičování psaní", "hu": "írásgyakorlás", "sv": "skrivträning",
+    "he": "של תרגול כתיבה", "no": "skriveøving", "da": "skriveøvelse",
+    "fi": "kirjoitusharjoitusta", "bg": "практика по писане"
+  }
+}

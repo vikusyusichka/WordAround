@@ -54,7 +54,7 @@ struct FlashcardSetDetailCardRowView: View, Equatable {
     }
 
     private var exampleRow: some View {
-        Text("Example: \(card.example)")
+        Text(String(format: L10n.string("flashcardExampleFormat"), card.example))
             .font(.system(size: Layout.flashcardDetailRowExampleSize, weight: .medium, design: .rounded))
             .foregroundStyle(theme.accent.opacity(0.8)).lineLimit(2).minimumScaleFactor(0.75)
             .padding(.vertical, 8).padding(.horizontal, 14)

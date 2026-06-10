@@ -56,7 +56,7 @@ struct ImportAudioProcessingView: View {
     private var progressState: some View {
         Group {
                 VStack(spacing: 20) {
-                    Text("Preparing your listening practice")
+                    Text(L10n.string("listeningPreparingAudio"))
                         .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                         .foregroundColor(accentDark)
                         .multilineTextAlignment(.center)
@@ -114,7 +114,7 @@ struct ImportAudioProcessingView: View {
                     .foregroundColor(Color(red: 0.95, green: 0.42, blue: 0.40))
             }
 
-            Text("We couldn't prepare this audio")
+            Text(L10n.string("listeningAudioFailed"))
                 .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
                 .multilineTextAlignment(.center)
@@ -133,7 +133,7 @@ struct ImportAudioProcessingView: View {
                 ) { viewModel.retry() }
 
                 Button { onExitToSetup?() } label: {
-                    Text("Choose another file")
+                    Text(L10n.string("listeningChooseAnotherFile"))
                         .font(.system(size: 15, weight: .bold, design: .rounded))
                         .foregroundColor(accentDark)
                         .frame(maxWidth: .infinity)

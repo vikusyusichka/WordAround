@@ -25,15 +25,15 @@ struct PronunciationTrainerSetupView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
                     SpeakingSetupTopBar(
-                        title: "Pronunciation Trainer",
-                        subtitle: "Focus on difficult sounds and words.",
+                        title: L10n.string("spkPronunciationTrainer"),
+                        subtitle: L10n.string("spkPronunciationTrainerSubtitle"),
                         accent: accent,
                         accentDark: accentDark,
                         onBack: { dismiss() }
                     )
                     .padding(.bottom, 4)
 
-                    SpeakingSetupSectionTitle("Language", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLanguage"), accentDark: accentDark)
                     LanguageSelectorView(
                         selectedLanguage: selectedLanguage,
                         onSelect: { selectedLanguage = $0 },
@@ -41,7 +41,7 @@ struct PronunciationTrainerSetupView: View {
                         accentDark: accentDark
                     )
 
-                    SpeakingSetupSectionTitle("Level", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionLevel"), accentDark: accentDark)
                     DifficultySelectorView(
                         selectedDifficulty: selectedLevel,
                         onSelect: { selectedLevel = $0 },
@@ -49,13 +49,13 @@ struct PronunciationTrainerSetupView: View {
                         accentDark: accentDark
                     )
 
-                    SpeakingSetupSectionTitle("Difficulty", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionDifficulty"), accentDark: accentDark)
                     difficultyPicker
 
-                    SpeakingSetupSectionTitle("Focus area", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("spkSectionFocusArea"), accentDark: accentDark)
                     focusGrid
 
-                    SpeakingSetupSectionTitle("Preview", accentDark: accentDark)
+                    SpeakingSetupSectionTitle(L10n.string("commonPreview"), accentDark: accentDark)
                     previewCard
 
                     Spacer().frame(height: Layout.convSetupStartButtonHeight + 32)
@@ -68,7 +68,7 @@ struct PronunciationTrainerSetupView: View {
             }
 
             SpeakingSetupStartButton(
-                title: "Start Training",
+                title: L10n.string("spkStartTraining"),
                 icon: "waveform",
                 accent: accent,
                 accentDark: accentDark,
@@ -168,7 +168,7 @@ struct PronunciationTrainerSetupView: View {
                     Text(sample.text)
                         .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundColor(accentDark)
-                    Text("Sample item · \(selectedLanguage.title) · \(selectedDifficulty.title)")
+                    Text(String(format: L10n.string("spkSampleItemFmt"), selectedLanguage.title, selectedDifficulty.title))
                         .font(.system(size: 12, weight: .medium, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                 }

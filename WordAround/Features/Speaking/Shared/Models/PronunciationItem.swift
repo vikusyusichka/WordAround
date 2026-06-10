@@ -1,10 +1,10 @@
 import Foundation
 
 enum PronunciationItemType: String, Equatable {
-    case word          // a single difficult word
-    case minimalPair   // two contrasting words "ship / sheep"
-    case phrase        // short sound-focused phrase (<= 5 words)
-    case sound         // isolated sound / letter combination
+    case word
+    case minimalPair
+    case phrase
+    case sound
 
     var label: String {
         switch self {

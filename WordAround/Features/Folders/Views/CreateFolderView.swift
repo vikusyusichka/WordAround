@@ -44,11 +44,11 @@ struct CreateFolderView: View {
                         .shadow(color: viewModel.theme.shadowColor, radius: 10, x: 0, y: 6)
                 }
 
-                Text("Create Folder")
+                Text(L10n.string("folderCreateTitle"))
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundColor(viewModel.theme.titleColor)
 
-                Text("Organize your flashcard sets")
+                Text(L10n.string("folderCreateSubtitle"))
                     .font(.system(size: 16, weight: .medium, design: .rounded))
                     .foregroundColor(viewModel.theme.mutedTextColor)
             }
@@ -71,7 +71,7 @@ struct CreateFolderView: View {
 
     private var formCard: some View {
         VStack(alignment: .leading, spacing: 20) {
-            fieldTitle("Folder name")
+            fieldTitle(L10n.string("folderNameField"))
 
             TextField("e.g. Languages", text: $viewModel.title)
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
@@ -87,7 +87,7 @@ struct CreateFolderView: View {
                 )
 
             HStack(spacing: 4) {
-                fieldTitle("Description")
+                fieldTitle(L10n.string("folderDescField"))
 
                 Text("(optional)")
                     .font(.system(size: 14, weight: .medium, design: .rounded))
@@ -116,7 +116,7 @@ struct CreateFolderView: View {
                     .padding(.bottom, 10)
             }
 
-            fieldTitle("Choose color")
+            fieldTitle(L10n.string("folderChooseColor"))
 
             HStack(spacing: 18) {
                 ForEach(viewModel.availableColors) { color in
@@ -154,13 +154,13 @@ struct CreateFolderView: View {
 
     private var previewCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Preview")
+            Text(L10n.string("commonPreview"))
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundColor(viewModel.theme.mutedTextColor)
                 .frame(maxWidth: .infinity, alignment: .center)
 
             FolderCardView(
-                title: viewModel.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "New Folder" : viewModel.title,
+                title: viewModel.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? L10n.string("folderNewFolderPlaceholder") : viewModel.title,
                 setsCount: 0,
                 colorHex: viewModel.selectedColor.hex
             )
@@ -180,7 +180,7 @@ struct CreateFolderView: View {
                     ProgressView()
                         .tint(.white)
                 } else {
-                    Text("Create Folder")
+                    Text(L10n.string("folderCreateTitle"))
                         .font(.system(size: 16, weight: .bold, design: .rounded))
 
                     Spacer()

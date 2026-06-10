@@ -132,11 +132,11 @@ struct ShadowingView: View {
     private var topBar: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Shadowing")
+                Text(L10n.string("speakingModeShadowingTitle"))
                     .font(.system(size: Layout.homeHeaderTitleSize, weight: .bold, design: .rounded))
                     .foregroundColor(accentDark)
 
-                Text("Listen, repeat, and improve pronunciation.")
+                Text(L10n.string("speakingShadowingSubtitle"))
                     .font(.system(size: Layout.homeHeaderSubtitleSize, weight: .medium, design: .rounded))
                     .foregroundColor(AppColors.mutedText)
                     .lineLimit(1)
@@ -190,7 +190,7 @@ struct ShadowingView: View {
 
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Your transcript")
+            Text(L10n.string("speakingYourTranscript"))
                 .font(.system(size: 15, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
 
@@ -235,7 +235,7 @@ struct ShadowingView: View {
             Image(systemName: "mic")
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(accent)
-            Text("Tap the mic and repeat the phrase.")
+            Text(L10n.string("speakingTapMicRepeat"))
                 .font(.system(size: 14, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
             Spacer(minLength: 0)
@@ -255,7 +255,7 @@ struct ShadowingView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "arrow.triangle.2.circlepath")
                         .font(.system(size: 12, weight: .bold))
-                    Text("Regenerate phrases")
+                    Text(L10n.string("speakingRegeneratePhrases"))
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                 }
                 .foregroundColor(accent)

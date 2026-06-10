@@ -1,0 +1,28 @@
+{
+  "storyLoading": {
+    "en": "Loading story…", "uk": "Завантаження історії…", "es": "Cargando historia…",
+    "fr": "Chargement de l'histoire…", "de": "Geschichte wird geladen…", "it": "Caricamento storia…",
+    "pt": "Carregando história…", "ru": "Загрузка истории…", "pl": "Wczytywanie historii…",
+    "nl": "Verhaal laden…", "ja": "ストーリーを読み込み中…", "ko": "스토리 불러오는 중…",
+    "zh": "正在加载故事…", "hi": "कहानी लोड हो रही है…", "ar": "تحميل القصة…",
+    "bn": "গল্প লোড হচ্ছে…", "ur": "کہانی لوڈ ہو رہی ہے…", "id": "Memuat cerita…",
+    "tr": "Hikâye yükleniyor…", "vi": "Đang tải truyện…", "fa": "در حال بارگذاری داستان…",
+    "ro": "Se încarcă povestea…", "th": "กำลังโหลดเรื่อง…", "el": "Φόρτωση ιστορίας…",
+    "cs": "Načítání příběhu…", "hu": "Történet betöltése…", "sv": "Laddar berättelse…",
+    "he": "טוען סיפור…", "no": "Laster historie…", "da": "Indlæser historie…",
+    "fi": "Ladataan tarinaa…", "bg": "Зареждане на история…"
+  },
+  "storyCreating": {
+    "en": "Creating your story…", "uk": "Створення історії…", "es": "Creando tu historia…",
+    "fr": "Création de votre histoire…", "de": "Geschichte wird erstellt…", "it": "Creazione della tua storia…",
+    "pt": "Criando sua história…", "ru": "Создание истории…", "pl": "Tworzenie historii…",
+    "nl": "Je verhaal wordt gemaakt…", "ja": "あなたのストーリーを作成中…", "ko": "스토리 만드는 중…",
+    "zh": "正在创建你的故事…", "hi": "आपकी कहानी बनाई जा रही है…", "ar": "إنشاء قصتك…",
+    "bn": "আপনার গল্প তৈরি হচ্ছে…", "ur": "آپ کی کہانی بنائی جا رہی ہے…", "id": "Membuat cerita Anda…",
+    "tr": "Hikâyen oluşturuluyor…", "vi": "Đang tạo truyện của bạn…", "fa": "در حال ساخت داستان شما…",
+    "ro": "Se creează povestea ta…", "th": "กำลังสร้างเรื่องของคุณ…", "el": "Δημιουργία της ιστορίας σου…",
+    "cs": "Vytváření vašeho příběhu…", "hu": "Történeted készítése…", "sv": "Skapar din berättelse…",
+    "he": "יוצר את הסיפור שלך…", "no": "Lager historien din…", "da": "Opretter din historie…",
+    "fi": "Luodaan tarinaasi…", "bg": "Създаване на твоята история…"
+  }
+}

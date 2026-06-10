@@ -86,7 +86,7 @@ struct ReadingAddTextView: View {
             case .success(let urls):
                 if let url = urls.first { viewModel.importPDF(url: url) }
             case .failure:
-                viewModel.importErrorMessage = "Import cancelled."
+                viewModel.importErrorMessage = L10n.string("readingImportCancelled")
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
@@ -100,8 +100,8 @@ struct ReadingAddTextView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
             ReadingSetupHeaderView(
-                title: "Add Text",
-                subtitle: "Paste, import, generate, or explore texts",
+                title: L10n.string("readingAddTextTitle"),
+                subtitle: L10n.string("readingAddTextSubtitle"),
                 accent: accent,
                 accentDark: accentDark,
                 onBack: { dismiss() }
@@ -116,9 +116,9 @@ struct ReadingAddTextView: View {
 
     private var statisticsRow: some View {
         HStack(spacing: 8) {
-            ReadingMetadataChip(text: "\(viewModel.wordCount) words", accent: accent)
-            ReadingMetadataChip(text: "\(viewModel.characterCount) chars", accent: accent)
-            ReadingMetadataChip(text: "~\(viewModel.estimatedMinutes) min", accent: accent)
+            ReadingMetadataChip(text: String(format: L10n.string("readingWordsCountFmt"), viewModel.wordCount), accent: accent)
+            ReadingMetadataChip(text: String(format: L10n.string("readingCharsCountFmt"), viewModel.characterCount), accent: accent)
+            ReadingMetadataChip(text: String(format: L10n.string("readingApproxMinFmt"), viewModel.estimatedMinutes), accent: accent)
             if ReadingMyTextsDifficultyMode.from(title: viewModel.difficultyModeTitle) == .autoDetect {
                 ReadingMetadataChip(text: viewModel.detectedLevel.title, accent: accent)
             }
@@ -133,14 +133,14 @@ struct ReadingAddTextView: View {
         case .photo:
             HStack(spacing: 10) {
                 PhotosPicker(selection: $selectedPhoto, matching: .images) {
-                    importButtonLabel("Photo Library", icon: "photo.on.rectangle")
+                    importButtonLabel(L10n.string("readingPhotoLibrary"), icon: "photo.on.rectangle")
                 }
                 .buttonStyle(.plain)
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
                     Button {
                         showCamera = true
                     } label: {
-                        importButtonLabel("Camera", icon: "camera.fill")
+                        importButtonLabel(L10n.string("readingCamera"), icon: "camera.fill")
                     }
                     .buttonStyle(.plain)
                 }
@@ -152,7 +152,7 @@ struct ReadingAddTextView: View {
             Button {
                 showPDFImporter = true
             } label: {
-                importButtonLabel("Choose PDF", icon: "doc.fill")
+                importButtonLabel(L10n.string("readingChoosePDF"), icon: "doc.fill")
             }
             .buttonStyle(.plain)
             if viewModel.isImporting {
@@ -167,14 +167,14 @@ struct ReadingAddTextView: View {
 
     private var generateSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionHeader(title: "Generate Text", subtitle: "Create a reading text from a topic.")
+            sectionHeader(title: L10n.string("readingGenerateText"), subtitle: L10n.string("readingGenerateSubtitle"))
 
             textInputField(
-                placeholder: "Topic — e.g. coral reefs, the printing press, a day at the market",
+                placeholder: L10n.string("readingGeneratePlaceholder"),
                 text: $viewModel.generateTopic
             )
 
-            ReadingSetupSectionCard(title: "Style", accentDark: accentDark) {
+            ReadingSetupSectionCard(title: L10n.string("readingStyle"), accentDark: accentDark) {
                 ReadingSegmentedSelector(
                     options: MyTextsAIGenerationRequest.Style.titles,
                     selection: $viewModel.generateStyleTitle,
@@ -184,7 +184,7 @@ struct ReadingAddTextView: View {
                 )
             }
 
-            ReadingSetupSectionCard(title: "Length", accentDark: accentDark) {
+            ReadingSetupSectionCard(title: L10n.string("essayScoreLength"), accentDark: accentDark) {
                 ReadingSegmentedSelector(
                     options: ReadingLength.titles,
                     selection: $viewModel.generateLengthTitle,
@@ -206,7 +206,7 @@ struct ReadingAddTextView: View {
                     } else {
                         Image(systemName: "sparkles")
                     }
-                    Text(viewModel.isGenerating ? "Generating…" : "Generate Text")
+                    Text(viewModel.isGenerating ? L10n.string("readingGenerating") : L10n.string("readingGenerateText"))
                 }
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
@@ -224,14 +224,14 @@ struct ReadingAddTextView: View {
 
     private var exploreSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionHeader(title: "Explore Reading", subtitle: "Find or fetch a text from a topic.")
+            sectionHeader(title: L10n.string("readingExploreTitle"), subtitle: L10n.string("readingExploreSubtitle"))
 
             textInputField(
-                placeholder: "Topic or keyword — e.g. Marie Curie, Venice, photosynthesis",
+                placeholder: L10n.string("readingExplorePlaceholder"),
                 text: $viewModel.exploreTopic
             )
 
-            ReadingSetupSectionCard(title: "Source", accentDark: accentDark) {
+            ReadingSetupSectionCard(title: L10n.string("readingSource"), accentDark: accentDark) {
                 ReadingSegmentedSelector(
                     options: MyTextsExploreRequest.SourcePreference.titles,
                     selection: $viewModel.exploreSourceTitle,
@@ -241,7 +241,7 @@ struct ReadingAddTextView: View {
                 )
             }
 
-            ReadingSetupSectionCard(title: "Length", accentDark: accentDark) {
+            ReadingSetupSectionCard(title: L10n.string("essayScoreLength"), accentDark: accentDark) {
                 ReadingSegmentedSelector(
                     options: ReadingLength.titles,
                     selection: $viewModel.exploreLengthTitle,
@@ -270,7 +270,7 @@ struct ReadingAddTextView: View {
                     } else {
                         Image(systemName: "safari")
                     }
-                    Text(viewModel.isExploring ? "Fetching…" : "Fetch Article")
+                    Text(viewModel.isExploring ? L10n.string("readingFetching") : L10n.string("readingFetchArticle"))
                 }
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
@@ -307,7 +307,7 @@ struct ReadingAddTextView: View {
     }
 
     private var titleField: some View {
-        ReadingSetupSectionCard(title: "Title", accentDark: accentDark) {
+        ReadingSetupSectionCard(title: L10n.string("commonTitle"), accentDark: accentDark) {
             TextField("Optional — we can suggest one", text: $viewModel.title)
                 .font(.system(size: 16, weight: .medium, design: .rounded))
                 .foregroundColor(accentDark)
@@ -340,23 +340,23 @@ struct ReadingAddTextView: View {
 
     private var editorTitle: String {
         switch viewModel.currentSource {
-        case .generate, .explore: return "Text — edit before saving"
-        default: return "Text"
+        case .generate, .explore: return L10n.string("readingTextEditBeforeSaving")
+        default: return L10n.string("homeCreateText")
         }
     }
 
     private var editorPlaceholder: String {
         switch viewModel.currentSource {
-        case .pasteText: return "Paste your text here..."
-        case .photo:     return "Pick a photo to extract text."
-        case .pdf:       return "Choose a PDF to extract text."
-        case .generate:  return "Tap Generate Text to create a passage you can edit."
-        case .explore:   return "Tap Fetch Article to pull a passage you can edit."
+        case .pasteText: return L10n.string("readingPastePlaceholder")
+        case .photo:     return L10n.string("readingPhotoPlaceholder")
+        case .pdf:       return L10n.string("readingPdfPlaceholder")
+        case .generate:  return L10n.string("readingGeneratePromptHint")
+        case .explore:   return L10n.string("readingExplorePromptHint")
         }
     }
 
     private var languageSection: some View {
-        ReadingSetupSectionCard(title: "Language", accentDark: accentDark) {
+        ReadingSetupSectionCard(title: L10n.string("profileRowLanguage"), accentDark: accentDark) {
             LanguageSelectorView(
                 selectedLanguage: viewModel.selectedLanguage,
                 onSelect: { viewModel.selectedLanguage = $0 },
@@ -367,7 +367,7 @@ struct ReadingAddTextView: View {
     }
 
     private var difficultySection: some View {
-        ReadingSetupSectionCard(title: "Difficulty", accentDark: accentDark) {
+        ReadingSetupSectionCard(title: L10n.string("writeWordsDifficulty"), accentDark: accentDark) {
             VStack(alignment: .leading, spacing: 12) {
                 ReadingSegmentedSelector(
                     options: ReadingMyTextsDifficultyMode.titles,
@@ -384,7 +384,7 @@ struct ReadingAddTextView: View {
                         columns: Layout.isPadLike ? 5 : 3
                     )
                 } else {
-                    Text("Detected: \(viewModel.detectedLevel.title)")
+                    Text(String(format: L10n.string("readingDetectedFmt"), viewModel.detectedLevel.title))
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .foregroundColor(AppColors.textSecondary)
                 }
@@ -394,7 +394,7 @@ struct ReadingAddTextView: View {
 
     private var bottomBar: some View {
         ReadingPrimaryButton(
-            title: "Save & Start",
+            title: L10n.string("readingSaveAndStart"),
             icon: "play.fill",
             accent: accent,
             accentDark: accentDark
@@ -436,7 +436,7 @@ struct ReadingAddTextView: View {
     private func exploreSourceBanner(label: String, isPlaceholder: Bool) -> some View {
         let tint = isPlaceholder ? Color.orange : accent
         let message = isPlaceholder
-            ? "Starter draft — edit before saving."
+            ? L10n.string("readingStarterDraftHint")
             : "Source: \(label)."
         return HStack(spacing: 8) {
             Image(systemName: isPlaceholder ? "pencil.circle.fill" : "checkmark.circle.fill")

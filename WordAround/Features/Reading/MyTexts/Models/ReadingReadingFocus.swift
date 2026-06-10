@@ -9,11 +9,11 @@ enum ReadingFocus: String, Codable, CaseIterable, Equatable {
 
     var title: String {
         switch self {
-        case .mainIdea: return "Main Idea"
-        case .vocabulary: return "Vocabulary"
-        case .detailedComprehension: return "Detailed Comprehension"
-        case .grammarAwareness: return "Grammar Awareness"
-        case .speedFluency: return "Speed / Fluency"
+        case .mainIdea:              return L10n.string("listenMainIdea")
+        case .vocabulary:            return L10n.string("spkVocabulary")
+        case .detailedComprehension: return L10n.string("readingFocusDetailed")
+        case .grammarAwareness:      return L10n.string("readingFocusGrammar")
+        case .speedFluency:          return L10n.string("readingFocusSpeed")
         }
     }
 

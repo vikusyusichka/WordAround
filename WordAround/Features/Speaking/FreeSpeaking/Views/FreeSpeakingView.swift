@@ -118,7 +118,7 @@ struct FreeSpeakingView: View {
     private var topBar: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Free Speaking")
+                Text(L10n.string("speakingModeFreeTitle"))
                     .font(.system(
                         size: Layout.homeHeaderTitleSize,
                         weight: .bold,
@@ -126,7 +126,7 @@ struct FreeSpeakingView: View {
                     ))
                     .foregroundColor(AppColors.primaryBlueDark)
 
-                Text("Speak freely about a topic and get feedback.")
+                Text(L10n.string("speakingFreeSubtitle"))
                     .font(.system(
                         size: Layout.homeHeaderSubtitleSize,
                         weight: .medium,
@@ -222,7 +222,7 @@ struct FreeSpeakingView: View {
 
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Transcript")
+            Text(L10n.string("speakingTranscript"))
                 .font(.system(size: 16, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
 
@@ -263,11 +263,11 @@ struct FreeSpeakingView: View {
             }
             .padding(.top, 16)
 
-            Text("Start speaking")
+            Text(L10n.string("speakingStartSpeaking"))
                 .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundColor(AppColors.primaryBlueDark)
 
-            Text("Your transcript will appear here while you speak.")
+            Text(L10n.string("speakingTranscriptAppear"))
                 .font(.system(size: 14, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.textSecondary)
                 .multilineTextAlignment(.center)

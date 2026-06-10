@@ -1,11 +1,5 @@
 import SwiftUI
 
-/// Initializes a `Color` from a 6-character hex string (with or without a
-/// leading `#`). Returns `nil` for malformed input.
-///
-/// Shared module-internal helper used by feature views that map persisted
-/// hex strings (e.g. `FlashcardSet.colorHex`, `Folder.colorHex`) to SwiftUI
-/// colors.
 extension Color {
     init?(hex: String) {
         let cleanedHex = hex

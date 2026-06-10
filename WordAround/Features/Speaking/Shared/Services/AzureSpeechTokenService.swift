@@ -16,7 +16,6 @@ enum AzureSpeechTokenError: LocalizedError {
     }
 }
 
-/// Azure subscription key never lives in the app — the Worker holds it as a secret.
 protocol AzureSpeechTokenProviding {
     func fetchToken() async throws -> AzureSpeechToken
 }
@@ -26,7 +25,6 @@ struct AzureSpeechToken: Equatable {
     let region: String
     let fetchedAt: Date
 
-    /// Azure tokens last ~10 minutes; treat as stale a bit early.
     var isFresh: Bool { Date().timeIntervalSince(fetchedAt) < 8 * 60 }
 }
 

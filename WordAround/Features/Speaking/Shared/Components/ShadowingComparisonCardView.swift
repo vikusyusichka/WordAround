@@ -36,7 +36,7 @@ struct ShadowingComparisonCardView: View {
     private var assessingState: some View {
         HStack(spacing: 12) {
             ProgressView().tint(accent)
-            Text("Assessing pronunciation…")
+            Text(L10n.string("spkAssessingPronunciation"))
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .foregroundColor(accentDark)
             Spacer(minLength: 0)
@@ -51,7 +51,7 @@ struct ShadowingComparisonCardView: View {
                 scoreCell("Accuracy", a.accuracyScore)
             }
             HStack(spacing: 10) {
-                scoreCell("Fluency", a.fluencyScore)
+                scoreCell(L10n.string("spkFluency"), a.fluencyScore)
                 scoreCell("Completeness", a.completenessScore)
             }
         }
@@ -79,7 +79,7 @@ struct ShadowingComparisonCardView: View {
 
     private func recognizedSection(_ a: PronunciationAssessmentResult) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Recognized")
+            Text(L10n.string("spkRecognized"))
                 .font(.system(size: 13, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
             Text(a.recognizedText.isEmpty ? "—" : a.recognizedText)
@@ -98,7 +98,7 @@ struct ShadowingComparisonCardView: View {
                     Image(systemName: "exclamationmark.circle.fill")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundColor(Color(red: 0.93, green: 0.45, blue: 0.30))
-                    Text("Weak / missing words")
+                    Text(L10n.string("spkWeakMissingWords"))
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .foregroundColor(accentDark)
                 }
@@ -146,7 +146,7 @@ struct ShadowingComparisonCardView: View {
                     .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundColor(accent)
             }
-            Text("Accuracy")
+            Text(L10n.string("spkAccuracy"))
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(accentDark)
             Spacer(minLength: 0)
@@ -158,7 +158,7 @@ struct ShadowingComparisonCardView: View {
             Image(systemName: "info.circle.fill")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(AppColors.mutedText)
-            Text("Pronunciation assessment unavailable. Showing a transcript-based estimate — not real acoustic analysis.")
+            Text(L10n.string("spkPronunciationUnavailable"))
                 .font(.system(size: 11, weight: .medium, design: .rounded))
                 .foregroundColor(AppColors.mutedText)
                 .fixedSize(horizontal: false, vertical: true)
@@ -175,7 +175,6 @@ struct ShadowingComparisonCardView: View {
     }
 }
 
-/// App `Layout` enum shadows SwiftUI.Layout — use SwiftUI.Layout here.
 private struct FlexibleWrap: SwiftUI.Layout {
     var spacing: CGFloat = 6
     var lineSpacing: CGFloat = 6

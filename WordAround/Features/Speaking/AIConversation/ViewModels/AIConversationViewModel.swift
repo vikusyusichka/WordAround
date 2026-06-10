@@ -117,7 +117,6 @@ final class AIConversationViewModel: ObservableObject {
     private func wireRecognizerCallbacks() {
         recognizer.onPartialTranscript = { [weak self] text in
             guard let self else { return }
-            // Late partial results can arrive after stop; ignore unless still listening.
             guard self.state.isListening else { return }
             self.partialTranscript = text
         }

@@ -18,7 +18,7 @@ struct GrammarReviewCompletionView: View {
             }
             .frame(width: 96, height: 96)
 
-            Text(reviewedCount > 0 ? "Review complete" : "Nothing to review")
+            Text(L10n.string(reviewedCount > 0 ? "reviewCompleteTitle" : "reviewCompleteNothing"))
                 .font(.system(size: 24, weight: .black, design: .rounded))
                 .foregroundStyle(AppColors.primaryBlueDark)
                 .multilineTextAlignment(.center)
@@ -37,7 +37,7 @@ struct GrammarReviewCompletionView: View {
             Spacer(minLength: 0)
 
             Button(action: onDone) {
-                Text("Done")
+                Text(L10n.localized(.commonDone))
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.white)
                     .frame(maxWidth: .infinity)
@@ -56,23 +56,23 @@ struct GrammarReviewCompletionView: View {
 
     private var encouragingMessage: String {
         if reviewedCount == 0 {
-            return "There were no due items this session. Come back later or add more notes to review."
+            return L10n.string("reviewMsgEmpty")
         }
         let troubled = hardCount + forgotCount
         if troubled == 0 {
-            return "You breezed through every card. Solid recall today."
+            return L10n.string("reviewMsgClean")
         }
         if troubled == reviewedCount {
-            return "Tough session — these will resurface soon to help them stick."
+            return L10n.string("reviewMsgTough")
         }
-        return "Nice work. The tricky ones will come back sooner."
+        return L10n.string("reviewMsgMixed")
     }
 
     private var statsRow: some View {
         HStack(spacing: 10) {
-            statTile(value: reviewedCount, label: "Reviewed", tint: AppColors.primaryBlue)
-            statTile(value: hardCount,     label: "Hard",     tint: Color(red: 0.85, green: 0.55, blue: 0.20))
-            statTile(value: forgotCount,   label: "Forgot",   tint: CreateSetTheme.red.accent)
+            statTile(value: reviewedCount, label: L10n.string("reviewStatReviewed"), tint: AppColors.primaryBlue)
+            statTile(value: hardCount,     label: L10n.string("reviewStatHard"),     tint: Color(red: 0.85, green: 0.55, blue: 0.20))
+            statTile(value: forgotCount,   label: L10n.string("reviewStatForgot"),   tint: CreateSetTheme.red.accent)
         }
         .padding(.horizontal, 8)
     }
