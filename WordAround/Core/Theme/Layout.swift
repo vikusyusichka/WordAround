@@ -172,7 +172,8 @@ extension Layout {
 
 extension Layout {
     static let homeDailyStatGridSpacing: CGFloat = isPadLike ? 16 : 12
-    static let homeDailyStatCardHeight: CGFloat = isPadLike ? 150 : 116
+    static let homeDailyStatCardHeight: CGFloat = isPadLike ? 132 : 102
+    static let homeDailyStatChevronCircleSize: CGFloat = isPadLike ? 30 : 26
     static let homeDailyStatCardCornerRadius: CGFloat = isPadLike ? 24 : 20
     static let homeDailyStatCardPadding: CGFloat = isPadLike ? 18 : 14
     static let homeDailyStatIconCircleSize: CGFloat = isPadLike ? 48 : 38
@@ -222,6 +223,45 @@ extension Layout {
     static let homeDashboardSecondaryRowHeight: CGFloat = isPadLike ? 172 : 134
     static let homeDashboardStreakValueSize: CGFloat = isPadLike ? 38 : 30
     static let homeDashboardStreakIconSize: CGFloat = isPadLike ? 30 : 24
+
+    // Continue Learning hero (full-width primary card)
+    static let homeDashboardHeroHeight: CGFloat = isPadLike ? 176 : 138
+    static let homeDashboardHeroIconChipSize: CGFloat = isPadLike ? 66 : 56
+    static let homeDashboardHeroIconSize: CGFloat = isPadLike ? 30 : 25
+    static let homeDashboardHeroTitleSize: CGFloat = isPadLike ? 28 : 22
+    static let homeDashboardHeroCTASize: CGFloat = isPadLike ? 58 : 50
+
+    // Vertical hero card — the dominant Continue Learning entry point.
+    // Min-height so the card can grow when a progress row is present.
+    static let homeDashboardHeroMinHeight: CGFloat = isPadLike ? 224 : 176
+    static let homeDashboardHeroProgressBarHeight: CGFloat = isPadLike ? 10 : 8
+    static let homeDashboardHeroProgressTextSize: CGFloat = isPadLike ? 16 : 13
+
+    // iPad two-column dashboard
+    static let homeDashboardColumnSpacing: CGFloat = isPadLike ? 20 : 12
+
+    // Supporting cards (Note / Tip / Guide / Streak) — 2-column grid
+    static let homeDashboardSupportRowHeight: CGFloat = isPadLike ? 138 : 112
+
+    // Compact horizontal action cards (Note / Guide) — icon + text + chevron
+    static let homeDashboardActionRowHeight: CGFloat = isPadLike ? 96 : 80
+
+    // Streak + Guide half-width pair (streak needs room for its dot trail)
+    static let homeDashboardDuoRowHeight: CGFloat = isPadLike ? 112 : 96
+
+    // Streak card 7-day dot row
+    static let homeDashboardStreakDotSize: CGFloat = isPadLike ? 10 : 8
+    static let homeDashboardStreakDotSpacing: CGFloat = isPadLike ? 8 : 6
+}
+
+// MARK: - Home Hero greeting
+
+extension Layout {
+    static let homeHeroSpacing: CGFloat = isPadLike ? 8 : 5
+    static let homeHeroEyebrowSize: CGFloat = isPadLike ? 15 : 12
+    static let homeHeroHeadlineSize: CGFloat = isPadLike ? 28 : 22
+    static let homeHeroPillIconSize: CGFloat = isPadLike ? 16 : 14
+    static let homeHeroPillTextSize: CGFloat = isPadLike ? 17 : 15
 }
 
 // MARK: - Home Create Menu
@@ -267,6 +307,13 @@ extension Layout {
     static let homeHeaderAvatarCircleSize: CGFloat = isPadLike ? 62 : 54
     static let homeHeaderAvatarIconSize: CGFloat = isPadLike ? 48 : 42
     static let homeHeaderNotificationDotSize: CGFloat = isPadLike ? 14 : 12
+
+    // Trailing Notes action shown in the header on compact layouts (where the
+    // sidebar — and its Notes entry — is hidden). Sized just under the avatar
+    // so it reads as a secondary action and never dominates the header.
+    static let homeHeaderActionSpacing: CGFloat = isPadLike ? 14 : 10
+    static let homeHeaderNotesButtonSize: CGFloat = isPadLike ? 54 : 46
+    static let homeHeaderNotesIconSize: CGFloat = isPadLike ? 24 : 20
 }
 
 // MARK: - Bottom Navigation Bar

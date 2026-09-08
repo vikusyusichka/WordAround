@@ -112,7 +112,15 @@
 "homeTabSets" = "Sets";
 "homeYourSets" = "Your sets";
 
+/* Home hero greeting */
+"homeHeroGreetingMorning" = "Good morning";
+"homeHeroGreetingAfternoon" = "Good afternoon";
+"homeHeroGreetingEvening" = "Good evening";
+"homeHeroHeadlineStreakFmt" = "You're on a %d day streak";
+"homeHeroHeadlineNoStreak" = "Ready to learn today?";
+
 /* Home dashboard cards */
+"homeContinueLearningCTA" = "Continue";
 "homeNoteTitle" = "Note";
 "homeNoteSubtitle" = "Create";
 "homeContinueLearningEmptyTitle" = "Start learning";
@@ -125,6 +133,9 @@
 "homeStreakActiveLabel" = "Day streak";
 "homeStreakEmptyTitle" = "No streak";
 "homeStreakEmptySubtitle" = "Start today";
+"homeStreakDaysFmt" = "%d day streak";
+"homeStreakKeepItUp" = "Keep it up!";
+"homeContinueLearningProgressFmt" = "%d / %d cards";
 
 /* Tip sheet */
 "homeTipSheetTitle" = "Today's Tip";

@@ -1,67 +1,105 @@
 import SwiftUI
 
+/// Assembles the Home dashboard with a clear hierarchy:
+/// 1. Continue Learning (hero) 2. Daily Practice 3. Today's Tip 4. Streak/Guide.
+///
+/// Compact (iPhone): a single focused stack — hero, Daily Practice 2×2,
+/// full-width tip, then the Streak + Guide pair.
+///
+/// Regular (iPad / Mac): a dedicated two-column layout — hero and tip on the
+/// left, Daily Practice grid with Streak + Guide on the right — so the extra
+/// width is used intentionally instead of stretching the phone design.
 struct HomeDashboardSection: View {
+    let isCompact: Bool
+    let stats: [HomeDailyStat]
+    let onSelectStat: ((HomeCategory) -> Void)?
     let continueItem: ContinueLearningItem?
     let tip: DailyTip
     let streak: HomeStreakState
 
-    let onNote: () -> Void
     let onContinue: () -> Void
     let onTip: () -> Void
     let onGuide: () -> Void
     let onStreak: () -> Void
 
-    private var totalHeight: CGFloat {
-        Layout.homeDashboardPrimaryRowHeight
-            + Layout.homeDashboardSecondaryRowHeight
-            + Layout.homeDashboardRowSpacing
-    }
-
     var body: some View {
-        GeometryReader { proxy in
-            let spacing = Layout.homeDashboardRowSpacing
-            let columnWidth = (proxy.size.width - spacing) * Layout.homeDashboardColumnRatio
-
-            VStack(spacing: spacing) {
-                primaryRow(columnWidth: columnWidth, spacing: spacing)
-                secondaryRow(columnWidth: columnWidth, spacing: spacing)
-            }
-            .frame(width: proxy.size.width)
+        if isCompact {
+            compactLayout
+        } else {
+            regularLayout
         }
-        .frame(maxWidth: .infinity)
-        .frame(height: totalHeight)
     }
 
-    // MARK: - Row 1: [Note] [Continue Learning]
+    // MARK: - Compact (iPhone)
 
-    private func primaryRow(columnWidth: CGFloat, spacing: CGFloat) -> some View {
-        HStack(spacing: spacing) {
-            HomeNoteCard(action: onNote)
-                .frame(width: columnWidth)
+    private var compactLayout: some View {
+        VStack(alignment: .leading, spacing: Layout.homeDashboardRowSpacing) {
+            hero
 
-            HomeContinueLearningCard(item: continueItem, action: onContinue)
-                .frame(maxWidth: .infinity)
-        }
-        .frame(height: Layout.homeDashboardPrimaryRowHeight)
-    }
+            dailyPracticeTitle
+                .padding(.top, Layout.homeSectionTitleTopPadding)
 
-    // MARK: - Row 2: [Today's Tip] [Guide] [Streak]
+            HomeStatsGridView(stats: stats, onSelect: onSelectStat)
 
-    private func secondaryRow(columnWidth: CGFloat, spacing: CGFloat) -> some View {
-        HStack(spacing: spacing) {
-            HomeTipCard(tip: tip, action: onTip)
-                .frame(width: columnWidth)
+            tipCard
+                .padding(.top, 2)
 
-            HStack(spacing: spacing) {
-                HomeGuideCard(action: onGuide)
-                    .frame(maxWidth: .infinity)
-
+            HStack(spacing: Layout.homeDashboardRowSpacing) {
                 HomeStreakCard(state: streak, action: onStreak)
                     .frame(maxWidth: .infinity)
+                HomeGuideCard(action: onGuide)
+                    .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
+            .frame(height: Layout.homeDashboardDuoRowHeight)
         }
-        .frame(height: Layout.homeDashboardSecondaryRowHeight)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: - Regular (iPad / Mac)
+
+    private var regularLayout: some View {
+        HStack(alignment: .top, spacing: Layout.homeDashboardColumnSpacing) {
+            VStack(alignment: .leading, spacing: Layout.homeDashboardRowSpacing) {
+                hero
+                tipCard
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+
+            VStack(alignment: .leading, spacing: Layout.homeDashboardRowSpacing) {
+                dailyPracticeTitle
+
+                HomeStatsGridView(stats: stats, onSelect: onSelectStat, columnCount: 2)
+
+                HStack(spacing: Layout.homeDashboardRowSpacing) {
+                    HomeStreakCard(state: streak, action: onStreak)
+                        .frame(maxWidth: .infinity)
+                    HomeGuideCard(action: onGuide)
+                        .frame(maxWidth: .infinity)
+                }
+                .frame(height: Layout.homeDashboardDuoRowHeight)
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+
+    // MARK: - Shared pieces
+
+    private var hero: some View {
+        HomeContinueLearningCard(item: continueItem, action: onContinue)
+            .frame(maxWidth: .infinity)
+    }
+
+    private var tipCard: some View {
+        HomeTipCard(tip: tip, action: onTip)
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: Layout.homeDashboardSupportRowHeight)
+    }
+
+    private var dailyPracticeTitle: some View {
+        Text(L10n.string("homeDailyPractice"))
+            .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
+            .foregroundColor(AppColors.primaryBlueDark)
     }
 }
 
@@ -70,10 +108,12 @@ struct HomeDashboardSection: View {
         AppColors.appBackground.ignoresSafeArea()
         ScrollView {
             HomeDashboardSection(
+                isCompact: true,
+                stats: [],
+                onSelectStat: nil,
                 continueItem: nil,
-                tip: DailyTip(id: 1, short: "Learn vocabulary in context.", detail: ""),
+                tip: DailyTip(id: 1, short: "Learn vocabulary in context.", detail: "Words stick better in real sentences."),
                 streak: .active(days: 5),
-                onNote: {},
                 onContinue: {},
                 onTip: {},
                 onGuide: {},

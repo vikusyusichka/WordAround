@@ -1,18 +1,14 @@
 import SwiftUI
 
+/// Quick "create a note" action — a compact horizontal card (chip → text →
+/// chevron) so it reads as a dense, tappable row rather than a sparse tile.
 struct HomeNoteCard: View {
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            VStack(alignment: .leading, spacing: 0) {
-                HStack(alignment: .top) {
-                    iconChip
-                    Spacer(minLength: 0)
-                    chevron
-                }
-
-                Spacer(minLength: 8)
+            HStack(spacing: Layout.homeDashboardCardPadding) {
+                HomeDashboardIconChip(systemName: "square.and.pencil", accent: AppColors.notesAccent)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(L10n.string("homeNoteTitle"))
@@ -25,34 +21,19 @@ struct HomeNoteCard: View {
                         .foregroundColor(AppColors.textSecondary)
                         .lineLimit(1)
                 }
+
+                Spacer(minLength: 4)
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: Layout.homeDashboardChevronSize, weight: .bold))
+                    .foregroundColor(AppColors.notesAccent.opacity(0.55))
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             .padding(Layout.homeDashboardCardPadding)
             .homeDashboardSurface(accent: AppColors.notesAccent)
             .contentShape(RoundedRectangle(cornerRadius: Layout.homeDashboardCardCornerRadius, style: .continuous))
         }
-        .buttonStyle(.plain)
-    }
-
-    private var iconChip: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(AppColors.notesSoft)
-                .frame(
-                    width: Layout.homeDashboardIconChipSize,
-                    height: Layout.homeDashboardIconChipSize
-                )
-
-            Image(systemName: "square.and.pencil")
-                .font(.system(size: Layout.homeDashboardIconSize, weight: .semibold))
-                .foregroundColor(AppColors.notesAccent)
-        }
-    }
-
-    private var chevron: some View {
-        Image(systemName: "chevron.right")
-            .font(.system(size: Layout.homeDashboardChevronSize, weight: .bold))
-            .foregroundColor(AppColors.textSecondary.opacity(0.6))
+        .buttonStyle(HomeCardPressStyle())
     }
 }
 
@@ -60,7 +41,7 @@ struct HomeNoteCard: View {
     ZStack {
         AppColors.appBackground.ignoresSafeArea()
         HomeNoteCard(action: {})
-            .frame(width: 130, height: Layout.homeDashboardPrimaryRowHeight)
+            .frame(height: Layout.homeDashboardActionRowHeight)
             .padding()
     }
 }

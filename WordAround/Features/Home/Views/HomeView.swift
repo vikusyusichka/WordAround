@@ -2,8 +2,14 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var sessionStore: SessionStore
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @StateObject private var viewModel = HomeViewModel()
     @StateObject private var setsViewModel = SetsListViewModel()
+
+    /// Regular width (iPad / Mac) keeps the left category sidebar; compact width
+    /// (iPhone) drops it and routes navigation through the header Notes button
+    /// and the Daily Practice cards instead.
+    private var isRegularWidth: Bool { horizontalSizeClass == .regular }
 
     @State private var isCreateSetPresented = false
     @State private var isCreateFolderPresented = false
@@ -33,17 +39,21 @@ struct HomeView: View {
                 .padding(.top, Layout.homeTopSpacing)
                 .padding(.horizontal, Layout.homeHorizontalPadding)
 
-                HStack(alignment: .top, spacing: Layout.homeHeaderSidebarSpacing) {
-                    CategorySidebarView(
-                        selectedCategory: $viewModel.selectedCategory,
-                        onSelect: { viewModel.selectCategory($0) }
-                    )
-                    .frame(width: Layout.homeSidebarWidth)
+                HStack(alignment: .top, spacing: isRegularWidth ? Layout.homeHeaderSidebarSpacing : 0) {
+                    if isRegularWidth {
+                        CategorySidebarView(
+                            selectedCategory: $viewModel.selectedCategory,
+                            onSelect: { viewModel.selectCategory($0) }
+                        )
+                        .frame(width: Layout.homeSidebarWidth)
+                        .transition(.move(edge: .leading).combined(with: .opacity))
+                    }
 
                     mainContent
                 }
                 .padding(.top, Layout.homeTopSpacing)
                 .padding(.horizontal, Layout.homeHorizontalPadding)
+                .animation(.easeInOut(duration: 0.25), value: isRegularWidth)
 
                 Spacer(minLength: Layout.homeBottomSafeSpacing)
             }
@@ -223,17 +233,15 @@ private extension HomeView {
 
     var dashboardContent: some View {
         VStack(alignment: .leading, spacing: Layout.homeContentSpacing) {
-            sectionTitle(L10n.string("homeDailyPractice"))
-
-            HomeStatsGridView(stats: viewModel.dailyStats)
+            HomeHeroView(streak: viewModel.streakState)
 
             HomeDashboardSection(
+                isCompact: !isRegularWidth,
+                stats: viewModel.dailyStats,
+                onSelectStat: isRegularWidth ? nil : { viewModel.selectCategory($0) },
                 continueItem: ContinueLearningItem(set: setsViewModel.continueLearningSet),
                 tip: viewModel.dailyTip,
                 streak: viewModel.streakState,
-                onNote: {
-                    viewModel.selectCategory(.notes)
-                },
                 onContinue: {
                     if let set = setsViewModel.continueLearningSet?.sourceSet {
                         selectedSetForDetails = set
@@ -325,13 +333,6 @@ private extension HomeView {
 // MARK: - Helpers
 
 private extension HomeView {
-    func sectionTitle(_ title: String) -> some View {
-        Text(title)
-            .font(.system(size: Layout.homeSectionTitleSize, weight: .bold, design: .rounded))
-            .foregroundColor(AppColors.primaryBlueDark)
-            .padding(.top, Layout.homeSectionTitleTopPadding)
-    }
-
     func categoryPlaceholder(for category: HomeCategory) -> some View {
         placeholderCard(
             title: category.title.capitalized,

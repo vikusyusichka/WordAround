@@ -4,6 +4,12 @@ struct HomeHeaderView: View {
     let title: String
     let subtitle: String
 
+    /// Optional Notes shortcut shown to the left of the profile avatar. On
+    /// compact layouts the sidebar (and its Notes entry) is hidden, so Home
+    /// surfaces Notes here. When `nil` the trailing area stays profile-only,
+    /// preserving the current iPad / Mac header exactly.
+    var onNotes: (() -> Void)? = nil
+
     var body: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 6) {
@@ -18,7 +24,19 @@ struct HomeHeaderView: View {
 
             Spacer()
 
-            ZStack(alignment: .topTrailing) {
+            HStack(spacing: Layout.homeHeaderActionSpacing) {
+                if let onNotes {
+                    notesButton(action: onNotes)
+                        .transition(.scale.combined(with: .opacity))
+                }
+
+                profileAvatar
+            }
+        }
+    }
+
+    private var profileAvatar: some View {
+        ZStack(alignment: .topTrailing) {
                 ZStack {
                     Circle()
                         .fill(AppColors.cardWhite)
@@ -57,6 +75,34 @@ struct HomeHeaderView: View {
                     .offset(x: 1, y: 1)
             }
         }
+
+    private func notesButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            ZStack {
+                Circle()
+                    .fill(AppColors.cardWhite)
+                    .frame(
+                        width: Layout.homeHeaderNotesButtonSize,
+                        height: Layout.homeHeaderNotesButtonSize
+                    )
+
+                Image(systemName: HomeCategory.notes.icon)
+                    .font(.system(size: Layout.homeHeaderNotesIconSize, weight: .semibold))
+                    .foregroundColor(AppColors.notesAccent)
+            }
+            .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+            .contentShape(Circle())
+        }
+        .buttonStyle(HomeHeaderActionPressStyle())
+        .accessibilityLabel(L10n.string("categoryNotes"))
+    }
+}
+
+private struct HomeHeaderActionPressStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.92 : 1.0)
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
 
